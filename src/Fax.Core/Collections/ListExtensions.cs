@@ -1,18 +1,19 @@
-﻿namespace Fax.Core.Collections.Generic;
+﻿namespace Fax.Core.Collections;
 
 public static class ListExtensions
 {
     /// <summary>
-    /// Sort a list by a topological sorting, which consider their dependencies.
+    /// 根据元素间的依赖关系进行拓扑排序
     /// </summary>
-    /// <typeparam name="T">The type of the members of values.</typeparam>
-    /// <param name="source">A list of objects to sort</param>
-    /// <param name="getDependencies">Function to resolve the dependencies</param>
-    /// <param name="comparer">Equality comparer for dependencies </param>
+    /// <typeparam name="T">元素类型</typeparam>
+    /// <param name="source">待排序的集合，他们的入度为0</param>
+    /// <param name="getDependencies">获取元素依赖关系的函数</param>
+    /// <param name="comparer">节点相等性比较器</param>
     /// <returns>
-    /// Returns a new list ordered by dependencies.
-    /// If A depends on B, then B will come before than A in the resulting list.
+    /// 返回一个按照依赖关系排序后的新的list，他是一个拓扑序列，
+    /// 即满足如果A依赖B，则新的list中B会在A之前出现。
     /// </returns>
+    /// <exception cref="ArgumentException">如果依赖图中存在环，则抛出异常</exception>
     public static List<T> SortByDependencies<T>(
         this IEnumerable<T> source,
         Func<T, IEnumerable<T>> getDependencies,
@@ -23,8 +24,8 @@ public static class ListExtensions
          */
 
         var sorted = new List<T>();
-        
-        // 维护一个访问hash
+
+        // 维护一个访问记录hash
         var visited = new Dictionary<T, bool>(comparer);
 
         foreach (var item in source)
@@ -35,20 +36,12 @@ public static class ListExtensions
         return sorted;
     }
 
-    /// <summary>
-    ///
-    /// </summary>
-    /// <typeparam name="T">The type of the members of values.</typeparam>
-    /// <param name="item">Item to resolve</param>
-    /// <param name="getDependencies">Function to resolve the dependencies</param>
-    /// <param name="sorted">List with the sorted items</param>
-    /// <param name="visited">Dictionary with the visited items</param>
     private static void SortByDependenciesVisit<T>(T item, Func<T, IEnumerable<T>> getDependencies, List<T> sorted,
         Dictionary<T, bool> visited)
     {
         var alreadyVisited = visited.TryGetValue(item, out var processing);
 
-        // 如果已经访问过了，并且还在处理中，则出现循环引用
+        // 如果已经访问过了，并且还在递归栈中，则出现了循环引用
         if (alreadyVisited && processing)
         {
             throw new ArgumentException("Cyclic dependency found! Item: " + item);
@@ -56,6 +49,7 @@ public static class ListExtensions
 
         visited[item] = true;
 
+        // 递归处理以item为起点，指向的其它点
         var dependencies = getDependencies(item);
         if (dependencies != null)
         {
@@ -64,7 +58,8 @@ public static class ListExtensions
                 SortByDependenciesVisit(dependency, getDependencies, sorted, visited);
             }
         }
-
+        
+        // 此时item的出度为0
         visited[item] = false;
         sorted.Add(item);
     }
