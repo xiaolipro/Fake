@@ -35,4 +35,9 @@ public static class RandomHelper
 
         return res;
     }
+
+    public static T[] RandomSlice<T>(params T[] array)
+    {
+        return Shuffle(array).GetRange(0, Next(maxValue:array.Length)).ToArray();
+    }
 }

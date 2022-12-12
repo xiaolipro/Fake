@@ -41,15 +41,21 @@ public static class ListExtensions
     {
         var alreadyVisited = visited.TryGetValue(item, out var processing);
 
-        // 如果已经访问过了，并且还在递归栈中，则出现了循环引用
-        if (alreadyVisited && processing)
+        if (alreadyVisited)
         {
-            throw new ArgumentException("Cyclic dependency found! Item: " + item);
+            // 如果已经访问过了，并且还在递归栈中，则出现了循环引用
+            if (processing)
+            {
+                throw new ArgumentException("Cyclic dependency found! Item: " + item);
+            }
+            // 剪枝
+            return;
         }
-
+        
+        // 标记访问
         visited[item] = true;
 
-        // 递归处理以item为起点，指向的其它点
+        // 递归处理以item为起点，连通的其它点
         var dependencies = getDependencies(item);
         if (dependencies != null)
         {
@@ -59,8 +65,9 @@ public static class ListExtensions
             }
         }
         
-        // 此时item的出度为0
+        // 恢复现场
         visited[item] = false;
+        // 此时item的出度为0
         sorted.Add(item);
     }
 }
