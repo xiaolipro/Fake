@@ -12,7 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{310D0E30
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fax.Core.Tests", "tests\Fax.Core.Tests\Fax.Core.Tests.csproj", "{930E63CA-E2F0-4465-9732-0B58499E6D2F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "_Fax.TestBase", "tests\_Fax.TestBase\_Fax.TestBase.csproj", "{A93D4EAE-90BE-4C9B-9970-5C1C8E1B994D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fax.TestCore", "tests\Fax.TestCore\Fax.TestCore.csproj", "{A93D4EAE-90BE-4C9B-9970-5C1C8E1B994D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
