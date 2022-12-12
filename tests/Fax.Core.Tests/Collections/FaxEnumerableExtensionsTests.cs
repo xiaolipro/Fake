@@ -6,11 +6,11 @@ using Xunit.Abstractions;
 
 namespace Fax.Core.Tests.Collections;
 
-public class EnumerableExtensionsTests
+public class FaxEnumerableExtensionsTests
 {
     private readonly ITestOutputHelper _testOutputHelper;
 
-    public EnumerableExtensionsTests(ITestOutputHelper testOutputHelper)
+    public FaxEnumerableExtensionsTests(ITestOutputHelper testOutputHelper)
     {
         _testOutputHelper = testOutputHelper;
     }
@@ -18,10 +18,19 @@ public class EnumerableExtensionsTests
     [Fact]
     void WithIndex()
     {
+        int cnt = 0;
         foreach (var (item, index) in Enumerable.Range(1, 10).WithIndex())
         {
+            index.ShouldBe(cnt);
+            cnt++;
             _testOutputHelper.WriteLine(index + "：" + item);
         }
+    }
+
+    [Fact]
+    void JoinAsString()
+    {
+        Enumerable.Range(1, 3).JoinAsString(",").ShouldBe("1,2,3");
     }
 
     [Fact]
@@ -40,7 +49,7 @@ public class EnumerableExtensionsTests
 
         for (int i = 0; i < 3; i++)
         {
-            var list = RandomHelper.Shuffle(new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G' });
+            var list = RandomHelper.Shuffle(new[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G' });
 
             list = list.SortByDependencies(c => dependencies[c]);
 
@@ -68,7 +77,7 @@ public class EnumerableExtensionsTests
             { 'F', new[] { 'C' } },
             { 'G', new[] { 'F' } }
         };
-        var list = RandomHelper.Shuffle(new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G' });
+        var list = RandomHelper.Shuffle(new[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G' });
 
         var res = Should.Throw<ArgumentException>(() => { list = list.SortByDependencies(c => dependencies[c]); });
 

@@ -1,6 +1,6 @@
 ﻿namespace Fax.Core.Collections;
 
-public static class EnumerableExtensions
+public static class FaxEnumerableExtensions
 {
     /// <summary>
     /// 提供索引
@@ -15,6 +15,11 @@ public static class EnumerableExtensions
         {
             yield return (item, index: counter++);
         }
+    }
+
+    public static string JoinAsString<T>(this IEnumerable<T> source, string separator)
+    {
+        return string.Join(separator, source);
     }
 
     /// <summary>
