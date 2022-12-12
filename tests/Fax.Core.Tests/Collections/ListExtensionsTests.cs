@@ -1,6 +1,7 @@
 ﻿using Fax.Core.Collections;
 using Fax.Core.Helpers;
 using Shouldly;
+using Xunit;
 
 namespace Fax.Core.Tests.Collections;
 

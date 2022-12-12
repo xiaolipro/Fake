@@ -4,11 +4,17 @@
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <!--        <RootNamespace />-->
+        <OutputType>Exe</OutputType>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\Fax.Core\Fax.Core.csproj" />
-      <ProjectReference Include="..\Fax.TestCore\Fax.TestCore.csproj" />
+        <ProjectReference Include="..\..\src\Fax.Core\Fax.Core.csproj" />
+        <ProjectReference Include="..\Fax.TestCore\Fax.TestCore.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.0" />
     </ItemGroup>
 
 </Project>
