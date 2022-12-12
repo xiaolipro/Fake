@@ -6,17 +6,26 @@ using Xunit.Abstractions;
 
 namespace Fax.Core.Tests.Collections;
 
-public class ListExtensionsTests
+public class EnumerableExtensionsTests
 {
     private readonly ITestOutputHelper _testOutputHelper;
 
-    public ListExtensionsTests(ITestOutputHelper testOutputHelper)
+    public EnumerableExtensionsTests(ITestOutputHelper testOutputHelper)
     {
         _testOutputHelper = testOutputHelper;
     }
 
     [Fact]
-    public void 无环依赖可以正常解析()
+    void WithIndex()
+    {
+        foreach (var (item, index) in Enumerable.Range(1, 10).WithIndex())
+        {
+            _testOutputHelper.WriteLine(index + "：" + item);
+        }
+    }
+
+    [Fact]
+    public void SortByDependencies()
     {
         var dependencies = new Dictionary<char, char[]>
         {
@@ -46,9 +55,8 @@ public class ListExtensionsTests
         }
     }
 
-
     [Fact]
-    public void 有环依赖会抛出异常()
+    public void SortByDependencies有环会抛出异常()
     {
         var dependencies = new Dictionary<char, char[]>
         {

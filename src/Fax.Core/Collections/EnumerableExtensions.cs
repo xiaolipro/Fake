@@ -1,7 +1,22 @@
 ﻿namespace Fax.Core.Collections;
 
-public static class ListExtensions
+public static class EnumerableExtensions
 {
+    /// <summary>
+    /// 提供索引
+    /// </summary>
+    /// <param name="source"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public static IEnumerable<(T item, int index)> WithIndex<T>(this IEnumerable<T> source)
+    {
+        int counter = 0;
+        foreach (var item in source)
+        {
+            yield return (item, index: counter++);
+        }
+    }
+
     /// <summary>
     /// 根据元素间的依赖关系进行拓扑排序
     /// </summary>
@@ -48,10 +63,11 @@ public static class ListExtensions
             {
                 throw new ArgumentException("Cyclic dependency found! Item: " + item);
             }
+
             // 剪枝
             return;
         }
-        
+
         // 标记访问
         visited[item] = true;
 
@@ -64,7 +80,7 @@ public static class ListExtensions
                 SortByDependenciesVisit(dependency, getDependencies, sorted, visited);
             }
         }
-        
+
         // 恢复现场
         visited[item] = false;
         // 此时item的出度为0

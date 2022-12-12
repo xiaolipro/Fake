@@ -2,7 +2,7 @@
 using Fax.Core.Collections;
 using Fax.Core.Helpers;
 
-namespace Fax.Core.Benchmarks.Collections.ListExtensions;
+namespace Fax.Core.Benchmarks.Collections;
 
 [MemoryDiagnoser]
 public class SortByDependenciesBenchmark
