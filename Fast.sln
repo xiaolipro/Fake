@@ -2,17 +2,17 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{AC56DAD8-C5AB-4E41-A280-1BCC08A2BE60}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fax.Core", "src\Fax.Core\Fax.Core.csproj", "{50A2B676-5383-4A7A-A6F4-852D7D5C5342}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fast.Core", "src\Fast.Core\Fast.Core.csproj", "{50A2B676-5383-4A7A-A6F4-852D7D5C5342}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "benchmarks", "benchmarks", "{F2F8BC8B-5122-4D63-9D90-2FDF5C6E7F7A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fax.Core.Benchmarks", "benchmarks\Fax.Core.Benchmarks\Fax.Core.Benchmarks.csproj", "{D71E1E01-64CE-490E-B5B6-0BA432B805C7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fast.Core.Benchmarks", "benchmarks\Fast.Core.Benchmarks\Fast.Core.Benchmarks.csproj", "{D71E1E01-64CE-490E-B5B6-0BA432B805C7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{310D0E30-AC20-44C8-B0A2-155C880ED934}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fax.Core.Tests", "tests\Fax.Core.Tests\Fax.Core.Tests.csproj", "{930E63CA-E2F0-4465-9732-0B58499E6D2F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fast.Core.Tests", "tests\Fast.Core.Tests\Fast.Core.Tests.csproj", "{930E63CA-E2F0-4465-9732-0B58499E6D2F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fax.TestCore", "tests\Fax.TestCore\Fax.TestCore.csproj", "{A93D4EAE-90BE-4C9B-9970-5C1C8E1B994D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fast.TestCore", "tests\Fast.TestCore\Fast.TestCore.csproj", "{A93D4EAE-90BE-4C9B-9970-5C1C8E1B994D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
