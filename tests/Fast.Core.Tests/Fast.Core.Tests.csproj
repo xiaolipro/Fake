@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <!--        <RootNamespace />-->
+        <OutputType>Exe</OutputType>
+        <RootNamespace>Fast.Core.Tests</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\Fast.Core\Fast.Core.csproj" />
+        <ProjectReference Include="..\Fast.TestCore\Fast.TestCore.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.0" />
+    </ItemGroup>
+
+</Project>
