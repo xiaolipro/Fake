@@ -1,13 +1,12 @@
 ﻿using BenchmarkDotNet.Attributes;
-using Fast.Core.Collections;
 using Fast.Core.Helpers;
 
-namespace Fast.Core.Benchmarks.Collections;
+namespace Fast.Core.Benchmarks.Extensions.FastEnumerableExtensionsBenchmarks;
 
 [MemoryDiagnoser]
-public class SortByDependenciesBenchmark
+public class 循环引用剪枝实验
 {
-    private readonly Dictionary<char, char[]> _dependencies = new Dictionary<char, char[]>
+    private readonly Dictionary<char, char[]> _dependencies = new()
     {
         {'A', new[] {'B', 'G'}},
         {'B', new[] {'C', 'E'}},
@@ -21,9 +20,9 @@ public class SortByDependenciesBenchmark
     [Benchmark]
     public void A不剪枝()
     {
-        var list = RandomHelper.Shuffle(new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G' });
+        var list = RandomHelper.Shuffle(new[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G' });
 
-        list = list.SortByDependencies(c => _dependencies[c]);
+        list = SortByDependencies(list, c => _dependencies[c]);
 
         foreach (var dependency in _dependencies)
         {
@@ -37,7 +36,7 @@ public class SortByDependenciesBenchmark
     [Benchmark]
     public void B剪枝()
     {
-        var list = RandomHelper.Shuffle(new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G' });
+        var list = RandomHelper.Shuffle(new[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G' });
 
         list = SortByDependencies2(list, c => _dependencies[c]);
 
@@ -54,7 +53,7 @@ public class SortByDependenciesBenchmark
     public static List<T> SortByDependencies<T>(
         IEnumerable<T> source,
         Func<T, IEnumerable<T>> getDependencies,
-        IEqualityComparer<T> comparer = null)
+        IEqualityComparer<T>? comparer = null)
     {
         /* See: http://www.codeproject.com/Articles/869059/Topological-sorting-in-Csharp
          *      http://en.wikipedia.org/wiki/Topological_sorting
@@ -83,8 +82,6 @@ public class SortByDependenciesBenchmark
         {
             throw new ArgumentException("Cyclic dependency found! Item: " + item);
         }
-        
-        visited[item] = true;
 
         // 递归处理以item为起点，连通的其它点
         var dependencies = getDependencies(item);

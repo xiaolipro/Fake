@@ -17,6 +17,13 @@ public static class FastEnumerableExtensions
         }
     }
 
+    /// <summary>
+    /// 将集合用separator拼接，等同string.Join
+    /// </summary>
+    /// <param name="source"></param>
+    /// <param name="separator"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns>返回拼接后的字符串</returns>
     public static string JoinAsString<T>(this IEnumerable<T> source, string separator)
     {
         return string.Join(separator, source);

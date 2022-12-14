@@ -4,7 +4,7 @@ using Shouldly;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Fast.Core.Tests.Collections;
+namespace Fast.Core.Tests.Extensions;
 
 public class FastEnumerableExtensionsTests
 {

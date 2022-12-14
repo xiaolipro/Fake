@@ -1,6 +1,6 @@
 ﻿using System.Dynamic;
 
-namespace Fast.Core.Tests.Collections;
+namespace Fast.Core.Tests.Extensions;
 
 public static class FastDictionaryExtensions
 {
