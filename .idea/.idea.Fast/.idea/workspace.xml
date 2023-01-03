@@ -8,42 +8,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c7e7f8ab-c561-4d5c-8c86-c46017f4c1f8" name="Changes" comment="1">
-      <change afterPath="$PROJECT_DIR$/src/Bang.Auditing/Class1.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Fast/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Fast/.idea/.name" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Fast/.idea/aws.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Fast/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Fast/.idea/indexLayout.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Fast/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Fast/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Fast.sln" beforeDir="false" afterPath="$PROJECT_DIR$/Bang.sln" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benchmarks/Fast.Core.Benchmarks/Extensions/FastEnumerableExtensionsBenchmarks/循环引用剪枝实验.cs" beforeDir="false" afterPath="$PROJECT_DIR$/benchmarks/Bang.Core.Benchmarks/Extensions/FastEnumerableExtensionsBenchmarks/循环引用剪枝实验.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benchmarks/Fast.Core.Benchmarks/Fast.Core.Benchmarks.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/benchmarks/Bang.Core.Benchmarks/Bang.Core.Benchmarks.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benchmarks/Fast.Core.Benchmarks/Helpers/RandomHelperBenchmarks/GUID种子对比默认种子.cs" beforeDir="false" afterPath="$PROJECT_DIR$/benchmarks/Bang.Core.Benchmarks/Helpers/RandomHelperBenchmarks/GUID种子对比默认种子.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benchmarks/Fast.Core.Benchmarks/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/benchmarks/Bang.Core.Benchmarks/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Fast.Auditing/Class1.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Fast.Auditing/Fast.Auditing.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/Bang.Auditing/Bang.Auditing.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Fast.Auditing/FodyWeavers.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/Bang.Auditing/FodyWeavers.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Fast.Auditing/FodyWeavers.xsd" beforeDir="false" afterPath="$PROJECT_DIR$/src/Bang.Auditing/FodyWeavers.xsd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Fast.Core/DependencyInjection/DependencyAttribute.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Bang.Core/DependencyInjection/DependencyAttribute.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Fast.Core/DependencyInjection/ExposePolicy.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Bang.Core/DependencyInjection/ExposePolicy.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Fast.Core/DependencyInjection/ExposeServicesAttribute.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Bang.Core/DependencyInjection/ExposeServicesAttribute.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Fast.Core/DependencyInjection/IScopedLifecycle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Bang.Core/DependencyInjection/IScopedLifecycle.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Fast.Core/DependencyInjection/ISingletonLifecycle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Bang.Core/DependencyInjection/ISingletonLifecycle.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Fast.Core/DependencyInjection/ITransientLifecycle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Bang.Core/DependencyInjection/ITransientLifecycle.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Fast.Core/DependencyInjection/ServiceLifecycle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Bang.Core/DependencyInjection/ServiceLifecycle.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Fast.Core/Extensions/FastEnumerableExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Bang.Core/Extensions/FastEnumerableExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Fast.Core/Extensions/FastStreamExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Bang.Core/Extensions/FastStreamExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Fast.Core/Fast.Core.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/Bang.Core/Bang.Core.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Fast.Core/Helpers/RandomHelper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Bang.Core/Helpers/RandomHelper.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Fast.Core/Modularity/IStartupModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Bang.Core/Modularity/IStartupModule.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Fast.Core/Using.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Bang.Core/Using.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/Fast.Core.Tests/Extensions/FastDictionaryExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/tests/Bang.Core.Tests/Extensions/FastDictionaryExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/Fast.Core.Tests/Extensions/FastEnumerableExtensionsTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/tests/Bang.Core.Tests/Extensions/FastEnumerableExtensionsTests.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/Fast.Core.Tests/Fast.Core.Tests.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/tests/Bang.Core.Tests/Bang.Core.Tests.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/Fast.Core.Tests/Helpers/RandomHelperTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/tests/Bang.Core.Tests/Helpers/RandomHelperTests.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/Fast.TestCore/Fast.TestCore.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/tests/BangTest.Entry/BangTest.Entry.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/Fast.TestCore/Usings.cs" beforeDir="false" afterPath="$PROJECT_DIR$/tests/BangTest.Entry/Usings.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Fast/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Fast/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -182,7 +147,7 @@
       <workItem from="1670898359434" duration="6680000" />
       <workItem from="1671066645261" duration="6368000" />
       <workItem from="1671759645204" duration="2616000" />
-      <workItem from="1672381332760" duration="9613000" />
+      <workItem from="1672381332760" duration="11242000" />
     </task>
     <task id="LOCAL-00001" summary="t">
       <created>1670808676026</created>
@@ -268,7 +233,28 @@
       <option name="project" value="LOCAL" />
       <updated>1672718441993</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="rename">
+      <created>1672727462023</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1672727462023</updated>
+    </task>
+    <task id="LOCAL-00014" summary="1">
+      <created>1672727475922</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1672727475922</updated>
+    </task>
+    <task id="LOCAL-00015" summary="1">
+      <created>1672727649533</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1672727649533</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -291,10 +277,10 @@
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
     <MESSAGE value="t" />
     <MESSAGE value="test" />
-    <MESSAGE value="rename" />
     <MESSAGE value="20221214" />
     <MESSAGE value="kk" />
     <MESSAGE value="k" />
+    <MESSAGE value="rename" />
     <MESSAGE value="1" />
     <option name="LAST_COMMIT_MESSAGE" value="1" />
   </component>
