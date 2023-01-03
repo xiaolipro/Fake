@@ -14,6 +14,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fast.Core.Tests", "tests\Fa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fast.TestCore", "tests\Fast.TestCore\Fast.TestCore.csproj", "{A93D4EAE-90BE-4C9B-9970-5C1C8E1B994D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fast.Auditing", "src\Fast.Auditing\Fast.Auditing.csproj", "{B37055D3-4031-4FF1-9668-926D0431BCCE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "solution items", "solution items", "{39FED9F7-23E6-43A4-B478-B914A2E805D0}"
+	ProjectSection(SolutionItems) = preProject
+		common.props = common.props
+		configureawait.props = configureawait.props
+		NuGet.Config = NuGet.Config
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,11 +45,16 @@ Global
 		{A93D4EAE-90BE-4C9B-9970-5C1C8E1B994D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A93D4EAE-90BE-4C9B-9970-5C1C8E1B994D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A93D4EAE-90BE-4C9B-9970-5C1C8E1B994D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B37055D3-4031-4FF1-9668-926D0431BCCE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B37055D3-4031-4FF1-9668-926D0431BCCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B37055D3-4031-4FF1-9668-926D0431BCCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B37055D3-4031-4FF1-9668-926D0431BCCE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{50A2B676-5383-4A7A-A6F4-852D7D5C5342} = {AC56DAD8-C5AB-4E41-A280-1BCC08A2BE60}
 		{D71E1E01-64CE-490E-B5B6-0BA432B805C7} = {F2F8BC8B-5122-4D63-9D90-2FDF5C6E7F7A}
 		{930E63CA-E2F0-4465-9732-0B58499E6D2F} = {310D0E30-AC20-44C8-B0A2-155C880ED934}
 		{A93D4EAE-90BE-4C9B-9970-5C1C8E1B994D} = {310D0E30-AC20-44C8-B0A2-155C880ED934}
+		{B37055D3-4031-4FF1-9668-926D0431BCCE} = {AC56DAD8-C5AB-4E41-A280-1BCC08A2BE60}
 	EndGlobalSection
 EndGlobal

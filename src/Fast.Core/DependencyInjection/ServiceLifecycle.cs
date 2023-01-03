@@ -7,7 +7,7 @@ public enum ServiceLifecycle
     /// </summary>
     Transient,
     /// <summary>
-    /// 局域
+    /// 单次请求单例
     /// </summary>
     Scoped,
     /// <summary>
