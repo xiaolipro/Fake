@@ -3,11 +3,9 @@
     <LangVersion>latest</LangVersion>
     <Version>7.0.0</Version>
     <NoWarn>$(NoWarn);CS1591;CS0436</NoWarn>
-    <PackageIconUrl>https://abp.io/assets/abp_nupkg.png</PackageIconUrl>
-    <PackageProjectUrl>https://abp.io/</PackageProjectUrl>
     <PackageLicenseExpression>LGPL-3.0-only</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/abpframework/abp/</RepositoryUrl>
+    <RepositoryUrl>https://gitee.com/xiaolipro/bang/</RepositoryUrl>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <!-- Include symbol files (*.pdb) in the built .nupkg -->
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
