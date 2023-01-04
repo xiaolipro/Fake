@@ -1,4 +1,4 @@
-﻿using Bang.Core.Collections;
+﻿using Bang.Core.Extensions;
 using Bang.Core.Helpers;
 using Shouldly;
 using Xunit;

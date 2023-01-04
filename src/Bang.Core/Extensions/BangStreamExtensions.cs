@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Bang.Core.Extensions;
 
-public static class FastStreamExtensions
+public static class BangStreamExtensions
 {
     /// <summary>
     /// 将 Stream 转成 byte[]

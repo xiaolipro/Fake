@@ -1,6 +1,6 @@
-﻿namespace Bang.Core.Collections;
+﻿namespace System.Collections.Generic;
 
-public static class FastEnumerableExtensions
+public static class BangEnumerableExtensions
 {
     /// <summary>
     /// 提供索引
