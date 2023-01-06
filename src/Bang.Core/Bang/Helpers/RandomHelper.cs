@@ -1,4 +1,4 @@
-﻿namespace Bang.Core.Helpers;
+﻿namespace Bang.Helpers;
 
 /// <summary>
 /// 随机辅助类，该类提供的所有方法结果均是随机产生

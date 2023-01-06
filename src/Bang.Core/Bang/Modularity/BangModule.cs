@@ -7,27 +7,27 @@ public abstract class BangModule:IBangModule
     public virtual bool IsBangFrameworkModule => false;
     public virtual bool SkipAutoServiceRegistration => false;
     
-    public virtual void PreConfigServices(ServiceConfigurationContext context)
+    public virtual void PreConfigureServices(ServiceConfigurationContext context)
     {
     }
 
-    public virtual void ConfigServices(ServiceConfigurationContext context)
+    public virtual void ConfigureServices(ServiceConfigurationContext context)
     {
     }
 
-    public virtual void PostConfigServices(ServiceConfigurationContext context)
+    public virtual void PostConfigureServices(ServiceConfigurationContext context)
     {
     }
 
-    public virtual void PreConfigure(ApplicationInitializationContext context)
+    public virtual void PreConfigure(ApplicationConfigureContext context)
     {
     }
 
-    public virtual void Configure(ApplicationInitializationContext context)
+    public virtual void Configure(ApplicationConfigureContext context)
     {
     }
 
-    public virtual void PostConfigure(ApplicationInitializationContext context)
+    public virtual void PostConfigure(ApplicationConfigureContext context)
     {
     }
     

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using BenchmarkDotNet.Attributes;
-using Bang.Core.Helpers;
+using Bang.Helpers;
 
 namespace Bang.Core.Benchmarks.Extensions.FastEnumerableExtensionsBenchmarks;
 

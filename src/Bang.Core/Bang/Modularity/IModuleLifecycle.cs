@@ -1,25 +1,25 @@
 ﻿namespace Bang.Modularity;
 
-public interface IModuleLifecycle : IConfigureServicesLifecycle, IInitializationLifecycle, IShutdownLifecycle
+public interface IModuleLifecycle : IConfigureServicesLifecycle, IConfigureLifecycle, IShutdownLifecycle
 {
 }
 
 public interface IConfigureServicesLifecycle
 {
-    void PreConfigServices(ServiceConfigurationContext context);
+    void PreConfigureServices(ServiceConfigurationContext context);
 
-    void ConfigServices(ServiceConfigurationContext context);
+    void ConfigureServices(ServiceConfigurationContext context);
 
-    void PostConfigServices(ServiceConfigurationContext context);
+    void PostConfigureServices(ServiceConfigurationContext context);
 }
 
-public interface IInitializationLifecycle
+public interface IConfigureLifecycle
 {
-    void PreConfigure(ApplicationInitializationContext context);
+    void PreConfigure(ApplicationConfigureContext context);
 
-    void Configure(ApplicationInitializationContext context);
+    void Configure(ApplicationConfigureContext context);
 
-    void PostConfigure(ApplicationInitializationContext context);
+    void PostConfigure(ApplicationConfigureContext context);
 }
 
 public interface IShutdownLifecycle
