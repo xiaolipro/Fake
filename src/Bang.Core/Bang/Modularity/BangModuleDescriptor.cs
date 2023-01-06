@@ -3,28 +3,28 @@ using System.Reflection;
 
 namespace Bang.Modularity;
 
-public class BangModuleDescriptor:IBangModuleDescriptor
+public class BangModuleDescriptor:IModuleDescriptor
 {
     public Type Type { get; }
     public Assembly Assembly { get; }
     public IBangModule Instance { get; }
     
-    private readonly List<IBangModuleDescriptor> _dependencies;
-    public IReadOnlyList<IBangModuleDescriptor> Dependencies => _dependencies.ToImmutableList();
+    private readonly List<IModuleDescriptor> _dependencies;
+    public IReadOnlyList<IModuleDescriptor> Dependencies => _dependencies.ToImmutableList();
 
     public BangModuleDescriptor([NotNull]Type type, [NotNull]IBangModule instance)
     {
-        Check.NotNull(type, nameof(type));
-        Check.NotNull(instance, nameof(instance));
+        ThrowHelper.NotNull(type, nameof(type));
+        ThrowHelper.NotNull(instance, nameof(instance));
         
         Type = type;
         Assembly = type.Assembly;
         Instance = instance;
 
-        _dependencies = new List<IBangModuleDescriptor>();
+        _dependencies = new List<IModuleDescriptor>();
     }
     
-    public void AddDependency(IBangModuleDescriptor descriptor)
+    public void AddDependency(IModuleDescriptor descriptor)
     {
         _dependencies.TryAdd(descriptor);
     }

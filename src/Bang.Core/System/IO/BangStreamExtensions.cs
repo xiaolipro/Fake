@@ -1,7 +1,4 @@
-﻿using System.IO;
-using System.Threading.Tasks;
-
-namespace Bang.Core.Extensions;
+﻿namespace System.IO;
 
 public static class BangStreamExtensions
 {

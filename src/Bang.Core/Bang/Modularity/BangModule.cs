@@ -5,7 +5,7 @@ namespace Bang.Modularity;
 public abstract class BangModule:IBangModule
 {
     public virtual bool IsBangFrameworkModule => false;
-    public virtual bool SkipAutoRegistrationService => false;
+    public virtual bool SkipAutoServiceRegistration => false;
     
     public virtual void PreConfigServices(ServiceConfigurationContext context)
     {
@@ -19,28 +19,32 @@ public abstract class BangModule:IBangModule
     {
     }
 
-    public virtual void PreInitialization(ApplicationInitializationContext context)
+    public virtual void PreConfigure(ApplicationInitializationContext context)
     {
     }
 
-    public virtual void Initialization(ApplicationInitializationContext context)
+    public virtual void Configure(ApplicationInitializationContext context)
     {
     }
 
-    public virtual void PostInitialization(ApplicationInitializationContext context)
+    public virtual void PostConfigure(ApplicationInitializationContext context)
     {
     }
-
-    public virtual void PreShutDown(ApplicationInitializationContext context)
+    
+    public virtual void PreShutDown(ApplicationShutdownContext context)
     {
     }
 
     public virtual void Shutdown(ApplicationShutdownContext context)
     {
     }
-    
-    
-    public static bool IsAbpModule(Type type)
+
+    public virtual void PostShutdown(ApplicationShutdownContext context)
+    {
+    }
+
+
+    public static bool IsBangModule(Type type)
     {
         var typeInfo = type.GetTypeInfo();
 

@@ -1,6 +1,4 @@
-using Extensions;
-
-namespace Bang.Core.Logging;
+namespace Bang.Logging;
 
 public class DefaultBangLoggerFactory:IBangLoggerFactory
 {

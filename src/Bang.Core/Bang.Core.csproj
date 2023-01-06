@@ -15,8 +15,4 @@
         <PackageReference Include="Microsoft.Extensions.Logging" Version="$(MicrosoftPackageVersion)" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Modularity" />
-    </ItemGroup>
-
 </Project>

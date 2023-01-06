@@ -1,4 +1,6 @@
-﻿namespace System.Collections.Generic;
+﻿using Bang;
+
+namespace System.Collections.Generic;
 
 public static class BangCollectionExtensions
 {
@@ -11,7 +13,7 @@ public static class BangCollectionExtensions
     /// <returns>Returns True if added, returns False if not.</returns>
     public static bool TryAdd<T>([NotNull] this ICollection<T> source, T item)
     {
-        Check.NotNull(source, nameof(source));
+        ThrowHelper.NotNull(source, nameof(source));
 
         if (source.Contains(item))
         {

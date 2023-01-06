@@ -1,4 +1,4 @@
-﻿namespace Bang.Core.Logging;
+﻿namespace Bang.Logging;
 
 public interface IBangLoggerFactory
 {

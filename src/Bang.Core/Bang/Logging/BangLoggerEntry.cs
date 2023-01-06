@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
 
-namespace Bang.Core.Logging;
+namespace Bang.Logging;
 
 public class BangLoggerEntry
 {

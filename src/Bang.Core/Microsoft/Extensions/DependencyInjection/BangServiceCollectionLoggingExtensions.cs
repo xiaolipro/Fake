@@ -1,4 +1,4 @@
-﻿using Bang.Core.Logging;
+﻿using Bang.Logging;
 using Microsoft.Extensions.Logging;
 
 namespace Microsoft.Extensions.DependencyInjection;

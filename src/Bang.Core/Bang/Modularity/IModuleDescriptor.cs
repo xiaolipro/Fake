@@ -2,7 +2,7 @@
 
 namespace Bang.Modularity;
 
-public interface IBangModuleDescriptor
+public interface IModuleDescriptor
 {
     Type Type { get; }
 
@@ -13,11 +13,11 @@ public interface IBangModuleDescriptor
     /// <summary>
     /// 依赖
     /// </summary>
-    IReadOnlyList<IBangModuleDescriptor> Dependencies { get; }
+    IReadOnlyList<IModuleDescriptor> Dependencies { get; }
 
     /// <summary>
     /// 添加依赖
     /// </summary>
     /// <param name="descriptor"></param>
-    public void AddDependency(IBangModuleDescriptor descriptor);
+    public void AddDependency(IModuleDescriptor descriptor);
 }

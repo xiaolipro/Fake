@@ -8,7 +8,7 @@ public class ApplicationInitializationContext : IServiceProviderAccessor
 
     public ApplicationInitializationContext([NotNull] IServiceProvider serviceProvider)
     {
-        Check.NotNull(serviceProvider, nameof(serviceProvider));
+        ThrowHelper.NotNull(serviceProvider, nameof(serviceProvider));
         ServiceProvider = serviceProvider;
     }
 }

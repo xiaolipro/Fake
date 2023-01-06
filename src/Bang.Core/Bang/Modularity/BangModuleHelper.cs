@@ -7,7 +7,7 @@ internal static class BangModuleHelper
 {
     private static void CheckBangModuleType(Type moduleType)
     {
-        if (!BangModule.IsAbpModule(moduleType))
+        if (!BangModule.IsBangModule(moduleType))
         {
             throw new ArgumentException("给定的类型不是Bang模块: " + moduleType.AssemblyQualifiedName);
         }

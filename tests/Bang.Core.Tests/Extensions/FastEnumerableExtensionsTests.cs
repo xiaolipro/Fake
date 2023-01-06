@@ -1,5 +1,4 @@
-﻿using Bang.Core.Extensions;
-using Bang.Core.Helpers;
+﻿using Bang.Core.Helpers;
 using Shouldly;
 using Xunit;
 using Xunit.Abstractions;
