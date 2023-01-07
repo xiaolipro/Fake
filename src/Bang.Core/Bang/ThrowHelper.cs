@@ -6,7 +6,7 @@ namespace Bang;
 public static class ThrowHelper
 {
     [ContractAnnotation("value:null => halt")]
-    public static T NotNull<T>(
+    public static T ThrowIfNull<T>(
         T value,
         [InvokerParameterName] [CanBeNull] string parameterName = null)
     {

@@ -23,7 +23,7 @@ public class ServiceConfigurationContext
 
     public ServiceConfigurationContext([NotNull] IServiceCollection services)
     {
-        Services = ThrowHelper.NotNull(services, nameof(services));
+        Services = ThrowHelper.ThrowIfNull(services, nameof(services));
         Items = new Dictionary<string, object>();
     }
 }

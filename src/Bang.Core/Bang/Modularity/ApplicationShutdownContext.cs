@@ -8,7 +8,7 @@ public class ApplicationShutdownContext: IServiceProviderAccessor
 
     public ApplicationShutdownContext([NotNull] IServiceProvider serviceProvider)
     {
-        ThrowHelper.NotNull(serviceProvider, nameof(serviceProvider));
+        ThrowHelper.ThrowIfNull(serviceProvider, nameof(serviceProvider));
         ServiceProvider = serviceProvider;
     }
 }

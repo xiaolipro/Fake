@@ -6,7 +6,7 @@ public class DisposableWrapper:IDisposable
 
     public DisposableWrapper([NotNull] Action action)
     {
-        ThrowHelper.NotNull(action, nameof(action));
+        ThrowHelper.ThrowIfNull(action, nameof(action));
 
         _action = action;
     }

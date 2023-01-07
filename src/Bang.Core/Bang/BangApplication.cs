@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Bang.DependencyInjection;
 using Bang.Extensions;
 using Bang.Logging;
 using Bang.Modularity;
@@ -6,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Bang;
 
-public abstract class BangApplication : IBangApplicationInfo
+public class BangApplication : IBangApplicationInfo
 {
     public IReadOnlyList<IModuleDescriptor> Modules { get; }
     public string ApplicationName { get; }
@@ -18,18 +19,24 @@ public abstract class BangApplication : IBangApplicationInfo
 
     private bool _configuredServices;
 
+
+    internal BangApplication(Type startupModuleType, Action<BangApplicationCreationOptions> optionsAction) 
+        : this(startupModuleType, new ServiceCollection(), optionsAction)
+    {
+    }
+
     internal BangApplication(
         [NotNull] Type startupModuleType,
         [NotNull] IServiceCollection services,
         [CanBeNull] Action<BangApplicationCreationOptions> optionsAction)
     {
-        ThrowHelper.NotNull(startupModuleType, nameof(startupModuleType));
-        ThrowHelper.NotNull(services, nameof(services));
+        ThrowHelper.ThrowIfNull(startupModuleType, nameof(startupModuleType));
+        ThrowHelper.ThrowIfNull(services, nameof(services));
 
         StartupModuleType = startupModuleType;
         Services = services;
 
-        services.TryAddObjectAccessor<IServiceProvider>();
+        services.GetOrAddObjectAccessor<IServiceProvider>();
 
         var options = new BangApplicationCreationOptions(services);
         optionsAction?.Invoke(options);
@@ -47,7 +54,8 @@ public abstract class BangApplication : IBangApplicationInfo
 
         ConfigureServices();
     }
-    
+
+
     public void ConfigureServices()
     {
         if (_configuredServices)
@@ -104,7 +112,13 @@ public abstract class BangApplication : IBangApplicationInfo
 
         _configuredServices = true;
     }
-    
+
+    protected virtual void SetServiceProvider(IServiceProvider serviceProvider)
+    {
+        ServiceProvider = serviceProvider;
+        ServiceProvider.GetRequiredService<ObjectAccessor<IServiceProvider>>().Value = ServiceProvider;
+    }
+
     public virtual void Shutdown()
     {
         // Shutdown
@@ -127,21 +141,21 @@ public abstract class BangApplication : IBangApplicationInfo
     public virtual void Dispose()
     {
     }
-    
-    protected virtual void Configure()
+
+    public virtual void Configure()
     {
         // log
         var logger = ServiceProvider.GetService<ILogger<BangApplication>>();
-        
+
         var initLogger = ServiceProvider.GetRequiredService<IBangLoggerFactory>().Create<BangApplication>();
-        
+
         foreach (var entry in initLogger.Entries)
         {
             logger.Log(entry.LogLevel, entry.EventId, entry.State, entry.Exception, entry.Formatter);
         }
 
         initLogger.Entries.Clear();
-        
+
         var context = new ApplicationConfigureContext(ServiceProvider);
 
         // PreConfigure
@@ -158,7 +172,7 @@ public abstract class BangApplication : IBangApplicationInfo
                     ex);
             }
         }
-        
+
         // Configure
         foreach (var module in Modules)
         {
@@ -173,7 +187,7 @@ public abstract class BangApplication : IBangApplicationInfo
                     ex);
             }
         }
-        
+
         // PostConfigure
         foreach (var module in Modules)
         {
@@ -189,12 +203,12 @@ public abstract class BangApplication : IBangApplicationInfo
             }
         }
     }
-    
+
     private IReadOnlyList<IModuleDescriptor> LoadModules(IServiceCollection services)
     {
         return services.GetSingletonInstance<IModuleLoader>().LoadModules(services, StartupModuleType);
     }
-    
+
     private static string GetApplicationName(BangApplicationCreationOptions options)
     {
         if (!string.IsNullOrWhiteSpace(options.ApplicationName))

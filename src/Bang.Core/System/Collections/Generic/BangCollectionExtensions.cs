@@ -13,7 +13,7 @@ public static class BangCollectionExtensions
     /// <returns>Returns True if added, returns False if not.</returns>
     public static bool TryAdd<T>([NotNull] this ICollection<T> source, T item)
     {
-        ThrowHelper.NotNull(source, nameof(source));
+        ThrowHelper.ThrowIfNull(source, nameof(source));
 
         if (source.Contains(item))
         {

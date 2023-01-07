@@ -1,13 +1,8 @@
 ﻿namespace Bang.DependencyInjection;
 
-public interface IObjectAccessor<out T>
+public class ObjectAccessor<T>
 {
     [CanBeNull]
-    T Value { get; }
-}
-
-public class ObjectAccessor<T> : IObjectAccessor<T>
-{
     public T Value { get; set; }
 
     public ObjectAccessor()

@@ -4,8 +4,8 @@ public class BangModuleLoader : IModuleLoader
 {
     public IModuleDescriptor[] LoadModules(IServiceCollection services, Type startupModuleType)
     {
-        ThrowHelper.NotNull(services, nameof(services));
-        ThrowHelper.NotNull(startupModuleType, nameof(startupModuleType));
+        ThrowHelper.ThrowIfNull(services, nameof(services));
+        ThrowHelper.ThrowIfNull(startupModuleType, nameof(startupModuleType));
         
         var descriptors = GetModuleDescriptors(services, startupModuleType);
 

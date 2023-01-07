@@ -14,8 +14,8 @@ public class BangModuleDescriptor:IModuleDescriptor
 
     public BangModuleDescriptor([NotNull]Type type, [NotNull]IBangModule instance)
     {
-        ThrowHelper.NotNull(type, nameof(type));
-        ThrowHelper.NotNull(instance, nameof(instance));
+        ThrowHelper.ThrowIfNull(type, nameof(type));
+        ThrowHelper.ThrowIfNull(instance, nameof(instance));
         
         Type = type;
         Assembly = type.Assembly;

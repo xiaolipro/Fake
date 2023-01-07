@@ -19,7 +19,7 @@ public class BangApplicationCreationOptions
 
     public BangApplicationCreationOptions([NotNull] IServiceCollection services)
     {
-        Services = ThrowHelper.NotNull(services, nameof(services));
+        Services = ThrowHelper.ThrowIfNull(services, nameof(services));
         Configuration = new BangConfigurationBuilderOptions();
     }
 }

@@ -8,7 +8,7 @@ public class ApplicationConfigureContext : IServiceProviderAccessor
 
     public ApplicationConfigureContext([NotNull] IServiceProvider serviceProvider)
     {
-        ThrowHelper.NotNull(serviceProvider, nameof(serviceProvider));
+        ThrowHelper.ThrowIfNull(serviceProvider, nameof(serviceProvider));
         ServiceProvider = serviceProvider;
     }
 }
