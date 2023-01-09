@@ -24,7 +24,7 @@ public class BangAssemblyScanner : IAssemblyScanner
     {
         _moduleContainer = moduleContainer;
 
-        _assemblies = new Lazy<IReadOnlyList<Assembly>>(FindAssemblies, LazyThreadSafetyMode.ExecutionAndPublication);
+        _assemblies = new Lazy<IReadOnlyList<Assembly>>(FindAllBangAssemblies, LazyThreadSafetyMode.ExecutionAndPublication);
     }
 
     public IReadOnlyList<Assembly> Scan()
@@ -32,7 +32,7 @@ public class BangAssemblyScanner : IAssemblyScanner
         return _assemblies.Value;
     }
 
-    private IReadOnlyList<Assembly> FindAssemblies()
+    private IReadOnlyList<Assembly> FindAllBangAssemblies()
     {
         var assemblies = new List<Assembly>();
 

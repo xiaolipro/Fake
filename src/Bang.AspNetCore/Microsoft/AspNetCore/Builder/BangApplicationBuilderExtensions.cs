@@ -13,19 +13,14 @@ public static class BangApplicationBuilderExtensions
         ThrowHelper.ThrowIfNull(app, nameof(app));
 
         app.ApplicationServices.GetRequiredService<ObjectAccessor<IApplicationBuilder>>().Value = app;
+        
         var application = app.ApplicationServices.GetRequiredService<BangApplication>();
+        
         var applicationLifetime = app.ApplicationServices.GetRequiredService<IHostApplicationLifetime>();
+        applicationLifetime.ApplicationStopping.Register(() => application.Shutdown());
+        applicationLifetime.ApplicationStopped.Register(() => application.Dispose());
 
-        applicationLifetime.ApplicationStopping.Register(() =>
-        {
-            application.Shutdown();
-        });
-
-        applicationLifetime.ApplicationStopped.Register(() =>
-        {
-            application.Dispose();
-        });
-
-        application.Configure(app.ApplicationServices);
+        application.SetServiceProvider(app.ApplicationServices);
+        application.Configure();
     }
 }

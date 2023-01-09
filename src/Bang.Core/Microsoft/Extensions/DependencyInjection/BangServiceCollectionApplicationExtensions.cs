@@ -1,20 +1,23 @@
-﻿namespace Microsoft.Extensions.DependencyInjection;
+﻿using Bang;
+using Bang.Modularity;
 
-public class BangServiceCollectionApplicationExtensions
+namespace Microsoft.Extensions.DependencyInjection;
+
+public static class BangServiceCollectionApplicationExtensions
 {
-    public static IAbpApplicationWithExternalServiceProvider AddApplication<TStartupModule>(
+    public static BangApplication AddStartupModule<TStartupModule>(
         [NotNull] this IServiceCollection services,
-        [CanBeNull] Action<AbpApplicationCreationOptions> optionsAction = null)
-        where TStartupModule : IAbpModule
+        [CanBeNull] Action<BangApplicationCreationOptions> optionsAction = null)
+        where TStartupModule : IBangModule
     {
-        return AbpApplicationFactory.Create<TStartupModule>(services, optionsAction);
-    }
-
-    public static IAbpApplicationWithExternalServiceProvider AddApplication(
+        return BangApplicationFactory.Create<TStartupModule>(services, optionsAction);
+    } 
+    
+    public static BangApplication AddApplication(
         [NotNull] this IServiceCollection services,
         [NotNull] Type startupModuleType,
-        [CanBeNull] Action<AbpApplicationCreationOptions> optionsAction = null)
+        [CanBeNull] Action<BangApplicationCreationOptions> optionsAction = null)
     {
-        return AbpApplicationFactory.Create(startupModuleType, services, optionsAction);
+        return BangApplicationFactory.Create(startupModuleType, services, optionsAction);
     }
 }

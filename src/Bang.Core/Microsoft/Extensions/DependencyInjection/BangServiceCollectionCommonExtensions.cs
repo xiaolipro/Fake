@@ -2,6 +2,15 @@
 
 public static class BangServiceCollectionCommonExtensions
 {
+    public static bool IsAdded<T>(this ServiceCollection services)
+    {
+        return services.IsAdded(typeof(T));
+    }
+    
+    public static bool IsAdded(this ServiceCollection services, Type type)
+    {
+        return services.Any(x => x.ServiceType == type);
+    }
     public static T GetSingletonInstanceOrNull<T>(this IServiceCollection services)
     {
         return (T)services

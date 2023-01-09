@@ -13,6 +13,7 @@
         <PackageReference Include="System.Collections.Immutable" Version="$(MicrosoftPackageVersion)" />
         <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="$(MicrosoftPackageVersion)" />
         <PackageReference Include="Microsoft.Extensions.Logging" Version="$(MicrosoftPackageVersion)" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="$(MicrosoftPackageVersion)" />
     </ItemGroup>
 
 </Project>

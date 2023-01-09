@@ -15,12 +15,13 @@ public class BangApplication : IBangApplicationInfo
 
     public Type StartupModuleType { get; }
     public IServiceCollection Services { get; }
-    public IServiceProvider ServiceProvider { get; private set; }
+
+    private IServiceProvider _serviceProvider;
+    public IServiceProvider ServiceProvider => _serviceProvider ??= Services.BuildServiceProvider();
 
     private bool _configuredServices;
 
-
-    internal BangApplication(Type startupModuleType, Action<BangApplicationCreationOptions> optionsAction) 
+    internal BangApplication(Type startupModuleType, Action<BangApplicationCreationOptions> optionsAction)
         : this(startupModuleType, new ServiceCollection(), optionsAction)
     {
     }
@@ -43,8 +44,7 @@ public class BangApplication : IBangApplicationInfo
 
         ApplicationName = GetApplicationName(options);
 
-        services.AddSingleton<IBangApplicationInfo>(this);
-        services.AddSingleton<IApplicationInfo>(this);
+        services.AddSingleton(this);
         services.AddSingleton<IModuleContainer>(this);
 
         services.AddLogging();
@@ -113,10 +113,10 @@ public class BangApplication : IBangApplicationInfo
         _configuredServices = true;
     }
 
-    protected virtual void SetServiceProvider(IServiceProvider serviceProvider)
+    public virtual void SetServiceProvider(IServiceProvider serviceProvider)
     {
-        ServiceProvider = serviceProvider;
-        ServiceProvider.GetRequiredService<ObjectAccessor<IServiceProvider>>().Value = ServiceProvider;
+        _serviceProvider = serviceProvider;
+        _serviceProvider.GetRequiredService<ObjectAccessor<IServiceProvider>>().Value = serviceProvider;
     }
 
     public virtual void Shutdown()
@@ -145,7 +145,7 @@ public class BangApplication : IBangApplicationInfo
     public virtual void Configure()
     {
         // log
-        var logger = ServiceProvider.GetService<ILogger<BangApplication>>();
+        var logger = ServiceProvider.GetRequiredService<ILogger<BangApplication>>();
 
         var initLogger = ServiceProvider.GetRequiredService<IBangLoggerFactory>().Create<BangApplication>();
 
