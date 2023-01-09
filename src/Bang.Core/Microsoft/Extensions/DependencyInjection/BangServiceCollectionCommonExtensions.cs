@@ -24,7 +24,7 @@ public static class BangServiceCollectionCommonExtensions
         var service = services.GetSingletonInstanceOrNull<T>();
         if (service == null)
         {
-            throw new InvalidOperationException("找不到 singleton service: " + typeof(T).AssemblyQualifiedName);
+            throw new InvalidOperationException("找不到单例服务: " + typeof(T).AssemblyQualifiedName);
         }
 
         return service;
