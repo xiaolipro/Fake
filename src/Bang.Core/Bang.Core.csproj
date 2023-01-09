@@ -14,6 +14,7 @@
         <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="$(MicrosoftPackageVersion)" />
         <PackageReference Include="Microsoft.Extensions.Logging" Version="$(MicrosoftPackageVersion)" />
         <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="$(MicrosoftPackageVersion)" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" Version="$(MicrosoftPackageVersion)" />
     </ItemGroup>
 
 </Project>

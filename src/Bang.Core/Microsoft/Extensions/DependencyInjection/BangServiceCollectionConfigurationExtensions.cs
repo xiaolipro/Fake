@@ -1,10 +1,16 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
 public static class BangServiceCollectionConfigurationExtensions
 {
+    public static IServiceCollection ReplaceConfiguration(this IServiceCollection services, IConfiguration configuration)
+    {
+        return services.Replace(ServiceDescriptor.Singleton<IConfiguration>(configuration));
+    }
+    
     [CanBeNull]
     public static IConfiguration GetConfigurationOrDefault(this IServiceCollection services)
     {

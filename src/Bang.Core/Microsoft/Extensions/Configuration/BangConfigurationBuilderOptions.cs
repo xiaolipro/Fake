@@ -5,49 +5,37 @@ namespace Microsoft.Extensions.Configuration;
 public class BangConfigurationBuilderOptions
 {
     /// <summary>
-    /// Used to set assembly which is used to get the user secret id for the application.
-    /// Use this or <see cref="UserSecretsId"/> (higher priority)
-    /// </summary>
-    public Assembly UserSecretsAssembly { get; set; }
-
-    /// <summary>
-    /// Used to set user secret id for the application.
-    /// Use this (higher priority) or <see cref="UserSecretsAssembly"/>
+    /// 用户机密id，全局唯一
     /// </summary>
     public string UserSecretsId { get; set; }
 
     /// <summary>
-    /// Default value: "appsettings".
+    /// 配置文件名，默认：appsettings
     /// </summary>
     public string FileName { get; set; } = "appsettings";
 
     /// <summary>
-    /// Whether the file is optional, Default value: true.
+    /// 文件是否可选，默认值：true。
     /// </summary>
     public bool Optional { get; set; } = true;
 
     /// <summary>
-    /// Whether the configuration should be reloaded if the file changes, Default value: true.
+    /// 如果文件更改，是否重新加载配置，默认值：true。
     /// </summary>
     public bool ReloadOnChange { get; set; } = true;
 
     /// <summary>
-    /// Environment name. Generally used "Development", "Staging" or "Production".
+    /// 环境名，例如 "Development", "Staging" or "Production"。
     /// </summary>
     public string EnvironmentName { get; set; }
 
     /// <summary>
-    /// Base path to read the configuration file indicated by <see cref="FileName"/>.
+    /// <see cref="FileName"/> 所在目录。
     /// </summary>
     public string BasePath { get; set; }
 
     /// <summary>
-    /// Prefix for the environment variables.
-    /// </summary>
-    public string EnvironmentVariablesPrefix { get; set; }
-
-    /// <summary>
-    /// Command line arguments.
+    /// 命令行参数
     /// </summary>
     public string[] CommandLineArgs { get; set; }
 }
