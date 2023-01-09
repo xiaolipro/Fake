@@ -1,4 +1,5 @@
-﻿using Bang.Logging;
+﻿using System.Reflection;
+using Bang.Logging;
 using Bang.Modularity;
 using Bang.Reflection;
 using Microsoft.Extensions.Configuration;
@@ -25,5 +26,10 @@ internal static class InternalServiceCollectionExtensions
         services.TryAddSingleton<IAssemblyScanner>(assemblyScanner);
         services.TryAddSingleton<ITypeScanner>(typeScanner);
         services.TryAddSingleton<IBangLoggerFactory>(new DefaultBangLoggerFactory());
+    }
+
+    internal static void ServiceRegister(this IServiceCollection services, Assembly assembly)
+    {
+        
     }
 }

@@ -1,6 +1,8 @@
-namespace Bang.Core.DependencyInjection;
+using System.ComponentModel;
 
-public enum ExposePolicy
+namespace Bang.DependencyInjection;
+
+public enum ServiceRegisterPolicy
 {
     /// <summary>
     /// 仅暴露实现

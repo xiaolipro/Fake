@@ -1,4 +1,4 @@
-namespace Bang.Core.DependencyInjection;
+namespace Bang.DependencyInjection;
 
 public enum ServiceLifecycle
 {
