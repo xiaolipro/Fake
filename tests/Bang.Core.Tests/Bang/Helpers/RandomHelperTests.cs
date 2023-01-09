@@ -1,10 +1,4 @@
-﻿using System.Collections.Concurrent;
-using Bang.Helpers;
-using Shouldly;
-using Xunit;
-using Xunit.Abstractions;
-
-namespace Bang.Core.Tests.Helpers;
+﻿namespace Bang.Helpers;
 
 public class RandomHelperTests
 {

@@ -1,20 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+    <Import Project="..\..\common.test.props" />
     <PropertyGroup>
         <TargetFramework>net7.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-        <!--        <RootNamespace />-->
-        <OutputType>Exe</OutputType>
+        <ImplicitUsings>true</ImplicitUsings>
+        <RootNamespace />
     </PropertyGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\..\src\Bang.Core\Bang.Core.csproj" />
         <ProjectReference Include="..\BangTest.Entry\BangTest.Entry.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.0" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(MicrosoftNETTestSdkPackageVersion)" />
     </ItemGroup>
 
 </Project>

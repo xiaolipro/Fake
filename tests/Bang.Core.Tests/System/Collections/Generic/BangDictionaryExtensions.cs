@@ -1,8 +1,7 @@
-﻿using System.Dynamic;
+﻿
+namespace System.Collections.Generic;
 
-namespace Bang.Core.Tests.Extensions;
-
-public static class FastDictionaryExtensions
+public static class BangDictionaryExtensions
 {
     /// <summary>
     /// 将字典转化成 <see cref="ExpandoObject"/>

@@ -1,15 +1,14 @@
 ﻿using Bang.Helpers;
 using Shouldly;
 using Xunit;
-using Xunit.Abstractions;
 
-namespace Bang.Core.Tests.Extensions;
+namespace System.Collections.Generic;
 
-public class FastEnumerableExtensionsTests
+public class BangEnumerableExtensionsTests
 {
     private readonly ITestOutputHelper _testOutputHelper;
 
-    public FastEnumerableExtensionsTests(ITestOutputHelper testOutputHelper)
+    public BangEnumerableExtensionsTests(ITestOutputHelper testOutputHelper)
     {
         _testOutputHelper = testOutputHelper;
     }
