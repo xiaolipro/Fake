@@ -15,9 +15,7 @@ public class BangApplication : IBangApplicationInfo
 
     public Type StartupModuleType { get; }
     public IServiceCollection Services { get; }
-
-    private IServiceProvider _serviceProvider;
-    public IServiceProvider ServiceProvider => _serviceProvider ??= Services.BuildServiceProvider();
+    public IServiceProvider ServiceProvider { get; private set; }
 
     private bool _configuredServices;
 
@@ -83,6 +81,8 @@ public class BangApplication : IBangApplicationInfo
         // ConfigureServices
         foreach (var module in Modules)
         {
+            RegisterService(module);
+            
             try
             {
                 module.Instance.ConfigureServices(context);
@@ -113,10 +113,10 @@ public class BangApplication : IBangApplicationInfo
         _configuredServices = true;
     }
 
-    public virtual void SetServiceProvider(IServiceProvider serviceProvider)
+    public virtual void SetServiceProvider([CanBeNull]IServiceProvider serviceProvider)
     {
-        _serviceProvider = serviceProvider;
-        _serviceProvider.GetRequiredService<ObjectAccessor<IServiceProvider>>().Value = serviceProvider;
+        ServiceProvider = serviceProvider?? Services.BuildServiceProvider();
+        ServiceProvider.GetRequiredService<ObjectAccessor<IServiceProvider>>().Value = serviceProvider;
     }
 
     public virtual void Shutdown()
@@ -140,10 +140,13 @@ public class BangApplication : IBangApplicationInfo
 
     public virtual void Dispose()
     {
+        Shutdown();
     }
 
-    public virtual void Configure()
+    public virtual void Configure([CanBeNull]IServiceProvider serviceProvider = null)
     {
+        SetServiceProvider(serviceProvider);
+        
         // log
         var logger = ServiceProvider.GetRequiredService<ILogger<BangApplication>>();
 
@@ -221,5 +224,14 @@ public class BangApplication : IBangApplicationInfo
         if (configuration == default) return Assembly.GetEntryAssembly()?.GetName().Name;
 
         return configuration[nameof(IApplicationInfo.ApplicationName)];
+    }
+    
+    private void RegisterService(IModuleDescriptor module)
+    {
+        if (module.Instance is not BangModule bangModule) return;
+        
+        if (bangModule.SkipAutoServiceRegistration) return;
+
+        Services.AddAssembly(module.Assembly);
     }
 }

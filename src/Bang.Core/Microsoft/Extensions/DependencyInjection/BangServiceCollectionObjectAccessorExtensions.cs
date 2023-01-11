@@ -14,6 +14,12 @@ public static class BangServiceCollectionObjectAccessorExtensions
         return services.AddObjectAccessor<T>();
     }
     
+    public static ObjectAccessor<T> GetObjectAccessorOrNull<T>(this IServiceCollection services)
+        where T : class
+    {
+        return services.GetSingletonInstanceOrNull<ObjectAccessor<T>>();
+    }
+    
     public static ObjectAccessor<T> AddObjectAccessor<T>(this IServiceCollection services)
     {
         return services.AddObjectAccessor(new ObjectAccessor<T>());

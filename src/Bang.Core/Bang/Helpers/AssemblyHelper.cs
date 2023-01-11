@@ -1,8 +1,8 @@
 using System.Reflection;
 
-namespace Bang.Reflection;
+namespace Bang.Helpers;
 
-internal class AssemblyHelper
+public class AssemblyHelper
 {
     public static IReadOnlyList<Type> GetAllTypes(Assembly assembly)
     {

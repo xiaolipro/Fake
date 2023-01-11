@@ -30,16 +30,8 @@ public abstract class BangModule:IBangModule
     public virtual void PostConfigure(ApplicationConfigureContext context)
     {
     }
-    
-    public virtual void PreShutDown(ApplicationShutdownContext context)
-    {
-    }
 
     public virtual void Shutdown(ApplicationShutdownContext context)
-    {
-    }
-
-    public virtual void PostShutdown(ApplicationShutdownContext context)
     {
     }
 

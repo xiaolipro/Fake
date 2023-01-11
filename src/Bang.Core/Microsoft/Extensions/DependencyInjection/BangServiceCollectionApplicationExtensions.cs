@@ -13,7 +13,7 @@ public static class BangServiceCollectionApplicationExtensions
         return BangApplicationFactory.Create<TStartupModule>(services, optionsAction);
     } 
     
-    public static BangApplication AddApplication(
+    public static BangApplication AddStartupModule(
         [NotNull] this IServiceCollection services,
         [NotNull] Type startupModuleType,
         [CanBeNull] Action<BangApplicationCreationOptions> optionsAction = null)

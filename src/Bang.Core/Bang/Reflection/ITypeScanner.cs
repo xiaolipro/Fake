@@ -1,4 +1,6 @@
-﻿namespace Bang.Reflection;
+﻿using Bang.Helpers;
+
+namespace Bang.Reflection;
 
 public interface ITypeScanner
 {

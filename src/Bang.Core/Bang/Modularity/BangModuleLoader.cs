@@ -45,7 +45,11 @@ public class BangModuleLoader : IModuleLoader
         foreach (var moduleType in BangModuleHelper.FindAllModuleTypes(startupModuleType,logger))
         {
             var descriptor = CreateModuleDescriptor(services, moduleType);
-            descriptors.Add(descriptor);
+            if (descriptors.Any(x => x.Assembly.Equals(moduleType.Assembly)))
+            {
+                throw new BangException($"程序集 {moduleType.Assembly.FullName} 内发现多个 {nameof(IBangModule)}");
+            }
+            descriptors.TryAdd(descriptor);
         }
     }
     

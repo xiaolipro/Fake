@@ -3,7 +3,6 @@ using Bang.Logging;
 using Bang.Modularity;
 using Bang.Reflection;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Bang.Extensions;
@@ -25,6 +24,7 @@ internal static class InternalServiceCollectionExtensions
         services.TryAddSingleton<IModuleLoader>(new BangModuleLoader());
         services.TryAddSingleton<IAssemblyScanner>(assemblyScanner);
         services.TryAddSingleton<ITypeScanner>(typeScanner);
+        
         services.TryAddSingleton<IBangLoggerFactory>(new DefaultBangLoggerFactory());
     }
 
