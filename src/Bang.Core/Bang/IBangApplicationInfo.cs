@@ -15,7 +15,7 @@ public interface IBangApplicationInfo:IModuleContainer,IApplicationInfo,IDisposa
     IServiceCollection Services { get; }
     
     /// <summary>
-    /// 服务供应商。应用程序初始化前，不能使用。
+    /// 服务供应商。模块初始化前，不能使用。
     /// </summary>
     IServiceProvider ServiceProvider { get; }
     

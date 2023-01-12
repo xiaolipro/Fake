@@ -5,115 +5,96 @@ namespace Bang.DependencyInjection;
 
 public class DependencyInjectionTests
 {
-    private readonly ITestOutputHelper _testOutputHelper;
-
-    public DependencyInjectionTests(ITestOutputHelper testOutputHelper)
+    [Fact]
+    public void 默认会注册自己和按命名约定的接口()
     {
-        _testOutputHelper = testOutputHelper;
+        using var application = BangApplicationFactory.Create<IndependentModule>();
+        application.InitializeModules();
+        var a = application.ServiceProvider.GetService<IA>();
+        a.ShouldNotBeNull();
+
+        var c = application.ServiceProvider.GetService<MyA>();
+        c.ShouldNotBeNull();
     }
 
     [Fact]
-    public void 默认不注册自己()
+    public void ExposeServices强行暴露没有按命名约定的接口()
     {
         using (var application = BangApplicationFactory.Create<IndependentModule>())
         {
-            application.Configure();
-            var instance = application.ServiceProvider.GetService<A>();
-            instance.ShouldBeNull();
-            
-            var instance2 = application.ServiceProvider.GetService<IA>();
-            instance2.ShouldNotBeNull();
+            application.InitializeModules();
+
+            application.ServiceProvider.GetService<IB>().ShouldNotBeNull();
         }
     }
-    
+
     [Fact]
-    public void 强行暴露()
+    void Dependency指定的生命周期优先级最高()
     {
-        using (var application = BangApplicationFactory.Create<IndependentModule>())
-        {
-            application.Configure();
-            var instance = application.ServiceProvider.GetService<MyA>();
-            instance.ShouldNotBeNull();
+        using var application = BangApplicationFactory.Create<IndependentModule>();
+        application.InitializeModules();
 
-            _testOutputHelper.WriteLine(instance.GetHashCode().ToString());
-            
-            var instance2 = application.ServiceProvider.GetService<IA>();
-            instance2.ShouldNotBeNull();
-            _testOutputHelper.WriteLine(instance2.GetHashCode().ToString());
-        }
+        application.Services.First(x => x.ServiceType == typeof(IA)).Lifetime.ShouldBe(ServiceLifetime.Transient);
     }
-    
+
     [Fact]
-    public void 替换实现()
+    void DisableServiceRegistration禁用服务注册()
     {
-        using (var application = BangApplicationFactory.Create<IndependentModule>())
-        {
-            application.Configure();
-            var a = application.ServiceProvider.GetRequiredService<IA>();
-            a.Increment();
-            var b = application.ServiceProvider.GetRequiredService<MyB>();
-            b.Increment();
-            var c = application.ServiceProvider.GetRequiredService<MyA>();
-            c.Increment();
-            var d = application.ServiceProvider.GetRequiredService<A>();
-            d.Increment();
+        using var application = BangApplicationFactory.Create<IndependentModule>();
+        application.InitializeModules();
 
-            _testOutputHelper.WriteLine(a.GetV().ToString());
-            _testOutputHelper.WriteLine(b.GetV().ToString());
-            _testOutputHelper.WriteLine(c.GetV().ToString());
-            _testOutputHelper.WriteLine(d.GetV().ToString());
-        }
+        application.ServiceProvider.GetService<MyB>().ShouldBeNull();
+    }
+
+
+    [Fact]
+    void ScopedSingleton的层次体系重定向()
+    {
+        using var application = BangApplicationFactory.Create<IndependentModule>();
+        application.InitializeModules();
+
+        var a = application.ServiceProvider.GetService<IHierarchy>();
+        var b = application.ServiceProvider.GetService<AHierarchy>();
+        //a.GetHashCode().ShouldBe(b.GetHashCode());
+        application.Services.First(x => x.ServiceType == typeof(IHierarchy)).ImplementationFactory
+            .Invoke(application.ServiceProvider).GetType().ShouldBe(typeof(BHierarchy));
+        
+        application.ServiceProvider.GetServices<AHierarchy>().Count().ShouldBe(1);
     }
 }
 
-public class MyB : IA, ISingleton
+public interface IHierarchy : ISingletonDependency
 {
-    private int x;
-    
-    public void Increment()
-    {
-        x++;
-    }
-
-    public int GetV()
-    {
-        return x;
-    }
 }
 
-public class MyA : IA, IScoped
+public class AHierarchy : IHierarchy
 {
-    private int x;
-    
-    public void Increment()
-    {
-        x++;
-    }
-
-    public int GetV()
-    {
-        return x;
-    }
 }
 
-public interface IA
+[Dependency(Replace = true)]
+public class BHierarchy : AHierarchy
 {
-    void Increment();
-
-    int GetV();
 }
 
-public class A : IA, ISingleton
+[Dependency(ServiceLifetime.Transient)]
+public class MyA : IA
 {
-    private int _num;
-    
-    public void Increment()
-    {
-        _num++;
-    }
+}
 
-    public int GetV()
-    {
-        return _num;
-    }
+public interface IA : ISingletonDependency
+{
+}
+
+public interface IB
+{
+}
+
+[ExposeServices(typeof(IB))]
+public class X : IB, IScopedDependency
+{
+}
+
+[DisableServiceRegistration]
+public class MyB : IA
+{
 }

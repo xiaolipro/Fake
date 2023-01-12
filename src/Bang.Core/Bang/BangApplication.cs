@@ -15,9 +15,19 @@ public class BangApplication : IBangApplicationInfo
 
     public Type StartupModuleType { get; }
     public IServiceCollection Services { get; }
-    public IServiceProvider ServiceProvider { get; private set; }
+
+    private IServiceProvider _serviceProvider;
+    public IServiceProvider ServiceProvider
+    {
+        get
+        {
+            if (!_initializedModules) throw new BangException($"模块初始化前，不能使用{nameof(ServiceProvider)}");
+            return _serviceProvider;
+        }
+    }
 
     private bool _configuredServices;
+    private bool _initializedModules;
 
     internal BangApplication(Type startupModuleType, Action<BangApplicationCreationOptions> optionsAction)
         : this(startupModuleType, new ServiceCollection(), optionsAction)
@@ -58,7 +68,7 @@ public class BangApplication : IBangApplicationInfo
     {
         if (_configuredServices)
         {
-            throw new BangInitializationException("Services已经配置过了，不要重复配置");
+            throw new BangInitializationException($"{nameof(ConfigureServices)}已经调用过了，不要重复调用");
         }
 
         var context = new ServiceConfigurationContext(Services);
@@ -73,15 +83,27 @@ public class BangApplication : IBangApplicationInfo
             catch (Exception ex)
             {
                 throw new BangInitializationException(
-                    $"模块 {module.Type.AssemblyQualifiedName} 在 {nameof(IConfigureServicesLifecycle.PreConfigureServices)} 阶段发生异常。 有关详细信息，请参阅内部异常。",
+                    $"模块{module.Type.AssemblyQualifiedName}在{nameof(IConfigureServicesLifecycle.PreConfigureServices)} 阶段发生异常。有关详细信息，请参阅内部异常。",
                     ex);
             }
         }
 
         // ConfigureServices
+        var assemblies = new HashSet<Assembly>();
         foreach (var module in Modules)
         {
-            RegisterService(module);
+            if (module.Instance is BangModule bangModule)
+            {
+                if (!bangModule.SkipAutoServiceRegistration)
+                {
+                    var assembly = module.Type.Assembly;
+                    if (!assemblies.Contains(assembly))
+                    {
+                        Services.AddAssembly(assembly);
+                        assemblies.Add(assembly);
+                    }
+                }
+            }
             
             try
             {
@@ -90,7 +112,7 @@ public class BangApplication : IBangApplicationInfo
             catch (Exception ex)
             {
                 throw new BangInitializationException(
-                    $"模块 {module.Type.AssemblyQualifiedName} 在 {nameof(IConfigureServicesLifecycle.ConfigureServices)} 阶段发生异常。 有关详细信息，请参阅内部异常。",
+                    $"模块{module.Type.AssemblyQualifiedName}在{nameof(IConfigureServicesLifecycle.ConfigureServices)}阶段发生异常。有关详细信息，请参阅内部异常。",
                     ex);
             }
         }
@@ -105,7 +127,7 @@ public class BangApplication : IBangApplicationInfo
             catch (Exception ex)
             {
                 throw new BangInitializationException(
-                    $"模块 {module.Type.AssemblyQualifiedName} 在 {nameof(IConfigureServicesLifecycle.PostConfigureServices)} 阶段发生异常。 有关详细信息，请参阅内部异常。",
+                    $"模块{module.Type.AssemblyQualifiedName}在{nameof(IConfigureServicesLifecycle.PostConfigureServices)}阶段发生异常。有关详细信息，请参阅内部异常。",
                     ex);
             }
         }
@@ -113,16 +135,12 @@ public class BangApplication : IBangApplicationInfo
         _configuredServices = true;
     }
 
-    public virtual void SetServiceProvider([CanBeNull]IServiceProvider serviceProvider)
-    {
-        ServiceProvider = serviceProvider?? Services.BuildServiceProvider();
-        ServiceProvider.GetRequiredService<ObjectAccessor<IServiceProvider>>().Value = serviceProvider;
-    }
+    
 
     public virtual void Shutdown()
     {
         // Shutdown
-        var context = new ApplicationShutdownContext(ServiceProvider);
+        var context = new ApplicationShutdownContext(_serviceProvider);
         foreach (var module in Modules)
         {
             try
@@ -132,7 +150,7 @@ public class BangApplication : IBangApplicationInfo
             catch (Exception ex)
             {
                 throw new BangInitializationException(
-                    $"模块 {module.Type.AssemblyQualifiedName} 在 {nameof(IShutdownLifecycle.Shutdown)} 阶段发生异常。 有关详细信息，请参阅内部异常。",
+                    $"模块{module.Type.AssemblyQualifiedName}在{nameof(IShutdownLifecycle.Shutdown)}阶段发生异常。有关详细信息，请参阅内部异常。",
                     ex);
             }
         }
@@ -140,17 +158,21 @@ public class BangApplication : IBangApplicationInfo
 
     public virtual void Dispose()
     {
-        Shutdown();
+        // 应该在这里销毁ServiceProvider，但Shutdown可能还没被调用
     }
 
-    public virtual void Configure([CanBeNull]IServiceProvider serviceProvider = null)
+    public virtual void InitializeModules([CanBeNull]IServiceProvider serviceProvider = null)
     {
+        if (_initializedModules)
+        {
+            throw new BangInitializationException($"{nameof(InitializeModules)}已经调用过了，不要重复调用");
+        }
         SetServiceProvider(serviceProvider);
         
         // log
-        var logger = ServiceProvider.GetRequiredService<ILogger<BangApplication>>();
+        var logger = _serviceProvider.GetRequiredService<ILogger<BangApplication>>();
 
-        var initLogger = ServiceProvider.GetRequiredService<IBangLoggerFactory>().Create<BangApplication>();
+        var initLogger = _serviceProvider.GetRequiredService<IBangLoggerFactory>().Create<BangApplication>();
 
         foreach (var entry in initLogger.Entries)
         {
@@ -159,7 +181,7 @@ public class BangApplication : IBangApplicationInfo
 
         initLogger.Entries.Clear();
 
-        var context = new ApplicationConfigureContext(ServiceProvider);
+        var context = new ApplicationConfigureContext(_serviceProvider);
 
         // PreConfigure
         foreach (var module in Modules)
@@ -171,7 +193,7 @@ public class BangApplication : IBangApplicationInfo
             catch (Exception ex)
             {
                 throw new BangInitializationException(
-                    $"模块 {module.Type.AssemblyQualifiedName} 在 {nameof(IConfigureLifecycle.PreConfigure)} 阶段发生异常。 有关详细信息，请参阅内部异常。",
+                    $"模块{module.Type.AssemblyQualifiedName}在{nameof(IConfigureLifecycle.PreConfigure)}阶段发生异常。有关详细信息，请参阅内部异常。",
                     ex);
             }
         }
@@ -186,7 +208,7 @@ public class BangApplication : IBangApplicationInfo
             catch (Exception ex)
             {
                 throw new BangInitializationException(
-                    $"模块 {module.Type.AssemblyQualifiedName} 在 {nameof(IConfigureLifecycle.Configure)} 阶段发生异常。 有关详细信息，请参阅内部异常。",
+                    $"模块{module.Type.AssemblyQualifiedName}在{nameof(IConfigureLifecycle.Configure)}阶段发生异常。有关详细信息，请参阅内部异常。",
                     ex);
             }
         }
@@ -201,12 +223,19 @@ public class BangApplication : IBangApplicationInfo
             catch (Exception ex)
             {
                 throw new BangInitializationException(
-                    $"模块 {module.Type.AssemblyQualifiedName} 在 {nameof(IConfigureLifecycle.PostConfigure)} 阶段发生异常。 有关详细信息，请参阅内部异常。",
+                    $"模块{module.Type.AssemblyQualifiedName}在{nameof(IConfigureLifecycle.PostConfigure)}阶段发生异常。有关详细信息，请参阅内部异常。",
                     ex);
             }
         }
+        _initializedModules = true;
     }
-
+    
+    protected virtual void SetServiceProvider([CanBeNull]IServiceProvider serviceProvider)
+    {
+        _serviceProvider = serviceProvider?? Services.BuildServiceProvider();
+        _serviceProvider.GetRequiredService<ObjectAccessor<IServiceProvider>>().Value = serviceProvider;
+    }
+    
     private IReadOnlyList<IModuleDescriptor> LoadModules(IServiceCollection services)
     {
         return services.GetSingletonInstance<IModuleLoader>().LoadModules(services, StartupModuleType);

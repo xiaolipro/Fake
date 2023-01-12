@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Bang.DependencyInjection;
 using Bang.Logging;
 using Bang.Modularity;
 using Bang.Reflection;

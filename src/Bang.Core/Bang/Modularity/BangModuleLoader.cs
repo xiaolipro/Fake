@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Logging;
+
 namespace Bang.Modularity;
 
 public class BangModuleLoader : IModuleLoader
@@ -30,7 +32,7 @@ public class BangModuleLoader : IModuleLoader
                 var dependedModule = descriptors.FirstOrDefault(m => m.Type == dependedModuleType);
                 if (dependedModule == null)
                 {
-                    throw new BangException($"无法找到 {descriptor.Type.AssemblyQualifiedName} 所依赖的模块 {dependedModuleType.AssemblyQualifiedName}");
+                    throw new BangException($"无法找到{descriptor.Type.AssemblyQualifiedName}所依赖的模块{dependedModuleType.AssemblyQualifiedName}");
                 }
 
                 descriptor.AddDependency(dependedModule);
@@ -47,7 +49,7 @@ public class BangModuleLoader : IModuleLoader
             var descriptor = CreateModuleDescriptor(services, moduleType);
             if (descriptors.Any(x => x.Assembly.Equals(moduleType.Assembly)))
             {
-                throw new BangException($"程序集 {moduleType.Assembly.FullName} 内发现多个 {nameof(IBangModule)}");
+                logger.LogWarning($"程序集{moduleType.AssemblyQualifiedName}内发现多个{nameof(IBangModule)}");
             }
             descriptors.TryAdd(descriptor);
         }

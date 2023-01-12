@@ -1,6 +1,6 @@
 namespace Bang.DependencyInjection;
 
-public interface ITransient
+public interface ITransientDependency
 {
     // 瞬态生命周期
 }

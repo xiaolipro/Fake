@@ -1,6 +1,5 @@
 using System.Reflection;
 using Bang.Helpers;
-using Bang.Reflection;
 
 namespace Bang.DependencyInjection;
 
@@ -11,10 +10,7 @@ public abstract class AbstractServiceRegistrar : IServiceRegistrar
         var types = AssemblyHelper
             .GetAllTypes(assembly)
             .Where(
-                type => type != null &&
-                        type.IsClass &&
-                        !type.IsAbstract &&
-                        !type.IsGenericType
+                type => type is { IsClass: true, IsAbstract: false, IsGenericType: false }
             ).ToArray();
 
         AddTypes(services, types);
@@ -61,27 +57,33 @@ public abstract class AbstractServiceRegistrar : IServiceRegistrar
             .ToList();
     }
     
-    protected virtual ServiceLifetime? GetLifeTimeOrNull(Type type, [CanBeNull] ServiceRegisterAttribute serviceRegisterAttribute)
+    protected virtual ServiceLifetime? GetLifeTimeOrNull(Type type, [CanBeNull] DependencyAttribute attribute)
     {
-        // 优先从ServiceRegisterAttribute读取，其次是类的层次体系
-        return serviceRegisterAttribute?.Lifetime ?? GetServiceLifetimeFromClassHierarchy(type);
+        // 优先从Attribute读取，其次是类的层次体系
+        return attribute?.Lifetime ?? GetServiceLifetimeFromClassHierarchy(type);
     }
     
+    
+    /// <summary>
+    /// 从类的层次体系中提取生命周期
+    /// </summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
     protected virtual ServiceLifetime? GetServiceLifetimeFromClassHierarchy(Type type)
     {
-        if (typeof(ITransient).IsAssignableFrom(type))
-        {
-            return ServiceLifetime.Transient;
-        }
-
-        if (typeof(ISingleton).IsAssignableFrom(type))
+        if (typeof(ISingletonDependency).IsAssignableFrom(type))
         {
             return ServiceLifetime.Singleton;
         }
-
-        if (typeof(IScoped).IsAssignableFrom(type))
+        
+        if (typeof(IScopedDependency).IsAssignableFrom(type))
         {
             return ServiceLifetime.Scoped;
+        }
+        
+        if (typeof(ITransientDependency).IsAssignableFrom(type))
+        {
+            return ServiceLifetime.Transient;
         }
 
         return null;

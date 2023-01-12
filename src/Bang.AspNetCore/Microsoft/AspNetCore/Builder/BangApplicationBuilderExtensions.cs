@@ -20,6 +20,6 @@ public static class BangApplicationBuilderExtensions
         applicationLifetime.ApplicationStopping.Register(() => application.Shutdown());
         applicationLifetime.ApplicationStopped.Register(() => application.Dispose());
 
-        application.Configure(app.ApplicationServices);
+        application.InitializeModules(app.ApplicationServices);
     }
 }
