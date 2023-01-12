@@ -21,18 +21,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "solution items", "solution 
 		NuGet.Config = NuGet.Config
 		.gitignore = .gitignore
 		README.md = README.md
+		common.props = common.props
+		common.test.props = common.test.props
+		common.toolkit.props = common.toolkit.props
+		configureawait.props = configureawait.props
+		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fake.AspNetCore", "src\Fake.AspNetCore\Fake.AspNetCore.csproj", "{57E821A6-AE7A-40E4-9C32-23A26E90102E}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "props", "props", "{574FEEC5-D13A-447A-9E53-B86EAA575D56}"
-	ProjectSection(SolutionItems) = preProject
-		common.props = common.props
-		configureawait.props = configureawait.props
-		Directory.Build.props = Directory.Build.props
-		common.test.props = common.test.props
-		common.toolkit.props = common.toolkit.props
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "toolkit", "toolkit", "{A2A27924-EED0-4A13-B7F2-949F11F9F9B6}"
 EndProject
@@ -80,7 +76,6 @@ Global
 		{A93D4EAE-90BE-4C9B-9970-5C1C8E1B994D} = {310D0E30-AC20-44C8-B0A2-155C880ED934}
 		{B37055D3-4031-4FF1-9668-926D0431BCCE} = {AC56DAD8-C5AB-4E41-A280-1BCC08A2BE60}
 		{57E821A6-AE7A-40E4-9C32-23A26E90102E} = {AC56DAD8-C5AB-4E41-A280-1BCC08A2BE60}
-		{574FEEC5-D13A-447A-9E53-B86EAA575D56} = {39FED9F7-23E6-43A4-B478-B914A2E805D0}
 		{26293D9D-5A8A-4438-8446-192C9A1E3727} = {A2A27924-EED0-4A13-B7F2-949F11F9F9B6}
 	EndGlobalSection
 EndGlobal

@@ -13,20 +13,20 @@ public class GUID种子对比默认种子
     [Benchmark]
     public void GUID()
     {
-        LocalRandom.Value.Next();
+        LocalRandom.Value?.Next();
     }
     
     [Benchmark]
     public void 默认()
     {
-        LocalRandom2.Value.Next();
+        LocalRandom2.Value?.Next();
     }
     
     [Benchmark]
-    public void GUID并行()
+    public void Guid并行()
     {
         Enumerable.Range(0, 100_0000).AsParallel()
-            .Select(i => LocalRandom.Value.Next())
+            .Select(i => LocalRandom.Value!.Next())
             .ToArray();
     }
     
@@ -34,7 +34,7 @@ public class GUID种子对比默认种子
     public void 默认并行()
     {
         Enumerable.Range(0, 100_0000).AsParallel()
-            .Select(i => LocalRandom2.Value.Next())
+            .Select(i => LocalRandom2.Value!.Next())
             .ToArray();
     }
 }

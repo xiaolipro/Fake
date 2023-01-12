@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using BenchmarkDotNet.Attributes;
+﻿using BenchmarkDotNet.Attributes;
 using Fake.Helpers;
 
 namespace Fake.Core.Benchmarks.Extensions.FastEnumerableExtensionsBenchmarks;
@@ -55,7 +53,7 @@ public class 循环引用剪枝实验
     public static List<T> SortByDependencies<T>(
         IEnumerable<T> source,
         Func<T, IEnumerable<T>> getDependencies,
-        IEqualityComparer<T>? comparer = null)
+        IEqualityComparer<T>? comparer = null) where T : notnull
     {
         /* See: http://www.codeproject.com/Articles/869059/Topological-sorting-in-Csharp
          *      http://en.wikipedia.org/wiki/Topological_sorting
@@ -75,7 +73,7 @@ public class 循环引用剪枝实验
     }
 
     private static void SortByDependenciesVisit<T>(T item, Func<T, IEnumerable<T>> getDependencies, List<T> sorted,
-        Dictionary<T, bool> visited)
+        Dictionary<T, bool> visited) where T : notnull
     {
         var alreadyVisited = visited.TryGetValue(item, out var processing);
 
@@ -87,14 +85,11 @@ public class 循环引用剪枝实验
 
         // 递归处理以item为起点，连通的其它点
         var dependencies = getDependencies(item);
-        if (dependencies != null)
+        foreach (var dependency in dependencies)
         {
-            foreach (var dependency in dependencies)
-            {
-                SortByDependenciesVisit(dependency, getDependencies, sorted, visited);
-            }
+            SortByDependenciesVisit(dependency, getDependencies, sorted, visited);
         }
-        
+
         // 此时item的出度为0
         visited[item] = false;
         sorted.Add(item);
@@ -105,7 +100,7 @@ public class 循环引用剪枝实验
     public static List<T> SortByDependencies2<T>(
         IEnumerable<T> source,
         Func<T, IEnumerable<T>> getDependencies,
-        IEqualityComparer<T> comparer = null)
+        IEqualityComparer<T>? comparer = null) where T : notnull
     {
         /* See: http://www.codeproject.com/Articles/869059/Topological-sorting-in-Csharp
          *      http://en.wikipedia.org/wiki/Topological_sorting
@@ -125,7 +120,7 @@ public class 循环引用剪枝实验
     }
 
     private static void SortByDependenciesVisit2<T>(T item, Func<T, IEnumerable<T>> getDependencies, List<T> sorted,
-        Dictionary<T, bool> visited)
+        Dictionary<T, bool> visited) where T : notnull
     {
         var alreadyVisited = visited.TryGetValue(item, out var processing);
 
@@ -141,14 +136,11 @@ public class 循环引用剪枝实验
 
         // 递归处理以item为起点，连通的其它点
         var dependencies = getDependencies(item);
-        if (dependencies != null)
+        foreach (var dependency in dependencies)
         {
-            foreach (var dependency in dependencies)
-            {
-                SortByDependenciesVisit(dependency, getDependencies, sorted, visited);
-            }
+            SortByDependenciesVisit(dependency, getDependencies, sorted, visited);
         }
-        
+
         // 此时item的出度为0
         visited[item] = false;
         sorted.Add(item);
