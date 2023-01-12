@@ -2,7 +2,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Fake.Logging;
 
-public class FakeLoggerEntry
+public class InitLoggerEntry
 {
     public LogLevel LogLevel { get; set; }
 

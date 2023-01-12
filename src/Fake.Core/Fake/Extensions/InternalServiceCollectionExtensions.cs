@@ -26,7 +26,7 @@ internal static class InternalServiceCollectionExtensions
         services.TryAddSingleton<IAssemblyScanner>(assemblyScanner);
         services.TryAddSingleton<ITypeScanner>(typeScanner);
         
-        services.TryAddSingleton<IFakeLoggerFactory>(new DefaultFakeLoggerFactory());
+        services.TryAddSingleton<IInitLoggerFactory>(new FakeInitLoggerFactory());
     }
 
     internal static void ServiceRegister(this IServiceCollection services, Assembly assembly)

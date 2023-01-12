@@ -167,19 +167,10 @@ public class FakeApplication : IFakeApplicationInfo
         {
             throw new FakeInitializationException($"{nameof(InitializeModules)}已经调用过了，不要重复调用");
         }
+        
         SetServiceProvider(serviceProvider);
         
-        // log
-        var logger = _serviceProvider.GetRequiredService<ILogger<FakeApplication>>();
-
-        var initLogger = _serviceProvider.GetRequiredService<IFakeLoggerFactory>().Create<FakeApplication>();
-
-        foreach (var entry in initLogger.Entries)
-        {
-            logger.Log(entry.LogLevel, entry.EventId, entry.State, entry.Exception, entry.Formatter);
-        }
-
-        initLogger.Entries.Clear();
+        WriteInitLogs(serviceProvider);
 
         var context = new ApplicationConfigureContext(_serviceProvider);
 
@@ -255,12 +246,17 @@ public class FakeApplication : IFakeApplicationInfo
         return configuration[nameof(IApplicationInfo.ApplicationName)];
     }
     
-    private void RegisterService(IModuleDescriptor module)
+    private void WriteInitLogs(IServiceProvider serviceProvider)
     {
-        if (module.Instance is not FakeModule FakeModule) return;
-        
-        if (FakeModule.SkipAutoServiceRegistration) return;
+        var logger = serviceProvider.GetRequiredService<ILogger<FakeApplication>>();
 
-        Services.AddAssembly(module.Assembly);
+        var initLogger = serviceProvider.GetRequiredService<IInitLoggerFactory>().Create<FakeApplication>();
+
+        foreach (var entry in initLogger.Entries)
+        {
+            logger.Log(entry.LogLevel, entry.EventId, entry.State, entry.Exception, entry.Formatter);
+        }
+
+        initLogger.Entries.Clear();
     }
 }

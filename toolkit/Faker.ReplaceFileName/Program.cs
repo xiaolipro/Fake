@@ -1,4 +1,4 @@
-﻿namespace ReplaceFileName;
+﻿namespace Faker.ReplaceFileName;
 
 public class Program
 {

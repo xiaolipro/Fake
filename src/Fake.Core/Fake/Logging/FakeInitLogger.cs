@@ -2,18 +2,18 @@
 
 namespace Fake.Logging;
 
-public class DefaultFakeLogger<T> : IFakeLogger<T>
+public class FakeInitLogger<T> : IInitLogger<T>
 {
-    public List<FakeLoggerEntry> Entries { get; }
+    public List<InitLoggerEntry> Entries { get; }
     
-    public DefaultFakeLogger()
+    public FakeInitLogger()
     {
-        Entries = new List<FakeLoggerEntry>();
+        Entries = new List<InitLoggerEntry>();
     }
 
     public virtual void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
     {
-        Entries.Add(new FakeLoggerEntry()
+        Entries.Add(new InitLoggerEntry()
         {
             LogLevel = logLevel,
             EventId = eventId,
