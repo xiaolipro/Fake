@@ -5,7 +5,7 @@
     <NoWarn>$(NoWarn);CS1591;CS0436</NoWarn>
     <PackageLicenseExpression>LGPL-3.0-only</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://gitee.com/xiaolipro/bang/</RepositoryUrl>
+    <RepositoryUrl>https://gitee.com/xiaolipro/Fake/</RepositoryUrl>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <!-- Include symbol files (*.pdb) in the built .nupkg -->
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>

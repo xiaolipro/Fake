@@ -6,8 +6,8 @@
 ### 🐣开始
 
 ```shell
-$ git clone https://gitee.com/xiaolipro/bang.git
-$ cd bang
+$ git clone https://gitee.com/xiaolipro/fake.git
+$ cd fake
 $ dotnet restore
 ```
 

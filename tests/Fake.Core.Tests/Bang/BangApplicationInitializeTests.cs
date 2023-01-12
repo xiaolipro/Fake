@@ -1,0 +1,36 @@
+﻿using Fake.Modularity;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace Fake;
+
+public class FakeApplicationInitializeTests
+{
+    [Fact]
+    void FakeApplication使用流程()
+    {
+        using var app = FakeApplicationFactory.Create<IndependentModule>();
+        
+        // Arrange
+        var module = app.Services.GetSingletonInstance<IndependentModule>();
+            
+        // Action
+        app.InitializeModules();
+        
+        // Assert
+        app.ServiceProvider.GetRequiredService<IndependentModule>().ShouldBeSameAs(module);
+            
+        // Action
+        app.Shutdown();
+    }
+
+
+    [Fact]
+    void 模块初始化前不能使用ServiceProvider()
+    {
+        Should.Throw<FakeException>(() =>
+        {
+            using var app = FakeApplicationFactory.Create<IndependentModule>();
+            app.ServiceProvider.GetRequiredService<IndependentModule>();
+        });
+    }
+}
