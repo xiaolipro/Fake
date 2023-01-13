@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Diagnostics;
+using System.Reflection;
 using Fake.DependencyInjection;
 using Fake.Extensions;
 using Fake.Logging;
@@ -170,7 +171,9 @@ public class FakeApplication : IFakeApplicationInfo
         
         SetServiceProvider(serviceProvider);
         
-        WriteInitLogs(serviceProvider);
+        Debug.Assert(_serviceProvider != null);
+        
+        WriteInitLogs(_serviceProvider);
 
         var context = new ApplicationConfigureContext(_serviceProvider);
 
