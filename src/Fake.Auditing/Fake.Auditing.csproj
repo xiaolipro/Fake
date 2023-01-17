@@ -3,6 +3,7 @@
     <Import Project="../../configureawait.props" />
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
+        <RootNamespace />
     </PropertyGroup>
     <ItemGroup>
       <ProjectReference Include="..\Fake.Auditing.Contacts\Fake.Auditing.Contacts.csproj" />

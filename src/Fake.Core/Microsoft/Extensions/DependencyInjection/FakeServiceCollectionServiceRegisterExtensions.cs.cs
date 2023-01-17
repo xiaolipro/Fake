@@ -5,7 +5,38 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public static class FakeServiceCollectionServiceRegisterExtensions
 {
+    #region OnRegistered
+
+    /// <summary>
+    /// 服务注册时执行
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="registrationAction"></param>
+    public static void OnRegistered(this IServiceCollection services, Action<IOnServiceRegistredContext> registrationAction)
+    {
+        GetOrCreateRegistrationActionList(services).Add(registrationAction);
+    }
+
+    public static ServiceRegistrationActionList GetRegistrationActionList(this IServiceCollection services)
+    {
+        return GetOrCreateRegistrationActionList(services);
+    }
+
+    private static ServiceRegistrationActionList GetOrCreateRegistrationActionList(IServiceCollection services)
+    {
+        var actionList = services.GetSingletonInstanceOrNull<IObjectAccessor<ServiceRegistrationActionList>>()?.Value;
+        if (actionList == null)
+        {
+            actionList = new ServiceRegistrationActionList();
+            services.AddObjectAccessor(actionList);
+        }
+
+        return actionList;
+    }
+    #endregion
+    
     #region Exposing
+    
     /// <summary>
     /// 服务暴露时执行
     /// </summary>
@@ -57,6 +88,7 @@ public static class FakeServiceCollectionServiceRegisterExtensions
         if (conventionalRegistrars == null)
         {
             conventionalRegistrars = new ServiceRegisterList();
+            conventionalRegistrars.Add(new DefaultServiceRegistrar());
             services.AddObjectAccessor(conventionalRegistrars);
         }
 
