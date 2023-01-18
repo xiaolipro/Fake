@@ -5,29 +5,29 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public static class FakeServiceCollectionServiceRegisterExtensions
 {
-    #region OnRegistered
+    #region ServiceRegistered
 
     /// <summary>
     /// 服务注册时执行
     /// </summary>
     /// <param name="services"></param>
     /// <param name="registrationAction"></param>
-    public static void OnRegistered(this IServiceCollection services, Action<IOnServiceRegistredContext> registrationAction)
+    public static void OnRegistered(this IServiceCollection services, Action<OnServiceRegisteredContext> registrationAction)
     {
         GetOrCreateRegistrationActionList(services).Add(registrationAction);
     }
 
-    public static ServiceRegistrationActionList GetRegistrationActionList(this IServiceCollection services)
+    public static ServiceRegisteredActionList GetRegistrationActionList(this IServiceCollection services)
     {
         return GetOrCreateRegistrationActionList(services);
     }
 
-    private static ServiceRegistrationActionList GetOrCreateRegistrationActionList(IServiceCollection services)
+    private static ServiceRegisteredActionList GetOrCreateRegistrationActionList(IServiceCollection services)
     {
-        var actionList = services.GetSingletonInstanceOrNull<IObjectAccessor<ServiceRegistrationActionList>>()?.Value;
+        var actionList = services.GetObjectAccessorOrNull<ServiceRegisteredActionList>()?.Value;
         if (actionList == null)
         {
-            actionList = new ServiceRegistrationActionList();
+            actionList = new ServiceRegisteredActionList();
             services.AddObjectAccessor(actionList);
         }
 
@@ -35,7 +35,7 @@ public static class FakeServiceCollectionServiceRegisterExtensions
     }
     #endregion
     
-    #region Exposing
+    #region ServiceExposing
     
     /// <summary>
     /// 服务暴露时执行
@@ -65,7 +65,7 @@ public static class FakeServiceCollectionServiceRegisterExtensions
     }
     #endregion
 
-    #region ServiceRegister
+    #region ServiceRegistrar
     public static IServiceCollection AddAssembly(this IServiceCollection services, Assembly assembly)
     {
         foreach (var registrar in services.GetOrCreateServiceRegisterList())
@@ -82,12 +82,12 @@ public static class FakeServiceCollectionServiceRegisterExtensions
 
         return services;
     }
-    private static ServiceRegisterList GetOrCreateServiceRegisterList(this IServiceCollection services)
+    private static ServiceRegistrarList GetOrCreateServiceRegisterList(this IServiceCollection services)
     {
-        var conventionalRegistrars = services.GetObjectAccessorOrNull<ServiceRegisterList>()?.Value;
+        var conventionalRegistrars = services.GetObjectAccessorOrNull<ServiceRegistrarList>()?.Value;
         if (conventionalRegistrars == null)
         {
-            conventionalRegistrars = new ServiceRegisterList();
+            conventionalRegistrars = new ServiceRegistrarList();
             conventionalRegistrars.Add(new DefaultServiceRegistrar());
             services.AddObjectAccessor(conventionalRegistrars);
         }
