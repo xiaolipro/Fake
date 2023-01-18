@@ -8,7 +8,7 @@ public static class FakeServiceCollectionServiceRegisterExtensions
     #region ServiceRegistered
 
     /// <summary>
-    /// 服务注册时执行
+    /// 在每个服务注册到IOC容器后执行
     /// </summary>
     /// <param name="services"></param>
     /// <param name="registrationAction"></param>
@@ -38,7 +38,7 @@ public static class FakeServiceCollectionServiceRegisterExtensions
     #region ServiceExposing
     
     /// <summary>
-    /// 服务暴露时执行
+    /// 服务暴露时执行，可以在这里变更暴露内容
     /// </summary>
     /// <param name="services"></param>
     /// <param name="exposeAction"></param>
@@ -66,7 +66,7 @@ public static class FakeServiceCollectionServiceRegisterExtensions
     #endregion
 
     #region ServiceRegistrar
-    public static IServiceCollection AddAssembly(this IServiceCollection services, Assembly assembly)
+    internal static IServiceCollection AddAssembly(this IServiceCollection services, Assembly assembly)
     {
         foreach (var registrar in services.GetOrCreateServiceRegisterList())
         {

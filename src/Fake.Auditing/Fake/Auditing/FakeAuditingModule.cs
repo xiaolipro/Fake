@@ -8,6 +8,11 @@ public class FakeAuditingModule:FakeModule
 {
     public override void PreConfigureServices(ServiceConfigurationContext context)
     {
-        context.Services.OnServiceExposing();
+        context.Services.OnRegistered(AuditingInterceptorRegistrar.RegisterIfNeeded);
     }
+}
+
+public class AuditingInterceptor
+{
+    
 }
