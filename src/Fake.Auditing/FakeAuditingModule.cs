@@ -1,7 +1,6 @@
-﻿using Fake.Modularity;
+﻿using Fake.Auditing;
+using Fake.Modularity;
 using Microsoft.Extensions.DependencyInjection;
-
-namespace Fake.Auditing;
 
 [DependsOn(typeof(FakeAuditingContractsModule))]
 public class FakeAuditingModule:FakeModule
@@ -10,9 +9,4 @@ public class FakeAuditingModule:FakeModule
     {
         context.Services.OnRegistered(AuditingInterceptorRegistrar.RegisterIfNeeded);
     }
-}
-
-public class AuditingInterceptor
-{
-    
 }

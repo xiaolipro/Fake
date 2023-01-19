@@ -12,7 +12,7 @@ public static class AuditingInterceptorRegistrar
     {
         if (ShouldIntercept(context.ImplementationType))
         {
-            context.Interceptors.TryAdd<>(typeof(AuditingInterceptor));
+            context.Interceptors.TryAdd(typeof(AuditingInterceptor));
         }
     }
 

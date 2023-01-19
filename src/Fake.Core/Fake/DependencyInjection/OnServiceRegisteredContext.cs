@@ -1,10 +1,11 @@
-﻿using Fake.Proxy;
+﻿using Fake.Collections;
+using Fake.Proxy;
 
 namespace Fake.DependencyInjection;
 
 public class OnServiceRegisteredContext
 {
-    public virtual List<IFakeInterceptor> Interceptors { get; }
+    public virtual ITypeList<IFakeInterceptor> Interceptors { get; }
     
     public virtual Type ServiceType { get; }
     
@@ -15,6 +16,6 @@ public class OnServiceRegisteredContext
         ServiceType = ThrowHelper.ThrowIfNull(serviceType, nameof(serviceType));
         ImplementationType = ThrowHelper.ThrowIfNull(implementationType, nameof(implementationType));
 
-        Interceptors = new List<IFakeInterceptor>();
+        Interceptors = new TypeList<IFakeInterceptor>();
     }
 }
