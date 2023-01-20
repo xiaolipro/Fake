@@ -10,7 +10,7 @@ namespace Fake.Extensions;
 
 internal static class InternalServiceCollectionExtensions
 {
-    internal static void AddFakeCoreServices(this IServiceCollection services,IFakeApplicationInfo applicationInfo, FakeApplicationCreationOptions options)
+    internal static void AddFakeCoreServices(this IServiceCollection services,IFakeApplication application, FakeApplicationCreationOptions options)
     {
         // 配置文件
         if (!services.IsAdded<IConfiguration>())
@@ -19,7 +19,7 @@ internal static class InternalServiceCollectionExtensions
             services.ReplaceConfiguration(configuration);
         }
         
-        var assemblyScanner = new FakeAssemblyScanner(applicationInfo);
+        var assemblyScanner = new FakeAssemblyScanner(application);
         var typeScanner = new FakeAssemblyTypeScanner(assemblyScanner);
         
         services.TryAddSingleton<IModuleLoader>(new FakeModuleLoader());

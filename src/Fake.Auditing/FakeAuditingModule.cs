@@ -1,6 +1,8 @@
-﻿using Fake.Auditing;
-using Fake.Modularity;
+﻿using Fake.Modularity;
 using Microsoft.Extensions.DependencyInjection;
+
+// ReSharper disable once CheckNamespace
+namespace Fake.Auditing;
 
 [DependsOn(typeof(FakeAuditingContractsModule))]
 public class FakeAuditingModule:FakeModule

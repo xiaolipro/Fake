@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Fake;
 
-public class FakeApplication : IFakeApplicationInfo
+public class FakeApplication : IFakeApplication
 {
     public IReadOnlyList<IModuleDescriptor> Modules { get; }
     public string ApplicationName { get; }

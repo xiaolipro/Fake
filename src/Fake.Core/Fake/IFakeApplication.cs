@@ -2,7 +2,7 @@
 
 namespace Fake;
 
-public interface IFakeApplicationInfo:IModuleContainer,IApplicationInfo,IDisposable
+public interface IFakeApplication:IModuleContainer,IApplicationInfo,IDisposable
 {
     /// <summary>
     /// 启动模块的类型
