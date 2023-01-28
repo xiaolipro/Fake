@@ -1,3 +1,5 @@
+using System;
+
 namespace Fake.Auditing;
 
 public interface IHasDeleter<out TCreatorId>

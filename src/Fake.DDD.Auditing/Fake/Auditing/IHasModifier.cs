@@ -1,4 +1,6 @@
-﻿namespace Fake.Auditing;
+﻿using System;
+
+namespace Fake.Auditing;
 
 public interface IHasModifier<out TCreatorId>
 {
