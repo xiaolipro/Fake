@@ -12,22 +12,22 @@ public static class FakeServiceCollectionServiceRegisterExtensions
     /// </summary>
     /// <param name="services"></param>
     /// <param name="registrationAction"></param>
-    public static void OnRegistered(this IServiceCollection services, Action<OnServiceRegisteredContext> registrationAction)
+    public static void OnRegistered(this IServiceCollection services, Action<OnServiceRegistrationContext> registrationAction)
     {
         GetOrCreateRegistrationActionList(services).Add(registrationAction);
     }
 
-    public static ServiceRegisteredActionList GetRegistrationActionList(this IServiceCollection services)
+    public static ServiceRegistrationActionList GetRegistrationActionList(this IServiceCollection services)
     {
         return GetOrCreateRegistrationActionList(services);
     }
 
-    private static ServiceRegisteredActionList GetOrCreateRegistrationActionList(IServiceCollection services)
+    private static ServiceRegistrationActionList GetOrCreateRegistrationActionList(IServiceCollection services)
     {
-        var actionList = services.GetObjectAccessorOrNull<ServiceRegisteredActionList>()?.Value;
+        var actionList = services.GetObjectAccessorOrNull<ServiceRegistrationActionList>()?.Value;
         if (actionList == null)
         {
-            actionList = new ServiceRegisteredActionList();
+            actionList = new ServiceRegistrationActionList();
             services.AddObjectAccessor(actionList);
         }
 

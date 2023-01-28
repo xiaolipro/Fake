@@ -3,7 +3,7 @@ using Fake.Proxy;
 
 namespace Fake.DependencyInjection;
 
-public class OnServiceRegisteredContext
+public class OnServiceRegistrationContext
 {
     public virtual ITypeList<IFakeInterceptor> Interceptors { get; }
     
@@ -11,7 +11,7 @@ public class OnServiceRegisteredContext
     
     public virtual Type ImplementationType { get; }
     
-    public OnServiceRegisteredContext([NotNull]Type serviceType, [NotNull] Type implementationType)
+    public OnServiceRegistrationContext([NotNull]Type serviceType, [NotNull] Type implementationType)
     {
         ServiceType = ThrowHelper.ThrowIfNull(serviceType, nameof(serviceType));
         ImplementationType = ThrowHelper.ThrowIfNull(implementationType, nameof(implementationType));

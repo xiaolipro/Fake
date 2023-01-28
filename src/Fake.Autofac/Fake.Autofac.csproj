@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <Import Project="../../common.props" />
+    <Import Project="../../configureawait.props" />
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <RootNamespace />
+    </PropertyGroup>
+    <ItemGroup>
+      <PackageReference Include="Autofac" Version="6.5.0" />
+      <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
+      <PackageReference Include="Autofac.Extras.DynamicProxy" Version="6.0.1" />
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\Fake.Castle\Fake.Castle.csproj" />
+      <ProjectReference Include="..\Fake.Core\Fake.Core.csproj" />
+    </ItemGroup>
+
+</Project>

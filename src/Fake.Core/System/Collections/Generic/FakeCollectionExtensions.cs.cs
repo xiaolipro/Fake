@@ -5,6 +5,15 @@ namespace System.Collections.Generic;
 public static class FakeCollectionExtensions
 {
     /// <summary>
+    /// 检查给定的集合对象是否为null或没有元素。
+    /// </summary>
+    [ContractAnnotation("source:null => true")]
+    public static bool IsNullOrEmpty<T>([CanBeNull] this ICollection<T> source)
+    {
+        return source is not { Count: > 0 };
+    }
+    
+    /// <summary>
     /// Adds an item to the collection if it's not already in the collection.
     /// </summary>
     /// <param name="source">The collection</param>

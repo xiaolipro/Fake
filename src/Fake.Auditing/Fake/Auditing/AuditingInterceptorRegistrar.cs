@@ -8,7 +8,7 @@ namespace Fake.Auditing;
 
 public static class AuditingInterceptorRegistrar
 {
-    public static void RegisterIfNeeded(OnServiceRegisteredContext context)
+    public static void RegisterIfNeeded(OnServiceRegistrationContext context)
     {
         if (ShouldIntercept(context.ImplementationType))
         {

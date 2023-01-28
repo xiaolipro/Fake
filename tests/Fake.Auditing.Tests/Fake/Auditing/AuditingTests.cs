@@ -15,7 +15,7 @@ public class AuditingTests:FakeAuditingTestBase
     {
     }
 
-    protected override void AfterAddStartupModule(ServiceCollection services)
+    protected override void AfterAddStartupModule(IServiceCollection services)
     {
         AuditingStore = Substitute.For<IAuditingStore>();
         services.Replace(ServiceDescriptor.Singleton(AuditingStore));

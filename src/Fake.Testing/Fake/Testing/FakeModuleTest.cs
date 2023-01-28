@@ -16,12 +16,14 @@ public abstract class FakeModuleTest<TStartupModule> : FakeTest, IDisposable
 
     protected FakeModuleTest()
     {
-        var services = new ServiceCollection();
+        var services = CreateServiceCollection();
         
-        var application = services.AddStartupModule<TStartupModule>();
+        BeforeAddStartupModule(services);
+        var application = services.AddStartupModule<TStartupModule>(SetFakeApplicationCreationOptions);
+        AfterAddStartupModule(services);
+        
         Application = application;
 
-        AfterAddStartupModule(services);
         RootServiceProvider = services.BuildServiceProviderFromFactory();;
 
         TestServiceScope = RootServiceProvider!.CreateScope();
@@ -29,9 +31,29 @@ public abstract class FakeModuleTest<TStartupModule> : FakeTest, IDisposable
 
         ServiceProvider = application.ServiceProvider;
     }
-
-    protected virtual void AfterAddStartupModule(ServiceCollection services)
+    
+    protected virtual IServiceCollection CreateServiceCollection()
     {
+        return new ServiceCollection();
+    }
+
+    protected virtual void BeforeAddStartupModule(IServiceCollection services)
+    {
+
+    }
+    
+    protected virtual void AfterAddStartupModule(IServiceCollection services)
+    {
+    }
+    
+    protected virtual void SetFakeApplicationCreationOptions(FakeApplicationCreationOptions options)
+    {
+
+    }
+    
+    protected virtual IServiceProvider CreateServiceProvider(IServiceCollection services)
+    {
+        return services.BuildServiceProviderFromFactory();
     }
 
     public void Dispose()

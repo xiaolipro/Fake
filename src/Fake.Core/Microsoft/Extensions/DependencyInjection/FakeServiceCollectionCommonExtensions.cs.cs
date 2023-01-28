@@ -37,6 +37,7 @@ public static class FakeServiceCollectionCommonExtensions
     {
         ThrowHelper.ThrowIfNull(services, nameof(services));
 
+        // 通过服务商工厂创建服务商
         foreach (var service in services)
         {
             var factoryInterfaceType = service.ImplementationInstance?
@@ -57,6 +58,7 @@ public static class FakeServiceCollectionCommonExtensions
             return serviceProvider as IServiceProvider;
         }
 
+        // 如果没有第三方IOC容器则使用默认的
         return services.BuildServiceProvider();
     }
     

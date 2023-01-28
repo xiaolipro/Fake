@@ -9,5 +9,10 @@
     <ItemGroup>
       <ProjectReference Include="..\Fake.Core\Fake.Core.csproj" />
     </ItemGroup>
+    
+    <ItemGroup>
+        <PackageReference Include="Castle.Core" Version="5.1.1" />
+        <PackageReference Include="Castle.Core.AsyncInterceptor" Version="2.1.0" />
+    </ItemGroup>
 
 </Project>

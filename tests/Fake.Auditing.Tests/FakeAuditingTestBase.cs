@@ -1,9 +1,10 @@
-﻿using Fake.Auditing;
+﻿using Fake;
 using Fake.Testing;
-using Xunit;
-using Xunit.Abstractions;
 
-public class FakeAuditingTestBase:FakeModuleTest<FakeAuditingTestModule>
+public class FakeAuditingTestBase : FakeModuleTest<FakeAuditingTestModule>
 {
-  
+    protected override void SetFakeApplicationCreationOptions(FakeApplicationCreationOptions options)
+    {
+        options.UseAutofac();
+    }
 }
