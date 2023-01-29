@@ -65,6 +65,7 @@ public class ExposeServicesAttribute : Attribute, IExposedServiceTypesProvider
                 interfaceName = interfaceName.Slice(1, interfaceName.Length - 1);
             }
             
+            //TODO：为什么这里暴露了泛型，仍然获取不了服务
             // if (targetType.IsGenericType)
             // {
             //     if (targetType.Name.Substring(0, targetType.Name.IndexOf('`')).EndsWith(interfaceName.ToString()))
