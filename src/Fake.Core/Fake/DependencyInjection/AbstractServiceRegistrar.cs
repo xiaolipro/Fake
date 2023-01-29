@@ -10,7 +10,8 @@ public abstract class AbstractServiceRegistrar : IServiceRegistrar
         var types = AssemblyHelper
             .GetAllTypes(assembly)
             .Where(
-                type => type is { IsClass: true, IsAbstract: false}
+                //TODO：泛型为什么跳过？
+                type => type is { IsClass: true, IsAbstract: false, IsGenericType: false }
             ).ToArray();
 
         AddTypes(services, types);
@@ -30,9 +31,9 @@ public abstract class AbstractServiceRegistrar : IServiceRegistrar
         List<Type> exposedServiceTypes)
     {
         var actions = services.GetServiceExposingActionList();
-        
+
         if (actions.Count <= 0) return;
-        
+
         var context = new OnServiceExposingContext(implementationType, exposedServiceTypes);
         foreach (var action in actions)
         {
@@ -40,14 +41,13 @@ public abstract class AbstractServiceRegistrar : IServiceRegistrar
         }
     }
 
-
     protected virtual ServiceLifetime? GetLifeTimeOrNull(Type type, [CanBeNull] DependencyAttribute attribute)
     {
         // 优先从Attribute读取，其次是类的层次体系
         return attribute?.Lifetime ?? GetServiceLifetimeFromClassHierarchy(type);
     }
-    
-    
+
+
     /// <summary>
     /// 从类的层次体系中提取生命周期
     /// </summary>
@@ -59,12 +59,12 @@ public abstract class AbstractServiceRegistrar : IServiceRegistrar
         {
             return ServiceLifetime.Singleton;
         }
-        
+
         if (typeof(IScopedDependency).IsAssignableFrom(type))
         {
             return ServiceLifetime.Scoped;
         }
-        
+
         if (typeof(ITransientDependency).IsAssignableFrom(type))
         {
             return ServiceLifetime.Transient;

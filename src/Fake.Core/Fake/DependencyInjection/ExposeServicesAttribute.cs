@@ -64,15 +64,15 @@ public class ExposeServicesAttribute : Attribute, IExposedServiceTypesProvider
             {
                 interfaceName = interfaceName.Slice(1, interfaceName.Length - 1);
             }
-
-            if (targetType.IsGenericType)
-            {
-                if (targetType.Name.Substring(0, targetType.Name.IndexOf('`')).EndsWith(interfaceName.ToString()))
-                {
-                    serviceTypes.Add(@interface);
-                    continue;
-                }
-            }
+            
+            // if (targetType.IsGenericType)
+            // {
+            //     if (targetType.Name.Substring(0, targetType.Name.IndexOf('`')).EndsWith(interfaceName.ToString()))
+            //     {
+            //         serviceTypes.Add(@interface);
+            //         continue;
+            //     }
+            // }
 
             if (targetType.Name.EndsWith(interfaceName.ToString()))
             {
