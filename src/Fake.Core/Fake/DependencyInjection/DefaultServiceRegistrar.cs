@@ -18,7 +18,7 @@ public class DefaultServiceRegistrar : AbstractServiceRegistrar
         if (lifetime == null) return;
 
         // 获取需要暴露的服务
-        var exposedServiceTypes = base.GetExposedServiceTypes(type);
+        var exposedServiceTypes = ExposedServiceExplorer.GetExposedServiceTypes(type);
 
         // 触发服务暴露动作
         TriggerServiceExposingActions(services, type, exposedServiceTypes);

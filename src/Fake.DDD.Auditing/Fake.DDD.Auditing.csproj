@@ -6,7 +6,6 @@
         <RootNamespace />
     </PropertyGroup>
     <ItemGroup>
-      <ProjectReference Include="..\Fake.Auditing.Contacts\Fake.Auditing.Contacts.csproj" />
       <ProjectReference Include="..\Fake.Core\Fake.Core.csproj" />
     </ItemGroup>
 

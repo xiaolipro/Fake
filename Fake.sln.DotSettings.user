@@ -6,6 +6,7 @@
       &lt;TestId&gt;xUnit::18CD3533-6778-46E1-B175-448D15543F8C::net7.0::Fake.Auditing.Tests.Class1.dd&lt;/TestId&gt;&#xD;
       &lt;TestId&gt;xUnit::18CD3533-6778-46E1-B175-448D15543F8C::net7.0::NewDirectory1.AuditingTests.Should_Write_AuditLog_For_Classes_That_Implement_IAuditingEnabled_Without_An_Explicit_Scope&lt;/TestId&gt;&#xD;
       &lt;TestId&gt;xUnit::18CD3533-6778-46E1-B175-448D15543F8C::net7.0::Fake.Auditing.AuditingTests.Should_Write_AuditLog_For_Classes_That_Implement_IAuditingEnabled_Without_An_Explicit_Scope&lt;/TestId&gt;&#xD;
+      &lt;TestId&gt;xUnit::18CD3533-6778-46E1-B175-448D15543F8C::net7.0::Fake.Auditing.AuditingTests.打了Audited特性的可以审计&lt;/TestId&gt;&#xD;
     &lt;/TestAncestor&gt;&#xD;
   &lt;/Or&gt;&#xD;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

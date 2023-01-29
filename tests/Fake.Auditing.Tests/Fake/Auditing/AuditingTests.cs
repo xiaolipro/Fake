@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Fake.DependencyInjection;
+using Fake.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using NSubstitute;
@@ -7,35 +8,40 @@ using Xunit;
 
 namespace Fake.Auditing;
 
-public class AuditingTests:FakeAuditingTestBase
+public class AuditingTests : FakeAuditingTestBase
 {
     protected IAuditingStore AuditingStore;
-    
+    private IAuditingManager _auditingManager;
+
     public AuditingTests()
     {
+        _auditingManager = GetRequiredService<IAuditingManager>();
     }
 
     protected override void AfterAddStartupModule(IServiceCollection services)
     {
         AuditingStore = Substitute.For<IAuditingStore>();
         services.Replace(ServiceDescriptor.Singleton(AuditingStore));
+        services.AddSingleton(typeof(IScopeProvider<>), typeof(ScopeProvider<>));
     }
 
     [Fact]
-    public async Task Should_Write_AuditLog_For_Classes_That_Implement_IAuditingEnabled_Without_An_Explicit_Scope()
+    public async Task 打了Audited特性的可以审计()
     {
         var myAuditedObject1 = GetRequiredService<MyAuditedObject1>();
 
-        await myAuditedObject1.DoItAsync(new InputObject { Value1 = "forty-two", Value2 = 42 });
+        using (var scope = _auditingManager.BeginScope())
+        {
+            await myAuditedObject1.DoItAsync(new InputObject { Value1 = "forty-two", Value2 = 42 });
+            await scope.SaveAsync();
+        }
 
         await AuditingStore.Received().SaveAsync(Arg.Any<AuditLogInfo>());
     }
 }
 
-
 public interface IMyAuditedObject : ITransientDependency
 {
-
 }
 
 [Audited]
@@ -57,6 +63,7 @@ public class ResultObject
 
     public int Value2 { get; set; }
 }
+
 public class InputObject
 {
     public string Value1 { get; set; }

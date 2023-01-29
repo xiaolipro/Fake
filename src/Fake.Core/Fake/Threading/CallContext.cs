@@ -5,7 +5,7 @@ namespace Fake.Threading;
 /// <summary>
 /// 线程本地存储
 /// </summary>
-public static class FakeCallContext
+public static class CallContext
 {
     private static readonly ConcurrentDictionary<string, AsyncLocal<object>> Data = new();
 

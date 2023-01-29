@@ -17,6 +17,10 @@ public class FakeModuleLoader : IModuleLoader
     private List<IModuleDescriptor> GetModuleDescriptors(IServiceCollection services, Type startupModuleType)
     {
         var descriptors = new List<IModuleDescriptor>();
+        
+        // 自动引入Core模块
+        descriptors.Add(CreateModuleDescriptor(services,typeof(FakeCoreModule)));
+
         FillModuleDescriptors(descriptors, services, startupModuleType);
         SetModuleDependencies(descriptors);
 

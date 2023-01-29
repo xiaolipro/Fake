@@ -10,7 +10,7 @@ public abstract class AbstractServiceRegistrar : IServiceRegistrar
         var types = AssemblyHelper
             .GetAllTypes(assembly)
             .Where(
-                type => type is { IsClass: true, IsAbstract: false, IsGenericType: false }
+                type => type is { IsClass: true, IsAbstract: false}
             ).ToArray();
 
         AddTypes(services, types);
@@ -40,23 +40,7 @@ public abstract class AbstractServiceRegistrar : IServiceRegistrar
         }
     }
 
-    protected virtual List<Type> GetExposedServiceTypes(Type type)
-    {
-        var defaultExposeServicesAttribute =
-            new ExposeServicesAttribute
-            {
-                ExposeConventionalInterfaces = true,
-                ExposeSelf = true
-            };
-        return type
-            .GetCustomAttributes(true)
-            .OfType<IExposedServiceTypesProvider>()
-            .DefaultIfEmpty(defaultExposeServicesAttribute)
-            .SelectMany(p => p.GetExposedServiceTypes(type))
-            .Distinct()
-            .ToList();
-    }
-    
+
     protected virtual ServiceLifetime? GetLifeTimeOrNull(Type type, [CanBeNull] DependencyAttribute attribute)
     {
         // 优先从Attribute读取，其次是类的层次体系
