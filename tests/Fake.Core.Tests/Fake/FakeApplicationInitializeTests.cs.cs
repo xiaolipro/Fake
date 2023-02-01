@@ -14,7 +14,7 @@ public class FakeApplicationInitializeTests
         var module = app.Services.GetSingletonInstance<IndependentModule>();
             
         // Action
-        app.InitializeModules();
+        app.Initialize();
         
         // Assert
         app.ServiceProvider.GetRequiredService<IndependentModule>().ShouldBeSameAs(module);

@@ -87,7 +87,8 @@ public static class FakeRegistrationExtensions
             {
                 builder.RegisterInstance(serviceDescriptor.ImplementationInstance!)
                     .As(serviceDescriptor.ServiceType)
-                    .ConfigureLifecycle(serviceDescriptor.Lifetime);
+                    .ConfigureLifecycle(serviceDescriptor.Lifetime)
+                    .ConfigureSimpleFakeConventions(moduleContainer, registrationActionList);
             }
         }
     }

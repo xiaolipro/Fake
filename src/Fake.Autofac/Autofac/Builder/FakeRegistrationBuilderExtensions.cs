@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Autofac.Core;
 using Autofac.Extras.DynamicProxy;
@@ -27,12 +28,65 @@ public static class FakeRegistrationBuilderExtensions
 
         var implementationType = registrationBuilder.ActivatorData.ImplementationType;
 
-        // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-        if (implementationType == null) return registrationBuilder;
-
+        Debug.Assert(implementationType != null, nameof(implementationType) + " != null");
         return registrationBuilder
             .EnablePropertyInjection(moduleContainer, implementationType)
             .InvokeRegistrationActions(registrationActionList, serviceType, implementationType);
+    }
+    
+    public static IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> ConfigureSimpleFakeConventions<TLimit,
+        TActivatorData, TRegistrationStyle>(
+        this IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> registrationBuilder,
+        IModuleContainer moduleContainer,
+        ServiceRegistrationActionList registrationActionList)
+        where TActivatorData : SimpleActivatorData
+    {
+        var serviceType = registrationBuilder.RegistrationData.Services
+            .OfType<IServiceWithType>()
+            .FirstOrDefault()?.ServiceType;
+
+        if (serviceType == null) return registrationBuilder;
+
+        var implementationType = registrationBuilder.ActivatorData.GetType();
+
+        Debug.Assert(implementationType != null, nameof(implementationType) + " != null");
+        // 只对Fake模块中没有使用DisablePropertyInjectionAttribute的实现开启属性注入
+        if (moduleContainer.Modules.Any(m => m.Assembly == implementationType.Assembly) &&
+            implementationType.GetCustomAttributes(typeof(DisablePropertyInjectionAttribute), true).IsNullOrEmpty())
+        {
+            // preserveSetValues设为false，不保留原有值，覆写
+            registrationBuilder = registrationBuilder.PropertiesAutowired(new FakePropertySelector(false));
+        }
+        
+        var context = new OnServiceRegistrationContext(serviceType, implementationType);
+
+        foreach (var registrationAction in registrationActionList)
+        {
+            registrationAction.Invoke(context);
+        }
+
+        if (context.Interceptors.Any())
+        {
+            if (serviceType.IsInterface)
+            {
+                registrationBuilder.EnableInterfaceInterceptors();
+            }
+            else
+            {
+                if (registrationActionList.DisableClassInterceptors) return registrationBuilder;
+
+                (registrationBuilder as IRegistrationBuilder<TLimit, ConcreteReflectionActivatorData, TRegistrationStyle>)
+                    .EnableClassInterceptors();
+            }
+
+            foreach (var interceptor in context.Interceptors)
+            {
+                // 使用Castle做动态代理
+                registrationBuilder.InterceptedBy(typeof(FakeAsyncDeterminationInterceptor<>).MakeGenericType(interceptor));
+            }
+        }
+
+        return registrationBuilder;
     }
 
     private static IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> EnablePropertyInjection<TLimit,

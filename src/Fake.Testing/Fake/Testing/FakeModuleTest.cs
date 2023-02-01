@@ -27,7 +27,7 @@ public abstract class FakeModuleTest<TStartupModule> : FakeTest, IDisposable
         RootServiceProvider = services.BuildServiceProviderFromFactory();;
 
         TestServiceScope = RootServiceProvider!.CreateScope();
-        application.InitializeModules(TestServiceScope.ServiceProvider);
+        application.Initialize(TestServiceScope.ServiceProvider);
 
         ServiceProvider = application.ServiceProvider;
     }

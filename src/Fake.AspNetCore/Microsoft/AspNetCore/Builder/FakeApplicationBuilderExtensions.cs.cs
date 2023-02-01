@@ -20,6 +20,6 @@ public static class FakeApplicationBuilderExtensions
         applicationLifetime.ApplicationStopping.Register(() => application.Shutdown());
         applicationLifetime.ApplicationStopped.Register(() => application.Dispose());
 
-        application.InitializeModules(app.ApplicationServices);
+        application.Initialize(app.ApplicationServices);
     }
 }

@@ -1,10 +1,12 @@
-﻿using System.Reflection;
+﻿using System.Collections;
+using System.Reflection;
 
 namespace Fake.Collections;
 
-public class TypeList<TBaseType> :List<TBaseType>,ITypeList<TBaseType>
+public class TypeList<TBaseType> :ITypeList<TBaseType>
 {
     private readonly List<Type> _typeList;
+
     public bool IsReadOnly => false;
     
     /// <summary>
@@ -14,7 +16,12 @@ public class TypeList<TBaseType> :List<TBaseType>,ITypeList<TBaseType>
     {
         _typeList = new List<Type>();
     }
-    
+
+    public void RemoveAt(int index)
+    {
+        _typeList.RemoveAt(index);
+    }
+
     public new Type this[int index]
     {
         get => _typeList[index];
@@ -23,8 +30,14 @@ public class TypeList<TBaseType> :List<TBaseType>,ITypeList<TBaseType>
             _typeList[index] = value;
         }
     }
-    
-    public new IEnumerator<Type> GetEnumerator()
+
+    public IEnumerator<Type> GetEnumerator()
+    {
+        return _typeList.GetEnumerator();
+    }
+
+    //NOTE：这里一定要显示实现IEnumerable.GetEnumerator
+    IEnumerator IEnumerable.GetEnumerator()
     {
         return _typeList.GetEnumerator();
     }
@@ -33,6 +46,11 @@ public class TypeList<TBaseType> :List<TBaseType>,ITypeList<TBaseType>
     {
         CheckType(item);
         _typeList.Add(item);
+    }
+
+    void ICollection<Type>.Clear()
+    {
+        _typeList.Clear();
     }
 
     public bool Contains(Type item)
@@ -49,6 +67,8 @@ public class TypeList<TBaseType> :List<TBaseType>,ITypeList<TBaseType>
     {
         return _typeList.Remove(item);
     }
+
+    public int Count => _typeList.Count;
 
     public int IndexOf(Type item)
     {

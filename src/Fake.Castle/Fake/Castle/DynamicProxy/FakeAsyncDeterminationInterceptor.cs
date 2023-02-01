@@ -1,13 +1,13 @@
 ﻿using Castle.DynamicProxy;
 using Fake.Proxy;
-using JetBrains.Annotations;
 
 namespace Fake.Castle.DynamicProxy;
 
-public class FakeAsyncDeterminationInterceptor<T> : AsyncDeterminationInterceptor where T : IFakeInterceptor
+public class FakeAsyncDeterminationInterceptor<TInterceptor> : AsyncDeterminationInterceptor
+    where TInterceptor : IFakeInterceptor
 {
-    public FakeAsyncDeterminationInterceptor([NotNull] IAsyncInterceptor asyncInterceptor) : base(asyncInterceptor)
+    public FakeAsyncDeterminationInterceptor(TInterceptor fakeInterceptor) : base(
+        new FakeInterceptorAdapter<TInterceptor>(fakeInterceptor))
     {
-        
     }
 }

@@ -50,25 +50,29 @@ public class DefaultServiceRegistrar : AbstractServiceRegistrar
     protected virtual ServiceDescriptor CreateServiceDescriptor(Type implementationType, Type exposedServiceType,
         List<Type> allExposedServiceTypes, ServiceLifetime lifetime)
     {
-        // 适配类的层次体系
-        if (lifetime.IsIn(ServiceLifetime.Singleton, ServiceLifetime.Scoped))
-        {
-            var redirectedType = GetRedirectedTypeOrNull(
-                implementationType,
+        if (!lifetime.IsIn(ServiceLifetime.Singleton, ServiceLifetime.Scoped))
+            return ServiceDescriptor.Describe(
                 exposedServiceType,
-                allExposedServiceTypes
+                implementationType,
+                lifetime
             );
+        
+        // 适配类的层次体系
+        var redirectedType = GetRedirectedTypeOrNull(
+            implementationType,
+            exposedServiceType,
+            allExposedServiceTypes
+        );
 
-            if (redirectedType != null)
-            {
-                return ServiceDescriptor.Describe(
-                    exposedServiceType,
-                    provider => provider.GetRequiredService(redirectedType),
-                    lifetime
-                );
-            }
+        if (redirectedType != null)
+        {
+            return ServiceDescriptor.Describe(
+                exposedServiceType,
+                provider => provider.GetRequiredService(redirectedType),
+                lifetime
+            );
         }
-
+        
         return ServiceDescriptor.Describe(
             exposedServiceType,
             implementationType,

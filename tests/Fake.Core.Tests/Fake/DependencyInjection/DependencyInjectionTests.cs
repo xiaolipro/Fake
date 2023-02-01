@@ -9,7 +9,7 @@ public class DependencyInjectionTests
     public void 默认会注册自己和按命名约定的接口()
     {
         using var application = FakeApplicationFactory.Create<IndependentModule>();
-        application.InitializeModules();
+        application.Initialize();
         var a = application.ServiceProvider.GetService<IA>();
         a.ShouldNotBeNull();
 
@@ -22,7 +22,7 @@ public class DependencyInjectionTests
     {
         using (var application = FakeApplicationFactory.Create<IndependentModule>())
         {
-            application.InitializeModules();
+            application.Initialize();
 
             application.ServiceProvider.GetService<IB>().ShouldNotBeNull();
         }
@@ -32,7 +32,7 @@ public class DependencyInjectionTests
     void Dependency指定的生命周期优先级最高()
     {
         using var application = FakeApplicationFactory.Create<IndependentModule>();
-        application.InitializeModules();
+        application.Initialize();
 
         application.Services.First(x => x.ServiceType == typeof(IA)).Lifetime.ShouldBe(ServiceLifetime.Transient);
     }

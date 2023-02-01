@@ -22,7 +22,7 @@ public class FakeApplication : IFakeApplication
     {
         get
         {
-            if (!_initializedModules) throw new FakeException($"模块初始化前，不能使用{nameof(ServiceProvider)}");
+            if (!_initializedModules) throw new FakeException($"{nameof(FakeApplication)}初始化前，不能使用{nameof(ServiceProvider)}");
             return _serviceProvider;
         }
     }
@@ -136,8 +136,6 @@ public class FakeApplication : IFakeApplication
         _configuredServices = true;
     }
 
-    
-
     public virtual void Shutdown()
     {
         // Shutdown
@@ -162,14 +160,20 @@ public class FakeApplication : IFakeApplication
         // 应该在这里销毁ServiceProvider，但Shutdown可能还没被调用
     }
 
-    public virtual void InitializeModules([CanBeNull]IServiceProvider serviceProvider = null)
+    public void Initialize([CanBeNull]IServiceProvider serviceProvider = null)
+    {
+        serviceProvider ??= Services.BuildServiceProviderFromFactory().CreateScope().ServiceProvider;
+        SetServiceProvider(serviceProvider);
+
+        InitializeModules();
+    }
+
+    protected virtual void InitializeModules()
     {
         if (_initializedModules)
         {
             throw new FakeInitializationException($"{nameof(InitializeModules)}已经调用过了，不要重复调用");
         }
-        
-        SetServiceProvider(serviceProvider);
         
         Debug.Assert(_serviceProvider != null);
         

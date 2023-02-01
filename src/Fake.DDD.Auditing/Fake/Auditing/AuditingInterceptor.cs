@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using Fake.DependencyInjection;
 using Fake.Proxy;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace Fake.Auditing;
 
@@ -17,6 +18,15 @@ public class AuditingInterceptor: IFakeInterceptor, ITransientDependency
     public async Task InterceptAsync(IFakeMethodInvocation invocation)
     {
         using var scope = _serviceScopeFactory.CreateScope();
+
+        var auditingHelper = scope.ServiceProvider.GetRequiredService<IAuditingHelper>();
+        var auditingOptions = scope.ServiceProvider.GetRequiredService<IOptions<FakeAuditingOptions>>().Value;
+
+        if (!auditingHelper.ShouldSaveAudit(invocation.Method))
+        {
+            await invocation.ProcessAsync();
+            return;
+        }
         
         await invocation.ProcessAsync();
 

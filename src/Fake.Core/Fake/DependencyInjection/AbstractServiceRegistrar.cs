@@ -11,6 +11,7 @@ public abstract class AbstractServiceRegistrar : IServiceRegistrar
             .GetAllTypes(assembly)
             .Where(
                 //TODO：泛型为什么跳过？
+                // type => type is { IsClass: true, IsAbstract: false }
                 type => type is { IsClass: true, IsAbstract: false, IsGenericType: false }
             ).ToArray();
 
