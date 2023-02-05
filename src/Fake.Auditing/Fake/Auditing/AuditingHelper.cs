@@ -1,3 +1,4 @@
+using System;
 using System.Reflection;
 using Fake.DependencyInjection;
 using Fake.Timing;
@@ -16,18 +17,20 @@ public class AuditingHelper : IAuditingHelper, ITransientDependency
         _options = options.Value;
     }
 
-    public virtual bool ShouldSaveAudit(MethodInfo methodInfo)
+    public virtual bool ShouldAuditMethod(MethodInfo methodInfo)
     {
         if (!_options.IsEnabled) return false;
         if (methodInfo == null) return false;
-        
+
         if (!methodInfo.IsPublic) return false;
-        
+
         if (methodInfo.IsDefined(typeof(AuditedAttribute), true)) return true;
         if (methodInfo.IsDefined(typeof(DisableAuditingAttribute), true)) return false;
 
+        if (ShouldAuditType(methodInfo.DeclaringType)) return true;
         return false;
     }
+
 
     public virtual AuditLogInfo CreateAuditLogInfo()
     {
@@ -36,5 +39,16 @@ public class AuditingHelper : IAuditingHelper, ITransientDependency
             ApplicationName = _options.ApplicationName,
             ExecutionTime = _clock.Now,
         };
+    }
+
+
+    public static bool ShouldAuditType(Type type)
+    {
+        //TODO：在继承链中，最好先检查顶层类的attributes
+        if (type.IsDefined(typeof(AuditedAttribute), true)) return true;
+        if (type.IsDefined(typeof(DisableAuditingAttribute), true)) return false;
+
+        if (type.IsAssignableTo(typeof(IAuditingEnabled))) return true;
+        return false;
     }
 }

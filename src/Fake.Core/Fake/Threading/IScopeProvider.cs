@@ -7,7 +7,7 @@ public interface IScopeProvider<T>
     /// </summary>
     /// <param name="contextKey"></param>
     /// <returns></returns>
-    T GetValue(string contextKey);
+    T GetContext(string contextKey);
 
     /// <summary>
     /// 开启一个新的作用域

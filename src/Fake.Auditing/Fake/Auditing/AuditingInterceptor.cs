@@ -22,10 +22,17 @@ public class AuditingInterceptor: IFakeInterceptor, ITransientDependency
         var auditingHelper = scope.ServiceProvider.GetRequiredService<IAuditingHelper>();
         var auditingOptions = scope.ServiceProvider.GetRequiredService<IOptions<FakeAuditingOptions>>().Value;
 
-        if (!auditingHelper.ShouldSaveAudit(invocation.Method))
+        if (!auditingHelper.ShouldAuditMethod(invocation.Method))
         {
             await invocation.ProcessAsync();
             return;
+        }
+        
+        var auditingManager = scope.ServiceProvider.GetRequiredService<IAuditingManager>();
+        if (auditingManager.Current is null)
+        {
+            // 使用新的auditing-scope处理
+            ProcessWithNewAuditingScopeAsync(invocation, auditingOptions, auditingManager, auditingHelper);
         }
         
         await invocation.ProcessAsync();
@@ -33,7 +40,12 @@ public class AuditingInterceptor: IFakeInterceptor, ITransientDependency
         var store = scope.ServiceProvider.GetRequiredService<IAuditingStore>();
         await store.SaveAsync(new AuditLogInfo
         {
-            ApplicationName = "FAKE"
+            ApplicationName = "FAKE-APP",
+            UserName = "FAKE"
         });
+    }
+
+    private async Task ProcessWithNewAuditingScopeAsync(IFakeMethodInvocation invocation, FakeAuditingOptions auditingOptions, IAuditingManager auditingManager, IAuditingHelper auditingHelper)
+    {
     }
 }

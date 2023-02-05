@@ -12,7 +12,7 @@
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\..\src\Fake.Autofac\Fake.Autofac.csproj" />
-      <ProjectReference Include="..\..\src\Fake.DDD.Auditing\Fake.DDD.Auditing.csproj" />
+      <ProjectReference Include="..\..\src\Fake.Auditing\Fake.Auditing.csproj" />
     </ItemGroup>
 
 </Project>

@@ -10,4 +10,12 @@ public class FakeAuditingModule:FakeModule
     {
         context.Services.OnRegistered(AuditingInterceptorRegistrar.RegisterIfNeeded);
     }
+
+    public override void ConfigureServices(ServiceConfigurationContext context)
+    {
+        context.Services.Configure<FakeAuditingOptions>(options =>
+        {
+            options.IsEnabled = true;
+        });
+    }
 }

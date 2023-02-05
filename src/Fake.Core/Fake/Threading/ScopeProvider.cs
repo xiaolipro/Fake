@@ -7,7 +7,7 @@ public class ScopeProvider<T> : IScopeProvider<T>, ISingletonDependency
 {
     private static readonly ConcurrentDictionary<string, ScopeItem> ScopeDictionary = new();
 
-    public T GetValue(string contextKey)
+    public T GetContext(string contextKey)
     {
         var item = GetCurrentItemOrNull(contextKey);
         return item == null ? default : item.Value;

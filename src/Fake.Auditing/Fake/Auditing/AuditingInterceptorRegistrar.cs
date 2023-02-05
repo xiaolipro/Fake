@@ -21,9 +21,7 @@ public static class AuditingInterceptorRegistrar
     {
         if (DynamicProxyIgnoreTypes.Contains(type)) return false;
 
-        //TODO：在继承链中，最好先检查顶层类的attributes
-        if (type.IsDefined(typeof(AuditedAttribute), true)) return true;
-        if (type.IsDefined(typeof(DisableAuditingAttribute), true)) return false;
+        if (AuditingHelper.ShouldAuditType(type)) return true;
 
         if (type.GetMethods().Any(m => m.IsDefined(typeof(AuditedAttribute), true))) return true;
 

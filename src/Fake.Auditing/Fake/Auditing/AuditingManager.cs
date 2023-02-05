@@ -24,7 +24,7 @@ public class AuditingManager : IAuditingManager, ITransientDependency
         _auditingStore = auditingStore;
     }
 
-    public AuditLogScope Current => _scopeProvider.GetValue(AuditingContextKey);
+    public AuditLogScope Current => _scopeProvider.GetContext(AuditingContextKey);
 
     public IAuditLogSaveHandle BeginScope()
     {

@@ -33,7 +33,7 @@ public class AuditingTests : FakeAuditingTestBase
         using (var scope = _auditingManager.BeginScope())
         {
             await myAuditedObject1.DoItAsync(new InputObject { Value1 = "forty-two", Value2 = 42 });
-            await scope.SaveAsync();
+            //await scope.SaveAsync();
         }
 
         await AuditingStore.Received().SaveAsync(Arg.Any<AuditLogInfo>());

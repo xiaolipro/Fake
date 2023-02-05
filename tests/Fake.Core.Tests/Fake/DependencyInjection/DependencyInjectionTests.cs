@@ -41,7 +41,7 @@ public class DependencyInjectionTests
     void DisableServiceRegistration禁用服务注册()
     {
         using var application = FakeApplicationFactory.Create<IndependentModule>();
-        application.InitializeModules();
+        application.Initialize();
 
         application.ServiceProvider.GetService<MyB>().ShouldBeNull();
     }
@@ -51,7 +51,7 @@ public class DependencyInjectionTests
     void ScopedSingleton的层次体系重定向()
     {
         using var application = FakeApplicationFactory.Create<IndependentModule>();
-        application.InitializeModules();
+        application.Initialize();
 
         var a = application.ServiceProvider.GetService<IHierarchy>();
         var b = application.ServiceProvider.GetService<AHierarchy>();
