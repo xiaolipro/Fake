@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Castle.DynamicProxy;
-using Fake.Proxy;
+using Fake.DynamicProxy;
 
 namespace Fake.Castle.DynamicProxy;
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 using Castle.DynamicProxy;
-using Fake.Proxy;
+using Fake.DynamicProxy;
 
 namespace Fake.Castle.DynamicProxy;
 

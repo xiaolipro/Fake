@@ -1,5 +1,5 @@
 ﻿using Fake.Collections;
-using Fake.Proxy;
+using Fake.DynamicProxy;
 
 namespace Fake.DependencyInjection;
 

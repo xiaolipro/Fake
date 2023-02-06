@@ -4,6 +4,6 @@ namespace Fake.Auditing;
 
 public interface IAuditingHelper
 {
-    bool ShouldAuditMethod(MethodInfo methodInfo);
+    bool IsAuditMethod(MethodInfo methodInfo);
     AuditLogInfo CreateAuditLogInfo();
 }

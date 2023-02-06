@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Reflection;
+using Fake.DynamicProxy;
 using Fake.Modularity;
-using Fake.Proxy;
+using Fake.UnitOfWork;
 using Microsoft.Extensions.DependencyInjection;
 
 public class FakeUnitOfWorkModule:FakeModule
@@ -10,15 +11,16 @@ public class FakeUnitOfWorkModule:FakeModule
     {
         context.Services.OnRegistered(registrationContext =>
         {
-            if (ShouldIntercept(context.ImplementationType))
+            if (ShouldIntercept(registrationContext.ImplementationType))
             {
-                context.Interceptors.TryAdd<UnitOfWorkInterceptor>();
+                registrationContext.Interceptors.TryAdd<UnitOfWorkInterceptor>();
             }
         });
     }
         
     private static bool ShouldIntercept(Type type)
     {
-        return !DynamicProxyIgnoreTypes.Contains(type) && UnitOfWorkHelper.IsUnitOfWorkType(type.GetTypeInfo());
+        if (DynamicProxyIgnoreTypes.Contains(type)) return false;
+        return UnitOfWorkHelper.IsUnitOfWorkType(type.GetTypeInfo());
     }
 }

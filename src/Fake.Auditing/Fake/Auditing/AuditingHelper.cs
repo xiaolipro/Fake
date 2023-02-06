@@ -6,7 +6,7 @@ using Microsoft.Extensions.Options;
 
 namespace Fake.Auditing;
 
-public class AuditingHelper : IAuditingHelper, ITransientDependency
+public class AuditingHelper : IAuditingHelper
 {
     private readonly IClock _clock;
     private readonly FakeAuditingOptions _options;
@@ -17,7 +17,7 @@ public class AuditingHelper : IAuditingHelper, ITransientDependency
         _options = options.Value;
     }
 
-    public virtual bool ShouldAuditMethod(MethodInfo methodInfo)
+    public virtual bool IsAuditMethod(MethodInfo methodInfo)
     {
         if (!_options.IsEnabled) return false;
         if (methodInfo == null) return false;
@@ -27,10 +27,9 @@ public class AuditingHelper : IAuditingHelper, ITransientDependency
         if (methodInfo.IsDefined(typeof(AuditedAttribute), true)) return true;
         if (methodInfo.IsDefined(typeof(DisableAuditingAttribute), true)) return false;
 
-        if (ShouldAuditType(methodInfo.DeclaringType)) return true;
+        if (IsAuditType(methodInfo.DeclaringType)) return true;
         return false;
     }
-
 
     public virtual AuditLogInfo CreateAuditLogInfo()
     {
@@ -40,9 +39,9 @@ public class AuditingHelper : IAuditingHelper, ITransientDependency
             ExecutionTime = _clock.Now,
         };
     }
-
-
-    public static bool ShouldAuditType(Type type)
+    
+    
+    public static bool IsAuditType(Type type)
     {
         //TODO：在继承链中，最好先检查顶层类的attributes
         if (type.IsDefined(typeof(AuditedAttribute), true)) return true;

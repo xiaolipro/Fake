@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 using Fake.DependencyInjection;
-using Fake.Proxy;
+using Fake.DynamicProxy;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -22,7 +22,7 @@ public class AuditingInterceptor: IFakeInterceptor, ITransientDependency
         var auditingHelper = scope.ServiceProvider.GetRequiredService<IAuditingHelper>();
         var auditingOptions = scope.ServiceProvider.GetRequiredService<IOptions<FakeAuditingOptions>>().Value;
 
-        if (!auditingHelper.ShouldAuditMethod(invocation.Method))
+        if (!auditingHelper.IsAuditMethod(invocation.Method))
         {
             await invocation.ProcessAsync();
             return;

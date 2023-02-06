@@ -1,4 +1,4 @@
-﻿namespace Fake.Proxy;
+﻿namespace Fake.DynamicProxy;
 
 public class DynamicProxyIgnoreTypes
 {

@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace Fake.Proxy;
+namespace Fake.DynamicProxy;
 
 public static class ProxyHelper
 {

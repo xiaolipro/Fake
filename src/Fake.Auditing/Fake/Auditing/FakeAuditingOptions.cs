@@ -9,7 +9,7 @@ public class FakeAuditingOptions
     public string ApplicationName { get; set; }
     
     /// <summary>
-    /// 是否启用审计，默认: true
+    /// 启用审计，默认: true
     /// </summary>
     public bool IsEnabled { get; set; }
 }

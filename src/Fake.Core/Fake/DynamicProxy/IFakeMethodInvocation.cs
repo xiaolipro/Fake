@@ -1,11 +1,6 @@
-﻿using System.Reflection;
+using System.Reflection;
 
-namespace Fake.Proxy;
-
-public interface IFakeInterceptor
-{
-    Task InterceptAsync(IFakeMethodInvocation invocation);
-}
+namespace Fake.DynamicProxy;
 
 public interface IFakeMethodInvocation
 {

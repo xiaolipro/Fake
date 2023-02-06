@@ -1,5 +1,5 @@
 ﻿using Castle.DynamicProxy;
-using Fake.Proxy;
+using Fake.DynamicProxy;
 
 namespace Fake.Castle.DynamicProxy;
 
