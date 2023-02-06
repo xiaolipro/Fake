@@ -7,8 +7,6 @@ namespace Fake.UnitOfWork;
 
 public interface IUnitOfWorkHelper
 {
-    bool IsUnitOfWorkType(TypeInfo implementationType);
-
     bool IsUnitOfWorkMethod([NotNull] MethodInfo methodInfo, [CanBeNull] out UnitOfWorkAttribute unitOfWorkAttribute);
 
     UnitOfWorkAttribute GetUnitOfWorkAttributeOrNull(MethodInfo methodInfo);
@@ -16,7 +14,7 @@ public interface IUnitOfWorkHelper
 
 public class UnitOfWorkHelper:IUnitOfWorkHelper
 {
-    public bool IsUnitOfWorkType(TypeInfo implementationType)
+    public static bool IsUnitOfWorkType(TypeInfo implementationType)
     {
         //类定义了UnitOfWorkAttribute
         if (implementationType.IsDefined(typeof(UnitOfWorkAttribute)))
@@ -24,7 +22,7 @@ public class UnitOfWorkHelper:IUnitOfWorkHelper
             return true;
         }
         
-        //类中有方法定义了UnitOfWorkAttribute
+        //类中有实例方法定义了UnitOfWorkAttribute
         if (implementationType
             .GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
             .Any(m =>m.IsDefined(typeof(UnitOfWorkAttribute)))
@@ -45,33 +43,14 @@ public class UnitOfWorkHelper:IUnitOfWorkHelper
     public bool IsUnitOfWorkMethod(MethodInfo methodInfo, out UnitOfWorkAttribute unitOfWorkAttribute)
     {
         ThrowHelper.ThrowIfNull(methodInfo, nameof(methodInfo));
-        
-        //方法定义了UnitOfWorkAttribute
-        if (methodInfo.IsDefined(typeof(UnitOfWorkAttribute), true))
-        {
-            return IsUnitOfWorkMember(methodInfo, out unitOfWorkAttribute);
-        }
 
-        var declaringType = methodInfo.DeclaringType;
-        return IsUnitOfWorkMember(declaringType, out unitOfWorkAttribute);
+        unitOfWorkAttribute = GetUnitOfWorkAttributeOrNull(methodInfo);
+        return unitOfWorkAttribute is null;
     }
 
     public UnitOfWorkAttribute GetUnitOfWorkAttributeOrNull(MethodInfo methodInfo)
     {
-        throw new NotImplementedException();
-    }
-
-    private bool IsUnitOfWorkMember(MemberInfo methodInfo, out UnitOfWorkAttribute unitOfWorkAttribute)
-    {
-        //方法定义了UnitOfWorkAttribute
         var attr = methodInfo.GetCustomAttribute<UnitOfWorkAttribute>(true);
-        if (attr != null)
-        {
-            unitOfWorkAttribute = attr;
-            return attr.IsEnabled;
-        }
-
-        unitOfWorkAttribute = null;
-        return false;
+        return attr ?? methodInfo.DeclaringType.GetTypeInfo().GetCustomAttribute<UnitOfWorkAttribute>(true);
     }
 }

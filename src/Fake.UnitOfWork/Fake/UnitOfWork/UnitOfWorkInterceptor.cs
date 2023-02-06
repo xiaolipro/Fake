@@ -2,6 +2,7 @@
 using Fake.DependencyInjection;
 using Fake.DynamicProxy;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace Fake.UnitOfWork;
 
@@ -14,8 +15,18 @@ public class UnitOfWorkInterceptor:IFakeInterceptor, ITransientDependency
         _serviceScopeFactory = serviceScopeFactory;
     }
     
-    public Task InterceptAsync(IFakeMethodInvocation invocation)
+    public async Task InterceptAsync(IFakeMethodInvocation invocation)
     {
-        throw new System.NotImplementedException();
+        using var serviceScope = _serviceScopeFactory.CreateScope();
+        
+        var uowHelper = serviceScope.ServiceProvider.GetRequiredService<IUnitOfWorkHelper>();
+
+        if (!uowHelper.IsUnitOfWorkMethod(invocation.Method, out var unitOfWorkAttribute))
+        {
+            await invocation.ProcessAsync();
+            return;
+        }
+
+        var uowOption = CreateUnitOfWorkOption();
     }
 }

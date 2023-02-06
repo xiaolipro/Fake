@@ -10,12 +10,12 @@ public class AuditingManager : IAuditingManager, ITransientDependency
 {
     private const string AuditingContextKey = "Fake.Auditing.AuditLogScope";
 
-    private readonly IScopeProvider<AuditLogScope> _scopeProvider;
+    private readonly IScopeProvider<IAuditLogScope> _scopeProvider;
     private readonly IAuditingHelper _auditingHelper;
     private readonly IAuditingStore _auditingStore;
 
     public AuditingManager(
-        IScopeProvider<AuditLogScope> scopeProvider,
+        IScopeProvider<IAuditLogScope> scopeProvider,
         IAuditingHelper auditingHelper,
         IAuditingStore auditingStore)
     {
@@ -24,12 +24,12 @@ public class AuditingManager : IAuditingManager, ITransientDependency
         _auditingStore = auditingStore;
     }
 
-    public AuditLogScope Current => _scopeProvider.GetContext(AuditingContextKey);
+    public IAuditLogScope Current => _scopeProvider.GetContext(AuditingContextKey);
 
     public IAuditLogSaveHandle BeginScope()
     {
         var value = new AuditLogScope(_auditingHelper.CreateAuditLogInfo());
-        var scope = _scopeProvider.BeginScope(AuditingContextKey,value);
+        var scope = _scopeProvider.BeginScope(AuditingContextKey, value);
 
         Debug.Assert(Current != null, nameof(Current) + " != null");
         return new AuditLogSaveHandle(this, scope, Current.Log, Stopwatch.StartNew());

@@ -17,7 +17,12 @@ public class FakeUnitOfWorkModule:FakeModule
             }
         });
     }
-        
+
+    public override void ConfigureServices(ServiceConfigurationContext context)
+    {
+        context.Services.AddSingleton<IUnitOfWorkHelper, UnitOfWorkHelper>();
+    }
+
     private static bool ShouldIntercept(Type type)
     {
         if (DynamicProxyIgnoreTypes.Contains(type)) return false;

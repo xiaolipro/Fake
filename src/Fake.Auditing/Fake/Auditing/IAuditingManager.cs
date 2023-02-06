@@ -4,7 +4,7 @@ namespace Fake.Auditing;
 
 public interface IAuditingManager
 {
-    [CanBeNull] AuditLogScope Current { get; }
+    [CanBeNull] IAuditLogScope Current { get; }
     
     IAuditLogSaveHandle BeginScope();
 }

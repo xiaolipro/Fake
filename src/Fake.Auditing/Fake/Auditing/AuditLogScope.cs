@@ -1,6 +1,6 @@
 namespace Fake.Auditing;
 
-public class AuditLogScope
+public class AuditLogScope:IAuditLogScope
 {
     public AuditLogInfo Log { get; }
 

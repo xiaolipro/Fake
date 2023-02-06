@@ -17,10 +17,9 @@ public class AuditingInterceptor: IFakeInterceptor, ITransientDependency
     
     public async Task InterceptAsync(IFakeMethodInvocation invocation)
     {
-        using var scope = _serviceScopeFactory.CreateScope();
+        using var serviceScope = _serviceScopeFactory.CreateScope();
 
-        var auditingHelper = scope.ServiceProvider.GetRequiredService<IAuditingHelper>();
-        var auditingOptions = scope.ServiceProvider.GetRequiredService<IOptions<FakeAuditingOptions>>().Value;
+        var auditingHelper = serviceScope.ServiceProvider.GetRequiredService<IAuditingHelper>();
 
         if (!auditingHelper.IsAuditMethod(invocation.Method))
         {
@@ -28,16 +27,18 @@ public class AuditingInterceptor: IFakeInterceptor, ITransientDependency
             return;
         }
         
-        var auditingManager = scope.ServiceProvider.GetRequiredService<IAuditingManager>();
+        var auditingManager = serviceScope.ServiceProvider.GetRequiredService<IAuditingManager>();
+        var auditingOptions = serviceScope.ServiceProvider.GetRequiredService<IOptions<FakeAuditingOptions>>().Value;
+        
         if (auditingManager.Current is null)
         {
             // 使用新的auditing-scope处理
-            ProcessWithNewAuditingScopeAsync(invocation, auditingOptions, auditingManager, auditingHelper);
+            await ProcessWithNewAuditingScopeAsync(invocation, auditingOptions, auditingManager, auditingHelper);
         }
         
         await invocation.ProcessAsync();
 
-        var store = scope.ServiceProvider.GetRequiredService<IAuditingStore>();
+        var store = serviceScope.ServiceProvider.GetRequiredService<IAuditingStore>();
         await store.SaveAsync(new AuditLogInfo
         {
             ApplicationName = "FAKE-APP",
@@ -47,5 +48,6 @@ public class AuditingInterceptor: IFakeInterceptor, ITransientDependency
 
     private async Task ProcessWithNewAuditingScopeAsync(IFakeMethodInvocation invocation, FakeAuditingOptions auditingOptions, IAuditingManager auditingManager, IAuditingHelper auditingHelper)
     {
+        
     }
 }
