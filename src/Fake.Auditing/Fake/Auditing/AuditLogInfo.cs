@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Fake.Auditing;
 
@@ -23,16 +25,20 @@ public class AuditLogInfo
     public string ClientIpAddress { get; set; }
     
     public int ExecutionDuration { get; set; }
+    
+    public List<AuditLogActionInfo> Actions { get; set; }
+    
+    public List<Exception> Exceptions { get; }
+    
+    public List<Func<AuditLogInfo, Task<bool>>> LogSelectors { get; }
 
     public override string ToString()
     {
-        var sb = new StringBuilder();
-
-        sb.AppendLine($"AUDIT LOG: [{HttpStatusCode?.ToString() ?? "---"}: {HttpMethod ?? "-------",-7}] {Url}");
-        sb.AppendLine($"- UserName - UserId      : {UserName} - {UserId}");
-        sb.AppendLine($"- ClientIpAddress        : {ClientIpAddress}");
-        sb.AppendLine($"- ExecutionDuration      : {ExecutionDuration} ms");
-
-        return sb.ToString();
+        return $"""
+AUDIT LOG: [{HttpStatusCode?.ToString() ?? "---"}: {HttpMethod ?? "-------",-7}] {Url}
+- UserName - UserId      : {UserName} - {UserId}
+- ClientIpAddress        : {ClientIpAddress}
+- ExecutionDuration      : {ExecutionDuration} ms
+""";
     }
 }

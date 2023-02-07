@@ -27,6 +27,6 @@ public class UnitOfWorkInterceptor:IFakeInterceptor, ITransientDependency
             return;
         }
 
-        var uowOption = CreateUnitOfWorkOption();
+        //var uowOption = CreateUnitOfWorkOption();
     }
 }

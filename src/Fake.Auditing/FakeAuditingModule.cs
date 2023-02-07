@@ -27,7 +27,10 @@ public class FakeAuditingModule:FakeModule
     {
         context.Services.Configure<FakeAuditingOptions>(options =>
         {
-            options.IsEnabled = true;
+            options.IsEnabledLog = true;
+            options.IsEnabledActionLog = true;
+            options.IsEnabledExceptionLog = true;
+            options.IsEnabledGetRequestLog = true;
         });
 
         context.Services.TryAddSingleton(typeof(IAuditingHelper), typeof(AuditingHelper));

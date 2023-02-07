@@ -28,8 +28,14 @@ public class Program
             using (var scope = application.ServiceProvider.GetRequiredService<IAuditingManager>().BeginScope())
             {
                 await myAuditedObject1.DoItAsync(new InputObject { Value1 = "forty-two", Value2 = 42 });
+                await F(myAuditedObject1);
             }
         }
+    }
+
+    static async Task F(MyAuditedObject1 myAuditedObject1)
+    {
+        await myAuditedObject1.DoItAsync(new InputObject { Value1 = "forty-two", Value2 = 42 });
     }
 }
 

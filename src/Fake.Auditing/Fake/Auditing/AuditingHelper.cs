@@ -1,6 +1,7 @@
 using System;
 using System.Reflection;
 using Fake.DependencyInjection;
+using Fake.DynamicProxy;
 using Fake.Timing;
 using Microsoft.Extensions.Options;
 
@@ -19,7 +20,7 @@ public class AuditingHelper : IAuditingHelper
 
     public virtual bool IsAuditMethod(MethodInfo methodInfo)
     {
-        if (!_options.IsEnabled) return false;
+        if (!_options.IsEnabledLog) return false;
         if (methodInfo == null) return false;
 
         if (!methodInfo.IsPublic) return false;
@@ -39,8 +40,19 @@ public class AuditingHelper : IAuditingHelper
             ExecutionTime = _clock.Now,
         };
     }
-    
-    
+
+    public AuditLogActionInfo CreateAuditLogActionInfo(IFakeMethodInvocation invocation)
+    {
+        return new AuditLogActionInfo()
+        {
+            ServiceName = invocation.TargetObject.GetType().FullName,
+            MethodName = invocation.Method.Name,
+            Parameters = invocation.ArgumentsDictionary,
+            ExecutionTime = _clock.Now
+        };
+    }
+
+
     public static bool IsAuditType(Type type)
     {
         //TODO：在继承链中，最好先检查顶层类的attributes

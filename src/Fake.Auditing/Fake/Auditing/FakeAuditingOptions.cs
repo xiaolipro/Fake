@@ -9,7 +9,22 @@ public class FakeAuditingOptions
     public string ApplicationName { get; set; }
     
     /// <summary>
-    /// 启用审计，默认: true
+    /// 启用基础审计日志，默认: true
     /// </summary>
-    public bool IsEnabled { get; set; }
+    public bool IsEnabledLog { get; set; }
+
+    /// <summary>
+    /// 启用Action审计日志，默认: true
+    /// </summary>
+    public bool IsEnabledActionLog { get; set; }
+    
+    /// <summary>
+    /// 启用异常审计日志，默认: true
+    /// </summary>
+    public bool IsEnabledExceptionLog{ get; set; }
+    
+    /// <summary>
+    /// 启用Get请求审计日志，默认: true
+    /// </summary>
+    public bool IsEnabledGetRequestLog{ get; set; }
 }
