@@ -54,7 +54,7 @@ public class AuditingInterceptor : IFakeInterceptor, ITransientDependency
     {
         var hasError = false;
 
-        using var scop = auditingManager.BeginScope();
+        using var scope = auditingManager.BeginScope();
         try
         {
             Debug.Assert(auditingManager.Current != null, "auditingManager.Current != null");
@@ -69,9 +69,9 @@ public class AuditingInterceptor : IFakeInterceptor, ITransientDependency
         }
         finally
         {
-            if (ShouldSaveAsync(invocation, auditingOptions, auditingManager.Current!.Log, hasError))
+            if (await ShouldSaveAsync(invocation, auditingOptions, auditingManager.Current!.Log, hasError))
             {
-                
+                await scope.SaveAsync();
             }
         }
     }

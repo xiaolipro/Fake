@@ -33,7 +33,7 @@ public class FakeAuditingModule:FakeModule
             options.IsEnabledGetRequestLog = true;
         });
 
-        context.Services.TryAddSingleton(typeof(IAuditingHelper), typeof(AuditingHelper));
+        context.Services.AddSingleton(typeof(IAuditingHelper), typeof(AuditingHelper));
     }
     
     private static bool ShouldIntercept(Type type)
