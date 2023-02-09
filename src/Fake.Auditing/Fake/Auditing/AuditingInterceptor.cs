@@ -33,20 +33,15 @@ public class AuditingInterceptor : IFakeInterceptor, ITransientDependency
         var auditingManager = serviceScope.ServiceProvider.GetRequiredService<IAuditingManager>();
         var auditingOptions = serviceScope.ServiceProvider.GetRequiredService<IOptions<FakeAuditingOptions>>().Value;
 
-        if (auditingManager.Current is null)
+        if (auditingManager.Current != null)
+        {
+            await ProcessWithCurrentAuditingScopeAsync(invocation, auditingOptions, auditingHelper, auditingManager.Current.Log);
+        }
+        else
         {
             // 使用新的auditing-scope处理
             await ProcessWithNewAuditingScopeAsync(invocation, auditingOptions, auditingManager, auditingHelper);
         }
-
-        await invocation.ProcessAsync();
-
-        var store = serviceScope.ServiceProvider.GetRequiredService<IAuditingStore>();
-        await store.SaveAsync(new AuditLogInfo
-        {
-            ApplicationName = "FAKE-APP",
-            UserName = "FAKE"
-        });
     }
 
     private async Task ProcessWithNewAuditingScopeAsync(IFakeMethodInvocation invocation,
@@ -58,7 +53,7 @@ public class AuditingInterceptor : IFakeInterceptor, ITransientDependency
         try
         {
             Debug.Assert(auditingManager.Current != null, "auditingManager.Current != null");
-            await ProcessAsync(invocation, auditingOptions, auditingHelper, auditingManager.Current.Log);
+            await ProcessWithCurrentAuditingScopeAsync(invocation, auditingOptions, auditingHelper, auditingManager.Current.Log);
 
             if (auditingManager.Current.Log.Exceptions.Any()) hasError = true;
         }
@@ -92,7 +87,7 @@ public class AuditingInterceptor : IFakeInterceptor, ITransientDependency
         return true;
     }
 
-    private async Task ProcessAsync(IFakeMethodInvocation invocation, FakeAuditingOptions auditingOptions,
+    private async Task ProcessWithCurrentAuditingScopeAsync(IFakeMethodInvocation invocation, FakeAuditingOptions auditingOptions,
         IAuditingHelper auditingHelper, AuditLogInfo auditLogInfo)
     {
         AuditLogActionInfo auditLogActionInfo = null;
