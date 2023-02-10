@@ -85,7 +85,8 @@ public static class FakeRegistrationExtensions
             }
             else
             {
-                builder.RegisterInstance(serviceDescriptor.ImplementationInstance!)
+                throw new FakeException("WTF");
+                builder.RegisterInstance(serviceDescriptor.ImplementationInstance)
                     .As(serviceDescriptor.ServiceType)
                     .ConfigureLifecycle(serviceDescriptor.Lifetime)
                     .ConfigureSimpleFakeConventions(moduleContainer, registrationActionList);

@@ -14,12 +14,12 @@ public static class FakeCollectionExtensions
     }
     
     /// <summary>
-    /// Adds an item to the collection if it's not already in the collection.
+    /// 尝试添加项到集合，项不存在则成功添加并返回true，否则返回false
     /// </summary>
-    /// <param name="source">The collection</param>
-    /// <param name="item">Item to check and add</param>
-    /// <typeparam name="T">Type of the items in the collection</typeparam>
-    /// <returns>Returns True if added, returns False if not.</returns>
+    /// <param name="source"></param>
+    /// <param name="item"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
     public static bool TryAdd<T>([NotNull] this ICollection<T> source, T item)
     {
         ThrowHelper.ThrowIfNull(source, nameof(source));
