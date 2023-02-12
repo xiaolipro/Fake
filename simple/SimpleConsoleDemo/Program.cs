@@ -50,7 +50,6 @@ public class Program
     static async Task F(MyAuditedObject1 myAuditedObject1)
     {
         await myAuditedObject1.DoItAsync(new InputObject { Value1 = "asdasd", Value2 = 1 });
-        //throw new Exception();
     }
 }
 
@@ -67,6 +66,7 @@ public class MyAuditedObject1 : IMyAuditedObject
     public virtual async Task<ResultObject> DoItAsync(InputObject inputObject)
     {
         await Task.Delay(1000);
+        throw new Exception();
         return new ResultObject
         {
             Value1 = inputObject.Value1 + "-result",
