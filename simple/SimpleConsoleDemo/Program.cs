@@ -36,13 +36,12 @@ public class Program
                 new Claim(FakeClaimTypes.UserName, "faker"),
             })));
 
-            try
+            var manager = application.ServiceProvider.GetRequiredService<IAuditingManager>();
+            using (var scope = manager.BeginScope())
             {
-                    await myAuditedObject1.DoItAsync(new InputObject { Value1 = "forty-two", Value2 = 42 });
-                    await F(myAuditedObject1);
-            }
-            catch (Exception e)
-            {
+                await myAuditedObject1.DoItAsync(new InputObject { Value1 = "forty-two", Value2 = 42 });
+                await F(myAuditedObject1);
+                await scope.SaveAsync();
             }
         }
     }
@@ -66,7 +65,6 @@ public class MyAuditedObject1 : IMyAuditedObject
     public virtual async Task<ResultObject> DoItAsync(InputObject inputObject)
     {
         await Task.Delay(1000);
-        throw new Exception();
         return new ResultObject
         {
             Value1 = inputObject.Value1 + "-result",
