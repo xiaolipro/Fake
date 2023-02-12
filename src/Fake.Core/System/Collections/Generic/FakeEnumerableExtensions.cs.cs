@@ -3,6 +3,15 @@
 public static class FakeEnumerableExtensions
 {
     /// <summary>
+    /// 检查给定的集合对象是否为null或没有元素。
+    /// </summary>
+    [ContractAnnotation("source:null => true")]
+    public static bool IsNullOrEmpty<T>([CanBeNull] this IEnumerable<T> source)
+    {
+        return source == null || !source.Any();
+    }
+    
+    /// <summary>
     /// 提供索引
     /// </summary>
     /// <param name="source"></param>

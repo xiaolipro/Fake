@@ -1,8 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.Reflection;
-using Fake.DependencyInjection;
+using System.Text.Json;
 using Fake.DynamicProxy;
+using Fake.Identity.Users;
 using Fake.Timing;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Fake.Auditing;
@@ -10,11 +13,15 @@ namespace Fake.Auditing;
 public class AuditingHelper : IAuditingHelper
 {
     private readonly IClock _clock;
+    private readonly ICurrentUser _currentUser;
+    private readonly ILogger<AuditingHelper> _logger;
     private readonly FakeAuditingOptions _options;
 
-    public AuditingHelper(IOptions<FakeAuditingOptions> options, IClock clock)
+    public AuditingHelper(IOptions<FakeAuditingOptions> options, IClock clock, ICurrentUser currentUser,ILogger<AuditingHelper> logger)
     {
         _clock = clock;
+        _currentUser = currentUser;
+        _logger = logger;
         _options = options.Value;
     }
 
@@ -37,6 +44,8 @@ public class AuditingHelper : IAuditingHelper
         return new AuditLogInfo()
         {
             ApplicationName = _options.ApplicationName,
+            UserId = _currentUser.UserId,
+            UserName = _currentUser.UserName,
             ExecutionTime = _clock.Now,
         };
     }
@@ -47,7 +56,7 @@ public class AuditingHelper : IAuditingHelper
         {
             ServiceName = invocation.TargetObject.GetType().FullName,
             MethodName = invocation.Method.Name,
-            Parameters = invocation.ArgumentsDictionary,
+            Parameters = SerializeParameter(invocation.ArgumentsDictionary),
             ExecutionTime = _clock.Now
         };
     }
@@ -61,5 +70,21 @@ public class AuditingHelper : IAuditingHelper
 
         if (type.IsAssignableTo(typeof(IAuditingEnabled))) return true;
         return false;
+    }
+    
+    protected virtual string SerializeParameter(IReadOnlyDictionary<string, object> actionParameters)
+    {
+        string defaultParameter = "{}";
+        try
+        {
+            if (actionParameters.IsNullOrEmpty()) return defaultParameter;
+
+            return JsonSerializer.Serialize(actionParameters);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex.Message);
+            return defaultParameter;
+        }
     }
 }

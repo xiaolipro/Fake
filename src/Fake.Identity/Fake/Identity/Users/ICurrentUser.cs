@@ -1,13 +1,17 @@
-﻿namespace Fake.Identity.Users;
+﻿using System.Security.Claims;
+using System.Security.Cryptography.X509Certificates;
+using JetBrains.Annotations;
 
-public interface ICurrentUser<TKey>
+namespace Fake.Identity.Users;
+
+public interface ICurrentUser
 {
+    bool IsAuthenticated { get; }
+
     /// <summary>
     /// 用户唯一标识
     /// </summary>
-    public TKey UserId { get; }
+    public string UserId { get; }
     
-    bool IsAuthenticated { get; }
-    
-    string UserName { get; }
+    public string UserName { get; }
 }

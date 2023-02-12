@@ -13,12 +13,11 @@ namespace Autofac.Builder;
 
 public static class FakeRegistrationBuilderExtensions
 {
-    public static IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> ConfigureFakeConventions<TLimit,
-        TActivatorData, TRegistrationStyle>(
+    public static IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> ConfigureFakeConventions<
+        TLimit, TActivatorData, TRegistrationStyle>(
         this IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> registrationBuilder,
         IModuleContainer moduleContainer,
         ServiceRegistrationActionList registrationActionList)
-        where TActivatorData : ReflectionActivatorData
     {
         var serviceType = registrationBuilder.RegistrationData.Services
             .OfType<IServiceWithType>()
@@ -26,67 +25,21 @@ public static class FakeRegistrationBuilderExtensions
 
         if (serviceType == null) return registrationBuilder;
 
-        var implementationType = registrationBuilder.ActivatorData.ImplementationType;
+        Type implementationType = null;
+
+        if (registrationBuilder.ActivatorData is ReflectionActivatorData reflectionActivatorData)
+        {
+            implementationType = reflectionActivatorData.ImplementationType;
+        }
+        else if (registrationBuilder.ActivatorData is SimpleActivatorData simpleActivatorData)
+        {
+            implementationType = simpleActivatorData.GetType();
+        }
 
         Debug.Assert(implementationType != null, nameof(implementationType) + " != null");
         return registrationBuilder
             .EnablePropertyInjection(moduleContainer, implementationType)
             .InvokeRegistrationActions(registrationActionList, serviceType, implementationType);
-    }
-    
-    public static IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> ConfigureSimpleFakeConventions<TLimit,
-        TActivatorData, TRegistrationStyle>(
-        this IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> registrationBuilder,
-        IModuleContainer moduleContainer,
-        ServiceRegistrationActionList registrationActionList)
-        where TActivatorData : SimpleActivatorData
-    {
-        var serviceType = registrationBuilder.RegistrationData.Services
-            .OfType<IServiceWithType>()
-            .FirstOrDefault()?.ServiceType;
-
-        if (serviceType == null) return registrationBuilder;
-
-        var implementationType = registrationBuilder.ActivatorData.GetType();
-
-        Debug.Assert(implementationType != null, nameof(implementationType) + " != null");
-        // 只对Fake模块中没有使用DisablePropertyInjectionAttribute的实现开启属性注入
-        if (moduleContainer.Modules.Any(m => m.Assembly == implementationType.Assembly) &&
-            implementationType.GetCustomAttributes(typeof(DisablePropertyInjectionAttribute), true).IsNullOrEmpty())
-        {
-            // preserveSetValues设为false，不保留原有值，覆写
-            registrationBuilder = registrationBuilder.PropertiesAutowired(new FakePropertySelector(false));
-        }
-        
-        var context = new OnServiceRegistrationContext(serviceType, implementationType);
-
-        foreach (var registrationAction in registrationActionList)
-        {
-            registrationAction.Invoke(context);
-        }
-
-        if (context.Interceptors.Any())
-        {
-            if (serviceType.IsInterface)
-            {
-                registrationBuilder.EnableInterfaceInterceptors();
-            }
-            else
-            {
-                if (registrationActionList.DisableClassInterceptors) return registrationBuilder;
-
-                (registrationBuilder as IRegistrationBuilder<TLimit, ConcreteReflectionActivatorData, TRegistrationStyle>)
-                    .EnableClassInterceptors();
-            }
-
-            foreach (var interceptor in context.Interceptors)
-            {
-                // 使用Castle做动态代理
-                registrationBuilder.InterceptedBy(typeof(FakeAsyncDeterminationInterceptor<>).MakeGenericType(interceptor));
-            }
-        }
-
-        return registrationBuilder;
     }
 
     private static IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> EnablePropertyInjection<TLimit,
@@ -94,7 +47,6 @@ public static class FakeRegistrationBuilderExtensions
         this IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> registrationBuilder,
         IModuleContainer moduleContainer,
         Type implementationType)
-        where TActivatorData : ReflectionActivatorData
     {
         // 只对Fake模块中没有使用DisablePropertyInjectionAttribute的实现开启属性注入
         if (moduleContainer.Modules.Any(m => m.Assembly == implementationType.Assembly) &&
@@ -113,7 +65,6 @@ public static class FakeRegistrationBuilderExtensions
         ServiceRegistrationActionList registrationActionList,
         Type serviceType,
         Type implementationType)
-        where TActivatorData : ReflectionActivatorData
     {
         var context = new OnServiceRegistrationContext(serviceType, implementationType);
 
@@ -141,7 +92,6 @@ public static class FakeRegistrationBuilderExtensions
             ServiceRegistrationActionList serviceRegistrationActionList,
             Type serviceType,
             IEnumerable<Type> interceptors)
-        where TActivatorData : ReflectionActivatorData
     {
         if (serviceType.IsInterface)
         {

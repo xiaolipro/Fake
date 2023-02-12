@@ -13,9 +13,10 @@ public class ModuleLoaderTests
         services.AddSingleton<IInitLoggerFactory>(new FakeInitLoggerFactory());
         var modules = loader.LoadModules(services, typeof(StartupModule));
         
-        modules.Length.ShouldBe(2);
-        modules[0].Type.ShouldBe(typeof(CustomModule));
-        modules[1].Type.ShouldBe(typeof(StartupModule));
+        modules.Length.ShouldBe(3);
+        modules[0].Type.ShouldBe(typeof(FakeCoreModule));
+        modules[1].Type.ShouldBe(typeof(CustomModule));
+        modules[2].Type.ShouldBe(typeof(StartupModule));
     }
     
     [Fact]

@@ -1,4 +1,8 @@
-﻿namespace Fake.Auditing;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace Fake.Auditing;
 
 public class FakeAuditingOptions
 {
@@ -27,4 +31,20 @@ public class FakeAuditingOptions
     /// 启用Get请求审计日志，默认: true
     /// </summary>
     public bool IsEnabledGetRequestLog{ get; set; }
+    
+    /// <summary>
+    /// 日志选择器
+    /// </summary>
+    public List<Func<AuditLogInfo, Task<bool>>> LogSelectors { get; }
+    
+    /// <summary>
+    /// 日志贡献者
+    /// </summary>
+    public List<AuditLogContributor> Contributors { get; }
+
+    public FakeAuditingOptions()
+    {
+        LogSelectors = new List<Func<AuditLogInfo, Task<bool>>>();
+        Contributors = new List<AuditLogContributor>();
+    }
 }

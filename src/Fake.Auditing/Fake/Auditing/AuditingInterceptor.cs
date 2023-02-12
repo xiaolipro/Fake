@@ -35,13 +35,13 @@ public class AuditingInterceptor : IFakeInterceptor, ITransientDependency
 
         if (auditingManager.Current != null)
         {
-            await ProcessWithCurrentAuditingScopeAsync(invocation, auditingOptions, auditingHelper, auditingManager.Current.Log);
+            await ProcessWithCurrentAuditingScopeAsync(invocation, auditingOptions, auditingHelper,
+                auditingManager.Current.Log);
+            return;
         }
-        else
-        {
-            // 使用新的auditing-scope处理
-            await ProcessWithNewAuditingScopeAsync(invocation, auditingOptions, auditingManager, auditingHelper);
-        }
+
+        // 使用新的auditing-scope处理
+        await ProcessWithNewAuditingScopeAsync(invocation, auditingOptions, auditingManager, auditingHelper);
     }
 
     private async Task ProcessWithNewAuditingScopeAsync(IFakeMethodInvocation invocation,
@@ -53,7 +53,8 @@ public class AuditingInterceptor : IFakeInterceptor, ITransientDependency
         try
         {
             Debug.Assert(auditingManager.Current != null, "auditingManager.Current != null");
-            await ProcessWithCurrentAuditingScopeAsync(invocation, auditingOptions, auditingHelper, auditingManager.Current.Log);
+            await ProcessWithCurrentAuditingScopeAsync(invocation, auditingOptions, auditingHelper,
+                auditingManager.Current.Log);
 
             if (auditingManager.Current.Log.Exceptions.Any()) hasError = true;
         }
@@ -74,9 +75,14 @@ public class AuditingInterceptor : IFakeInterceptor, ITransientDependency
     private async Task<bool> ShouldSaveAsync(IFakeMethodInvocation invocation, FakeAuditingOptions auditingOptions,
         AuditLogInfo log, bool hasError)
     {
-        foreach (var selector in log.LogSelectors)
+        foreach (var selector in auditingOptions.LogSelectors)
         {
             return await selector(log);
+        }
+
+        if (auditingOptions.IsEnabledExceptionLog && hasError)
+        {
+            return true;
         }
 
         if (!auditingOptions.IsEnabledGetRequestLog &&
@@ -87,7 +93,8 @@ public class AuditingInterceptor : IFakeInterceptor, ITransientDependency
         return true;
     }
 
-    private async Task ProcessWithCurrentAuditingScopeAsync(IFakeMethodInvocation invocation, FakeAuditingOptions auditingOptions,
+    private async Task ProcessWithCurrentAuditingScopeAsync(IFakeMethodInvocation invocation,
+        FakeAuditingOptions auditingOptions,
         IAuditingHelper auditingHelper, AuditLogInfo auditLogInfo)
     {
         AuditLogActionInfo auditLogActionInfo = null;
@@ -108,6 +115,7 @@ public class AuditingInterceptor : IFakeInterceptor, ITransientDependency
             {
                 auditLogInfo.Exceptions.Add(e);
             }
+
             throw;
         }
         finally

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Reflection;
 using Autofac.Builder;
 using Fake;
@@ -85,11 +86,11 @@ public static class FakeRegistrationExtensions
             }
             else
             {
-                throw new FakeException("WTF");
+                Debug.Assert(serviceDescriptor.ImplementationInstance != null, "serviceDescriptor.ImplementationInstance != null");
                 builder.RegisterInstance(serviceDescriptor.ImplementationInstance)
                     .As(serviceDescriptor.ServiceType)
                     .ConfigureLifecycle(serviceDescriptor.Lifetime)
-                    .ConfigureSimpleFakeConventions(moduleContainer, registrationActionList);
+                    .ConfigureFakeConventions(moduleContainer, registrationActionList);
             }
         }
     }

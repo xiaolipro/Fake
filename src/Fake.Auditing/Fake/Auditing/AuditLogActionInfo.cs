@@ -9,7 +9,7 @@ public class AuditLogActionInfo
 
     public string MethodName { get; set; }
 
-    public IReadOnlyDictionary<string, object> Parameters { get; set; }
+    public string Parameters { get; set; }
     
     public DateTime ExecutionTime { get; set; }
     

@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Fake;
 using Fake.Auditing;
 using Fake.DependencyInjection;
+using Fake.Identity.Security.Claims;
 using Fake.Threading;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -25,17 +28,29 @@ public class Program
             
             var myAuditedObject1 = application.ServiceProvider.GetRequiredService<MyAuditedObject1>();
             
-            using (var scope = application.ServiceProvider.GetRequiredService<IAuditingManager>().BeginScope())
+            var currentPrincipalAccessor = application.ServiceProvider.GetRequiredService<ICurrentPrincipalAccessor>();
+            
+            currentPrincipalAccessor.Change(new ClaimsPrincipal(new ClaimsIdentity(new List<Claim>
             {
-                await myAuditedObject1.DoItAsync(new InputObject { Value1 = "forty-two", Value2 = 42 });
-                await F(myAuditedObject1);
+                new Claim(FakeClaimTypes.UserId, "10086"),
+                new Claim(FakeClaimTypes.UserName, "faker"),
+            })));
+
+            try
+            {
+                    await myAuditedObject1.DoItAsync(new InputObject { Value1 = "forty-two", Value2 = 42 });
+                    await F(myAuditedObject1);
+            }
+            catch (Exception e)
+            {
             }
         }
     }
 
     static async Task F(MyAuditedObject1 myAuditedObject1)
     {
-        await myAuditedObject1.DoItAsync(new InputObject { Value1 = "forty-two", Value2 = 42 });
+        await myAuditedObject1.DoItAsync(new InputObject { Value1 = "asdasd", Value2 = 1 });
+        //throw new Exception();
     }
 }
 
