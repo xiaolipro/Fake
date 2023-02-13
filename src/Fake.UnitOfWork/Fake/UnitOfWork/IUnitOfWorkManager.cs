@@ -4,7 +4,7 @@ namespace Fake.UnitOfWork;
 
 public interface IUnitOfWorkManager
 {
-    [CanBeNull] IUnitOfWorkScope Current { get; }
+    [CanBeNull] IUnitOfWork Current { get; }
     
-    IAuditLogSaveHandle BeginScope();
+    IUnitOfWork BeginScope();
 }
