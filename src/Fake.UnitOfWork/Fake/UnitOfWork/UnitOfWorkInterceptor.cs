@@ -27,6 +27,13 @@ public class UnitOfWorkInterceptor:IFakeInterceptor, ITransientDependency
             return;
         }
 
-        //var uowOption = CreateUnitOfWorkOption();
+        var uowOptions = CreateUnitOfWorkOption();
+    }
+
+    private FakeUnitOfWorkOptions CreateUnitOfWorkOption()
+    {
+        var options = new FakeUnitOfWorkOptions();
+
+        return options;
     }
 }
