@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Fake.DependencyInjection;
 using Fake.Identity.Security.Claims;
+using JetBrains.Annotations;
 
 namespace Fake.Identity.Users;
 
@@ -17,6 +18,7 @@ public class CurrentUser : ICurrentUser, ITransientDependency
         _currentPrincipalAccessor = currentPrincipalAccessor;
     }
 
+    [CanBeNull]
     public virtual string FindClaimValue(string claimType)
     {
         return _currentPrincipalAccessor

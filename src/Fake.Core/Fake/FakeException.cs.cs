@@ -26,4 +26,10 @@ public class FakeException: Exception
     {
 
     }
+    
+    public FakeException WithData(string name, object value)
+    {
+        Data[name] = value;
+        return this;
+    }
 }
