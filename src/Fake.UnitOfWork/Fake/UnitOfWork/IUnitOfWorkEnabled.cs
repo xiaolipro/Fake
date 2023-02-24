@@ -1,3 +1,6 @@
 namespace Fake.UnitOfWork;
 
-public interface IUnitOfWorkEnabled{}
+public interface IUnitOfWorkEnabled
+{
+    
+}

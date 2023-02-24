@@ -1,16 +1,17 @@
-﻿using System.Data;
+using System;
+using System.Data;
 
 namespace Fake.UnitOfWork;
 
-public class FakeUnitOfWorkOptions:IClonable<FakeUnitOfWorkOptions>
+public class FakeUnitOfWorkOptions
 {
     /// <summary>
-    /// 是否具有事务性，默认：false
+    /// 事务状态，默认：<see cref="UnitOfWorkTransactionState.Auto"/>
     /// </summary>
-    public bool IsTransactional { get; set; }
+    public UnitOfWorkTransactionState TransactionState { get; set; }
 
     /// <summary>
-    /// 事务级别，默认：RepeatableRead（可重复读）
+    /// 事务级别，默认：RepeatableRead
     /// </summary>
     public IsolationLevel IsolationLevel { get; set; }
 
@@ -18,21 +19,26 @@ public class FakeUnitOfWorkOptions:IClonable<FakeUnitOfWorkOptions>
     /// 超时时间，默认：-1（无限制）
     /// </summary>
     public int Timeout { get; set; }
-    
-    public FakeUnitOfWorkOptions(bool isTransactional = false, IsolationLevel isolationLevel = IsolationLevel.RepeatableRead, int timeout = -1)
+
+    public FakeUnitOfWorkOptions()
     {
-        IsTransactional = isTransactional;
-        IsolationLevel = isolationLevel;
-        Timeout = timeout;
+        TransactionState = UnitOfWorkTransactionState.Auto;
+        IsolationLevel = IsolationLevel.RepeatableRead;
+        Timeout = -1;
     }
 
-    public FakeUnitOfWorkOptions Clone()
+    public bool IsTransactional(bool isTransactional)
     {
-        return new FakeUnitOfWorkOptions
+        switch (TransactionState)
         {
-            IsTransactional = IsTransactional,
-            IsolationLevel = IsolationLevel,
-            Timeout = Timeout
-        };
+            case UnitOfWorkTransactionState.Auto:
+                return isTransactional;
+            case UnitOfWorkTransactionState.Enable:
+                return true;
+            case UnitOfWorkTransactionState.Disable:
+                return false;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
     }
 }

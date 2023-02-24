@@ -37,12 +37,16 @@ public class UnitOfWorkHelper:IUnitOfWorkHelper
         ThrowHelper.ThrowIfNull(methodInfo, nameof(methodInfo));
 
         unitOfWorkAttribute = GetUnitOfWorkAttributeOrNull(methodInfo);
-        return unitOfWorkAttribute is null;
+        if (unitOfWorkAttribute is not null) return true;
+
+        return methodInfo.DeclaringType.GetTypeInfo().IsAssignableTo<IUnitOfWorkEnabled>();
     }
 
     public UnitOfWorkAttribute GetUnitOfWorkAttributeOrNull(MethodInfo methodInfo)
     {
+        // 先从方法上找
         var attr = methodInfo.GetCustomAttribute<UnitOfWorkAttribute>(true);
+        // 再从类上找
         return attr ?? methodInfo.DeclaringType.GetTypeInfo().GetCustomAttribute<UnitOfWorkAttribute>(true);
     }
 }

@@ -1,6 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Fake.DependencyInjection;
 using Fake.DynamicProxy;
+using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -27,13 +29,30 @@ public class UnitOfWorkInterceptor:IFakeInterceptor, ITransientDependency
             return;
         }
 
-        var uowOptions = CreateUnitOfWorkOption();
+        var context = CreateUnitOfWorkContext(invocation, serviceScope.ServiceProvider, unitOfWorkAttribute);
+        var unitOfWorkManager = serviceScope.ServiceProvider.GetRequiredService<IUnitOfWorkManager>();
     }
 
-    private FakeUnitOfWorkOptions CreateUnitOfWorkOption()
+    private UnitOfWorkContext CreateUnitOfWorkContext(IFakeMethodInvocation invocation,IServiceProvider serviceProvider, [CanBeNull] UnitOfWorkAttribute unitOfWorkAttribute)
     {
-        var options = new FakeUnitOfWorkOptions();
+        var context = new UnitOfWorkContext();
 
-        return options;
+        if (unitOfWorkAttribute is not null)
+        {
+            context.IsolationLevel = unitOfWorkAttribute.IsolationLevel;
+            context.Timeout = unitOfWorkAttribute.Timeout;
+
+            var unitOfWorkOptions = serviceProvider.GetRequiredService<IOptions<FakeUnitOfWorkOptions>>().Value;
+            var isTransactional = serviceProvider.GetRequiredService<NullUnitOfWorkIsTransactionalProvider>()
+                .IsTransactional ?? !invocation.Method.Name.StartsWith("Get", StringComparison.InvariantCultureIgnoreCase);
+            context.IsTransactional = unitOfWorkOptions.IsTransactional(isTransactional);
+        }
+        
+        return context;
     }
+}
+
+public interface IUnitOfWorkIsTransactionalProvider
+{
+    bool? IsTransactional { get; }
 }
