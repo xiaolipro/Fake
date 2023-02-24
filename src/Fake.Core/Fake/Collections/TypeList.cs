@@ -22,7 +22,7 @@ public class TypeList<TBaseType> :ITypeList<TBaseType>
         _typeList.RemoveAt(index);
     }
 
-    public new Type this[int index]
+    public Type this[int index]
     {
         get => _typeList[index];
         set {

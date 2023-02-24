@@ -39,7 +39,7 @@ public static class FakeStringExtensions
     }
 
     /// <summary>
-    /// 表示字符串 存在于 该<see cref="IEnumerable"/>实例中，
+    /// 表示字符串 存在于 该<see cref="Enumerable"/>实例中，
     /// 内部使用Enumerable.Contains。
     /// </summary>
     /// <param name="str"></param>

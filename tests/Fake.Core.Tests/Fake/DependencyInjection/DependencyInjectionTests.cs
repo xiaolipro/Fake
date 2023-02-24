@@ -1,10 +1,18 @@
-﻿using Fake.Modularity;
+﻿using System.Data;
+using Fake.Modularity;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Fake.DependencyInjection;
 
 public class DependencyInjectionTests
 {
+    private readonly ITestOutputHelper _testOutputHelper;
+
+    public DependencyInjectionTests(ITestOutputHelper testOutputHelper)
+    {
+        _testOutputHelper = testOutputHelper;
+    }
+
     [Fact]
     public void 默认会注册自己和按命名约定的接口()
     {
