@@ -2,11 +2,14 @@
 
 namespace Fake;
 
-public class FakeApplicationFactory
+/// <summary>
+/// FakeApp工厂
+/// </summary>
+public static class FakeApplicationFactory
 {
     public static FakeApplication Create<TStartupModule>(
         [CanBeNull] Action<FakeApplicationCreationOptions> optionsAction = null)
-        where TStartupModule : IFakeModule
+        where TStartupModule : IFakeModuleApplication
     {
         return Create(typeof(TStartupModule), optionsAction);
     }
@@ -21,7 +24,7 @@ public class FakeApplicationFactory
     public static FakeApplication Create<TStartupModule>(
         [NotNull] IServiceCollection services,
         [CanBeNull] Action<FakeApplicationCreationOptions> optionsAction = null)
-        where TStartupModule : IFakeModule
+        where TStartupModule : IFakeModuleApplication
     {
         return Create(typeof(TStartupModule), services, optionsAction);
     }

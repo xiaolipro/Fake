@@ -1,7 +1,7 @@
 ﻿
 namespace Fake.Modularity;
 
-public interface IFakeModule: IModuleLifecycle
+public interface IFakeModuleApplication: IModuleApplicationLifecycle
 {
     public bool IsFakeFrameworkModule { get; }
     public bool SkipAutoServiceRegistration { get; }

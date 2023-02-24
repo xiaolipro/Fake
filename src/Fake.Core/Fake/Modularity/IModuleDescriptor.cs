@@ -8,7 +8,7 @@ public interface IModuleDescriptor
 
     Assembly Assembly { get; }
 
-    IFakeModule Instance { get; }
+    IFakeModuleApplication Instance { get; }
 
     /// <summary>
     /// 依赖

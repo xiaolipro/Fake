@@ -8,16 +8,16 @@ public class FakeApplicationInitializeTests
     [Fact]
     void FakeApplication使用流程()
     {
-        using var app = FakeApplicationFactory.Create<IndependentModule>();
+        using var app = FakeApplicationFactory.Create<IndependentModuleApplication>();
         
         // Arrange
-        var module = app.Services.GetSingletonInstance<IndependentModule>();
+        var module = app.Services.GetSingletonInstance<IndependentModuleApplication>();
             
         // Action
-        app.Initialize();
+        app.InitializeApplication();
         
         // Assert
-        app.ServiceProvider.GetRequiredService<IndependentModule>().ShouldBeSameAs(module);
+        app.ServiceProvider.GetRequiredService<IndependentModuleApplication>().ShouldBeSameAs(module);
             
         // Action
         app.Shutdown();
@@ -29,8 +29,8 @@ public class FakeApplicationInitializeTests
     {
         Should.Throw<FakeException>(() =>
         {
-            using var app = FakeApplicationFactory.Create<IndependentModule>();
-            app.ServiceProvider.GetRequiredService<IndependentModule>();
+            using var app = FakeApplicationFactory.Create<IndependentModuleApplication>();
+            app.ServiceProvider.GetRequiredService<IndependentModuleApplication>();
         });
     }
 }

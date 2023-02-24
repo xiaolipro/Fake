@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 // ReSharper disable once CheckNamespace
 namespace Fake.Castle;
-public class FakeCastleModule : FakeModule
+public class FakeCastleModuleApplication : FakeModuleApplication
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {

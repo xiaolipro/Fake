@@ -1,5 +1,9 @@
 ﻿namespace Fake.DependencyInjection;
 
+/// <summary>
+/// 泛型单例访问器
+/// </summary>
+/// <typeparam name="T"></typeparam>
 public class ObjectAccessor<T>
 {
     [CanBeNull]

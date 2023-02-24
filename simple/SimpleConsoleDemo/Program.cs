@@ -15,7 +15,7 @@ public class Program
 {
     static async Task Main(string[] args)
     {
-        using (var application = FakeApplicationFactory.Create<SimpleConsoleDemoModule>(options =>
+        using (var application = FakeApplicationFactory.Create<SimpleConsoleDemoModuleApplication>(options =>
                {
                    options.Configuration.CommandLineArgs = args;
                    options.UseAutofac();
@@ -23,7 +23,7 @@ public class Program
                }))
         {
             Console.WriteLine("Initializing the application...");
-            application.Initialize();
+            application.InitializeApplication();
             Console.WriteLine("Initializing the application... OK");
             
             var myAuditedObject1 = application.ServiceProvider.GetRequiredService<MyAuditedObject1>();

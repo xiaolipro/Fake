@@ -11,12 +11,12 @@ public class ModuleLoaderTests
         var loader = new FakeModuleLoader();
         var services = new ServiceCollection();
         services.AddSingleton<IInitLoggerFactory>(new FakeInitLoggerFactory());
-        var modules = loader.LoadModules(services, typeof(StartupModule));
+        var modules = loader.LoadModules(services, typeof(StartupModuleApplication));
         
         modules.Length.ShouldBe(3);
-        modules[0].Type.ShouldBe(typeof(FakeCoreModule));
-        modules[1].Type.ShouldBe(typeof(CustomModule));
-        modules[2].Type.ShouldBe(typeof(StartupModule));
+        modules[0].Type.ShouldBe(typeof(FakeCoreModuleApplication));
+        modules[1].Type.ShouldBe(typeof(CustomModuleApplication));
+        modules[2].Type.ShouldBe(typeof(StartupModuleApplication));
     }
     
     [Fact]
@@ -26,20 +26,20 @@ public class ModuleLoaderTests
         {
             var loader = new FakeModuleLoader();
             var services = new ServiceCollection();
-            loader.LoadModules(services, typeof(StartupModule));
+            loader.LoadModules(services, typeof(StartupModuleApplication));
         });
     }
 }
 
-[DependsOn(typeof(CustomModule))]
-public class StartupModule : FakeModule
+[DependsOn(typeof(CustomModuleApplication))]
+public class StartupModuleApplication : FakeModuleApplication
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
     }
 }
 
-public class CustomModule : FakeModule
+public class CustomModuleApplication : FakeModuleApplication
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {

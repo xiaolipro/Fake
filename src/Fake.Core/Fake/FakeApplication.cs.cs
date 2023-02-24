@@ -53,7 +53,8 @@ public class FakeApplication : IFakeApplication
 
         ApplicationName = GetApplicationName(options);
 
-        services.AddSingleton(this);
+        services.AddSingleton<IFakeApplication>(this);
+        services.AddSingleton<IApplicationInfo>(this);
         services.AddSingleton<IModuleContainer>(this);
 
         services.AddLogging();
@@ -93,7 +94,7 @@ public class FakeApplication : IFakeApplication
         var assemblies = new HashSet<Assembly>();
         foreach (var module in Modules)
         {
-            if (module.Instance is FakeModule FakeModule)
+            if (module.Instance is FakeModuleApplication FakeModule)
             {
                 if (!FakeModule.SkipAutoServiceRegistration)
                 {
@@ -160,7 +161,7 @@ public class FakeApplication : IFakeApplication
         // 应该在这里销毁ServiceProvider，但Shutdown可能还没被调用
     }
 
-    public void Initialize([CanBeNull]IServiceProvider serviceProvider = null)
+    public void InitializeApplication([CanBeNull]IServiceProvider serviceProvider = null)
     {
         serviceProvider ??= Services.BuildServiceProviderFromFactory().CreateScope().ServiceProvider;
         SetServiceProvider(serviceProvider);
@@ -186,12 +187,12 @@ public class FakeApplication : IFakeApplication
         {
             try
             {
-                module.Instance.PreConfigure(context);
+                module.Instance.PreConfigureApplication(context);
             }
             catch (Exception ex)
             {
                 throw new FakeInitializationException(
-                    $"模块{module.Type.AssemblyQualifiedName}在{nameof(IConfigureLifecycle.PreConfigure)}阶段发生异常。有关详细信息，请参阅内部异常。",
+                    $"模块{module.Type.AssemblyQualifiedName}在{nameof(IConfigureApplicationLifecycle.PreConfigureApplication)}阶段发生异常。有关详细信息，请参阅内部异常。",
                     ex);
             }
         }
@@ -201,12 +202,12 @@ public class FakeApplication : IFakeApplication
         {
             try
             {
-                module.Instance.Configure(context);
+                module.Instance.ConfigureApplication(context);
             }
             catch (Exception ex)
             {
                 throw new FakeInitializationException(
-                    $"模块{module.Type.AssemblyQualifiedName}在{nameof(IConfigureLifecycle.Configure)}阶段发生异常。有关详细信息，请参阅内部异常。",
+                    $"模块{module.Type.AssemblyQualifiedName}在{nameof(IConfigureApplicationLifecycle.ConfigureApplication)}阶段发生异常。有关详细信息，请参阅内部异常。",
                     ex);
             }
         }
@@ -216,12 +217,12 @@ public class FakeApplication : IFakeApplication
         {
             try
             {
-                module.Instance.PostConfigure(context);
+                module.Instance.PostConfigureApplication(context);
             }
             catch (Exception ex)
             {
                 throw new FakeInitializationException(
-                    $"模块{module.Type.AssemblyQualifiedName}在{nameof(IConfigureLifecycle.PostConfigure)}阶段发生异常。有关详细信息，请参阅内部异常。",
+                    $"模块{module.Type.AssemblyQualifiedName}在{nameof(IConfigureApplicationLifecycle.PostConfigureApplication)}阶段发生异常。有关详细信息，请参阅内部异常。",
                     ex);
             }
         }

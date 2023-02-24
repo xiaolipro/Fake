@@ -8,8 +8,8 @@ public class DependencyInjectionTests
     [Fact]
     public void 默认会注册自己和按命名约定的接口()
     {
-        using var application = FakeApplicationFactory.Create<IndependentModule>();
-        application.Initialize();
+        using var application = FakeApplicationFactory.Create<IndependentModuleApplication>();
+        application.InitializeApplication();
         var a = application.ServiceProvider.GetService<IA>();
         a.ShouldNotBeNull();
 
@@ -20,9 +20,9 @@ public class DependencyInjectionTests
     [Fact]
     public void ExposeServices强行暴露没有按命名约定的接口()
     {
-        using (var application = FakeApplicationFactory.Create<IndependentModule>())
+        using (var application = FakeApplicationFactory.Create<IndependentModuleApplication>())
         {
-            application.Initialize();
+            application.InitializeApplication();
 
             application.ServiceProvider.GetService<IB>().ShouldNotBeNull();
         }
@@ -31,8 +31,8 @@ public class DependencyInjectionTests
     [Fact]
     void Dependency指定的生命周期优先级最高()
     {
-        using var application = FakeApplicationFactory.Create<IndependentModule>();
-        application.Initialize();
+        using var application = FakeApplicationFactory.Create<IndependentModuleApplication>();
+        application.InitializeApplication();
 
         application.Services.First(x => x.ServiceType == typeof(IA)).Lifetime.ShouldBe(ServiceLifetime.Transient);
     }
@@ -40,8 +40,8 @@ public class DependencyInjectionTests
     [Fact]
     void DisableServiceRegistration禁用服务注册()
     {
-        using var application = FakeApplicationFactory.Create<IndependentModule>();
-        application.Initialize();
+        using var application = FakeApplicationFactory.Create<IndependentModuleApplication>();
+        application.InitializeApplication();
 
         application.ServiceProvider.GetService<MyB>().ShouldBeNull();
     }
@@ -50,8 +50,8 @@ public class DependencyInjectionTests
     [Fact]
     void ScopedSingleton的层次体系重定向()
     {
-        using var application = FakeApplicationFactory.Create<IndependentModule>();
-        application.Initialize();
+        using var application = FakeApplicationFactory.Create<IndependentModuleApplication>();
+        application.InitializeApplication();
 
         var a = application.ServiceProvider.GetService<IHierarchy>();
         var b = application.ServiceProvider.GetService<AHierarchy>();

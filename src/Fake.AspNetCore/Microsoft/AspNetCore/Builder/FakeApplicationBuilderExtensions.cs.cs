@@ -20,11 +20,11 @@ public static class FakeApplicationBuilderExtensions
         applicationLifetime.ApplicationStopping.Register(() => application.Shutdown());
         applicationLifetime.ApplicationStopped.Register(() => application.Dispose());
 
-        application.Initialize(app.ApplicationServices);
+        application.InitializeApplication(app.ApplicationServices);
     }
 
     /// <summary>
-    /// 防呆设计
+    /// 防呆设计，验证中间件是否已经注册
     /// </summary>
     /// <param name="app"></param>
     /// <param name="marker"></param>

@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Fake.Testing;
 
 public abstract class FakeModuleTest<TStartupModule> : FakeTest, IDisposable
-    where TStartupModule : IFakeModule
+    where TStartupModule : IFakeModuleApplication
 {
     protected IFakeApplication Application { get; set; }
     
@@ -27,7 +27,7 @@ public abstract class FakeModuleTest<TStartupModule> : FakeTest, IDisposable
         RootServiceProvider = services.BuildServiceProviderFromFactory();;
 
         TestServiceScope = RootServiceProvider!.CreateScope();
-        application.Initialize(TestServiceScope.ServiceProvider);
+        application.InitializeApplication(TestServiceScope.ServiceProvider);
 
         ServiceProvider = application.ServiceProvider;
     }

@@ -19,7 +19,7 @@ public class FakeModuleLoader : IModuleLoader
         var descriptors = new List<IModuleDescriptor>();
         
         // 自动引入Core模块
-        descriptors.Add(CreateModuleDescriptor(services,typeof(FakeCoreModule)));
+        descriptors.Add(CreateModuleDescriptor(services,typeof(FakeCoreModuleApplication)));
 
         FillModuleDescriptors(descriptors, services, startupModuleType);
         SetModuleDependencies(descriptors);
@@ -53,7 +53,7 @@ public class FakeModuleLoader : IModuleLoader
             var descriptor = CreateModuleDescriptor(services, moduleType);
             if (descriptors.Any(x => x.Assembly.Equals(moduleType.Assembly)))
             {
-                logger.LogWarning($"程序集{moduleType.AssemblyQualifiedName}内发现多个{nameof(IFakeModule)}");
+                logger.LogWarning($"程序集{moduleType.AssemblyQualifiedName}内发现多个{nameof(IFakeModuleApplication)}");
             }
             descriptors.TryAdd(descriptor);
         }
@@ -65,9 +65,9 @@ public class FakeModuleLoader : IModuleLoader
         return new FakeModuleDescriptor(moduleType, instance);
     }
     
-    protected virtual IFakeModule CreateAndRegisterModule(IServiceCollection services, Type moduleType)
+    protected virtual IFakeModuleApplication CreateAndRegisterModule(IServiceCollection services, Type moduleType)
     {
-        var module = Activator.CreateInstance(moduleType) as IFakeModule;
+        var module = Activator.CreateInstance(moduleType) as IFakeModuleApplication;
         services.AddSingleton(moduleType, module!);
         return module;
     }

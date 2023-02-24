@@ -7,7 +7,7 @@ internal static class FakeModuleHelper
 {
     private static void CheckFakeModuleType(Type moduleType)
     {
-        if (!FakeModule.IsFakeModule(moduleType))
+        if (!FakeModuleApplication.IsFakeModule(moduleType))
         {
             throw new ArgumentException("给定的类型不是Fake模块: " + moduleType.AssemblyQualifiedName);
         }
