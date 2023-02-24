@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace Fake.AspNetCore.ExceptionHandling;
 
-public interface IFakeAuthorizationExceptionHandler
+public interface IAuthorizationExceptionHandler
 {
     Task HandleAsync(FakeAuthorizationException exception, HttpContext httpContext);
 }

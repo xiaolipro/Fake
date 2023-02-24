@@ -9,7 +9,7 @@ using Microsoft.Extensions.Options;
 
 namespace Fake.AspNetCore.ExceptionHandling;
 
-public class DefaultAuthorizationExceptionHandler:IFakeAuthorizationExceptionHandler,ITransientDependency
+public class DefaultAuthorizationExceptionHandler:IAuthorizationExceptionHandler,ITransientDependency
 {
     public async Task HandleAsync(FakeAuthorizationException exception, HttpContext httpContext)
     {
