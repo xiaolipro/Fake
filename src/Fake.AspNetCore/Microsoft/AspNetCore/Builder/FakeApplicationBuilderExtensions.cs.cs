@@ -22,4 +22,23 @@ public static class FakeApplicationBuilderExtensions
 
         application.Initialize(app.ApplicationServices);
     }
+
+    /// <summary>
+    /// 防呆设计
+    /// </summary>
+    /// <param name="app"></param>
+    /// <param name="marker"></param>
+    /// <returns></returns>
+    public static bool VerifyMiddlewareAreRegistered([NotNull] this IApplicationBuilder app, string marker)
+    {
+        ThrowHelper.ThrowIfNull(app, nameof(app));
+
+        if (app.Properties.ContainsKey(marker))
+        {
+            return true;
+        }
+
+        app.Properties[marker] = true;
+        return false;
+    }
 }

@@ -37,4 +37,16 @@ public static class FakeStringExtensions
     {
         return string.IsNullOrWhiteSpace(str);
     }
+
+    /// <summary>
+    /// 表示字符串 存在于 该<see cref="IEnumerable"/>实例中，
+    /// 内部使用Enumerable.Contains。
+    /// </summary>
+    /// <param name="str"></param>
+    /// <param name="list"></param>
+    /// <returns></returns>
+    public static bool In(this string str, IEnumerable<string> list)
+    {
+        return list.Contains(str);
+    }
 }

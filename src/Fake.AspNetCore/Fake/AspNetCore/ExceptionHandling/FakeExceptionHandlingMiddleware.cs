@@ -7,6 +7,7 @@ using Fake.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
 
 namespace Fake.AspNetCore.ExceptionHandling;
@@ -75,8 +76,8 @@ public class FakeExceptionHandlingMiddleware : IMiddleware, ITransientDependency
 
         var jsonSerializer = serviceProvider.GetRequiredService<IFakeJsonSerializer>();
         var statusCodeFinder = serviceProvider.GetRequiredService<IHttpExceptionStatusCodeFinder>();
-        var exceptionHandlingOptions = serviceProvider.GetRequiredService<FakeExceptionHandlingOptions>();
         var converter = serviceProvider.GetRequiredService<IException2ErrorModelConverter>();
+        var exceptionHandlingOptions = serviceProvider.GetRequiredService<IOptions<FakeExceptionHandlingOptions>>().Value;
 
         httpContext.Response.Clear();
         httpContext.Response.StatusCode = (int)statusCodeFinder.Find(httpContext, exception);

@@ -8,13 +8,8 @@ public static class FakeExceptionHandlingMiddlewareExtensions
 
     public static IApplicationBuilder UseAbpExceptionHandling(this IApplicationBuilder app)
     {
-        // 防呆
-        if (app.Properties.ContainsKey(FakeExceptionHandlingMiddlewareMarker))
-        {
-            return app;
-        }
-
-        app.Properties[FakeExceptionHandlingMiddlewareMarker] = true;
-        return app.UseMiddleware<FakeExceptionHandlingMiddleware>();
+        return app.VerifyMiddlewareAreRegistered(FakeExceptionHandlingMiddlewareMarker)
+            ? app
+            : app.UseMiddleware<FakeExceptionHandlingMiddleware>();
     }
 }

@@ -13,11 +13,6 @@ public static class FakeClaimTypes
     /// 用户名
     /// </summary>
     public static string UserName { get; set; } = ClaimTypes.Name;
-
-    /// <summary>
-    /// 昵称
-    /// </summary>
-    public static string NickName { get; set; } = "nick_name";
     
     /// <summary>
     /// 角色
@@ -28,5 +23,11 @@ public static class FakeClaimTypes
     /// 邮箱
     /// </summary>
     public static string Email { get; set; } = ClaimTypes.Email;
+    
+    
+    /// <summary>
+    /// 昵称
+    /// </summary>
+    public static string NickName { get; set; } = "nick_name";
 
 }
