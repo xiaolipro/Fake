@@ -45,8 +45,8 @@ public class UnitOfWorkHelper:IUnitOfWorkHelper
     public UnitOfWorkAttribute GetUnitOfWorkAttributeOrNull(MethodInfo methodInfo)
     {
         // 先从方法上找
-        var attr = methodInfo.GetCustomAttribute<UnitOfWorkAttribute>(true);
+        var attr = methodInfo.GetCustomAttribute<UnitOfWorkAttribute>();
         // 再从类上找
-        return attr ?? methodInfo.DeclaringType.GetTypeInfo().GetCustomAttribute<UnitOfWorkAttribute>(true);
+        return attr ?? methodInfo.DeclaringType.GetTypeInfo().GetCustomAttribute<UnitOfWorkAttribute>();
     }
 }

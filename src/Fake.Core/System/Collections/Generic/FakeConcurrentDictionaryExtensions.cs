@@ -5,13 +5,11 @@ namespace System.Collections.Generic;
 public static class FakeConcurrentDictionaryExtensions
 {
     /// <summary>
-    /// Gets a value from the dictionary with given key. Returns default value if can not find.
+    /// 根据key从字典中寻找值
     /// </summary>
-    /// <param name="dictionary">Dictionary to check and get</param>
-    /// <param name="key">Key to find the value</param>
-    /// <typeparam name="TKey">Type of the key</typeparam>
-    /// <typeparam name="TValue">Type of the value</typeparam>
-    /// <returns>Value if found, default if can not found.</returns>
+    /// <param name="dictionary"></param>
+    /// <param name="key"></param>
+    /// <returns>key如果不存在，则返回默认值</returns>
     public static TValue GetOrDefault<TKey, TValue>(this ConcurrentDictionary<TKey, TValue> dictionary, TKey key)
     {
         return dictionary.TryGetValue(key, out var obj) ? obj : default;
