@@ -38,8 +38,8 @@ public static class FakeRegistrationBuilderExtensions
 
         Debug.Assert(implementationType != null, nameof(implementationType) + " != null");
         return registrationBuilder
-            .EnablePropertyInjection(moduleContainer, implementationType)
-            .InvokeRegistrationActions(registrationActionList, serviceType, implementationType);
+            .EnablePropertyInjection(moduleContainer, implementationType)  //启用属性注入
+            .InvokeRegistrationActions(registrationActionList, serviceType, implementationType); 
     }
 
     private static IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> EnablePropertyInjection<TLimit,
