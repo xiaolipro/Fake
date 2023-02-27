@@ -19,7 +19,7 @@ public class Program
                {
                    options.Configuration.CommandLineArgs = args;
                    options.UseAutofac();
-                   options.Services.AddSingleton(typeof(IScopeProvider<>), typeof(ScopeProvider<>));
+                   options.Services.AddSingleton(typeof(IAmbientScopeProvider<>), typeof(AmbientScopeProvider<>));
                }))
         {
             Console.WriteLine("Initializing the application...");

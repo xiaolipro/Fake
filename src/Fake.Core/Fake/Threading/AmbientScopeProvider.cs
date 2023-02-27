@@ -3,17 +3,17 @@ using Fake.DependencyInjection;
 
 namespace Fake.Threading;
 
-public class ScopeProvider<T> : IScopeProvider<T>, ISingletonDependency
+public class AmbientScopeProvider<T> : IAmbientScopeProvider<T>, ISingletonDependency
 {
-    private static readonly ConcurrentDictionary<string, ScopeItem> ScopeDictionary = new();
+    protected static readonly ConcurrentDictionary<string, ScopeItem> ScopeDictionary = new();
 
-    public T GetContext(string contextKey)
+    public virtual T GetValue(string contextKey)
     {
         var item = GetCurrentItemOrNull(contextKey);
         return item == null ? default : item.Value;
     }
 
-    public IDisposable BeginScope(string contextKey, T value)
+    public virtual IDisposable BeginScope(string contextKey, T value)
     {
         // 将需要临时存储的对象，用 ScopeItem 包装起来，它的外部对象是当前对象 (如果存在的话)。
         var item = new ScopeItem(value, GetCurrentItemOrNull(contextKey));
@@ -35,13 +35,14 @@ public class ScopeProvider<T> : IScopeProvider<T>, ISingletonDependency
         });
     }
 
-    private ScopeItem GetCurrentItemOrNull(string contextKey)
+    [CanBeNull]
+    protected ScopeItem GetCurrentItemOrNull(string contextKey)
     {
-        return CallContext.GetData(contextKey) is string outer ? ScopeDictionary.GetOrDefault(outer) : null;
+        return CallContext.GetData(contextKey) is string scopeItemId ? ScopeDictionary.GetOrDefault(scopeItemId) : null;
     }
 
 
-    private class ScopeItem
+    protected class ScopeItem
     {
         public string Id { get; }
 

@@ -10,26 +10,26 @@ public class AuditingManager : IAuditingManager, ITransientDependency
 {
     private const string AuditingContextKey = "Fake.Auditing.AuditLogScope";
 
-    private readonly IScopeProvider<IAuditLogScope> _scopeProvider;
+    private readonly IAmbientScopeProvider<IAuditLogScope> _ambientScopeProvider;
     private readonly IAuditingHelper _auditingHelper;
     private readonly IAuditingStore _auditingStore;
 
     public AuditingManager(
-        IScopeProvider<IAuditLogScope> scopeProvider,
+        IAmbientScopeProvider<IAuditLogScope> ambientScopeProvider,
         IAuditingHelper auditingHelper,
         IAuditingStore auditingStore)
     {
-        _scopeProvider = scopeProvider;
+        _ambientScopeProvider = ambientScopeProvider;
         _auditingHelper = auditingHelper;
         _auditingStore = auditingStore;
     }
 
-    public IAuditLogScope Current => _scopeProvider.GetContext(AuditingContextKey);
+    public IAuditLogScope Current => _ambientScopeProvider.GetValue(AuditingContextKey);
 
     public IAuditLogSaveHandle BeginScope()
     {
         var value = new AuditLogScope(_auditingHelper.CreateAuditLogInfo());
-        var scope = _scopeProvider.BeginScope(AuditingContextKey, value);
+        var scope = _ambientScopeProvider.BeginScope(AuditingContextKey, value);
 
         Debug.Assert(Current != null, nameof(Current) + " != null");
         return new AuditLogSaveHandle(this, scope, Current.Log, Stopwatch.StartNew());

@@ -22,7 +22,7 @@ public class AuditingTests : FakeAuditingTestBase
     {
         AuditingStore = Substitute.For<IAuditingStore>();
         services.Replace(ServiceDescriptor.Singleton(AuditingStore));
-        services.AddSingleton(typeof(IScopeProvider<>), typeof(ScopeProvider<>));
+        services.AddSingleton(typeof(IAmbientScopeProvider<>), typeof(AmbientScopeProvider<>));
     }
 
     [Fact]
