@@ -1,6 +1,6 @@
 ﻿namespace Fake;
 
-public class DisposableWrapper:IDisposable
+public class DisposableWrapper:IDisposable,IAsyncDisposable
 {
     private readonly Action _action;
 
@@ -14,5 +14,29 @@ public class DisposableWrapper:IDisposable
     public void Dispose()
     {
         _action.Invoke();
+    }
+    
+    public ValueTask DisposeAsync()
+    {
+        _action.Invoke();
+
+        return new ValueTask();
+    }
+}
+
+public class AsyncDisposableWrapper:IAsyncDisposable
+{
+    private readonly Task _task;
+
+    public AsyncDisposableWrapper([NotNull] Task task)
+    {
+        ThrowHelper.ThrowIfNull(task, nameof(task));
+
+        _task = task;
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await _task;
     }
 }

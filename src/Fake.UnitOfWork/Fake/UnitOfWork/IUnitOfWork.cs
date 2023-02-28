@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 
 namespace Fake.UnitOfWork;
 
@@ -25,10 +26,11 @@ public interface IUnitOfWork : IDatabaseApiContainer, IAsyncDisposable
     Task RollbackAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// 提交事务
+    /// 完成所有操作（包括数据保存、事务提交）
     /// </summary>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
+    /// <exception cref="FakeException">方法已被调用</exception>
     Task CompleteAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -48,47 +50,10 @@ public interface IUnitOfWork : IDatabaseApiContainer, IAsyncDisposable
     /// </summary>
     /// <param name="func"></param>
     void OnDisposed(Func<IUnitOfWork, Task> func);
-}
-
-public enum UnitOfWorkStatus
-{
-    Active,
-
-    Saving,
-    Saved,
-    SaveFailed,
-
+    
     /// <summary>
-    /// 提交中
+    /// 设置外层工作单元
     /// </summary>
-    Commiting,
-
-    /// <summary>
-    /// 已提交
-    /// </summary>
-    Committed,
-
-    /// <summary>
-    /// 提交失败
-    /// </summary>
-    CommitFailed,
-
-    /// <summary>
-    /// 回滚中
-    /// </summary>
-    RollBacking,
-
-    /// <summary>
-    /// 已回滚
-    /// </summary>
-    RollBacked,
-
-    /// <summary>
-    /// 回滚失败
-    /// </summary>
-    RollBackFailed,
-
-    Disposing,
-    Disposed,
-    DisposeFailed
+    /// <param name="outer"></param>
+    void SetOuter([CanBeNull] IUnitOfWork outer);
 }

@@ -11,6 +11,8 @@ namespace Fake.UnitOfWork;
 public class UnitOfWork : IUnitOfWork, ITransientDependency
 {
     public Guid Id { get; }
+    
+    public IUnitOfWork Outer { get; private set; }
 
     public UnitOfWorkStatus UnitOfWorkStatus { get; private set; }
 
@@ -20,7 +22,7 @@ public class UnitOfWork : IUnitOfWork, ITransientDependency
 
     protected virtual bool IsRollBack => UnitOfWorkStatus is UnitOfWorkStatus.RollBacking or UnitOfWorkStatus.RollBacked;
     protected virtual bool IsDispose => UnitOfWorkStatus is UnitOfWorkStatus.Disposing or UnitOfWorkStatus.Disposed;
-    protected virtual bool IsComplete => UnitOfWorkStatus is UnitOfWorkStatus.Commiting or UnitOfWorkStatus.Committed;
+    protected virtual bool IsComplete => UnitOfWorkStatus is UnitOfWorkStatus.Completing or UnitOfWorkStatus.Completed;
 
     private readonly Dictionary<string, IDatabaseApi> _databaseApiDic;
     private readonly Dictionary<string, ITransactionApi> _transactionApiDic;
@@ -72,7 +74,11 @@ public class UnitOfWork : IUnitOfWork, ITransientDependency
 
     public virtual async Task RollbackAsync(CancellationToken cancellationToken = default)
     {
-        if (IsRollBack) return;
+        if (IsRollBack)
+        {
+            return;
+        }
+        
         UnitOfWorkStatus = UnitOfWorkStatus.RollBacking;
 
         foreach (var databaseApi in GetAllActiveDatabaseApis())
@@ -97,15 +103,18 @@ public class UnitOfWork : IUnitOfWork, ITransientDependency
 
     public virtual async Task CompleteAsync(CancellationToken cancellationToken = default)
     {
-        if (IsRollBack) return;
+        if (IsRollBack)
+        {
+            return;
+        }
 
         // 抑制多提交
         if (IsComplete)
         {
-            throw new FakeException("事务已提交或正在提交");
+            throw new FakeException("方法已被调用");
         }
 
-        UnitOfWorkStatus = UnitOfWorkStatus.Commiting;
+        UnitOfWorkStatus = UnitOfWorkStatus.Completing;
 
         try
         {
@@ -115,15 +124,17 @@ public class UnitOfWork : IUnitOfWork, ITransientDependency
             {
                 await transaction.CommitAsync(cancellationToken);
             }
+
+            await HandleCompletedTasksAsync();
         }
         catch (Exception ex)
         {
-            UnitOfWorkStatus = UnitOfWorkStatus.CommitFailed;
+            UnitOfWorkStatus = UnitOfWorkStatus.CompletedFailed;
             await HandleCommitFailedTasksAsync(ex);
             throw;
         }
 
-        UnitOfWorkStatus = UnitOfWorkStatus.Committed;
+        UnitOfWorkStatus = UnitOfWorkStatus.Completed;
     }
 
     public virtual void OnCompleted(Func<IUnitOfWork, Task> func)
@@ -159,6 +170,11 @@ public class UnitOfWork : IUnitOfWork, ITransientDependency
         DisposedTasks.Add(func);
     }
 
+    public void SetOuter(IUnitOfWork outer)
+    {
+        Outer = outer;
+    }
+
     protected virtual async Task HandleDisposedTasksAsync()
     {
         DisposedTasks.Reverse();
@@ -180,7 +196,10 @@ public class UnitOfWork : IUnitOfWork, ITransientDependency
 
     public virtual async ValueTask DisposeAsync()
     {
-        if (IsDispose) return;
+        if (IsDispose)
+        {
+            return;
+        }
 
         UnitOfWorkStatus = UnitOfWorkStatus.Disposing;
 
