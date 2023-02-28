@@ -1,4 +1,5 @@
-﻿using Fake.ExceptionHandling;
+﻿using System.Text;
+using Fake.ExceptionHandling;
 
 namespace Microsoft.Extensions.Logging;
 
@@ -16,12 +17,24 @@ public static class FakeLoggerExtensions
         logger.LogWithLevel(logLevel, exception.Message, exception);
 
         LogKnownProperties(logger, exception, logLevel);
-        LogException(exception);
+        LogData(logger, exception, logLevel);
     }
 
-    private static void LogException(Exception exception)
+    private static void LogData(ILogger logger, Exception exception, LogLevel logLevel)
     {
-        throw new NotImplementedException();
+        if (exception.Data.Count > 0)
+        {
+            return;
+        }
+        
+        var dataBuilder = new StringBuilder();
+        dataBuilder.AppendLine("---------- Exception Data ----------");
+        foreach (var key in exception.Data.Keys)
+        {
+            dataBuilder.AppendLine($"{key} = {exception.Data[key]}");
+        }
+        
+        logger.LogWithLevel(logLevel, dataBuilder.ToString());
     }
 
     private static void LogKnownProperties(ILogger logger, Exception exception, LogLevel logLevel)
