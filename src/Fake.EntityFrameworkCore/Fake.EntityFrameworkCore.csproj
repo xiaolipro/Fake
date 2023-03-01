@@ -10,5 +10,7 @@
     <ItemGroup>
         <ProjectReference Include="..\Fake.Core\Fake.Core.csproj" />
         <ProjectReference Include="..\Fake.UnitOfWork\Fake.UnitOfWork.csproj" />
+
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="$(MicrosoftEntityFrameworkCorePackageVersion)" />
     </ItemGroup>
 </Project>
