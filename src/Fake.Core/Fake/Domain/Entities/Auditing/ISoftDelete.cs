@@ -1,6 +1,6 @@
 ﻿namespace Fake.Domain.Entities.Auditing;
 
-public interface IHasSoftDelete
+public interface ISoftDelete
 {
     /// <summary>
     /// 已经被删除

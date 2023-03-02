@@ -10,18 +10,6 @@ namespace Fake.EntityFrameworkCore.Modeling;
 
 public static class FakeEntityTypeBuilderExtensions
 {
-    public static EntityTypeBuilder TryConfigurePrimaryKey<TKey>(this EntityTypeBuilder builder)
-    {
-        if (builder.Metadata.ClrType.IsAssignableTo<IEntity<TKey>>())
-        {
-            builder.HasKey(nameof(IEntity<TKey>.Id));
-            builder.Property(nameof(IEntity<TKey>.Id))
-                .HasColumnName(nameof(IEntity<TKey>.Id));
-        }
-
-        return builder;
-    }
-    
     public static EntityTypeBuilder TryConfigureVersionNum(this EntityTypeBuilder builder)
     {
         if (builder.Metadata.ClrType.IsAssignableTo<IHasVersionNum>())
@@ -100,9 +88,9 @@ public static class FakeEntityTypeBuilderExtensions
     
     public static EntityTypeBuilder TryConfigureSoftDelete<TUserId>(this EntityTypeBuilder builder)
     {
-        if (builder.Metadata.ClrType.IsAssignableTo<IHasSoftDelete>())
+        if (builder.Metadata.ClrType.IsAssignableTo<ISoftDelete>())
         {
-            builder.Property(nameof(IHasSoftDelete.IsDeleted))
+            builder.Property(nameof(ISoftDelete.IsDeleted))
                 .HasColumnName(nameof(IHasModifier<TUserId>.LastModifierId))
                 .IsRequired()
                 .HasDefaultValue(false);
