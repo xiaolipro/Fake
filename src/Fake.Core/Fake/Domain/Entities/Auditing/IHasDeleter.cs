@@ -1,13 +1,14 @@
+#nullable enable
 using System;
 
-namespace Fake.Auditing;
+namespace Fake.Domain.Entities.Auditing;
 
-public interface IHasDeleter<out TCreatorId>
+public interface IHasDeleter<out TUserId>
 {
     /// <summary>
     /// 删除者Id
     /// </summary>
-    TCreatorId? DeleterId { get; }
+    TUserId? DeleterId { get; }
     
     /// <summary>
     /// 删除时间
