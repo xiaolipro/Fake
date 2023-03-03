@@ -19,11 +19,12 @@ public class UnitOfWorkManager : IUnitOfWorkManager, ISingletonDependency
         _serviceScopeFactory = serviceScopeFactory;
     }
 
-    public IUnitOfWork Begin(UnitOfWorkContext context, bool requiredNew = false)
+    public IUnitOfWork Begin(UnitOfWorkAttribute attribute, bool requiredNew = false)
     {
         if (Current != null && !requiredNew) return Current;
 
         var unitOfWork = CreateNewUnitOfWork();
+        unitOfWork.InitUnitOfWorkContext(attribute);
         
         var scope = _ambientUnitOfWorkProvider.BeginScope(UnitOfWorkContextKey, unitOfWork);
         

@@ -1,6 +1,6 @@
 ﻿namespace Fake.EntityFrameworkCore;
 
-public class EFCoreDbContextOptions
+public class EfCoreDbContextOptions
 {
     
 }

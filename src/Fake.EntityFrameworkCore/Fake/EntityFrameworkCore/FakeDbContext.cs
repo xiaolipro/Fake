@@ -14,12 +14,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Fake.EntityFrameworkCore;
 
-public interface IFakeDbContext
-{
-    void Initialize(IUnitOfWork unitOfWork);
-}
-
-public class FakeDbContext<TDbContext> : DbContext, IFakeDbContext, ITransientDependency where TDbContext : DbContext
+public class FakeDbContext<TDbContext> : DbContext, ITransientDependency where TDbContext : DbContext
 {
     private readonly FakeDbContextOptions<TDbContext> _options;
     

@@ -8,6 +8,10 @@ namespace Fake.UnitOfWork;
 public interface IUnitOfWork : IDatabaseApiContainer, ITransactionApiContainer, IAsyncDisposable
 {
     public Guid Id { get; }
+    
+    UnitOfWorkContext Context { get; }
+    
+    void InitUnitOfWorkContext(UnitOfWorkAttribute context);
 
     UnitOfWorkStatus UnitOfWorkStatus { get; }
 
@@ -50,7 +54,7 @@ public interface IUnitOfWork : IDatabaseApiContainer, ITransactionApiContainer, 
     /// </summary>
     /// <param name="func"></param>
     void OnDisposed(Func<IUnitOfWork, Task> func);
-
+    
     /// <summary>
     /// 设置外层工作单元
     /// </summary>

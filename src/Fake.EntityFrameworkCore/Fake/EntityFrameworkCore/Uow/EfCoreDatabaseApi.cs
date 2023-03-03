@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Fake.EntityFrameworkCore.Uow;
 
-public class EFCoreDatabaseApi: IDatabaseApi, ISupportSaveChanges
+public class EfCoreDatabaseApi: IDatabaseApi, ISupportSaveChanges
 {
     public DbContext DbContext { get; }
 
-    public EFCoreDatabaseApi(DbContext dbContext)
+    public EfCoreDatabaseApi(DbContext dbContext)
     {
         DbContext = dbContext;
     }

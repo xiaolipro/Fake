@@ -8,7 +8,7 @@ using Microsoft.Extensions.Options;
 
 namespace Fake.UnitOfWork;
 
-public class UnitOfWorkInterceptor:IFakeInterceptor, ITransientDependency
+public class UnitOfWorkInterceptor : IFakeInterceptor, ITransientDependency
 {
     private readonly IServiceScopeFactory _serviceScopeFactory;
 
@@ -16,11 +16,11 @@ public class UnitOfWorkInterceptor:IFakeInterceptor, ITransientDependency
     {
         _serviceScopeFactory = serviceScopeFactory;
     }
-    
+
     public async Task InterceptAsync(IFakeMethodInvocation invocation)
     {
         using var serviceScope = _serviceScopeFactory.CreateScope();
-        
+
         var uowHelper = serviceScope.ServiceProvider.GetRequiredService<IUnitOfWorkHelper>();
 
         if (!uowHelper.IsUnitOfWorkMethod(invocation.Method, out var unitOfWorkAttribute))
@@ -29,30 +29,10 @@ public class UnitOfWorkInterceptor:IFakeInterceptor, ITransientDependency
             return;
         }
 
-        var context = CreateUnitOfWorkContext(invocation, serviceScope.ServiceProvider, unitOfWorkAttribute);
         var unitOfWorkManager = serviceScope.ServiceProvider.GetRequiredService<IUnitOfWorkManager>();
+
+        await using var unitOfWork = unitOfWorkManager.Begin(unitOfWorkAttribute);
+        await invocation.ProcessAsync();
+        await unitOfWork.CompleteAsync();
     }
-
-    private UnitOfWorkContext CreateUnitOfWorkContext(IFakeMethodInvocation invocation,IServiceProvider serviceProvider, [CanBeNull] UnitOfWorkAttribute unitOfWorkAttribute)
-    {
-        var context = new UnitOfWorkContext();
-
-        if (unitOfWorkAttribute is not null)
-        {
-            context.IsolationLevel = unitOfWorkAttribute.IsolationLevel;
-            context.Timeout = unitOfWorkAttribute.Timeout;
-
-            var unitOfWorkOptions = serviceProvider.GetRequiredService<IOptions<FakeUnitOfWorkOptions>>().Value;
-            var isTransactional = serviceProvider.GetRequiredService<NullUnitOfWorkIsTransactionalProvider>()
-                .IsTransactional ?? !invocation.Method.Name.StartsWith("Get", StringComparison.InvariantCultureIgnoreCase);
-            context.IsTransactional = unitOfWorkOptions.IsTransactional(isTransactional);
-        }
-        
-        return context;
-    }
-}
-
-public interface IUnitOfWorkIsTransactionalProvider
-{
-    bool? IsTransactional { get; }
 }

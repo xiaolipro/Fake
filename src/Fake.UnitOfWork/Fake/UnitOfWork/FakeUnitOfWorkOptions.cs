@@ -3,6 +3,9 @@ using System.Data;
 
 namespace Fake.UnitOfWork;
 
+/// <summary>
+/// 工作单元默认配置，实际控制是<see cref="UnitOfWorkAttribute"/>
+/// </summary>
 public class FakeUnitOfWorkOptions
 {
     /// <summary>
@@ -27,12 +30,12 @@ public class FakeUnitOfWorkOptions
         Timeout = -1;
     }
 
-    public bool IsTransactional(bool isTransactional)
+    public bool CalculateIsTransactional(bool autoValue)
     {
         switch (TransactionState)
         {
             case UnitOfWorkTransactionState.Auto:
-                return isTransactional;
+                return autoValue;
             case UnitOfWorkTransactionState.Enable:
                 return true;
             case UnitOfWorkTransactionState.Disable:

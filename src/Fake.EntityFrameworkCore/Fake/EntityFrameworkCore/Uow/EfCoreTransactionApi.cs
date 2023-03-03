@@ -9,7 +9,10 @@ using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Fake.EntityFrameworkCore.Uow;
 
-public class EFCoreTransactionApi : ITransactionApi, ISupportRollback
+/// <summary>
+/// EntityFrameworkCore事务api
+/// </summary>
+public class EfCoreTransactionApi : ITransactionApi, ISupportRollback
 {
     public IDbContextTransaction DbContextTransaction { get; }
     public DbContext StarterDbContext { get; }
@@ -17,7 +20,7 @@ public class EFCoreTransactionApi : ITransactionApi, ISupportRollback
 
     protected ICancellationTokenProvider CancellationTokenProvider { get; }
 
-    public EFCoreTransactionApi(
+    public EfCoreTransactionApi(
         IDbContextTransaction dbContextTransaction,
         DbContext starterDbContext,
         ICancellationTokenProvider cancellationTokenProvider)

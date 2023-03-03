@@ -4,23 +4,29 @@ using System.Collections.Immutable;
 using System.Threading;
 using System.Threading.Tasks;
 using Fake.DependencyInjection;
+using JetBrains.Annotations;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Fake.UnitOfWork;
 
 public class UnitOfWork : IUnitOfWork, ITransientDependency
 {
     public Guid Id { get; }
-    
-    public IUnitOfWork Outer { get; private set; }
-
+    public IServiceProvider ServiceProvider { get; }
     public UnitOfWorkStatus UnitOfWorkStatus { get; private set; }
+    public UnitOfWorkContext Context { get; private set; }
+
+    public IUnitOfWork Outer { get; private set; }
 
     protected List<Func<IUnitOfWork, Task>> CompletedTasks { get; }
     protected List<Func<IUnitOfWork, Exception, Task>> CommitFailedTasks { get; }
     protected List<Func<IUnitOfWork, Task>> DisposedTasks { get; }
 
-    protected virtual bool IsRollBack => UnitOfWorkStatus is UnitOfWorkStatus.RollBacking or UnitOfWorkStatus.RollBacked;
+    protected virtual bool IsRollBack =>
+        UnitOfWorkStatus is UnitOfWorkStatus.RollBacking or UnitOfWorkStatus.RollBacked;
+
     protected virtual bool IsDispose => UnitOfWorkStatus is UnitOfWorkStatus.Disposing or UnitOfWorkStatus.Disposed;
     protected virtual bool IsComplete => UnitOfWorkStatus is UnitOfWorkStatus.Completing or UnitOfWorkStatus.Completed;
 
@@ -28,19 +34,52 @@ public class UnitOfWork : IUnitOfWork, ITransientDependency
     private readonly Dictionary<string, ITransactionApi> _transactionApiDic;
 
     private readonly ILogger<UnitOfWork> _logger;
+    private readonly FakeUnitOfWorkOptions _options;
 
-    public UnitOfWork(ILogger<UnitOfWork> logger)
+    public UnitOfWork(IServiceProvider serviceProvider, ILogger<UnitOfWork> logger,
+        IOptions<FakeUnitOfWorkOptions> options)
     {
+        ServiceProvider = serviceProvider;
         _logger = logger;
-        
+        _options = options.Value;
+
         Id = Guid.NewGuid();
-        
+
         CompletedTasks = new List<Func<IUnitOfWork, Task>>();
         CommitFailedTasks = new List<Func<IUnitOfWork, Exception, Task>>();
         DisposedTasks = new List<Func<IUnitOfWork, Task>>();
-        
+
         _databaseApiDic = new Dictionary<string, IDatabaseApi>();
         _transactionApiDic = new Dictionary<string, ITransactionApi>();
+    }
+
+    /// <summary>
+    /// 初始化工作单元上下文
+    /// </summary>
+    /// <param name="attribute"></param>
+    /// <exception cref="FakeException"></exception>
+    public virtual void InitUnitOfWorkContext([CanBeNull] UnitOfWorkAttribute attribute)
+    {
+        if (Context != null)
+        {
+            throw new FakeException($"这个工作单元上下文已经被初始化过了!");
+        }
+
+        var context = new UnitOfWorkContext();
+        if (attribute != null)
+        {
+            context.IsolationLevel = attribute.IsolationLevel;
+            context.Timeout = attribute.Timeout;
+        }
+
+        // 优先使用UnitOfWorkAttribute的配置，然后才是全局默认配置
+        context.IsolationLevel ??= _options.IsolationLevel;
+        context.Timeout ??= _options.Timeout;
+        context.IsTransactional = attribute?.IsTransactional?? _options.CalculateIsTransactional(
+            autoValue: ServiceProvider.GetRequiredService<IUnitOfWorkTransactionalProvider>().IsTransactional
+        );;
+
+        Context = context;
     }
 
     public virtual async Task SaveChangesAsync(CancellationToken cancellationToken = default)
@@ -78,7 +117,7 @@ public class UnitOfWork : IUnitOfWork, ITransientDependency
         {
             return;
         }
-        
+
         UnitOfWorkStatus = UnitOfWorkStatus.RollBacking;
 
         foreach (var databaseApi in GetAllActiveDatabaseApis())
@@ -151,7 +190,7 @@ public class UnitOfWork : IUnitOfWork, ITransientDependency
         }
     }
 
-    public virtual void OnCommitFailed(Func<IUnitOfWork,Exception, Task> func)
+    public virtual void OnCommitFailed(Func<IUnitOfWork, Exception, Task> func)
     {
         CommitFailedTasks.Add(func);
     }
@@ -233,7 +272,7 @@ public class UnitOfWork : IUnitOfWork, ITransientDependency
 
         if (_databaseApiDic.ContainsKey(key))
         {
-            throw new FakeException($"此工作单元{this}中已存在具有给定密钥{key}的数据库API： ");
+            throw new FakeException($"工作单元{this}中已存在具有给定密钥{key}的数据库API");
         }
 
         _databaseApiDic.Add(key, api);
@@ -247,6 +286,32 @@ public class UnitOfWork : IUnitOfWork, ITransientDependency
         return _databaseApiDic.GetOrAdd(key, factory);
     }
 
+    public ITransactionApi FindTransactionApi(string key)
+    {
+        return _transactionApiDic.GetOrDefault(key);
+    }
+
+    public void AddTransactionApi(string key, ITransactionApi api)
+    {
+        ThrowHelper.ThrowIfNull(key, nameof(key));
+        ThrowHelper.ThrowIfNull(api, nameof(api));
+
+        if (_transactionApiDic.ContainsKey(key))
+        {
+            throw new FakeException($"工作单元{this}中已存在具有给定密钥{key}的数据库API"); 
+        }
+        
+        _transactionApiDic.Add(key, api);
+    }
+
+    public ITransactionApi GetOrAddTransactionApi(string key, Func<ITransactionApi> factory)
+    {
+        ThrowHelper.ThrowIfNull(key, nameof(key));
+        ThrowHelper.ThrowIfNull(factory, nameof(factory));
+
+        return _transactionApiDic.GetOrAdd(key, factory);
+    }
+    
     public override string ToString()
     {
         return $"[UnitOfWork {Id}]";

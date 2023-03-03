@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Fake.EntityFrameworkCore;
 
-public interface IEFCoreDbContextProvider<TDbContext> where TDbContext : DbContext
+public interface IEfCoreDbContextProvider<TDbContext> where TDbContext : DbContext
 {
     Task<TDbContext> GetDbContextAsync();
 }

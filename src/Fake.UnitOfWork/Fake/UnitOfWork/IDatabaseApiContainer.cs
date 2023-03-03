@@ -1,14 +1,13 @@
 using System;
-using System.Threading.Tasks;
+using Fake.Core.DependencyInjection;
 using JetBrains.Annotations;
 
 namespace Fake.UnitOfWork;
 
-
 /// <summary>
 /// 数据库api容器
 /// </summary>
-public interface IDatabaseApiContainer
+public interface IDatabaseApiContainer : IServiceProviderAccessor
 {
     [CanBeNull]
     IDatabaseApi FindDatabaseApi([NotNull] string key);
