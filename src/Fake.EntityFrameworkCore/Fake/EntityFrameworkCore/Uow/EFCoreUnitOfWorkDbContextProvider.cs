@@ -1,11 +1,14 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Fake.UnitOfWork;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Fake.EntityFrameworkCore.Uow;
 
 public class EFCoreUnitOfWorkDbContextProvider<TDbContext> : IEFCoreDbContextProvider<TDbContext>
-    where TDbContext : IEFCoreDbContext
+    where TDbContext : DbContext
 {
     private readonly IUnitOfWorkManager _unitOfWorkManager;
     private readonly EFCoreDbContextOptions _options;
@@ -57,6 +60,107 @@ public class EFCoreUnitOfWorkDbContextProvider<TDbContext> : IEFCoreDbContextPro
                     )
                 );
             }
+
+            return dbContext;
+        }
+    }
+    
+    
+    private async Task<TDbContext> CreateDbContextWithTransactionAsync(IUnitOfWork unitOfWork)
+    {
+        var transactionApiKey = $"EntityFrameworkCore_{DbContextCreationContext.Current.ConnectionString}";
+        var activeTransaction = unitOfWork.FindTransactionApi(transactionApiKey) as EFCoreTransactionApi;
+
+        if (activeTransaction == null)
+        {
+            var dbContext = unitOfWork.ServiceProvider.GetRequiredService<TDbContext>();
+
+            try
+            {
+                var dbTransaction = unitOfWork.Options.IsolationLevel.HasValue
+                    ? await dbContext.Database.BeginTransactionAsync(unitOfWork.Options.IsolationLevel.Value, GetCancellationToken())
+                    : await dbContext.Database.BeginTransactionAsync(GetCancellationToken());
+
+                unitOfWork.AddTransactionApi(
+                    transactionApiKey,
+                    new EFCoreTransactionApi(
+                        dbTransaction,
+                        dbContext,
+                        _cancellationTokenProvider
+                    )
+                );
+            }
+            catch (Exception e) when (e is InvalidOperationException || e is NotSupportedException)
+            {
+                Logger<>.LogError(TransactionsNotSupportedErrorMessage);
+                Logger<>.LogException(e);
+                    
+                return dbContext;
+            }
+
+            return dbContext;
+        }
+        else
+        {
+            DbContextCreationContext.Current.ExistingConnection = activeTransaction.DbContextTransaction.GetDbTransaction().Connection;
+
+            var dbContext = unitOfWork.ServiceProvider.GetRequiredService<TDbContext>();
+
+            if (dbContext.As<DbContext>().HasRelationalTransactionManager())
+            {
+                if (dbContext.Database.GetDbConnection() == DbContextCreationContext.Current.ExistingConnection)
+                {
+                    await dbContext.Database.UseTransactionAsync(activeTransaction.DbContextTransaction.GetDbTransaction(), GetCancellationToken());
+                }
+                else
+                {
+                    try
+                    {
+                        /* User did not re-use the ExistingConnection and we are starting a new transaction.
+                            * EfCoreTransactionApi will check the connection string match and separately
+                            * commit/rollback this transaction over the DbContext instance. */
+                        if (unitOfWork.Options.IsolationLevel.HasValue)
+                        {
+                            await dbContext.Database.BeginTransactionAsync(
+                                unitOfWork.Options.IsolationLevel.Value,
+                                GetCancellationToken()
+                            );
+                        }
+                        else
+                        {
+                            await dbContext.Database.BeginTransactionAsync(
+                                GetCancellationToken()
+                            );
+                        }
+                    }
+                    catch (Exception e) when (e is InvalidOperationException || e is NotSupportedException)
+                    {
+                        Logger<>.LogError(TransactionsNotSupportedErrorMessage);
+                        Logger<>.LogException(e);
+                    
+                        return dbContext;
+                    }
+                }
+            }
+            else
+            {
+                try
+                {
+                    /* No need to store the returning IDbContextTransaction for non-relational databases
+                        * since EfCoreTransactionApi will handle the commit/rollback over the DbContext instance.
+                          */
+                    await dbContext.Database.BeginTransactionAsync(GetCancellationToken());
+                }
+                catch (Exception e) when (e is InvalidOperationException || e is NotSupportedException)
+                {
+                    Logger<>.LogError(TransactionsNotSupportedErrorMessage);
+                    Logger<>.LogException(e);
+                    
+                    return dbContext;
+                }
+            }
+
+            activeTransaction.AttendedDbContexts.Add(dbContext);
 
             return dbContext;
         }
