@@ -16,7 +16,7 @@ public class EFCoreUnitOfWorkDbContextProvider<TDbContext> : IEFCoreDbContextPro
         _unitOfWorkManager = unitOfWorkManager;
         _options = options.Value;
     }
-    public Task<TDbContext> GetDbContextAsync()
+    public Task<IUnitOfWork> GetDbContextAsync()
     {
         var uow = _unitOfWorkManager.Current;
         
@@ -24,7 +24,7 @@ public class EFCoreUnitOfWorkDbContextProvider<TDbContext> : IEFCoreDbContextPro
         {
             throw new FakeException("UnitOfWorkDbContext必须在工作单元内工作！");
         }
-        
-        
+
+        return Task.FromResult(uow);
     }
 }

@@ -23,7 +23,7 @@ public class FakeDbContext<TDbContext> : DbContext, IFakeDbContext, ITransientDe
 {
     private readonly FakeDbContextOptions<TDbContext> _options;
     
-    public IClock Clock => LazyServiceProvider.LazyGetRequiredService<IClock>();
+    public IClock Clock;
 
     private static readonly MethodInfo ConfigureGlobalFiltersMethodInfo = typeof(FakeDbContext<TDbContext>)
         .GetMethod(
