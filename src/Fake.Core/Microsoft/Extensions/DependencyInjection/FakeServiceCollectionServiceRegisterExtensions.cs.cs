@@ -5,7 +5,7 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public static class FakeServiceCollectionServiceRegisterExtensions
 {
-    #region ServiceRegistered
+    #region ServiceRegistered 服务注册后切面
 
     /// <summary>
     /// 在每个服务注册到IOC容器后执行
@@ -65,7 +65,7 @@ public static class FakeServiceCollectionServiceRegisterExtensions
     }
     #endregion
 
-    #region ServiceRegistrar
+    #region ServiceRegistrar 服务注册切面
     internal static IServiceCollection AddAssembly(this IServiceCollection services, Assembly assembly)
     {
         foreach (var registrar in services.GetOrCreateServiceRegisterList())
@@ -82,6 +82,13 @@ public static class FakeServiceCollectionServiceRegisterExtensions
 
         return services;
     }
+    
+    
+    /// <summary>
+    /// 获取或创建服务注册器集合，服务注册时会执行每一个注册器
+    /// </summary>
+    /// <param name="services"></param>
+    /// <returns>服务注册器列表</returns>
     private static ServiceRegistrarList GetOrCreateServiceRegisterList(this IServiceCollection services)
     {
         var conventionalRegistrars = services.GetObjectAccessorOrNull<ServiceRegistrarList>()?.Value;
@@ -94,6 +101,21 @@ public static class FakeServiceCollectionServiceRegisterExtensions
 
         return conventionalRegistrars;
     }
+    
+    
+    public static IServiceCollection AddType<TType>(this IServiceCollection services)
+    {
+        return services.AddType(typeof(TType));
+    }
 
+    public static IServiceCollection AddType(this IServiceCollection services, Type type)
+    {
+        foreach (var registrar in services.GetOrCreateServiceRegisterList())
+        {
+            registrar.AddType(services, type);
+        }
+
+        return services;
+    }
     #endregion
 }
