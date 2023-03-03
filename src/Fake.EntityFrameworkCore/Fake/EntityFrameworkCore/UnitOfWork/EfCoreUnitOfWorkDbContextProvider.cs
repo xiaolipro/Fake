@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 
-namespace Fake.EntityFrameworkCore.Uow;
+namespace Fake.EntityFrameworkCore.UnitOfWork;
 
 public class EfCoreUnitOfWorkDbContextProvider<TDbContext> : IEfCoreDbContextProvider<TDbContext>
     where TDbContext : DbContext
@@ -21,11 +21,11 @@ public class EfCoreUnitOfWorkDbContextProvider<TDbContext> : IEfCoreDbContextPro
     private const string TransactionsNotSupportedErrorMessage = "当前数据库不支持事务！";
     private readonly IUnitOfWorkManager _unitOfWorkManager;
     private readonly ICancellationTokenProvider _cancellationTokenProvider;
-    private readonly EfCoreDbContextOptions _options;
+    private readonly EfCoreOptions _options;
 
     public EfCoreUnitOfWorkDbContextProvider(IUnitOfWorkManager unitOfWorkManager,
         ICancellationTokenProvider cancellationTokenProvider,
-        IOptions<EfCoreDbContextOptions> options)
+        IOptions<EfCoreOptions> options)
     {
         _unitOfWorkManager = unitOfWorkManager;
         _cancellationTokenProvider = cancellationTokenProvider;
@@ -43,10 +43,11 @@ public class EfCoreUnitOfWorkDbContextProvider<TDbContext> : IEfCoreDbContextPro
             throw new FakeException("UnitOfWorkDbContext必须在工作单元内创建！");
         }
 
-        var connectionStringName = "ConnectionStringNameAttribute.GetConnStringName(targetDbContextType)";
+        var targetDbContextType = typeof(TDbContext);
+        var connectionStringName = ConnectionStringNameAttribute.GetConnStringName(targetDbContextType);
         var connectionString = "await ResolveConnectionStringAsync(connectionStringName)";
 
-        var dbContextKey = $"targetDbContextType.FullName_{connectionString}";
+        var dbContextKey = $"{targetDbContextType.FullName}_{connectionString}";
         var databaseApi = unitOfWork.FindDatabaseApi(dbContextKey);
 
         if (databaseApi == null)

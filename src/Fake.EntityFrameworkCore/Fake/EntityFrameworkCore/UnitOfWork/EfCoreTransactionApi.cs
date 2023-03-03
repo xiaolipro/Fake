@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 
-namespace Fake.EntityFrameworkCore.Uow;
+namespace Fake.EntityFrameworkCore.UnitOfWork;
 
 /// <summary>
 /// EntityFrameworkCore事务api
