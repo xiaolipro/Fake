@@ -1,7 +1,7 @@
 ﻿using Fake;
 using Fake.Testing;
 
-public class FakeAuditingTestBase : FakeModuleTest<FakeAuditingTestModule>
+public class FakeAuditingTestBase : FakeModuleTestBase<FakeAuditingTestModule>
 {
     protected override void SetFakeApplicationCreationOptions(FakeApplicationCreationOptions options)
     {

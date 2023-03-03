@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Fake.Testing;
+namespace Fake;
 
-public abstract class FakeTest
+public abstract class FakeTestBase
 {
     protected IServiceProvider ServiceProvider { get; set; }
 
