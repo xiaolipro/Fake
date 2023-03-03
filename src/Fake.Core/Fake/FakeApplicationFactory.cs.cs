@@ -9,7 +9,7 @@ public static class FakeApplicationFactory
 {
     public static FakeApplication Create<TStartupModule>(
         [CanBeNull] Action<FakeApplicationCreationOptions> optionsAction = null)
-        where TStartupModule : IFakeModuleApplication
+        where TStartupModule : IFakeModule
     {
         return Create(typeof(TStartupModule), optionsAction);
     }
@@ -24,7 +24,7 @@ public static class FakeApplicationFactory
     public static FakeApplication Create<TStartupModule>(
         [NotNull] IServiceCollection services,
         [CanBeNull] Action<FakeApplicationCreationOptions> optionsAction = null)
-        where TStartupModule : IFakeModuleApplication
+        where TStartupModule : IFakeModule
     {
         return Create(typeof(TStartupModule), services, optionsAction);
     }

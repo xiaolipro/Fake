@@ -3,6 +3,6 @@
 // ReSharper disable once CheckNamespace
 namespace Fake.Testing;
 
-public class FakeTestingModuleApplication : FakeModuleApplication
+public class FakeTestingModule : FakeModule
 {
 }

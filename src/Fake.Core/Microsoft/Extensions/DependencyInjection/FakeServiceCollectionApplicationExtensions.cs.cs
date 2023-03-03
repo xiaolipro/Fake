@@ -8,7 +8,7 @@ public static class FakeServiceCollectionApplicationExtensions
     public static FakeApplication AddStartupModule<TStartupModule>(
         [NotNull] this IServiceCollection services,
         [CanBeNull] Action<FakeApplicationCreationOptions> optionsAction = null)
-        where TStartupModule : IFakeModuleApplication
+        where TStartupModule : IFakeModule
     {
         return FakeApplicationFactory.Create<TStartupModule>(services, optionsAction);
     } 

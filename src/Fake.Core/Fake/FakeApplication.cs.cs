@@ -94,7 +94,7 @@ public class FakeApplication : IFakeApplication
         var assemblies = new HashSet<Assembly>();
         foreach (var module in Modules)
         {
-            if (module.Instance is FakeModuleApplication FakeModule)
+            if (module.Instance is FakeModule FakeModule)
             {
                 if (!FakeModule.SkipAutoServiceRegistration)
                 {

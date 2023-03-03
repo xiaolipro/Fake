@@ -1,6 +1,6 @@
 ﻿namespace Fake.Modularity;
 
-public class IndependentModuleApplication:FakeModuleApplication
+public class IndependentModule:FakeModule
 {
     public override void PreConfigureServices(ServiceConfigurationContext context)
     {

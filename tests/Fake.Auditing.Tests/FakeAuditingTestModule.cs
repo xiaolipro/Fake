@@ -2,7 +2,7 @@
 using Fake.Autofac;
 using Fake.Modularity;
 
-[DependsOn(typeof(FakeAuditingModuleApplication), typeof(FakeAutofacModuleApplication))]
-public class FakeAuditingTestModuleApplication : FakeModuleApplication
+[DependsOn(typeof(FakeAuditingModule), typeof(FakeAutofacModule))]
+public class FakeAuditingTestModule : FakeModule
 {
 }

@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 // ReSharper disable once CheckNamespace
 namespace Fake.Identity;
 
-public class FakeIdentityModuleApplication:FakeModuleApplication
+public class FakeIdentityModule:FakeModule
 {
     public override void PostConfigureServices(ServiceConfigurationContext context)
     {

@@ -1,6 +1,6 @@
 ﻿namespace Fake.Modularity;
 
-public interface IModuleApplicationLifecycle : IConfigureServicesLifecycle, IConfigureApplicationLifecycle, IShutdownLifecycle
+public interface IModuleLifecycle : IConfigureServicesLifecycle, IConfigureApplicationLifecycle, IShutdownLifecycle
 {
 }
 

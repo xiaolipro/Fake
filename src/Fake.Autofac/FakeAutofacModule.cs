@@ -5,8 +5,8 @@ using Fake.Modularity;
 // ReSharper disable once CheckNamespace
 namespace Fake.Autofac;
 
-[DependsOn(typeof(FakeCastleModuleApplication))]
-public class FakeAutofacModuleApplication:FakeModuleApplication
+[DependsOn(typeof(FakeCastleModule))]
+public class FakeAutofacModule:FakeModule
 {
     
 }

@@ -9,8 +9,8 @@ using Microsoft.Extensions.DependencyInjection;
 // ReSharper disable once CheckNamespace
 namespace Fake.Auditing;
 
-[DependsOn(typeof(FakeIdentityModuleApplication))]
-public class FakeAuditingModuleApplication:FakeModuleApplication
+[DependsOn(typeof(FakeIdentityModule))]
+public class FakeAuditingModule:FakeModule
 {
     public override void PreConfigureServices(ServiceConfigurationContext context)
     {

@@ -8,10 +8,10 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Fake.AspNetCore;
 
 [DependsOn(
-    typeof(FakeIdentityModuleApplication),
-    typeof(FakeAuditingModuleApplication),
-    typeof(FakeUnitOfWorkModuleApplication))]
-public class FakeAspNetCoreModule : FakeModuleApplication
+    typeof(FakeIdentityModule),
+    typeof(FakeAuditingModule),
+    typeof(FakeUnitOfWorkModule))]
+public class FakeAspNetCoreModule : FakeModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {

@@ -15,7 +15,7 @@ public class Program
 {
     static async Task Main(string[] args)
     {
-        using (var application = FakeApplicationFactory.Create<SimpleConsoleDemoModuleApplication>(options =>
+        using (var application = FakeApplicationFactory.Create<SimpleConsoleDemoModule>(options =>
                {
                    options.Configuration.CommandLineArgs = args;
                    options.UseAutofac();

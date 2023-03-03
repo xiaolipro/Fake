@@ -7,12 +7,12 @@ public class FakeModuleDescriptor:IModuleDescriptor
 {
     public Type Type { get; }
     public Assembly Assembly { get; }
-    public IFakeModuleApplication Instance { get; }
+    public IFakeModule Instance { get; }
     
     private readonly List<IModuleDescriptor> _dependencies;
     public IReadOnlyList<IModuleDescriptor> Dependencies => _dependencies.ToImmutableList();
 
-    public FakeModuleDescriptor([NotNull]Type type, [NotNull]IFakeModuleApplication instance)
+    public FakeModuleDescriptor([NotNull]Type type, [NotNull]IFakeModule instance)
     {
         ThrowHelper.ThrowIfNull(type, nameof(type));
         ThrowHelper.ThrowIfNull(instance, nameof(instance));

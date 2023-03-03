@@ -6,8 +6,8 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace SimpleConsoleDemo;
 
-[DependsOn(typeof(FakeAuditingModuleApplication),typeof(FakeAutofacModuleApplication),typeof(FakeIdentityModuleApplication))]
-public class SimpleConsoleDemoModuleApplication:FakeModuleApplication
+[DependsOn(typeof(FakeAuditingModule),typeof(FakeAutofacModule),typeof(FakeIdentityModule))]
+public class SimpleConsoleDemoModule:FakeModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {

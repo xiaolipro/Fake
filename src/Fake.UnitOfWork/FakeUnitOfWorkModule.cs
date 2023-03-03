@@ -5,7 +5,7 @@ using Fake.Modularity;
 using Fake.UnitOfWork;
 using Microsoft.Extensions.DependencyInjection;
 
-public class FakeUnitOfWorkModuleApplication:FakeModuleApplication
+public class FakeUnitOfWorkModule:FakeModule
 {
     public override void PreConfigureServices(ServiceConfigurationContext context)
     {

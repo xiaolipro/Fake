@@ -2,7 +2,7 @@
 
 namespace Fake.Modularity;
 
-public abstract class FakeModuleApplication:IFakeModuleApplication
+public abstract class FakeModule:IFakeModule
 {
     public virtual bool IsFakeFrameworkModule => false;
     public virtual bool SkipAutoServiceRegistration => false;
@@ -44,6 +44,6 @@ public abstract class FakeModuleApplication:IFakeModuleApplication
             typeInfo.IsClass &&
             !typeInfo.IsAbstract &&
             !typeInfo.IsGenericType &&
-            typeof(IFakeModuleApplication).GetTypeInfo().IsAssignableFrom(type);
+            typeof(IFakeModule).GetTypeInfo().IsAssignableFrom(type);
     }
 }
