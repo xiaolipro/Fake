@@ -2,7 +2,6 @@
 using Fake.DependencyInjection;
 using Fake.Threading;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using NSubstitute;
 using Xunit;
 
@@ -11,17 +10,9 @@ namespace Fake.Auditing;
 public class AuditingTests : FakeAuditingTestBase
 {
     protected IAuditingStore AuditingStore;
-    private IAuditingManager _auditingManager;
-
-    public AuditingTests()
-    {
-        _auditingManager = GetRequiredService<IAuditingManager>();
-    }
 
     protected override void AfterAddStartupModule(IServiceCollection services)
     {
-        AuditingStore = Substitute.For<IAuditingStore>();
-        services.Replace(ServiceDescriptor.Singleton(AuditingStore));
         services.AddSingleton(typeof(IAmbientScopeProvider<>), typeof(AmbientScopeProvider<>));
     }
 
@@ -29,11 +20,11 @@ public class AuditingTests : FakeAuditingTestBase
     public async Task 打了Audited特性的可以审计()
     {
         var myAuditedObject1 = GetRequiredService<MyAuditedObject1>();
-
-        using (var scope = _auditingManager.BeginScope())
+        var auditingManager = GetRequiredService<IAuditingManager>();
+        using (var scope = auditingManager.BeginScope())
         {
             await myAuditedObject1.DoItAsync(new InputObject { Value1 = "forty-two", Value2 = 42 });
-            //await scope.SaveAsync();
+            await scope.SaveAsync();
         }
 
         await AuditingStore.Received().SaveAsync(Arg.Any<AuditLogInfo>());

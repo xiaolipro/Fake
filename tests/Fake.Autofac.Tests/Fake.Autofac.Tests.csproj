@@ -10,6 +10,7 @@
         <ProjectReference Include="..\..\src\Fake.Autofac\Fake.Autofac.csproj" />
         <ProjectReference Include="..\..\src\Fake.Testing\Fake.Testing.csproj" />
         <ProjectReference Include="..\AFakeTestEntry\AFakeTestEntry.csproj" />
+        <ProjectReference Include="..\Fake.Core.Tests\Fake.Core.Tests.csproj" />
     </ItemGroup>
 
 </Project>

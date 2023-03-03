@@ -7,9 +7,9 @@ namespace Fake.EntityFrameworkCore.Uow;
 
 public class EFCoreDatabaseApi: IDatabaseApi, ISupportSaveChanges
 {
-    public DbContext DbContext { get; }
+    public IEFCoreDbContext DbContext { get; }
 
-    public EFCoreDatabaseApi(DbContext dbContext)
+    public EFCoreDatabaseApi(IEFCoreDbContext dbContext)
     {
         DbContext = dbContext;
     }

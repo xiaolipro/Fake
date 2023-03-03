@@ -3,7 +3,7 @@ using Fake.UnitOfWork;
 
 namespace Fake.EntityFrameworkCore;
 
-public interface IEFCoreDbContextProvider<TDbContext> where TDbContext : IFakeDbContext
+public interface IEFCoreDbContextProvider<TDbContext> where TDbContext : IEFCoreDbContext
 {
-    Task<IUnitOfWork> GetDbContextAsync();
+    Task<TDbContext> GetDbContextAsync();
 }

@@ -45,13 +45,6 @@ public class FakeDbContext<TDbContext> : DbContext, IFakeDbContext, ITransientDe
             ConfigureBaseProperties(modelBuilder, entityType);
         }
     }
-
-
-    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
-    {
-        return base.SaveChangesAsync(cancellationToken);
-    }
-
     public void Initialize(IUnitOfWork unitOfWork)
     {
         throw new System.NotImplementedException();

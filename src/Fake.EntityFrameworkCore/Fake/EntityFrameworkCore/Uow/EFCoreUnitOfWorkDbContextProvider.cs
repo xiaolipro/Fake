@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 namespace Fake.EntityFrameworkCore.Uow;
 
 public class EFCoreUnitOfWorkDbContextProvider<TDbContext> : IEFCoreDbContextProvider<TDbContext>
-    where TDbContext : IFakeDbContext
+    where TDbContext : IEFCoreDbContext
 {
     private readonly IUnitOfWorkManager _unitOfWorkManager;
     private readonly EFCoreDbContextOptions _options;
@@ -16,15 +16,49 @@ public class EFCoreUnitOfWorkDbContextProvider<TDbContext> : IEFCoreDbContextPro
         _unitOfWorkManager = unitOfWorkManager;
         _options = options.Value;
     }
-    public Task<IUnitOfWork> GetDbContextAsync()
+    public async Task<TDbContext> GetDbContextAsync()
     {
-        var uow = _unitOfWorkManager.Current;
+        var unitOfWork = _unitOfWorkManager.Current;
         
-        if (uow is null)
+        if (unitOfWork is null)
         {
             throw new FakeException("UnitOfWorkDbContext必须在工作单元内工作！");
         }
+        var connectionStringName = "ConnectionStringNameAttribute.GetConnStringName(targetDbContextType)";
+        var connectionString = "await ResolveConnectionStringAsync(connectionStringName)";
 
-        return Task.FromResult(uow);
+        var dbContextKey = $"targetDbContextType.FullName_{connectionString}";
+        var databaseApi = unitOfWork.FindDatabaseApi(dbContextKey);
+        
+        if (databaseApi == null)
+        {
+            var dbContext = await CreateDbContextAsync(unitOfWork, connectionStringName, connectionString);
+            databaseApi = new EFCoreDatabaseApi(dbContext);
+
+            unitOfWork.AddDatabaseApi(dbContextKey, databaseApi);
+        }
+
+        return (TDbContext)((EFCoreDatabaseApi)databaseApi).DbContext;
+    }
+    
+    
+    private async Task<TDbContext> CreateDbContextAsync(IUnitOfWork unitOfWork, string connectionStringName, string connectionString)
+    {
+        var creationContext = new DbContextCreationContext(connectionStringName, connectionString);
+        using (DbContextCreationContext.Use(creationContext))
+        {
+            var dbContext = await CreateDbContextAsync(unitOfWork);
+
+            if (dbContext is IAbpEfCoreDbContext abpEfCoreDbContext)
+            {
+                abpEfCoreDbContext.Initialize(
+                    new AbpEfCoreDbContextInitializationContext(
+                        unitOfWork
+                    )
+                );
+            }
+
+            return dbContext;
+        }
     }
 }
