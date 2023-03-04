@@ -5,6 +5,9 @@ namespace Fake.DependencyInjection;
 
 public class OnServiceRegistrationContext
 {
+    /// <summary>
+    /// 服务拦截器
+    /// </summary>
     public virtual ITypeList<IFakeInterceptor> Interceptors { get; }
     
     public virtual Type ServiceType { get; }

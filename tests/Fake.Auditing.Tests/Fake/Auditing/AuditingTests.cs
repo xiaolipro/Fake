@@ -11,7 +11,7 @@ public class AuditingTests : FakeAuditingTestBase
 {
     protected IAuditingStore AuditingStore;
 
-    protected override void AfterAddStartupModule(IServiceCollection services)
+    protected override void AfterAddFakeApplication(IServiceCollection services)
     {
         services.AddSingleton(typeof(IAmbientScopeProvider<>), typeof(AmbientScopeProvider<>));
     }

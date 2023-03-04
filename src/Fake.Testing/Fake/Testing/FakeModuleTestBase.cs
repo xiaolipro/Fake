@@ -18,9 +18,9 @@ public abstract class FakeModuleTestBase<TStartupModule> : FakeTestBase, IDispos
     {
         var services = CreateServiceCollection();
         
-        BeforeAddStartupModule(services);
-        var application = services.AddStartupModule<TStartupModule>(SetFakeApplicationCreationOptions);
-        AfterAddStartupModule(services);
+        BeforeAddFakeApplication(services);
+        var application = services.AddFakeApplication<TStartupModule>(SetApplicationCreationOptions);
+        AfterAddFakeApplication(services);
         
         Application = application;
 
@@ -37,16 +37,16 @@ public abstract class FakeModuleTestBase<TStartupModule> : FakeTestBase, IDispos
         return new ServiceCollection();
     }
 
-    protected virtual void BeforeAddStartupModule(IServiceCollection services)
+    protected virtual void BeforeAddFakeApplication(IServiceCollection services)
     {
 
     }
     
-    protected virtual void AfterAddStartupModule(IServiceCollection services)
+    protected virtual void AfterAddFakeApplication(IServiceCollection services)
     {
     }
     
-    protected virtual void SetFakeApplicationCreationOptions(FakeApplicationCreationOptions options)
+    protected virtual void SetApplicationCreationOptions(FakeApplicationCreationOptions options)
     {
 
     }

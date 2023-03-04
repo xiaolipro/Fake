@@ -35,7 +35,7 @@ public static class FakeServiceCollectionServiceRegisterExtensions
     }
     #endregion
     
-    #region ServiceExposing
+    #region ServiceExposing 服务暴露切面
     
     /// <summary>
     /// 服务暴露时执行，可以在这里变更暴露内容

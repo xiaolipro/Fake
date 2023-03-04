@@ -3,7 +3,7 @@ using Fake.Testing;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-public abstract class DependencyInjection_Tests:FakeModuleTestBase<DependencyInjectTestModule>
+public abstract class AbstractDependencyInjectionTests:FakeModuleTestBase<DependencyInjectTestModule>
 {
     [Fact]
     public void 单例服务可以跨越瞬态scope()

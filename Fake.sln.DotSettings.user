@@ -8,6 +8,8 @@
       &lt;TestId&gt;xUnit::18CD3533-6778-46E1-B175-448D15543F8C::net7.0::Fake.Auditing.AuditingTests.Should_Write_AuditLog_For_Classes_That_Implement_IAuditingEnabled_Without_An_Explicit_Scope&lt;/TestId&gt;&#xD;
       &lt;TestId&gt;xUnit::18CD3533-6778-46E1-B175-448D15543F8C::net7.0::Fake.Auditing.AuditingTests.打了Audited特性的可以审计&lt;/TestId&gt;&#xD;
       &lt;TestId&gt;xUnit::9B22DE9A-C927-4B69-B349-D46E1EEBA0BF::net7.0::AutofacDependencyInjection_Tests.单例服务可以跨越瞬态scope&lt;/TestId&gt;&#xD;
+      &lt;TestId&gt;xUnit::9B22DE9A-C927-4B69-B349-D46E1EEBA0BF::net7.0::AutofacDependencyInjection_Tests&lt;/TestId&gt;&#xD;
+      &lt;TestId&gt;xUnit::9B22DE9A-C927-4B69-B349-D46E1EEBA0BF::net7.0::AutofacInterceptionTests&lt;/TestId&gt;&#xD;
     &lt;/TestAncestor&gt;&#xD;
     &lt;Project Location="C:\Users\antinewpc\source\repos\fake\tests\Fake.Core.Tests" Presentation="&amp;lt;tests&amp;gt;\&amp;lt;Fake.Core.Tests&amp;gt;" /&gt;&#xD;
   &lt;/Or&gt;&#xD;
