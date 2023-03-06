@@ -19,19 +19,19 @@ namespace Fake.EntityFrameworkCore;
 
 public class FakeDbContext<TDbContext> : DbContext, ITransientDependency where TDbContext : DbContext
 {
-    public IServiceProvider ServiceProvider { get; set; }
-    public Lazy<IClock> _expensive = new Lazy<IClock>(() => ServiceProvider.GetRequiredService<IClock>());
-
+    private readonly Lazy<IClock> _clock;
     private readonly EfCoreOptions _options;
+    
     private static readonly MethodInfo ConfigureGlobalFiltersMethodInfo = typeof(FakeDbContext<TDbContext>)
         .GetMethod(
             nameof(ConfigureGlobalFilters),
             BindingFlags.Instance | BindingFlags.NonPublic
         );
 
-    public FakeDbContext(IOptions<EfCoreOptions> options)
+    public FakeDbContext(IServiceProvider serviceProvider, IOptions<EfCoreOptions> options)
     {
-        _options = options.Value;
+        _options = serviceProvider.GetRequiredService<IOptions<EfCoreOptions>>().Value;
+        _clock = new Lazy<IClock>(serviceProvider.GetRequiredService<IClock>);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
