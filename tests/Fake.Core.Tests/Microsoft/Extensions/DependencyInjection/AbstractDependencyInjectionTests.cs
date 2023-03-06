@@ -47,6 +47,7 @@ public abstract class AbstractDependencyInjectionTests:FakeModuleTestBase<Depend
         GetRequiredService<ServiceWithPropertyInject>().PropertyInjectedServiceWithPrivateSet.ShouldBeNull();
         GetRequiredService<ServiceWithPropertyInject>().PropertyInjectedServiceWithProtectedSet.ShouldBeNull();
         GetRequiredService<ServiceWithPropertyInject>().PropertyInjectedServiceWithInternalSet.ShouldBeNull();
+        ServiceWithPropertyInject.StaticPropertyInjectedServiceWithPublicSet.ShouldBeNull();
     }
 
     public class ServiceWithPropertyInject : ITransientDependency
@@ -57,6 +58,8 @@ public abstract class AbstractDependencyInjectionTests:FakeModuleTestBase<Depend
         
         public MyEmptyTransientService PropertyInjectedServiceWithProtectedSet { get;protected set; }
         public MyEmptyTransientService PropertyInjectedServiceWithInternalSet { get;internal set; }
+        
+        public static MyEmptyTransientService StaticPropertyInjectedServiceWithPublicSet { get; set; }
     }
 
 

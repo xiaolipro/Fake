@@ -12,16 +12,17 @@ using Fake.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace Fake.EntityFrameworkCore;
 
 public class FakeDbContext<TDbContext> : DbContext, ITransientDependency where TDbContext : DbContext
 {
+    public IServiceProvider ServiceProvider { get; set; }
+    public Lazy<IClock> _expensive = new Lazy<IClock>(() => ServiceProvider.GetRequiredService<IClock>());
+
     private readonly EfCoreOptions _options;
-
-    public IClock Clock;
-
     private static readonly MethodInfo ConfigureGlobalFiltersMethodInfo = typeof(FakeDbContext<TDbContext>)
         .GetMethod(
             nameof(ConfigureGlobalFilters),
