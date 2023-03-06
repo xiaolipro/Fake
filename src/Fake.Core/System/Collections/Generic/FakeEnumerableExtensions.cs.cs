@@ -27,7 +27,7 @@ public static class FakeEnumerableExtensions
     }
 
     /// <summary>
-    /// 将集合用separator拼接，等同string.Join
+    /// 将集合用separator拼接，等同string.Join，但不会抛<see cref="ArgumentNullException"/>
     /// </summary>
     /// <param name="source"></param>
     /// <param name="separator"></param>
@@ -35,6 +35,7 @@ public static class FakeEnumerableExtensions
     /// <returns>返回拼接后的字符串</returns>
     public static string JoinAsString<T>(this IEnumerable<T> source, string separator)
     {
+        if (source == null) return "";
         return string.Join(separator, source);
     }
 
