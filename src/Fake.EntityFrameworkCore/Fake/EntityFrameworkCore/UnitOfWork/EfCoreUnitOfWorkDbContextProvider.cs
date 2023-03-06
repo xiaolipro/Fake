@@ -44,15 +44,14 @@ public class EfCoreUnitOfWorkDbContextProvider<TDbContext> : IEfCoreDbContextPro
         }
 
         var targetDbContextType = typeof(TDbContext);
-        var connectionStringName = ConnectionStringNameAttribute.GetConnStringName(targetDbContextType);
-        var connectionString = "await ResolveConnectionStringAsync(connectionStringName)";
+        var connectionString = _options.ConnectionString;
 
         var dbContextKey = $"{targetDbContextType.FullName}_{connectionString}";
         var databaseApi = unitOfWork.FindDatabaseApi(dbContextKey);
 
         if (databaseApi == null)
         {
-            var dbContext = await CreateDbContextAsync(unitOfWork,connectionStringName, connectionString);
+            var dbContext = await CreateDbContextAsync(unitOfWork, connectionString);
             databaseApi = new EfCoreDatabaseApi(dbContext);
 
             unitOfWork.AddDatabaseApi(dbContextKey, databaseApi);
@@ -62,10 +61,10 @@ public class EfCoreUnitOfWorkDbContextProvider<TDbContext> : IEfCoreDbContextPro
     }
 
 
-    private async Task<TDbContext> CreateDbContextAsync(IUnitOfWork unitOfWork, string connectionStringName,
+    private async Task<TDbContext> CreateDbContextAsync(IUnitOfWork unitOfWork,
         string connectionString)
     {
-        var creationContext = new DbContextCreationContext(connectionStringName, connectionString);
+        var creationContext = new DbContextCreationContext(connectionString);
         using (DbContextCreationContext.Use(creationContext))
         {
             var dbContext = unitOfWork.Context.IsTransactional
