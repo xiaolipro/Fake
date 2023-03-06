@@ -53,6 +53,7 @@ public static class FakeRegistrationBuilderExtensions
             implementationType.GetCustomAttributes(typeof(DisablePropertyInjectionAttribute), true).IsNullOrEmpty())
         {
             // preserveSetValues设为false，不保留原有值，覆写
+            // 注意，属性必须具有公开public的set方法，否则将赋值失败
             registrationBuilder = registrationBuilder.PropertiesAutowired(new FakePropertySelector(false));
         }
 

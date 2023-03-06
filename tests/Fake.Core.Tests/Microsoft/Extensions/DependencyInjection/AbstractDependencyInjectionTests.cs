@@ -43,12 +43,15 @@ public abstract class AbstractDependencyInjectionTests:FakeModuleTestBase<Depend
     [Fact]
     public void 支持属性注入()
     {
-        GetRequiredService<ServiceWithPropertyInject>().PropertyInjectedService.ShouldNotBeNull();
+        GetRequiredService<ServiceWithPropertyInject>().PropertyInjectedServiceWithPublicSet.ShouldNotBeNull();
+        GetRequiredService<ServiceWithPropertyInject>().PropertyInjectedService.ShouldBeNull();
     }
 
     public class ServiceWithPropertyInject : ITransientDependency
     {
-        public MyEmptyTransientService PropertyInjectedService { get; set; }
+        public MyEmptyTransientService PropertyInjectedServiceWithPublicSet { get; set; }
+        
+        public MyEmptyTransientService PropertyInjectedService { get;private set; }
     }
 
 
