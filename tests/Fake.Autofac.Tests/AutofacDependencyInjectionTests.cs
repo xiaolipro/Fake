@@ -1,7 +1,7 @@
 ﻿using Fake;
 using Microsoft.Extensions.DependencyInjection;
 
-public class AutofacAbstractDependencyInjectionTests : AbstractDependencyInjectionTests
+public class AutofacDependencyInjectionTests : AbstractDependencyInjectionTests
 {
     protected override void SetApplicationCreationOptions(FakeApplicationCreationOptions options)
     {

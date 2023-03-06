@@ -1,4 +1,5 @@
-﻿using Fake.DependencyInjection;
+﻿using System.Security.Claims;
+using Fake.DependencyInjection;
 using Fake.Testing;
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -38,10 +39,19 @@ public abstract class AbstractDependencyInjectionTests:FakeModuleTestBase<Depend
         
         emptyTransientService.IsDisposed.ShouldBeTrue();
     }
-    
-    
-    
-    
+
+    [Fact]
+    public void 支持属性注入()
+    {
+        GetRequiredService<ServiceWithPropertyInject>().PropertyInjectedService.ShouldNotBeNull();
+    }
+
+    public class ServiceWithPropertyInject : ITransientDependency
+    {
+        public MyEmptyTransientService PropertyInjectedService { get; set; }
+    }
+
+
     public class MySingletonService : ISingletonDependency
     {
         public List<MyEmptyTransientService> TransientInstances { get; }
