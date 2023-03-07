@@ -9,6 +9,7 @@ using Fake.Domain.Entities;
 using Fake.Domain.Entities.Auditing;
 using Fake.Domain.Entities.IdGenerators;
 using Fake.EntityFrameworkCore.Modeling;
+using Fake.EntityFrameworkCore.ValueConverters;
 using Fake.Reflection;
 using Fake.Timing;
 using Fake.UnitOfWork;
@@ -51,6 +52,7 @@ public class FakeDbContext<TDbContext> : DbContext, ITransientDependency where T
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())
         {
             ConfigureBaseProperties(modelBuilder, entityType);
+            ConfigureValueConverter(modelBuilder, entityType);
         }
     }
 
@@ -64,21 +66,21 @@ public class FakeDbContext<TDbContext> : DbContext, ITransientDependency where T
                 Database.SetCommandTimeout(TimeSpan.FromMilliseconds(unitOfWork.Context.Timeout.Value));
             }
         }
-        
+
         // 级联删除策略
         ChangeTracker.CascadeDeleteTiming = CascadeTiming.OnSaveChanges;
-        
+
         // 实体Track事件
         ChangeTracker.Tracked += (sender, args) =>
         {
             // TODO：ExtraProperties Tracked?
-            
+
             // 为跟踪实体发布事件
             PublishEventsForTrackedEntity(args.Entry);
         };
-        
+
         // 实体状态变更事件
-        ChangeTracker.StateChanged+= (sender, args) =>
+        ChangeTracker.StateChanged += (sender, args) =>
         {
             // 为跟踪实体发布事件
             PublishEventsForTrackedEntity(args.Entry);
@@ -114,12 +116,12 @@ public class FakeDbContext<TDbContext> : DbContext, ITransientDependency where T
         if (entry.Entity is ISoftDelete entityWithSoftDelete)
         {
             if (entityWithSoftDelete.HardDeleted) return;
-            
+
             // 重置entity状态
             entry.Reload();
-        
+
             ReflectionHelper.TrySetProperty(entityWithSoftDelete, x => x.IsDeleted, () => true);
-            
+
             SetModifier(entry);
         }
     }
@@ -145,7 +147,7 @@ public class FakeDbContext<TDbContext> : DbContext, ITransientDependency where T
             if (entityWithVersionNum.VersionNum != default) return;
 
             entityWithVersionNum.VersionNum = SimpleGuidGenerator.Instance.Create().ToString("N");
-        } 
+        }
     }
 
     protected virtual void CheckAndSetId(EntityEntry entry)
@@ -154,20 +156,20 @@ public class FakeDbContext<TDbContext> : DbContext, ITransientDependency where T
         {
             TrySetGuidId(entry, entityWithGuidId);
         }
-        
+
         // TODO: 雪花id
     }
 
     protected virtual void TrySetGuidId(EntityEntry entry, IEntity<Guid> entityWithGuidId)
     {
         if (entityWithGuidId.Id != default) return;
-        
+
         var idProperty = entry.Property(nameof(IEntity<Guid>.Id)).Metadata.PropertyInfo;
 
         var attr = ReflectionHelper.GetSingleAttributeOrDefault<DatabaseGeneratedAttribute>(idProperty);
         if (attr != null && attr.DatabaseGeneratedOption != DatabaseGeneratedOption.None) return;
-        
-        EntityHelper.TrySetId(entityWithGuidId,  () => _guidGenerator.Value.Create(), true);
+
+        EntityHelper.TrySetId(entityWithGuidId, () => _guidGenerator.Value.Create(), true);
     }
 
     protected virtual void TrySetDatabaseProvider(ModelBuilder modelBuilder)
@@ -178,7 +180,7 @@ public class FakeDbContext<TDbContext> : DbContext, ITransientDependency where T
             "Pomelo.EntityFrameworkCore.MySql" => DatabaseProvider.MySql,
             _ => null
         };
-        
+
         if (provider != null)
         {
             modelBuilder.SetDatabaseProvider(provider.Value);
@@ -214,6 +216,29 @@ public class FakeDbContext<TDbContext> : DbContext, ITransientDependency where T
 
         var entityType = mutableEntityType.ClrType;
         if (entityType.IsDefined(typeof(OwnedAttribute), true)) return;
+
+        if (!entityType.IsDefined(typeof(DisableDateTimeNormalizationAttribute)))
+        {
+            var dateTimeProperties = mutableEntityType.GetProperties()
+                .Where(p =>
+                {
+                    var propertyInfo = p.PropertyInfo;
+                    if (propertyInfo == null) return false;
+                    if (!propertyInfo.CanWrite) return false;
+                    if (ReflectionHelper.GetSingleAttributeOrDefault<DisableDateTimeNormalizationAttribute>(
+                            propertyInfo, includeDeclaringType: true) != null) return false;
+                    return propertyInfo.PropertyType == typeof(DateTime) ||
+                           propertyInfo.PropertyType == typeof(DateTime?);
+                });
+
+            foreach (var property in dateTimeProperties)
+            {
+                modelBuilder.Entity(entityType).Property(property.Name)
+                    .HasConversion(property.ClrType == typeof(DateTime)
+                        ? new FakeDateTimeValueConverter(_clock.Value)
+                        : new FakeNullableDateTimeValueConverter(_clock.Value));
+            }
+        }
     }
 
     protected virtual void ConfigureGlobalFilters<TEntity>(ModelBuilder modelBuilder,

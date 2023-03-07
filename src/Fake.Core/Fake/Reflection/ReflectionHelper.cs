@@ -33,7 +33,7 @@ public static class ReflectionHelper
 
             return propertyInfo;
         });
-        
+
         propertyInfo?.SetValue(obj, valueFactory());
     }
 
@@ -43,18 +43,22 @@ public static class ReflectionHelper
     /// <param name="memberInfo"></param>
     /// <param name="defaultValue"></param>
     /// <param name="inherit"></param>
+    /// <param name="includeDeclaringType"></param>
     /// <typeparam name="TAttribute"></typeparam>
     /// <returns></returns>
     public static TAttribute GetSingleAttributeOrDefault<TAttribute>(MemberInfo memberInfo,
-        TAttribute defaultValue = default, bool inherit = true)
+        TAttribute defaultValue = default, bool inherit = true, bool includeDeclaringType = false)
         where TAttribute : Attribute
     {
         //Get attribute on the member
         if (memberInfo.IsDefined(typeof(TAttribute), inherit))
         {
-            return memberInfo.GetCustomAttributes(typeof(TAttribute), inherit).Cast<TAttribute>().First();
+            return memberInfo.GetCustomAttributes(typeof(TAttribute), inherit).FirstOrDefault() as TAttribute;
         }
 
-        return defaultValue;
+        if (!includeDeclaringType) return defaultValue;
+
+        return memberInfo.DeclaringType?.GetType().GetCustomAttributes(typeof(TAttribute), inherit)
+            .FirstOrDefault() as TAttribute ?? defaultValue;
     }
 }
