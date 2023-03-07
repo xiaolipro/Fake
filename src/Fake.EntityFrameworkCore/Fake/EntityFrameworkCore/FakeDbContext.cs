@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Fake.Auditing;
@@ -75,6 +76,13 @@ public class FakeDbContext<TDbContext> : DbContext, ITransientDependency where T
             // 为跟踪实体发布事件
             PublishEventsForTrackedEntity(args.Entry);
         };
+        
+        // 实体状态变更事件
+        ChangeTracker.StateChanged+= (sender, args) =>
+        {
+            // 为跟踪实体发布事件
+            PublishEventsForTrackedEntity(args.Entry);
+        };
     }
 
     protected virtual void PublishEventsForTrackedEntity(EntityEntry entry)
@@ -86,8 +94,10 @@ public class FakeDbContext<TDbContext> : DbContext, ITransientDependency where T
             case EntityState.Unchanged: //未变更状态：该实体正在由上下文跟踪并存在于数据库中，其属性值与数据库中的值没有变化。
                 break;
             case EntityState.Deleted: //删除状态：该实体正在由上下文跟踪并存在于数据库中，它已标记为从数据库中删除
+                SoftDelete(entry);
                 break;
             case EntityState.Modified: //修改状态：该实体正在由上下文跟踪并存在于数据库中，其部分或全部属性值已被修改
+                SetModifier(entry);
                 break;
             case EntityState.Added: //新增状态：上下文正在跟踪实体，但数据库中尚不存在该实体。
                 CheckAndSetId(entry);
@@ -96,6 +106,30 @@ public class FakeDbContext<TDbContext> : DbContext, ITransientDependency where T
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
+        }
+    }
+
+    protected virtual void SoftDelete(EntityEntry entry)
+    {
+        if (entry.Entity is ISoftDelete entityWithSoftDelete)
+        {
+            if (entityWithSoftDelete.HardDeleted) return;
+            
+            // 重置entity状态
+            entry.Reload();
+        
+            ReflectionHelper.TrySetProperty(entityWithSoftDelete, x => x.IsDeleted, () => true);
+            
+            SetModifier(entry);
+        }
+    }
+
+    protected virtual void SetModifier(EntityEntry entry)
+    {
+        // 只要有一个属性被修改了，且值不由数据库生成
+        if (entry.Properties.Any(p => p.IsModified && p.Metadata.ValueGenerated == ValueGenerated.Never))
+        {
+            _auditPropertySetter.Value.SetModificationProperties(entry.Entity);
         }
     }
 
@@ -163,7 +197,6 @@ public class FakeDbContext<TDbContext> : DbContext, ITransientDependency where T
         modelBuilder.Entity(mutableEntityType.ClrType)
             .TryConfigureCreator<Guid>()
             .TryConfigureModifier<Guid>()
-            .TryConfigureDeleter<Guid>()
             .TryConfigureSoftDelete<Guid>()
             .TryConfigureExtraProperties()
             .TryConfigureVersionNum();

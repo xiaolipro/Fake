@@ -1,5 +1,4 @@
 ﻿using System;
-using Fake.Domain.Entities;
 using Fake.Domain.Entities.Auditing;
 using Fake.EntityFrameworkCore.ValueComparers;
 using Fake.EntityFrameworkCore.ValueConverters;
@@ -49,22 +48,6 @@ public static class FakeEntityTypeBuilderExtensions
             builder.Property(nameof(IHasCreationTime.CreationTime))
                 .HasColumnName(nameof(IHasCreationTime.CreationTime))
                 .IsRequired();
-        }
-
-        return builder;
-    }
-
-    public static EntityTypeBuilder TryConfigureDeleter<TUserId>(this EntityTypeBuilder builder)
-    {
-        if (builder.Metadata.ClrType.IsAssignableTo<IHasDeleter<TUserId>>())
-        {
-            builder.Property(nameof(IHasDeleter<TUserId>.DeleterId))
-                .HasColumnName(nameof(IHasDeleter<TUserId>.DeleterId))
-                .IsRequired(false);
-
-            builder.Property(nameof(IHasDeletionTime.DeletionTime))
-                .HasColumnName(nameof(IHasDeletionTime.DeletionTime))
-                .IsRequired(false);
         }
 
         return builder;

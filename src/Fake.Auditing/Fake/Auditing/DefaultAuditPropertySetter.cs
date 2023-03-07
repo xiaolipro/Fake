@@ -51,20 +51,4 @@ public class DefaultAuditPropertySetter : IAuditPropertySetter, ITransientDepend
             }
         }
     }
-
-    public void SetDeletionProperties(object targetObject)
-    {
-        if (targetObject is IHasDeletionTime { DeletionTime: { } } objectWithDeletionTime)
-        {
-            ReflectionHelper.TrySetProperty(objectWithDeletionTime, x=>x.DeletionTime, () => _clock.Now);
-        }
-
-        if (targetObject is IHasDeleter<Guid> objectWithGuidDeleter)
-        {
-            if (objectWithGuidDeleter.DeleterId != default && Guid.TryParse(_currentUser.UserId, out var userIdAsGuid))
-            {
-                ReflectionHelper.TrySetProperty(objectWithGuidDeleter, x => x.DeleterId, () => userIdAsGuid);
-            }
-        }
-    }
 }
