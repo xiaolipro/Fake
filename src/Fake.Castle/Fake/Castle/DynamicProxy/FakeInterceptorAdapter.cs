@@ -25,7 +25,7 @@ public class FakeInterceptorAdapter<TInterceptor> : AsyncInterceptorBase where T
     protected override async Task<TResult> InterceptAsync<TResult>(IInvocation invocation, IInvocationProceedInfo proceedInfo,
         Func<IInvocation, IInvocationProceedInfo, Task<TResult>> proceed)
     {
-        var adapter = new FakeMethodInvocationAdapter(invocation, proceedInfo, proceed);
+        var adapter = new FakeMethodInvocationAdapterWithReturnValue<TResult>(invocation, proceedInfo, proceed);
         
         await _fakeInterceptor.InterceptAsync(adapter);
 
