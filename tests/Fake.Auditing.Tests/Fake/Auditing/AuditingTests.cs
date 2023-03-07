@@ -2,6 +2,7 @@
 using Fake.DependencyInjection;
 using Fake.Threading;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using NSubstitute;
 using Xunit;
 
@@ -13,7 +14,8 @@ public class AuditingTests : FakeAuditingTestBase
 
     protected override void AfterAddFakeApplication(IServiceCollection services)
     {
-        services.AddSingleton(typeof(IAmbientScopeProvider<>), typeof(AmbientScopeProvider<>));
+        AuditingStore = Substitute.For<IAuditingStore>();
+        services.Replace(ServiceDescriptor.Singleton(AuditingStore));
     }
 
     [Fact]

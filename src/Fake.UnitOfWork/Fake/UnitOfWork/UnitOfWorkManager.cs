@@ -1,10 +1,9 @@
 using System.Threading.Tasks;
-using Fake.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Fake.UnitOfWork;
 
-public class UnitOfWorkManager : IUnitOfWorkManager, ISingletonDependency
+public class UnitOfWorkManager : IUnitOfWorkManager
 {
     private const string UnitOfWorkContextKey = "Fake.UnitOfWork";
 

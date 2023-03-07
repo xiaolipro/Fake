@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 namespace Fake.Auditing;
 
 [Dependency(TryAdd = true)]
-public class SimpleLogAuditingStore:IAuditingStore, ISingletonDependency
+public class SimpleLogAuditingStore:IAuditingStore
 {
     public ILogger<SimpleLogAuditingStore> Logger { get; set; }
     

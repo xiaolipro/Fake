@@ -21,6 +21,8 @@ public class FakeUnitOfWorkModule:FakeModule
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
         context.Services.AddSingleton<IUnitOfWorkHelper, UnitOfWorkHelper>();
+        context.Services.AddSingleton<IUnitOfWorkTransactionalProvider, NullUnitOfWorkTransactionalProvider>();
+        context.Services.AddSingleton<IUnitOfWorkManager, UnitOfWorkManager>();
     }
 
     private static bool ShouldIntercept(Type type)

@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Fake.Identity.Security.Claims;
 using Fake.Modularity;
@@ -8,12 +7,12 @@ using Microsoft.Extensions.DependencyInjection;
 // ReSharper disable once CheckNamespace
 namespace Fake.Identity;
 
-public class FakeIdentityModule:FakeModule
+public class FakeIdentityModule : FakeModule
 {
     public override void PostConfigureServices(ServiceConfigurationContext context)
     {
         var contributorTypes = new List<Type>();
-        
+
         context.Services.OnRegistered(registrationContext =>
         {
             if (registrationContext.ImplementationType.IsAssignableTo<IFakeClaimsPrincipalContributor>())
@@ -29,5 +28,10 @@ public class FakeIdentityModule:FakeModule
                 options.Contributors.TryAdd(type);
             }
         });
+    }
+
+    public override void ConfigureServices(ServiceConfigurationContext context)
+    {
+        context.Services.AddSingleton<ICurrentPrincipalAccessor, ThreadCurrentPrincipalAccessor>();
     }
 }

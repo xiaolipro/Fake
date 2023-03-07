@@ -9,7 +9,7 @@ using Microsoft.Extensions.Options;
 
 namespace Fake.Auditing;
 
-public class AuditingInterceptor : IFakeInterceptor, ITransientDependency
+public class AuditingInterceptor : IFakeInterceptor
 {
     private readonly IServiceScopeFactory _serviceScopeFactory;
 

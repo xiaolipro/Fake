@@ -1,8 +1,6 @@
-using Fake.DependencyInjection;
-
 namespace Fake.UnitOfWork;
 
-public class NullUnitOfWorkTransactionalProvider : IUnitOfWorkTransactionalProvider, ISingletonDependency
+public class NullUnitOfWorkTransactionalProvider : IUnitOfWorkTransactionalProvider
 {
     public bool IsTransactional => false;
 }

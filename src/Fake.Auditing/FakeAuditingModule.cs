@@ -35,6 +35,8 @@ public class FakeAuditingModule:FakeModule
         });
 
         context.Services.AddSingleton(typeof(IAuditingHelper), typeof(AuditingHelper));
+        context.Services.AddSingleton(typeof(IAuditingStore), typeof(SimpleLogAuditingStore));
+        context.Services.AddTransient<AuditingInterceptor>();
     }
     
     private static bool ShouldIntercept(Type type)
