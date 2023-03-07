@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq.Expressions;
 using System.Reflection;
+using Fake.Auditing;
 using Fake.DependencyInjection;
 using Fake.Domain.Entities;
 using Fake.Domain.Entities.Auditing;
@@ -23,7 +24,7 @@ public class FakeDbContext<TDbContext> : DbContext, ITransientDependency where T
     private readonly EfCoreOptions _options;
     private readonly Lazy<IClock> _clock;
     private readonly Lazy<IGuidGenerator> _guidGenerator;
-    private readonly Lazy<ICurrenUser>
+    private readonly Lazy<IAuditPropertySetter> _auditPropertySetter;
 
     private static readonly MethodInfo ConfigureGlobalFiltersMethodInfo = typeof(FakeDbContext<TDbContext>)
         .GetMethod(
@@ -36,6 +37,8 @@ public class FakeDbContext<TDbContext> : DbContext, ITransientDependency where T
         _options = serviceProvider.GetRequiredService<IOptions<EfCoreOptions>>().Value;
         _clock = new Lazy<IClock>(serviceProvider.GetRequiredService<IClock>);
         _guidGenerator = new Lazy<IGuidGenerator>(serviceProvider.GetRequiredService<IGuidGenerator>());
+        _auditPropertySetter =
+            new Lazy<IAuditPropertySetter>(serviceProvider.GetRequiredService<IAuditPropertySetter>());
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -98,10 +101,7 @@ public class FakeDbContext<TDbContext> : DbContext, ITransientDependency where T
 
     protected virtual void SetCreator(EntityEntry entry)
     {
-        if (entry.Entity is IHasCreator<Guid> entityWithGuidCreator)
-        {
-            
-        }
+        _auditPropertySetter.Value.SetCreationProperties(entry.Entity);
     }
 
     protected virtual void SetVersionNum(EntityEntry entry)
