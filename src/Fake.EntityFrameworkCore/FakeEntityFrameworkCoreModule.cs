@@ -5,8 +5,7 @@ using Fake.Modularity;
 // ReSharper disable once CheckNamespace
 namespace Fake.EntityFrameworkCore;
 
-[DependsOn(typeof(FakeAuditingModule))]
-public class FakeEntityFrameworkCoreModule:FakeModule
+[DependsOn(typeof(FakeAuditingModule), typeof(FakeUnitOfWorkModule))]
+public class FakeEntityFrameworkCoreModule : FakeModule
 {
-    
 }
