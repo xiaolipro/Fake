@@ -1,6 +1,6 @@
 ﻿namespace Fake.Timing;
 
-public interface IFakeClock
+public interface IClock
 {
     /// <summary>
     /// 当前时间

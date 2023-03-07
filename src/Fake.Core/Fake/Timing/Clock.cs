@@ -3,11 +3,11 @@ using Microsoft.Extensions.Options;
 
 namespace Fake.Timing;
 
-public class FakeFakeClock : IFakeClock
+public class Clock : IClock
 {
     private readonly FakeClockOptions _options;
 
-    public FakeFakeClock(IOptions<FakeClockOptions> options)
+    public Clock(IOptions<FakeClockOptions> options)
     {
         _options = options.Value;
     }
