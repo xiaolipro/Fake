@@ -1,4 +1,4 @@
-﻿namespace Fake.Core;
+﻿namespace Fake;
 
 public sealed class NullDisposable : IDisposable
 {

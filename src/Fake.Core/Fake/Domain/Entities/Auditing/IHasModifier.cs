@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Fake.Domain.Entities.Auditing;
+﻿namespace Fake.Domain.Entities.Auditing;
 
 public interface IHasModifier<out TUserId>
 {
