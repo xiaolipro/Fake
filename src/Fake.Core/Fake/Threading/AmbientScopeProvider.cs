@@ -3,7 +3,7 @@ using Fake.DependencyInjection;
 
 namespace Fake.Threading;
 
-public class AmbientScopeProvider<T> : IAmbientScopeProvider<T>, ISingletonDependency
+public class AmbientScopeProvider<T> : IAmbientScopeProvider<T>
 {
     protected static readonly ConcurrentDictionary<string, ScopeItem> ScopeDictionary = new();
 

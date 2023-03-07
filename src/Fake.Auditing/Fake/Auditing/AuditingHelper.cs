@@ -12,14 +12,14 @@ namespace Fake.Auditing;
 
 public class AuditingHelper : IAuditingHelper
 {
-    private readonly IClock _clock;
+    private readonly IFakeClock _fakeClock;
     private readonly ICurrentUser _currentUser;
     private readonly ILogger<AuditingHelper> _logger;
     private readonly FakeAuditingOptions _options;
 
-    public AuditingHelper(IOptions<FakeAuditingOptions> options, IClock clock, ICurrentUser currentUser,ILogger<AuditingHelper> logger)
+    public AuditingHelper(IOptions<FakeAuditingOptions> options, IFakeClock fakeClock, ICurrentUser currentUser,ILogger<AuditingHelper> logger)
     {
-        _clock = clock;
+        _fakeClock = fakeClock;
         _currentUser = currentUser;
         _logger = logger;
         _options = options.Value;
@@ -46,7 +46,7 @@ public class AuditingHelper : IAuditingHelper
             ApplicationName = _options.ApplicationName,
             UserId = _currentUser.UserId,
             UserName = _currentUser.UserName,
-            ExecutionTime = _clock.Now,
+            ExecutionTime = _fakeClock.Now,
         };
     }
 
@@ -57,7 +57,7 @@ public class AuditingHelper : IAuditingHelper
             ServiceName = invocation.TargetObject.GetType().FullName,
             MethodName = invocation.Method.Name,
             Parameters = SerializeParameter(invocation.ArgumentsDictionary),
-            ExecutionTime = _clock.Now
+            ExecutionTime = _fakeClock.Now
         };
     }
 

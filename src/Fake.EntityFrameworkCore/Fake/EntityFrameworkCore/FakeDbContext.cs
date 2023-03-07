@@ -19,7 +19,7 @@ namespace Fake.EntityFrameworkCore;
 
 public class FakeDbContext<TDbContext> : DbContext, ITransientDependency where TDbContext : DbContext
 {
-    private readonly Lazy<IClock> _clock;
+    private readonly Lazy<IFakeClock> _clock;
     private readonly EfCoreOptions _options;
     
     private static readonly MethodInfo ConfigureGlobalFiltersMethodInfo = typeof(FakeDbContext<TDbContext>)
@@ -31,7 +31,7 @@ public class FakeDbContext<TDbContext> : DbContext, ITransientDependency where T
     public FakeDbContext(IServiceProvider serviceProvider, IOptions<EfCoreOptions> options)
     {
         _options = serviceProvider.GetRequiredService<IOptions<EfCoreOptions>>().Value;
-        _clock = new Lazy<IClock>(serviceProvider.GetRequiredService<IClock>);
+        _clock = new Lazy<IFakeClock>(serviceProvider.GetRequiredService<IFakeClock>);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
