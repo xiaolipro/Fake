@@ -5,7 +5,7 @@ using JetBrains.Annotations;
 
 namespace Fake.UnitOfWork;
 
-public interface IUnitOfWork : IDatabaseApiContainer, ITransactionApiContainer, IAsyncDisposable
+public interface IUnitOfWork : IDatabaseApiContainer, ITransactionApiContainer, IDisposable
 {
     public Guid Id { get; }
     

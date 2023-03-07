@@ -232,7 +232,7 @@ public class UnitOfWork : IUnitOfWork, ITransientDependency
     {
         return _transactionApiDic.Values.ToImmutableList();
     }
-
+    
     public virtual async ValueTask DisposeAsync()
     {
         if (IsDispose)
@@ -315,5 +315,10 @@ public class UnitOfWork : IUnitOfWork, ITransientDependency
     public override string ToString()
     {
         return $"[UnitOfWork {Id}]";
+    }
+
+    public void Dispose()
+    {
+        DisposeAsync().GetAwaiter().GetResult();
     }
 }

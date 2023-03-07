@@ -31,7 +31,7 @@ public class UnitOfWorkInterceptor : IFakeInterceptor, ITransientDependency
 
         var unitOfWorkManager = serviceScope.ServiceProvider.GetRequiredService<IUnitOfWorkManager>();
 
-        await using var unitOfWork = unitOfWorkManager.Begin(unitOfWorkAttribute);
+        using var unitOfWork = unitOfWorkManager.Begin(unitOfWorkAttribute);
         await invocation.ProcessAsync();
         await unitOfWork.CompleteAsync();
     }
