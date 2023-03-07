@@ -9,9 +9,4 @@ public interface IHasDeleter<out TUserId>
     /// 删除者Id
     /// </summary>
     TUserId? DeleterId { get; }
-    
-    /// <summary>
-    /// 删除时间
-    /// </summary>
-    DateTime? DeletionTime { get; }
 }

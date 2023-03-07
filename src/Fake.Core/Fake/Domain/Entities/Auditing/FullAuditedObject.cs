@@ -4,13 +4,15 @@ namespace Fake.Domain.Entities.Auditing;
 /// <summary>
 /// 完全审计对象
 /// </summary>
-/// <typeparam name="TUserKey">用户id类型</typeparam>
-public class FullAuditedObject<TUserKey> : IHasCreator<TUserKey>, IHasModifier<TUserKey>, IHasDeleter<TUserKey>
+/// <typeparam name="TUserId">用户id类型</typeparam>
+public class FullAuditedObject<TUserId> : IHasCreator<TUserId>, IHasModifier<TUserId>, IHasDeleter<TUserId>
+    , IHasCreationTime, IHasModificationTime, IHasDeletionTime, ISoftDelete
 {
-    public TUserKey CreatorId { get; }
+    public TUserId CreatorId { get; }
     public DateTime CreationTime { get; }
-    public TUserKey LastModifierId { get; }
-    public DateTime LastModificationTime { get; }
-    public TUserKey? DeleterId { get; }
+    public TUserId? LastModifierId { get; }
+    public DateTime? LastModificationTime { get; }
+    public TUserId? DeleterId { get; }
     public DateTime? DeletionTime { get; }
+    public bool IsDeleted { get; }
 }

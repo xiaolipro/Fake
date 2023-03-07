@@ -3,7 +3,7 @@
 public interface ISoftDelete
 {
     /// <summary>
-    /// 已经被删除
+    /// 已经删除
     /// </summary>
     bool IsDeleted { get; }
 }

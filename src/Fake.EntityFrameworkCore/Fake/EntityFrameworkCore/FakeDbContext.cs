@@ -5,6 +5,7 @@ using System.Reflection;
 using Fake.DependencyInjection;
 using Fake.Domain.Entities;
 using Fake.Domain.Entities.Auditing;
+using Fake.Domain.Entities.IdGenerators;
 using Fake.EntityFrameworkCore.Modeling;
 using Fake.Reflection;
 using Fake.Timing;
@@ -19,9 +20,11 @@ namespace Fake.EntityFrameworkCore;
 
 public class FakeDbContext<TDbContext> : DbContext, ITransientDependency where TDbContext : DbContext
 {
-    private readonly Lazy<IClock> _clock;
     private readonly EfCoreOptions _options;
-    
+    private readonly Lazy<IClock> _clock;
+    private readonly Lazy<IGuidGenerator> _guidGenerator;
+    private readonly Lazy<ICurrenUser>
+
     private static readonly MethodInfo ConfigureGlobalFiltersMethodInfo = typeof(FakeDbContext<TDbContext>)
         .GetMethod(
             nameof(ConfigureGlobalFilters),
@@ -32,6 +35,7 @@ public class FakeDbContext<TDbContext> : DbContext, ITransientDependency where T
     {
         _options = serviceProvider.GetRequiredService<IOptions<EfCoreOptions>>().Value;
         _clock = new Lazy<IClock>(serviceProvider.GetRequiredService<IClock>);
+        _guidGenerator = new Lazy<IGuidGenerator>(serviceProvider.GetRequiredService<IGuidGenerator>());
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -84,10 +88,30 @@ public class FakeDbContext<TDbContext> : DbContext, ITransientDependency where T
                 break;
             case EntityState.Added: //新增状态：上下文正在跟踪实体，但数据库中尚不存在该实体。
                 CheckAndSetId(entry);
+                SetVersionNum(entry);
+                SetCreator(entry);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
+    }
+
+    protected virtual void SetCreator(EntityEntry entry)
+    {
+        if (entry.Entity is IHasCreator<Guid> entityWithGuidCreator)
+        {
+            
+        }
+    }
+
+    protected virtual void SetVersionNum(EntityEntry entry)
+    {
+        if (entry.Entity is IHasVersionNum entityWithVersionNum)
+        {
+            if (entityWithVersionNum.VersionNum != default) return;
+
+            entityWithVersionNum.VersionNum = SimpleGuidGenerator.Instance.Create().ToString("N");
+        } 
     }
 
     protected virtual void CheckAndSetId(EntityEntry entry)
@@ -96,6 +120,8 @@ public class FakeDbContext<TDbContext> : DbContext, ITransientDependency where T
         {
             TrySetGuidId(entry, entityWithGuidId);
         }
+        
+        // TODO: 雪花id
     }
 
     protected virtual void TrySetGuidId(EntityEntry entry, IEntity<Guid> entityWithGuidId)
@@ -107,7 +133,7 @@ public class FakeDbContext<TDbContext> : DbContext, ITransientDependency where T
         var attr = ReflectionHelper.GetSingleAttributeOrDefault<DatabaseGeneratedAttribute>(idProperty);
         if (attr != null && attr.DatabaseGeneratedOption != DatabaseGeneratedOption.None) return;
         
-        EntityHelper.TrySetId(entry, default, true);
+        EntityHelper.TrySetId(entityWithGuidId,  () => _guidGenerator.Value.Create(), true);
     }
 
     protected virtual void TrySetDatabaseProvider(ModelBuilder modelBuilder)

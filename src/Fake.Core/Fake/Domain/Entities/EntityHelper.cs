@@ -69,6 +69,6 @@ public static class EntityHelper
     public static void TrySetId<TKey>(IEntity<TKey> entity, Func<TKey> idFactory, bool checkIgnore = false)
     {
         var ignoreAttributeTypes = checkIgnore ? new[] { typeof(DisableIdGenerationAttribute) } : default;
-        ReflectionHelper.TrySetProperty(entity, x => x.Id, x => idFactory(), ignoreAttributeTypes);
+        ReflectionHelper.TrySetProperty(entity, x => x.Id, idFactory, ignoreAttributeTypes);
     }
 }

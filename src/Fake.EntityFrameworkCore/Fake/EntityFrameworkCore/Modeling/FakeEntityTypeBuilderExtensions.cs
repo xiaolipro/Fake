@@ -22,7 +22,7 @@ public static class FakeEntityTypeBuilderExtensions
 
         return builder;
     }
-    
+
     public static EntityTypeBuilder TryConfigureExtraProperties(this EntityTypeBuilder builder)
     {
         if (!builder.Metadata.ClrType.IsAssignableTo<IHasExtraProperties>())
@@ -37,7 +37,7 @@ public static class FakeEntityTypeBuilderExtensions
 
         return builder;
     }
-    
+
     public static EntityTypeBuilder TryConfigureCreator<TUserId>(this EntityTypeBuilder builder)
     {
         if (builder.Metadata.ClrType.IsAssignableTo<IHasCreator<TUserId>>())
@@ -45,15 +45,15 @@ public static class FakeEntityTypeBuilderExtensions
             builder.Property(nameof(IHasCreator<TUserId>.CreatorId))
                 .HasColumnName(nameof(IHasCreator<TUserId>.CreatorId))
                 .IsRequired();
-            
-            builder.Property(nameof(IHasCreator<TUserId>.CreationTime))
-                .HasColumnName(nameof(IHasCreator<TUserId>.CreationTime))
+
+            builder.Property(nameof(IHasCreationTime.CreationTime))
+                .HasColumnName(nameof(IHasCreationTime.CreationTime))
                 .IsRequired();
         }
 
         return builder;
     }
-    
+
     public static EntityTypeBuilder TryConfigureDeleter<TUserId>(this EntityTypeBuilder builder)
     {
         if (builder.Metadata.ClrType.IsAssignableTo<IHasDeleter<TUserId>>())
@@ -61,43 +61,39 @@ public static class FakeEntityTypeBuilderExtensions
             builder.Property(nameof(IHasDeleter<TUserId>.DeleterId))
                 .HasColumnName(nameof(IHasDeleter<TUserId>.DeleterId))
                 .IsRequired(false);
-            
-            builder.Property(nameof(IHasDeleter<TUserId>.DeletionTime))
-                .HasColumnName(nameof(IHasDeleter<TUserId>.DeletionTime))
+
+            builder.Property(nameof(IHasDeletionTime.DeletionTime))
+                .HasColumnName(nameof(IHasDeletionTime.DeletionTime))
                 .IsRequired(false);
         }
 
         return builder;
     }
-    
+
     public static EntityTypeBuilder TryConfigureModifier<TUserId>(this EntityTypeBuilder builder)
     {
         if (builder.Metadata.ClrType.IsAssignableTo<IHasModifier<TUserId>>())
         {
             builder.Property(nameof(IHasModifier<TUserId>.LastModifierId))
                 .HasColumnName(nameof(IHasModifier<TUserId>.LastModifierId))
-                .IsRequired();
-            
-            builder.Property(nameof(IHasModifier<TUserId>.LastModificationTime))
-                .HasColumnName(nameof(IHasModifier<TUserId>.LastModificationTime))
-                .IsRequired();
+                .IsRequired(false);
+
+            builder.Property(nameof(IHasModificationTime.LastModificationTime))
+                .HasColumnName(nameof(IHasModificationTime.LastModificationTime))
+                .IsRequired(false);
         }
 
         return builder;
     }
-    
+
     public static EntityTypeBuilder TryConfigureSoftDelete<TUserId>(this EntityTypeBuilder builder)
     {
         if (builder.Metadata.ClrType.IsAssignableTo<ISoftDelete>())
         {
             builder.Property(nameof(ISoftDelete.IsDeleted))
-                .HasColumnName(nameof(IHasModifier<TUserId>.LastModifierId))
                 .IsRequired()
-                .HasDefaultValue(false);
-            
-            builder.Property(nameof(IHasModifier<TUserId>.LastModificationTime))
-                .HasColumnName(nameof(IHasModifier<TUserId>.LastModificationTime))
-                .IsRequired();
+                .HasDefaultValue(false)
+                .HasColumnName(nameof(ISoftDelete.IsDeleted));
         }
 
         return builder;

@@ -10,7 +10,7 @@ public static class ReflectionHelper
         new ConcurrentDictionary<string, PropertyInfo>();
 
     public static void TrySetProperty<TObject, TValue>(TObject obj, Expression<Func<TObject, TValue>> propertySelector,
-        Func<TObject,TValue> valueFactory, params Type[] ignoreAttributeTypes)
+        Func<TValue> valueFactory, params Type[] ignoreAttributeTypes)
     {
         var cacheKey = $"{obj.GetType().FullName}-{propertySelector}-{ignoreAttributeTypes.JoinAsString("-")}";
 
@@ -34,7 +34,7 @@ public static class ReflectionHelper
             return propertyInfo;
         });
         
-        propertyInfo?.SetValue(obj, valueFactory(obj));
+        propertyInfo?.SetValue(obj, valueFactory());
     }
 
     /// <summary>
