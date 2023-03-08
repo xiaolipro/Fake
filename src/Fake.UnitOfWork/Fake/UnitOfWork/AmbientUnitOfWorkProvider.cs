@@ -1,24 +1,34 @@
-using Fake.Threading;
+using System.Threading;
 
 namespace Fake.UnitOfWork;
 
-public class AmbientUnitOfWorkProvider : AmbientScopeProvider<IUnitOfWork>
+public class AmbientUnitOfWorkProvider : IAmbientUnitOfWorkProvider
 {
-    public override IUnitOfWork GetValue(string contextKey)
-    {
-        var scope = GetCurrentItemOrNull(contextKey);
+    public IUnitOfWork UnitOfWork => _currentUow.Value;
 
-        IUnitOfWork uow = uow = scope?.Value;
+    // 核心链路
+    private readonly AsyncLocal<IUnitOfWork> _currentUow;
+
+    public AmbientUnitOfWorkProvider()
+    {
+        _currentUow = new AsyncLocal<IUnitOfWork>();
+    }
+
+    public void SetUnitOfWork(IUnitOfWork unitOfWork)
+    {
+        _currentUow.Value = unitOfWork;
+    }
+
+    public IUnitOfWork GetCurrentByChecking()
+    {
+        var uow = UnitOfWork;
 
         // 上溯
-        while (uow is { UnitOfWorkStatus: UnitOfWorkStatus.Completed })
+        while (uow is { UnitOfWorkStatus: UnitOfWorkStatus.Completed or UnitOfWorkStatus.Disposed })
         {
-            scope = scope.Outer;
-            uow = scope?.Value;
+            uow = uow.Outer;
         }
 
-        // 将上下文关联到当前作用域对象
-        CallContext.SetData(contextKey, scope?.Id);
         return uow;
     }
 }

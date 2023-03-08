@@ -10,7 +10,9 @@ public interface IUnitOfWork : IDatabaseApiContainer, ITransactionApiContainer, 
     public Guid Id { get; }
     
     UnitOfWorkContext Context { get; }
-    
+
+    IUnitOfWork Outer { get; }
+
     void InitUnitOfWorkContext(UnitOfWorkAttribute context);
 
     UnitOfWorkStatus UnitOfWorkStatus { get; }
@@ -42,18 +44,9 @@ public interface IUnitOfWork : IDatabaseApiContainer, ITransactionApiContainer, 
     /// </summary>
     /// <param name="func"></param>
     void OnCompleted(Func<IUnitOfWork, Task> func);
-
-    /// <summary>
-    /// 事务提交失败执行
-    /// </summary>
-    /// <param name="func"></param>
-    void OnCommitFailed(Func<IUnitOfWork, Exception, Task> func);
-
-    /// <summary>
-    /// 工作单元销毁时执行
-    /// </summary>
-    /// <param name="func"></param>
-    void OnDisposed(Func<IUnitOfWork, Task> func);
+    
+    event EventHandler<UnitOfWorkCommitFailedEventArgs> CommitFailed;
+    event EventHandler<UnitOfWorkEventArgs> Disposed;
     
     /// <summary>
     /// 设置外层工作单元

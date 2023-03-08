@@ -1,12 +1,10 @@
 ﻿using System.Threading.Tasks;
+using Fake.Auditing;
 using Fake.DependencyInjection;
-using Fake.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using NSubstitute;
 using Xunit;
-
-namespace Fake.Auditing;
 
 public class AuditingTests : FakeAuditingTestBase
 {

@@ -1,50 +1,50 @@
-using System.Threading.Tasks;
+using System;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Fake.UnitOfWork;
 
 public class UnitOfWorkManager : IUnitOfWorkManager
 {
-    private const string UnitOfWorkContextKey = "Fake.UnitOfWork";
+    private readonly IAmbientUnitOfWorkProvider _ambientUnitOfWorkProvider;
+    private readonly IServiceProvider _serviceProvider;
+    public IUnitOfWork Current => _ambientUnitOfWorkProvider.GetCurrentByChecking();
 
-    private readonly AmbientUnitOfWorkProvider _ambientUnitOfWorkProvider;
-    private readonly IServiceScopeFactory _serviceScopeFactory;
-    public IUnitOfWork Current => _ambientUnitOfWorkProvider.GetValue(UnitOfWorkContextKey);
-
-    public UnitOfWorkManager(AmbientUnitOfWorkProvider ambientUnitOfWorkProvider,
-        IServiceScopeFactory serviceScopeFactory)
+    public UnitOfWorkManager(IAmbientUnitOfWorkProvider ambientUnitOfWorkProvider,
+        IServiceProvider serviceProvider)
     {
         _ambientUnitOfWorkProvider = ambientUnitOfWorkProvider;
-        _serviceScopeFactory = serviceScopeFactory;
+        _serviceProvider = serviceProvider;
     }
 
     public IUnitOfWork Begin(UnitOfWorkAttribute attribute, bool requiredNew = false)
     {
-        if (Current != null && !requiredNew) return Current;
+        var currentUow = Current;
+        if (currentUow != null && !requiredNew)
+        {
+            return new ChildUnitOfWork(currentUow);
+        }
 
         var unitOfWork = CreateNewUnitOfWork();
         unitOfWork.InitUnitOfWorkContext(attribute);
-        
-        var scope = _ambientUnitOfWorkProvider.BeginScope(UnitOfWorkContextKey, unitOfWork);
-        
-        unitOfWork.OnDisposed(_ =>
-        {
-            scope.Dispose();
-            return Task.CompletedTask;
-        });
 
         return unitOfWork;
     }
 
     private IUnitOfWork CreateNewUnitOfWork()
     {
-        using var scope = _serviceScopeFactory.CreateScope();
-        
         var outerUow = Current;
 
-        var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+        var unitOfWork = _serviceProvider.GetRequiredService<IUnitOfWork>();
 
         unitOfWork.SetOuter(outerUow);
+
+        _ambientUnitOfWorkProvider.SetUnitOfWork(unitOfWork);
+
+        unitOfWork.Disposed += (_, _) =>
+        {
+            // 重定向到外层工作单元
+            _ambientUnitOfWorkProvider.SetUnitOfWork(outerUow);
+        };
 
         return unitOfWork;
     }

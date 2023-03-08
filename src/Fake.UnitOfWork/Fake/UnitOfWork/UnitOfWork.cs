@@ -20,8 +20,8 @@ public class UnitOfWork : IUnitOfWork
     public IUnitOfWork Outer { get; private set; }
 
     protected List<Func<IUnitOfWork, Task>> CompletedTasks { get; }
-    protected List<Func<IUnitOfWork, Exception, Task>> CommitFailedTasks { get; }
-    protected List<Func<IUnitOfWork, Task>> DisposedTasks { get; }
+    public event EventHandler<UnitOfWorkCommitFailedEventArgs> CommitFailed;
+    public event EventHandler<UnitOfWorkEventArgs> Disposed;
 
     protected virtual bool IsRollBack =>
         UnitOfWorkStatus is UnitOfWorkStatus.RollBacking or UnitOfWorkStatus.RollBacked;
@@ -45,8 +45,6 @@ public class UnitOfWork : IUnitOfWork
         Id = Guid.NewGuid();
 
         CompletedTasks = new List<Func<IUnitOfWork, Task>>();
-        CommitFailedTasks = new List<Func<IUnitOfWork, Exception, Task>>();
-        DisposedTasks = new List<Func<IUnitOfWork, Task>>();
 
         _databaseApiDic = new Dictionary<string, IDatabaseApi>();
         _transactionApiDic = new Dictionary<string, ITransactionApi>();
@@ -149,7 +147,7 @@ public class UnitOfWork : IUnitOfWork
         // 抑制多提交
         if (IsComplete)
         {
-            throw new FakeException("方法已被调用");
+            throw new FakeException($"{nameof(CompleteAsync)}方法已被调用过了");
         }
 
         UnitOfWorkStatus = UnitOfWorkStatus.Completing;
@@ -168,7 +166,7 @@ public class UnitOfWork : IUnitOfWork
         catch (Exception ex)
         {
             UnitOfWorkStatus = UnitOfWorkStatus.CompletedFailed;
-            await HandleCommitFailedTasksAsync(ex);
+            CommitFailed?.Invoke(this, new UnitOfWorkCommitFailedEventArgs(this, ex));
             throw;
         }
 
@@ -189,37 +187,14 @@ public class UnitOfWork : IUnitOfWork
         }
     }
 
-    public virtual void OnCommitFailed(Func<IUnitOfWork, Exception, Task> func)
+    public virtual void OnDisposed()
     {
-        CommitFailedTasks.Add(func);
-    }
-
-    protected virtual async Task HandleCommitFailedTasksAsync(Exception ex)
-    {
-        CommitFailedTasks.Reverse();
-        foreach (var task in CommitFailedTasks)
-        {
-            await task.Invoke(this, ex);
-        }
-    }
-
-    public virtual void OnDisposed(Func<IUnitOfWork, Task> func)
-    {
-        DisposedTasks.Add(func);
+        Disposed?.Invoke(this,new UnitOfWorkEventArgs(this));
     }
 
     public void SetOuter(IUnitOfWork outer)
     {
         Outer = outer;
-    }
-
-    protected virtual async Task HandleDisposedTasksAsync()
-    {
-        DisposedTasks.Reverse();
-        foreach (var task in DisposedTasks)
-        {
-            await task.Invoke(this);
-        }
     }
 
     public virtual IReadOnlyList<IDatabaseApi> GetAllActiveDatabaseApis()
@@ -230,33 +205,6 @@ public class UnitOfWork : IUnitOfWork
     public virtual IReadOnlyList<ITransactionApi> GetAllActiveTransactionApis()
     {
         return _transactionApiDic.Values.ToImmutableList();
-    }
-    
-    public virtual async ValueTask DisposeAsync()
-    {
-        if (IsDispose)
-        {
-            return;
-        }
-
-        UnitOfWorkStatus = UnitOfWorkStatus.Disposing;
-
-        // 工作单元销毁时一定要销毁所有事务防止数据库锁死
-        foreach (var transactionApi in GetAllActiveTransactionApis())
-        {
-            try
-            {
-                transactionApi.Dispose();
-            }
-            catch (Exception e)
-            {
-                UnitOfWorkStatus = UnitOfWorkStatus.DisposeFailed;
-                _logger.LogException(e);
-            }
-        }
-
-        await HandleDisposedTasksAsync();
-        UnitOfWorkStatus = UnitOfWorkStatus.Disposed;
     }
 
     public virtual IDatabaseApi FindDatabaseApi(string key)
@@ -318,6 +266,28 @@ public class UnitOfWork : IUnitOfWork
 
     public void Dispose()
     {
-        DisposeAsync().GetAwaiter().GetResult();
+        if (IsDispose)
+        {
+            return;
+        }
+
+        UnitOfWorkStatus = UnitOfWorkStatus.Disposing;
+
+        // 工作单元销毁时一定要销毁所有事务防止数据库锁死
+        foreach (var transactionApi in GetAllActiveTransactionApis())
+        {
+            try
+            {
+                transactionApi.Dispose();
+            }
+            catch (Exception e)
+            {
+                UnitOfWorkStatus = UnitOfWorkStatus.DisposeFailed;
+                _logger.LogException(e);
+            }
+        }
+
+        OnDisposed();
+        UnitOfWorkStatus = UnitOfWorkStatus.Disposed;
     }
 }

@@ -1,4 +1,6 @@
-﻿using Fake.AspNetCore.ExceptionHandling;
+﻿using Fake.AspNetCore.Auditing;
+using Fake.AspNetCore.ExceptionHandling;
+using Fake.AspNetCore.Http;
 using Fake.AspNetCore.Security.Claims;
 using Fake.Auditing;
 using Fake.Identity;
@@ -24,7 +26,13 @@ public class FakeAspNetCoreModule : FakeModule
         context.Services.AddObjectAccessor<IApplicationBuilder>();
 
         context.Services.AddTransient<IAuthorizationExceptionHandler, DefaultAuthorizationExceptionHandler>();
+        context.Services.AddTransient<IHttpClientInfoProvider, HttpClientInfoProvider>();
         
-        context.Services.Configure<FakeAuditingOptions>(options => { });
+        context.Services.Configure<FakeAuditingOptions>(options =>
+        {
+            options.Contributors.Add(new AspNetCoreAuditLogContributor());
+        });
+        
+        context.Services.AddAuthorization();
     }
 }

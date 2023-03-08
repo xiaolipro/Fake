@@ -27,6 +27,8 @@ public class AuditLogInfo
 
     public string ClientIpAddress { get; set; }
 
+    public string UserAgent { get; set; }
+
     public int ExecutionDuration { get; set; }
 
     public List<AuditLogActionInfo> Actions { get; set; }
