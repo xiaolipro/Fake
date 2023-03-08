@@ -28,6 +28,7 @@ public class FakeAuditingModule:FakeModule
     {
         context.Services.Configure<FakeAuditingOptions>(options =>
         {
+            options.ApplicationName = context.Services.GetApplicationName();
             options.IsEnabledLog = true;
             options.IsEnabledActionLog = true;
             options.IsEnabledExceptionLog = true;

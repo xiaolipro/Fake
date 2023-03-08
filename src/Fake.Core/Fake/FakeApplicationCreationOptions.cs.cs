@@ -11,7 +11,7 @@ public class FakeApplicationCreationOptions
     public IServiceCollection Services { get; }
     
     /// <summary>
-    /// The options in this property only take effect when IConfiguration not registered.
+    /// 仅在未注册IConfiguration时生效
     /// </summary>
     [NotNull]
     public FakeConfigurationBuilderOptions Configuration { get; }

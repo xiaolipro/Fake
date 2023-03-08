@@ -5,6 +5,6 @@ public interface IApplicationInfo
     [CanBeNull]
     string ApplicationName { get; }
     
-    [CanBeNull]
+    [NotNull]
     string ApplicationId { get; }
 }

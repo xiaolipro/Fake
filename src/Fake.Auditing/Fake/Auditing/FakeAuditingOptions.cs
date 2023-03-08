@@ -7,8 +7,7 @@ namespace Fake.Auditing;
 public class FakeAuditingOptions
 {
     /// <summary>
-    /// The name of the application or service writing audit logs.
-    /// Default: null.
+    /// 应用名称
     /// </summary>
     public string ApplicationName { get; set; }
     

@@ -2,6 +2,10 @@ using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Fake.Threading;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Options;
 
 namespace Fake.Auditing;
 
@@ -9,18 +13,24 @@ public class AuditingManager : IAuditingManager
 {
     private const string AuditingContextKey = "Fake.Auditing.AuditLogScope";
 
+    private readonly ILogger<AuditingManager> _logger;
     private readonly IAmbientScopeProvider<IAuditLogScope> _ambientScopeProvider;
     private readonly IAuditingHelper _auditingHelper;
     private readonly IAuditingStore _auditingStore;
+    private readonly IServiceProvider _serviceProvider;
+    
 
     public AuditingManager(
         IAmbientScopeProvider<IAuditLogScope> ambientScopeProvider,
         IAuditingHelper auditingHelper,
-        IAuditingStore auditingStore)
+        IAuditingStore auditingStore,
+        IServiceProvider serviceProvider)
     {
+        _logger = NullLogger<AuditingManager>.Instance;
         _ambientScopeProvider = ambientScopeProvider;
         _auditingHelper = auditingHelper;
         _auditingStore = auditingStore;
+        _serviceProvider = serviceProvider;
     }
 
     public IAuditLogScope Current => _ambientScopeProvider.GetValue(AuditingContextKey);
@@ -44,8 +54,30 @@ public class AuditingManager : IAuditingManager
     {
         saveHandle.StopWatch.Stop();
         saveHandle.AuditLog.ExecutionDuration = Convert.ToInt32(saveHandle.StopWatch.Elapsed.TotalMilliseconds);
-        //ExecutePostContributors(saveHandle.AuditLog);
+        ExecutePostContributors(saveHandle.AuditLog);
         //MergeEntityChanges(saveHandle.AuditLog);
+    }
+
+    private void ExecutePostContributors(AuditLogInfo auditLogInfo)
+    {
+        using (var scope = _serviceProvider.CreateScope())
+        {
+            var context = new AuditLogContributionContext(scope.ServiceProvider, auditLogInfo);
+
+            var options = scope.ServiceProvider.GetRequiredService<IOptions<FakeAuditingOptions>>().Value;
+
+            foreach (var contributor in options.Contributors)
+            {
+                try
+                {
+                    contributor.PostContribute(context);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogException(ex, LogLevel.Warning);
+                }
+            }
+        }
     }
 
 

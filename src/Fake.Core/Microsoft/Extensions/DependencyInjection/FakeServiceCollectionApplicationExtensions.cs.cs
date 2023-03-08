@@ -20,4 +20,16 @@ public static class FakeServiceCollectionApplicationExtensions
     {
         return FakeApplicationFactory.Create(startupModuleType, services, optionsAction);
     }
+    
+    [CanBeNull]
+    public static string GetApplicationName(this IServiceCollection services)
+    {
+        return services.GetSingletonInstance<IApplicationInfo>().ApplicationName;
+    }
+    
+    [NotNull]
+    public static string GetApplicationId(this IServiceCollection services)
+    {
+        return services.GetSingletonInstance<IApplicationInfo>().ApplicationId;
+    }
 }
