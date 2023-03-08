@@ -17,13 +17,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
 namespace Fake.EntityFrameworkCore;
 
 public class FakeDbContext<TDbContext> : DbContext, ITransientDependency where TDbContext : DbContext
 {
-    private readonly EfCoreOptions _options;
     private readonly Lazy<IClock> _clock;
     private readonly Lazy<IGuidGenerator> _guidGenerator;
     private readonly Lazy<IAuditPropertySetter> _auditPropertySetter;
@@ -34,10 +32,9 @@ public class FakeDbContext<TDbContext> : DbContext, ITransientDependency where T
             BindingFlags.Instance | BindingFlags.NonPublic
         );
 
-    public FakeDbContext(IServiceProvider serviceProvider, IOptions<EfCoreOptions> options)
+    public FakeDbContext(IServiceProvider serviceProvider)
     {
-        _options = serviceProvider.GetRequiredService<IOptions<EfCoreOptions>>().Value;
-        _clock = new Lazy<IClock>(serviceProvider.GetRequiredService<IClock>);
+        _clock = new Lazy<IClock>(serviceProvider.GetRequiredService<IClock>());
         _guidGenerator = new Lazy<IGuidGenerator>(serviceProvider.GetRequiredService<IGuidGenerator>());
         _auditPropertySetter =
             new Lazy<IAuditPropertySetter>(serviceProvider.GetRequiredService<IAuditPropertySetter>());
@@ -71,7 +68,7 @@ public class FakeDbContext<TDbContext> : DbContext, ITransientDependency where T
         ChangeTracker.CascadeDeleteTiming = CascadeTiming.OnSaveChanges;
 
         // 实体Track事件
-        ChangeTracker.Tracked += (sender, args) =>
+        ChangeTracker.Tracked += (_, args) =>
         {
             // TODO：ExtraProperties Tracked?
 
@@ -80,7 +77,7 @@ public class FakeDbContext<TDbContext> : DbContext, ITransientDependency where T
         };
 
         // 实体状态变更事件
-        ChangeTracker.StateChanged += (sender, args) =>
+        ChangeTracker.StateChanged += (_, args) =>
         {
             // 为跟踪实体发布事件
             PublishEventsForTrackedEntity(args.Entry);

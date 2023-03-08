@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Data.Common;
 using System.Threading;
+using Fake.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Fake.EntityFrameworkCore;
 
@@ -25,4 +29,20 @@ public class DbContextCreationContext
         _current.Value = context;
         return new DisposableWrapper(() => _current.Value = previousValue);
     }
+
+
+    public static DbContextCreationContext GetCreationContext<TDbContext>(IConfiguration configuration)
+        where TDbContext : DbContext
+    {
+        if (Current != null) return Current;
+
+        var connectionStringName = ConnectionStringNameAttribute.GetConnStringName<TDbContext>();
+        var connectionString = configuration.GetConnectionString(connectionStringName);
+        return new DbContextCreationContext(connectionString);
+    }
+}
+
+public class FakeDbContextOptions
+{
+    public string ConnectionString { get; set; }
 }
