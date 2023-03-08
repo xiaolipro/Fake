@@ -1,12 +1,11 @@
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Fake.DependencyInjection;
 using Fake.Threading;
 
 namespace Fake.Auditing;
 
-public class AuditingManager : IAuditingManager, ITransientDependency
+public class AuditingManager : IAuditingManager
 {
     private const string AuditingContextKey = "Fake.Auditing.AuditLogScope";
 

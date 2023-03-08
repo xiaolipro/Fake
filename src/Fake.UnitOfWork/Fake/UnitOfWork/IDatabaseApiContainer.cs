@@ -1,5 +1,5 @@
 using System;
-using Fake.Core.DependencyInjection;
+using Fake.DependencyInjection;
 using JetBrains.Annotations;
 
 namespace Fake.UnitOfWork;

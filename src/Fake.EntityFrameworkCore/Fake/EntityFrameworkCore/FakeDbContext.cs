@@ -20,7 +20,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Fake.EntityFrameworkCore;
 
-public class FakeDbContext<TDbContext> : DbContext, ITransientDependency where TDbContext : DbContext
+public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : DbContext
 {
     private readonly Lazy<IClock> _clock;
     private readonly Lazy<IGuidGenerator> _guidGenerator;

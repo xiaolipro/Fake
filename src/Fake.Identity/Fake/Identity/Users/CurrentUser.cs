@@ -1,12 +1,11 @@
 using System;
 using System.Linq;
-using Fake.DependencyInjection;
 using Fake.Identity.Security.Claims;
 using JetBrains.Annotations;
 
 namespace Fake.Identity.Users;
 
-public class CurrentUser : ICurrentUser, ITransientDependency
+public class CurrentUser : ICurrentUser
 {
     private readonly ICurrentPrincipalAccessor _currentPrincipalAccessor;
     public bool IsAuthenticated => UserId.IsNullOrWhiteSpace();

@@ -1,5 +1,4 @@
 ﻿using System;
-using Fake.DependencyInjection;
 using Fake.Domain.Entities.Auditing;
 using Fake.Identity.Users;
 using Fake.Reflection;
@@ -7,7 +6,7 @@ using Fake.Timing;
 
 namespace Fake.Auditing;
 
-public class DefaultAuditPropertySetter : IAuditPropertySetter, ITransientDependency
+public class DefaultAuditPropertySetter : IAuditPropertySetter
 {
     private readonly ICurrentUser _currentUser;
     private readonly IClock _clock;

@@ -1,14 +1,10 @@
-﻿using System;
-using System.Threading.Tasks;
-using Fake.DependencyInjection;
+﻿using System.Threading.Tasks;
 using Fake.DynamicProxy;
-using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
 namespace Fake.UnitOfWork;
 
-public class UnitOfWorkInterceptor : IFakeInterceptor, ITransientDependency
+public class UnitOfWorkInterceptor : IFakeInterceptor
 {
     private readonly IServiceScopeFactory _serviceScopeFactory;
 

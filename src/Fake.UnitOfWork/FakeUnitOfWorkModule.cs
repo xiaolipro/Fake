@@ -23,6 +23,9 @@ public class FakeUnitOfWorkModule:FakeModule
         context.Services.AddSingleton<IUnitOfWorkHelper, UnitOfWorkHelper>();
         context.Services.AddSingleton<IUnitOfWorkTransactionalProvider, NullUnitOfWorkTransactionalProvider>();
         context.Services.AddSingleton<IUnitOfWorkManager, UnitOfWorkManager>();
+
+        context.Services.AddTransient<IUnitOfWork, UnitOfWork>();
+        context.Services.AddTransient<UnitOfWorkInterceptor>();
     }
 
     private static bool ShouldIntercept(Type type)

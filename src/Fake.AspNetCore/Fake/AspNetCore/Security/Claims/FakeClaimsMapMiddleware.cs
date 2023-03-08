@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Fake.DependencyInjection;
 using Fake.Identity.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,7 +12,7 @@ namespace Fake.AspNetCore.Security.Claims;
 /// <summary>
 /// <see cref="Claim"/>映射中间件
 /// </summary>
-public class FakeClaimsMapMiddleware : IMiddleware, ITransientDependency
+public class FakeClaimsMapMiddleware : IMiddleware
 {
     public async Task InvokeAsync(HttpContext httpContext, RequestDelegate next)
     {

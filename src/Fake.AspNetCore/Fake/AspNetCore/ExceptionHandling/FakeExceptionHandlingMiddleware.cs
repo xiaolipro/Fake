@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Fake.DependencyInjection;
 using Fake.ExceptionHandling;
 using Fake.Identity.Authorization;
 using Fake.Json;
@@ -15,7 +14,7 @@ namespace Fake.AspNetCore.ExceptionHandling;
 /// <summary>
 /// 异常处理中间件
 /// </summary>
-public class FakeExceptionHandlingMiddleware : IMiddleware, ITransientDependency
+public class FakeExceptionHandlingMiddleware : IMiddleware
 {
     private readonly ILogger<FakeExceptionHandlingMiddleware> _logger;
 

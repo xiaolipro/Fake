@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Threading;
 using System.Threading.Tasks;
-using Fake.DependencyInjection;
 using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -11,7 +10,7 @@ using Microsoft.Extensions.Options;
 
 namespace Fake.UnitOfWork;
 
-public class UnitOfWork : IUnitOfWork, ITransientDependency
+public class UnitOfWork : IUnitOfWork
 {
     public Guid Id { get; }
     public IServiceProvider ServiceProvider { get; }

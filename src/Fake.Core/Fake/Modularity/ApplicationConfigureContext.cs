@@ -1,4 +1,4 @@
-﻿using Fake.Core.DependencyInjection;
+﻿using Fake.DependencyInjection;
 
 namespace Fake.Modularity;
 

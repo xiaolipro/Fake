@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Fake.Identity.Security.Claims;
+using Fake.Identity.Users;
 using Fake.Modularity;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -33,5 +34,7 @@ public class FakeIdentityModule : FakeModule
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
         context.Services.AddSingleton<ICurrentPrincipalAccessor, ThreadCurrentPrincipalAccessor>();
+
+        context.Services.AddTransient<ICurrentUser, CurrentUser>();
     }
 }

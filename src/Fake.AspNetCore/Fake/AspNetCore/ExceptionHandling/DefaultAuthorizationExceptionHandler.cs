@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using Fake.DependencyInjection;
 using Fake.Identity.Authorization;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
@@ -9,7 +8,7 @@ using Microsoft.Extensions.Options;
 
 namespace Fake.AspNetCore.ExceptionHandling;
 
-public class DefaultAuthorizationExceptionHandler:IAuthorizationExceptionHandler,ITransientDependency
+public class DefaultAuthorizationExceptionHandler:IAuthorizationExceptionHandler
 {
     public async Task HandleAsync(FakeAuthorizationException exception, HttpContext httpContext)
     {

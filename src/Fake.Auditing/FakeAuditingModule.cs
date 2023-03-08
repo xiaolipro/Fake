@@ -33,9 +33,12 @@ public class FakeAuditingModule:FakeModule
             options.IsEnabledExceptionLog = true;
             options.IsEnabledGetRequestLog = true;
         });
-
+        
         context.Services.AddSingleton(typeof(IAuditingHelper), typeof(AuditingHelper));
         context.Services.AddSingleton(typeof(IAuditingStore), typeof(SimpleLogAuditingStore));
+
+        context.Services.AddTransient<IAuditingManager, AuditingManager>();
+        context.Services.AddTransient<IAuditPropertySetter, DefaultAuditPropertySetter>();
         context.Services.AddTransient<AuditingInterceptor>();
     }
     
