@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <Import Project="..\..\common.test.props" />
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <RootNamespace />
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(MicrosoftNETTestSdkPackageVersion)" />
+        <ProjectReference Include="..\..\src\Fake.AspNetCore\Fake.AspNetCore.csproj" />
+        <ProjectReference Include="..\..\src\Fake.Autofac\Fake.Autofac.csproj" />
+        <ProjectReference Include="..\..\src\Fake.Testing\Fake.Testing.csproj" />
+        <ProjectReference Include="..\AFakeTestEntry\AFakeTestEntry.csproj" />
+    </ItemGroup>
+
+</Project>
