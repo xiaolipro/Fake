@@ -14,26 +14,25 @@ public class UnitOfWork : IUnitOfWork
 {
     public Guid Id { get; }
     public IServiceProvider ServiceProvider { get; }
-    public UnitOfWorkStatus UnitOfWorkStatus { get; private set; }
     public UnitOfWorkContext Context { get; private set; }
 
+    public bool IsDisposed { get; private set; }
+
+    public bool IsCompleted { get; private set; }
     public IUnitOfWork Outer { get; private set; }
 
     protected List<Func<IUnitOfWork, Task>> CompletedTasks { get; }
-    public event EventHandler<UnitOfWorkCommitFailedEventArgs> CommitFailed;
+    public event EventHandler<UnitOfWorkFailedEventArgs> Failed;
     public event EventHandler<UnitOfWorkEventArgs> Disposed;
-
-    protected virtual bool IsRollBack =>
-        UnitOfWorkStatus is UnitOfWorkStatus.RollBacking or UnitOfWorkStatus.RollBacked;
-
-    protected virtual bool IsDispose => UnitOfWorkStatus is UnitOfWorkStatus.Disposing or UnitOfWorkStatus.Disposed;
-    protected virtual bool IsComplete => UnitOfWorkStatus is UnitOfWorkStatus.Completing or UnitOfWorkStatus.Completed;
 
     private readonly Dictionary<string, IDatabaseApi> _databaseApiDic;
     private readonly Dictionary<string, ITransactionApi> _transactionApiDic;
 
     private readonly ILogger<UnitOfWork> _logger;
     private readonly FakeUnitOfWorkOptions _options;
+
+    private Exception _exception;
+    private bool _isCompleting, _isRollBacked;
 
     public UnitOfWork(IServiceProvider serviceProvider, ILogger<UnitOfWork> logger,
         IOptions<FakeUnitOfWorkOptions> options)
@@ -59,7 +58,7 @@ public class UnitOfWork : IUnitOfWork
     {
         if (Context != null)
         {
-            throw new FakeException($"这个工作单元上下文已经被初始化过了!");
+            throw new FakeException($"{this}工作单元上下文已经被初始化过了!");
         }
 
         var context = new UnitOfWorkContext();
@@ -72,21 +71,20 @@ public class UnitOfWork : IUnitOfWork
         // 优先使用UnitOfWorkAttribute的配置，然后才是全局默认配置
         context.IsolationLevel ??= _options.IsolationLevel;
         context.Timeout ??= _options.Timeout;
-        context.IsTransactional = attribute?.IsTransactional?? _options.CalculateIsTransactional(
+        context.IsTransactional = attribute?.IsTransactional ?? _options.CalculateIsTransactional(
             autoValue: ServiceProvider.GetRequiredService<IUnitOfWorkTransactionalProvider>().IsTransactional
-        );;
+        );
 
         Context = context;
     }
 
     public virtual async Task SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        if (IsRollBack)
+        if (_isRollBacked)
         {
+            _logger.LogWithLevel(LogLevel.Warning, $"{this}正在尝试{nameof(SaveChangesAsync)}一个已经回滚过的事务");
             return;
         }
-
-        UnitOfWorkStatus = UnitOfWorkStatus.Saving;
 
         foreach (var databaseApi in GetAllActiveDatabaseApis())
         {
@@ -98,27 +96,26 @@ public class UnitOfWork : IUnitOfWork
                 }
                 catch (Exception e)
                 {
-                    UnitOfWorkStatus = UnitOfWorkStatus.SaveFailed;
                     _logger.LogException(e);
                     throw;
                 }
             }
         }
-
-        UnitOfWorkStatus = UnitOfWorkStatus.Saved;
     }
 
     public virtual async Task RollbackAsync(CancellationToken cancellationToken = default)
     {
-        if (IsRollBack)
+        if (_isRollBacked)
         {
+            _logger.LogWithLevel(LogLevel.Warning, $"{this}正在尝试{nameof(RollbackAsync)}一个已经回滚过的事务");
             return;
         }
 
-        UnitOfWorkStatus = UnitOfWorkStatus.RollBacking;
+        _isRollBacked = true;
 
         foreach (var databaseApi in GetAllActiveDatabaseApis())
         {
+            // ReSharper disable once SuspiciousTypeConversion.Global
             if (databaseApi is ISupportRollback supportRollback)
             {
                 try
@@ -127,30 +124,28 @@ public class UnitOfWork : IUnitOfWork
                 }
                 catch (Exception e)
                 {
-                    UnitOfWorkStatus = UnitOfWorkStatus.RollBackFailed;
                     _logger.LogException(e);
                     throw;
                 }
             }
         }
-
-        UnitOfWorkStatus = UnitOfWorkStatus.RollBacked;
     }
 
     public virtual async Task CompleteAsync(CancellationToken cancellationToken = default)
     {
-        if (IsRollBack)
+        if (_isRollBacked)
         {
+            _logger.LogWithLevel(LogLevel.Warning, $"{this}正在尝试{nameof(CompleteAsync)}一个已经回滚过的事务");
             return;
         }
 
         // 抑制多提交
-        if (IsComplete)
+        if (_isCompleting || IsCompleted)
         {
             throw new FakeException($"{nameof(CompleteAsync)}方法已被调用过了");
         }
 
-        UnitOfWorkStatus = UnitOfWorkStatus.Completing;
+        _isCompleting = true;
 
         try
         {
@@ -161,16 +156,19 @@ public class UnitOfWork : IUnitOfWork
                 await transaction.CommitAsync(cancellationToken);
             }
 
+            IsCompleted = true;
             await HandleCompletedTasksAsync();
         }
         catch (Exception ex)
         {
-            UnitOfWorkStatus = UnitOfWorkStatus.CompletedFailed;
-            CommitFailed?.Invoke(this, new UnitOfWorkCommitFailedEventArgs(this, ex));
+            _exception = ex;
             throw;
         }
+    }
 
-        UnitOfWorkStatus = UnitOfWorkStatus.Completed;
+    protected virtual void OnFailed()
+    {
+        Failed?.Invoke(this, new UnitOfWorkFailedEventArgs(this, _exception, _isRollBacked));
     }
 
     public virtual void OnCompleted(Func<IUnitOfWork, Task> func)
@@ -189,7 +187,7 @@ public class UnitOfWork : IUnitOfWork
 
     public virtual void OnDisposed()
     {
-        Disposed?.Invoke(this,new UnitOfWorkEventArgs(this));
+        Disposed?.Invoke(this, new UnitOfWorkEventArgs(this));
     }
 
     public void SetOuter(IUnitOfWork outer)
@@ -245,9 +243,9 @@ public class UnitOfWork : IUnitOfWork
 
         if (_transactionApiDic.ContainsKey(key))
         {
-            throw new FakeException($"工作单元{this}中已存在具有给定密钥{key}的数据库API"); 
+            throw new FakeException($"工作单元{this}中已存在具有给定密钥{key}的数据库API");
         }
-        
+
         _transactionApiDic.Add(key, api);
     }
 
@@ -258,7 +256,7 @@ public class UnitOfWork : IUnitOfWork
 
         return _transactionApiDic.GetOrAdd(key, factory);
     }
-    
+
     public override string ToString()
     {
         return $"[UnitOfWork {Id}]";
@@ -266,12 +264,12 @@ public class UnitOfWork : IUnitOfWork
 
     public void Dispose()
     {
-        if (IsDispose)
+        if (IsDisposed)
         {
             return;
         }
 
-        UnitOfWorkStatus = UnitOfWorkStatus.Disposing;
+        IsDisposed = true;
 
         // 工作单元销毁时一定要销毁所有事务防止数据库锁死
         foreach (var transactionApi in GetAllActiveTransactionApis())
@@ -282,12 +280,15 @@ public class UnitOfWork : IUnitOfWork
             }
             catch (Exception e)
             {
-                UnitOfWorkStatus = UnitOfWorkStatus.DisposeFailed;
                 _logger.LogException(e);
             }
         }
 
+        if (!IsCompleted || _exception != null)
+        {
+            OnFailed();
+        }
+
         OnDisposed();
-        UnitOfWorkStatus = UnitOfWorkStatus.Disposed;
     }
 }

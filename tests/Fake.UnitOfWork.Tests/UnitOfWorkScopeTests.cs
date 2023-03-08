@@ -50,34 +50,4 @@ public class UnitOfWorkScopeTests : FakeModuleTestBase<FakeUnitOfWorkModule>
         
         _unitOfWorkManager.Current.ShouldBeNull();
     }
-
-
-    [Fact]
-    async Task 子工作单元行为不产生效果()
-    {
-        _unitOfWorkManager.Current.ShouldBeNull();
-
-        using (var uow1 = _unitOfWorkManager.Begin())
-        {
-            _unitOfWorkManager.Current.ShouldNotBeNull();
-            _unitOfWorkManager.Current.ShouldBe(uow1);
-            
-            using (var uow2 = _unitOfWorkManager.Begin())
-            {
-                _unitOfWorkManager.Current.ShouldNotBeNull();
-                _unitOfWorkManager.Current.Id.ShouldBe(uow1.Id);
-
-                await uow2.CompleteAsync();
-                uow2.UnitOfWorkStatus.ShouldBe(UnitOfWorkStatus.Active);
-            }
-
-            _unitOfWorkManager.Current.ShouldNotBeNull();
-            _unitOfWorkManager.Current.ShouldBe(uow1);
-            
-            await uow1.CompleteAsync();
-            uow1.UnitOfWorkStatus.ShouldBe(UnitOfWorkStatus.Completed);
-        }
-        
-        _unitOfWorkManager.Current.ShouldBeNull();
-    }
 }

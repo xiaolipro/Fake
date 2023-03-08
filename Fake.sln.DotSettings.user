@@ -1,19 +1,4 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=4bcd433d_002Dd63b_002D4370_002Db4fd_002Dfb7b51900ad9/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="SortByDependencies" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;Or&gt;&#xD;
-    &lt;Project Location="E:\repo\fake\tests\Fake.Core.Tests" Presentation="&amp;lt;tests&amp;gt;\&amp;lt;Fake.Core.Tests&amp;gt;" /&gt;&#xD;
-    &lt;TestAncestor&gt;&#xD;
-      &lt;TestId&gt;xUnit::18CD3533-6778-46E1-B175-448D15543F8C::net7.0::Fake.Auditing.Tests.Class1.dd&lt;/TestId&gt;&#xD;
-      &lt;TestId&gt;xUnit::18CD3533-6778-46E1-B175-448D15543F8C::net7.0::NewDirectory1.AuditingTests.Should_Write_AuditLog_For_Classes_That_Implement_IAuditingEnabled_Without_An_Explicit_Scope&lt;/TestId&gt;&#xD;
-      &lt;TestId&gt;xUnit::18CD3533-6778-46E1-B175-448D15543F8C::net7.0::Fake.Auditing.AuditingTests.Should_Write_AuditLog_For_Classes_That_Implement_IAuditingEnabled_Without_An_Explicit_Scope&lt;/TestId&gt;&#xD;
-      &lt;TestId&gt;xUnit::18CD3533-6778-46E1-B175-448D15543F8C::net7.0::Fake.Auditing.AuditingTests.打了Audited特性的可以审计&lt;/TestId&gt;&#xD;
-      &lt;TestId&gt;xUnit::9B22DE9A-C927-4B69-B349-D46E1EEBA0BF::net7.0::AutofacDependencyInjection_Tests.单例服务可以跨越瞬态scope&lt;/TestId&gt;&#xD;
-      &lt;TestId&gt;xUnit::9B22DE9A-C927-4B69-B349-D46E1EEBA0BF::net7.0::AutofacDependencyInjectionTests.支持属性注入&lt;/TestId&gt;&#xD;
-      &lt;TestId&gt;xUnit::AFEF33F5-295F-463C-A083-CDEDFA72A252::net7.0::UnitOfWorkScopeTests.嵌套可以正常工作&lt;/TestId&gt;&#xD;
-      &lt;TestId&gt;xUnit::AFEF33F5-295F-463C-A083-CDEDFA72A252::net7.0::UnitOfWorkScopeTests.嵌套默认共享外层工作单元&lt;/TestId&gt;&#xD;
-      &lt;TestId&gt;xUnit::AFEF33F5-295F-463C-A083-CDEDFA72A252::net7.0::UnitOfWorkScopeTests.子工作单元行为不产生效果&lt;/TestId&gt;&#xD;
-    &lt;/TestAncestor&gt;&#xD;
-    &lt;Project Location="C:\Users\antinewpc\source\repos\fake\tests\Fake.Core.Tests" Presentation="&amp;lt;tests&amp;gt;\&amp;lt;Fake.Core.Tests&amp;gt;" /&gt;&#xD;
-    &lt;ProjectFile&gt;9B22DE9A-C927-4B69-B349-D46E1EEBA0BF/f:AutofacDependencyInjectionTests.cs&lt;/ProjectFile&gt;&#xD;
-  &lt;/Or&gt;&#xD;
+  &lt;Project Location="E:\repo\fake" Presentation="&amp;lt;tests&amp;gt;" /&gt;&#xD;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

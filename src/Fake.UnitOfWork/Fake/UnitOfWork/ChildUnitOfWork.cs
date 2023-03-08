@@ -10,23 +10,25 @@ public class ChildUnitOfWork : IUnitOfWork
     public IServiceProvider ServiceProvider => _parent.ServiceProvider;
     public Guid Id => _parent.Id;
     public UnitOfWorkContext Context => _parent.Context;
+    public bool IsDisposed => _parent.IsDisposed;
+    public bool IsCompleted => _parent.IsCompleted;
     public IUnitOfWork Outer => _parent.Outer;
-    public UnitOfWorkStatus UnitOfWorkStatus => _parent.UnitOfWorkStatus;
-    public event EventHandler<UnitOfWorkCommitFailedEventArgs> CommitFailed;
+    public event EventHandler<UnitOfWorkFailedEventArgs> Failed;
     public event EventHandler<UnitOfWorkEventArgs> Disposed;
 
     private readonly IUnitOfWork _parent;
+
     public ChildUnitOfWork([NotNull] IUnitOfWork parent)
     {
         ThrowHelper.ThrowIfNull(parent, nameof(parent));
 
         _parent = parent;
 
-        _parent.CommitFailed += (sender, args) => { CommitFailed?.Invoke(sender, args); };
+        _parent.Failed += (sender, args) => { Failed?.Invoke(sender, args); };
         _parent.Disposed += (sender, args) => { Disposed?.Invoke(sender, args); };
     }
 
-   
+
     public IDatabaseApi FindDatabaseApi(string key)
     {
         return _parent.FindDatabaseApi(key);
@@ -34,7 +36,7 @@ public class ChildUnitOfWork : IUnitOfWork
 
     public void AddDatabaseApi(string key, IDatabaseApi api)
     {
-        _parent.AddDatabaseApi(key,api);
+        _parent.AddDatabaseApi(key, api);
     }
 
     public IDatabaseApi GetOrAddDatabaseApi(string key, Func<IDatabaseApi> factory)
@@ -49,7 +51,7 @@ public class ChildUnitOfWork : IUnitOfWork
 
     public void AddTransactionApi(string key, ITransactionApi api)
     {
-        _parent.AddTransactionApi(key,api);
+        _parent.AddTransactionApi(key, api);
     }
 
     public ITransactionApi GetOrAddTransactionApi(string key, Func<ITransactionApi> factory)
@@ -59,18 +61,12 @@ public class ChildUnitOfWork : IUnitOfWork
 
     public void Dispose()
     {
-        
     }
 
-   
+
     public void InitUnitOfWorkContext(UnitOfWorkAttribute context)
     {
         _parent.InitUnitOfWorkContext(context);
-    }
-
-    public Task SaveChangesAsync(CancellationToken cancellationToken = default)
-    {
-        return _parent.SaveChangesAsync(cancellationToken);
     }
 
     public Task RollbackAsync(CancellationToken cancellationToken = default)

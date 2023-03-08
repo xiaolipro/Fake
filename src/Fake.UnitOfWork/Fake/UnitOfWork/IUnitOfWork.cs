@@ -10,19 +10,14 @@ public interface IUnitOfWork : IDatabaseApiContainer, ITransactionApiContainer, 
     public Guid Id { get; }
     
     UnitOfWorkContext Context { get; }
+    
+    public bool IsDisposed { get; }
+
+    public bool IsCompleted { get; }
 
     IUnitOfWork Outer { get; }
 
     void InitUnitOfWorkContext(UnitOfWorkAttribute context);
-
-    UnitOfWorkStatus UnitOfWorkStatus { get; }
-
-    /// <summary>
-    /// 保存变更
-    /// </summary>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
-    Task SaveChangesAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// 回滚事务
@@ -45,7 +40,11 @@ public interface IUnitOfWork : IDatabaseApiContainer, ITransactionApiContainer, 
     /// <param name="func"></param>
     void OnCompleted(Func<IUnitOfWork, Task> func);
     
-    event EventHandler<UnitOfWorkCommitFailedEventArgs> CommitFailed;
+    /// <summary>
+    /// 工作单元销毁触发该事件，但早于Disposed event
+    /// 触发标准是<see cref="CompleteAsync"/>生命周期内发生异常
+    /// </summary>
+    event EventHandler<UnitOfWorkFailedEventArgs> Failed;
     event EventHandler<UnitOfWorkEventArgs> Disposed;
     
     /// <summary>

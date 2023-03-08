@@ -24,7 +24,7 @@ public class AmbientUnitOfWorkProvider : IAmbientUnitOfWorkProvider
         var uow = UnitOfWork;
 
         // 上溯
-        while (uow is { UnitOfWorkStatus: UnitOfWorkStatus.Completed or UnitOfWorkStatus.Disposed })
+        while (uow != null && (uow.IsCompleted || uow.IsDisposed))
         {
             uow = uow.Outer;
         }
