@@ -13,8 +13,4 @@
         <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="$(MicrosoftPackageVersion)" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Fake\Embedded" />
-    </ItemGroup>
-
 </Project>

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Reflection;
+using Fake.VirtualFileSystem.Embedded;
 using JetBrains.Annotations;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
@@ -37,6 +38,5 @@ public class VirtualFileSetList : List<VirtualFileSet>
         
         Logger.LogWarning($"找不到{ResourceName}，正在使用{nameof(FakeEmbeddedFileProvider)}");
         return new FakeEmbeddedFileProvider(assembly, baseNamespace);
-
     }
 }

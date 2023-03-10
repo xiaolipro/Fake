@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Fake.Embedded;
-using Fake.FileInfo;
+using Fake.VirtualFileSystem.FileInfo;
 using JetBrains.Annotations;
 using Microsoft.Extensions.FileProviders;
 
-namespace Fake.VirtualFileSystem;
+namespace Fake.VirtualFileSystem.Embedded;
 
 public class FakeEmbeddedFileProvider : DictionaryFileProvider
 {
@@ -53,11 +52,14 @@ public class FakeEmbeddedFileProvider : DictionaryFileProvider
                 continue;
             }
 
+            // 命名空间a.b.c->目录层级/a/b/c
             var fullPath = ConvertToRelativePath(resourcePath).StartsWithOrAppend("/");
 
-            AddDirectoriesRecursively(fileDic, fullPath.Substring(0, fullPath.LastIndexOf('/')), lastModificationTime);
+            // 添加虚拟目录
+            AddVirtualDirectoriesRecursively(fileDic, fullPath.Substring(0, fullPath.LastIndexOf('/')), lastModificationTime);
 
-            fileDic[fullPath] = new EmbeddedResourceFileInfo(
+            // 添加虚拟文件
+            fileDic[fullPath] = new FakeEmbeddedResourceFileInfo(
                 Assembly,
                 resourcePath,
                 fullPath,
@@ -108,7 +110,7 @@ public class FakeEmbeddedFileProvider : DictionaryFileProvider
         return folder + "/" + fileName;
     }
     
-    private static void AddDirectoriesRecursively(Dictionary<string, IFileInfo> fileDic, string directoryPath, DateTimeOffset lastModificationTime)
+    private static void AddVirtualDirectoriesRecursively(Dictionary<string, IFileInfo> fileDic, string directoryPath, DateTimeOffset lastModificationTime)
     {
         if (fileDic.ContainsKey(directoryPath))
         {
@@ -123,7 +125,7 @@ public class FakeEmbeddedFileProvider : DictionaryFileProvider
 
         if (directoryPath.Contains("/"))
         {
-            AddDirectoriesRecursively(fileDic, directoryPath.Substring(0, directoryPath.LastIndexOf('/')), lastModificationTime);
+            AddVirtualDirectoriesRecursively(fileDic, directoryPath.Substring(0, directoryPath.LastIndexOf('/')), lastModificationTime);
         }
     }
     

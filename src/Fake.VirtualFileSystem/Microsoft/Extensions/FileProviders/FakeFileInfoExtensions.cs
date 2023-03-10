@@ -1,6 +1,5 @@
 ﻿using Fake;
-using Fake.Embedded;
-using Fake.VirtualFileSystem;
+using Fake.VirtualFileSystem.FileInfo;
 using JetBrains.Annotations;
 
 namespace Microsoft.Extensions.FileProviders;
@@ -12,7 +11,7 @@ public static class FakeFileInfoExtensions
     {
         ThrowHelper.ThrowIfNull(fileInfo, nameof(fileInfo));
 
-        if (fileInfo is EmbeddedResourceFileInfo embeddedResourceFileInfo)
+        if (fileInfo is FakeEmbeddedResourceFileInfo embeddedResourceFileInfo)
         {
             return embeddedResourceFileInfo.VirtualPath;
         }

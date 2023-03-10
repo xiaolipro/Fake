@@ -2,7 +2,7 @@
 using System.IO;
 using Microsoft.Extensions.FileProviders;
 
-namespace Fake.FileInfo;
+namespace Fake.VirtualFileSystem.FileInfo;
 
 public class VirtualDirectoryFileInfo: IFileInfo
 {
