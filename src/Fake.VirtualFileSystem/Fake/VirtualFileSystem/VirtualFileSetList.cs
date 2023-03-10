@@ -1,30 +1,29 @@
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Fake.VirtualFileSystem.Embedded;
 using JetBrains.Annotations;
 using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Logging;
 
 namespace Fake.VirtualFileSystem;
 
 public class VirtualFileSetList : List<VirtualFileSet>
 {
-    public ILogger<VirtualFileSetList> Logger { get; set; }
     private const string ResourceName = "Microsoft.Extensions.FileProviders.Embedded.Manifest.xml";
     public void AddEmbedded<TModule>([CanBeNull] string baseNamespace = null,
-        [CanBeNull] string baseFolder = null)
+        [CanBeNull] string root = null)
     {
         var assembly = typeof(TModule).Assembly;
-
+        
         var fileProvider = CreateFileProvider(
             assembly,
             baseNamespace,
-            baseFolder
+            root
         );
     }
 
     private IFileProvider CreateFileProvider([NotNull] Assembly assembly, [CanBeNull] string baseNamespace,
-        [CanBeNull] string baseFolder)
+        [CanBeNull] string root)
     {
         ThrowHelper.ThrowIfNull(assembly, nameof(assembly));
         
@@ -32,11 +31,10 @@ public class VirtualFileSetList : List<VirtualFileSet>
         var info = assembly.GetManifestResourceInfo(ResourceName);
 
         if (info != null)
-            return baseFolder == null
+            return root == null
                 ? new ManifestEmbeddedFileProvider(assembly)
-                : new ManifestEmbeddedFileProvider(assembly, baseFolder);
+                : new ManifestEmbeddedFileProvider(assembly, root);
         
-        Logger.LogWarning($"找不到{ResourceName}，正在使用{nameof(FakeEmbeddedFileProvider)}");
         return new FakeEmbeddedFileProvider(assembly, baseNamespace);
     }
 }

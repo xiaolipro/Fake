@@ -34,7 +34,7 @@ public static class FakeStringExtensions
     /// <summary>
     /// 表示此字符串 不是 null或空字符串或空白格。
     /// </summary>
-    [ContractAnnotation("str:null => true")]
+    [ContractAnnotation("str:null => false")]
     public static bool NotNullOrWhiteSpace(this string str)
     {
         return string.IsNullOrWhiteSpace(str);

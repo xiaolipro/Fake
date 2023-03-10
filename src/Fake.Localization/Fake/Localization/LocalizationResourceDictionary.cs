@@ -1,0 +1,55 @@
+﻿using System;
+using System.Collections.Generic;
+using JetBrains.Annotations;
+
+namespace Fake.Localization;
+
+/// <summary>
+/// 本地化资源字典
+/// </summary>
+public class LocalizationResourceDictionary: Dictionary<string, AbstractLocalizationResource>
+{
+    public LocalizationResource Add<TLocalizationResource>([CanBeNull] string defaultCultureName = null)
+    {
+        return Add(typeof(TLocalizationResource), defaultCultureName);
+    }
+    
+    public LocalizationResource Add(Type resourceType, [CanBeNull] string defaultCultureName = null)
+    {
+        var resourceName = LocalizationResourceNameAttribute.GetName(resourceType);
+        if (ContainsKey(resourceName))
+        {
+            throw new FakeException("该本地化资源已存在: " + resourceType.AssemblyQualifiedName);
+        }
+
+        var resource = new LocalizationResource(resourceType, defaultCultureName);
+
+        this[resourceName] = resource;
+
+        return resource;
+    }
+    
+    public AbstractLocalizationResource Get<TResource>()
+    {
+        var resourceType = typeof(TResource);
+        var resourceName = LocalizationResourceNameAttribute.GetName(resourceType);
+        var resource = this[resourceName];
+        if (resource == null)
+        {
+            throw new FakeException("找不到给定类型的本地化资源：" + resourceType.AssemblyQualifiedName);
+        }
+
+        return resource;
+    }
+    
+    public AbstractLocalizationResource Get(string resourceName)
+    {
+        var resource = this.GetOrDefault(resourceName);
+        if (resource == null)
+        {
+            throw new FakeException("找不到给定名称的本地化资源: " + resourceName);
+        }
+
+        return resource;
+    }
+}

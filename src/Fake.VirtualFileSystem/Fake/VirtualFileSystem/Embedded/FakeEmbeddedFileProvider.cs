@@ -47,7 +47,7 @@ public class FakeEmbeddedFileProvider : DictionaryFileProvider
 
         foreach (var resourcePath in Assembly.GetManifestResourceNames())
         {
-            if (!BaseNamespace.IsNullOrEmpty() && !resourcePath.StartsWith(BaseNamespace))
+            if (BaseNamespace.NotNullOrWhiteSpace() && !resourcePath.StartsWith(BaseNamespace))
             {
                 continue;
             }
