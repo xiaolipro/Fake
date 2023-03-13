@@ -5,22 +5,22 @@ using Microsoft.Extensions.Primitives;
 
 namespace Fake.VirtualFileSystem;
 
-public abstract class DictionaryFileProvider: IFileProvider
+public abstract class AbstractInMemoryFileProvider: IFileProvider
 {
-    protected abstract IDictionary<string, IFileInfo> FileDictionary { get; }
+    protected abstract IDictionary<string, IFileInfo> Files { get; }
     
-    public IFileInfo GetFileInfo(string subpath)
+    public virtual IFileInfo GetFileInfo(string subpath)
     {
         if (subpath == null) return new NotFoundFileInfo("");
 
-        var file = FileDictionary.GetOrDefault(subpath);
+        var file = Files.GetOrDefault(subpath);
 
         if (file == null) return new NotFoundFileInfo(subpath);
 
         return file;
     }
 
-    public IDirectoryContents GetDirectoryContents(string subpath)
+    public virtual IDirectoryContents GetDirectoryContents(string subpath)
     {
         var directory = GetFileInfo(subpath);
         if (!directory.IsDirectory)
@@ -32,7 +32,7 @@ public abstract class DictionaryFileProvider: IFileProvider
 
         var directoryPath = subpath.EndsWithOrAppend("/");
 
-        foreach (var fileInfo in FileDictionary.Values)
+        foreach (var fileInfo in Files.Values)
         {
             var fullPath = fileInfo.GetVirtualOrPhysicalPathOrNull();
             
@@ -55,7 +55,7 @@ public abstract class DictionaryFileProvider: IFileProvider
         return new DirectoryContents(files);
     }
 
-    public IChangeToken Watch(string filter)
+    public virtual IChangeToken Watch(string filter)
     {
         return NullChangeToken.Singleton;
     }

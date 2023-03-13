@@ -7,8 +7,6 @@ namespace Fake.Localization;
 
 public interface ILocalizationResourceContributor
 {
-    bool IsDynamic { get; }
-    
     void Initialize(LocalizationResourceInitializationContext context);
     
     LocalizedString GetOrNull(string cultureName, string name);

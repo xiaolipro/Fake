@@ -9,7 +9,7 @@ using Microsoft.Extensions.FileProviders;
 
 namespace Fake.VirtualFileSystem.Embedded;
 
-public class FakeEmbeddedFileProvider : DictionaryFileProvider
+public class FakeEmbeddedFileProvider : AbstractInMemoryFileProvider
 {
     [NotNull]
     public Assembly Assembly { get; }
@@ -17,7 +17,7 @@ public class FakeEmbeddedFileProvider : DictionaryFileProvider
     [CanBeNull]
     public string BaseNamespace { get; }
     
-    protected override IDictionary<string, IFileInfo> FileDictionary => _fileDic.Value;
+    protected override IDictionary<string, IFileInfo> Files => _fileDic.Value;
     private readonly Lazy<Dictionary<string, IFileInfo>> _fileDic;
     
     public FakeEmbeddedFileProvider(

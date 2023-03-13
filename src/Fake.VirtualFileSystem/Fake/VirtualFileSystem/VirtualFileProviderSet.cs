@@ -7,9 +7,16 @@ using Microsoft.Extensions.FileProviders;
 
 namespace Fake.VirtualFileSystem;
 
-public class VirtualFileSetList : List<VirtualFileSet>
+public class VirtualFileProviderSet
 {
     private const string ResourceName = "Microsoft.Extensions.FileProviders.Embedded.Manifest.xml";
+    public List<IFileProvider> FileProviders { get; }
+
+    public VirtualFileProviderSet()
+    {
+        FileProviders = new List<IFileProvider>();
+    }
+    
     public void AddEmbedded<TModule>([CanBeNull] string baseNamespace = null,
         [CanBeNull] string root = null)
     {
@@ -20,6 +27,8 @@ public class VirtualFileSetList : List<VirtualFileSet>
             baseNamespace,
             root
         );
+        
+        FileProviders.Add(fileProvider);
     }
 
     private IFileProvider CreateFileProvider([NotNull] Assembly assembly, [CanBeNull] string baseNamespace,
