@@ -18,33 +18,46 @@ public static class FakeDictionaryExtensions
     /// <summary>
     /// 从字段中获取给定key的值，若不存在，则根据工厂新增，并返回工厂值
     /// </summary>
-    /// <param name="dictionary">Dictionary to check and get</param>
-    /// <param name="key">Key to find the value</param>
-    /// <param name="valueFactory">如果在字典中找不到key，则用于值用该工厂创建</param>
-    /// <typeparam name="TKey">Type of the key</typeparam>
-    /// <typeparam name="TValue">Type of the value</typeparam>
-    /// <returns>Value if found, default if can not found.</returns>
+    /// <param name="dictionary"></param>
+    /// <param name="key"></param>
+    /// <param name="valueFactory">如果在字典中找不到值，则用于创建该值的工厂方法</param>
+    /// <returns>存在直接返回，不存在则新增并返回factory value</returns>
     public static TValue GetOrAdd<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, Func<TValue> valueFactory)
     {
         return dictionary.GetOrAdd(key, k => valueFactory());
     }
     
     /// <summary>
-    /// Gets a value from the dictionary with given key. Returns default value if can not find.
+    /// 根据key获取值，不存在则新增，值为factory
     /// </summary>
-    /// <param name="dictionary">Dictionary to check and get</param>
-    /// <param name="key">Key to find the value</param>
-    /// <param name="factory">A factory method used to create the value if not found in the dictionary</param>
-    /// <typeparam name="TKey">Type of the key</typeparam>
-    /// <typeparam name="TValue">Type of the value</typeparam>
-    /// <returns>Value if found, default if can not found.</returns>
-    public static TValue GetOrAdd<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, Func<TKey, TValue> factory)
+    /// <param name="dictionary"></param>
+    /// <param name="key"></param>
+    /// <param name="valueFactory">如果在字典中找不到值，则用于创建该值的工厂方法</param>
+    /// <returns>存在直接返回，不存在则新增并返回factory value</returns>
+    public static TValue GetOrAdd<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, Func<TKey, TValue> valueFactory)
     {
         if (dictionary.TryGetValue(key, out var obj))
         {
             return obj;
         }
 
-        return dictionary[key] = factory(key);
+        return dictionary[key] = valueFactory(key);
+    }
+    
+    /// <summary>
+    /// 尝试添加项到集合，项不存在则成功添加并返回true，否则返回false
+    /// </summary>
+    /// <param name="dictionary"></param>
+    /// <param name="key"></param>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static bool TryAdd<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, TValue value)
+    {
+        if (dictionary.ContainsKey(key))
+        {
+            return false;
+        }
+        dictionary[key] = value;
+        return true;
     }
 }

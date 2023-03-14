@@ -11,6 +11,11 @@ namespace Fake.Localization;
 public interface ILocalizedStringContainer
 {
     /// <summary>
+    /// 路径
+    /// </summary>
+    string Path { get; }
+    
+    /// <summary>
     /// 文化
     /// </summary>
     string CultureName { get; }
@@ -21,7 +26,7 @@ public interface ILocalizedStringContainer
     /// <param name="name"></param>
     /// <returns></returns>
     [CanBeNull]
-    LocalizedString GetOrDefault(string name);
+    LocalizedString GetLocalizedStringOrDefault(string name);
 
     /// <summary>
     /// 填充字典

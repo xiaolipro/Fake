@@ -6,15 +6,17 @@ namespace Fake.Localization;
 public class SimpleLocalizedStringContainer : ILocalizedStringContainer
 {
     private readonly Dictionary<string, LocalizedString> _dictionary;
+    public string Path { get; }
     public string CultureName { get; }
 
-    public SimpleLocalizedStringContainer(string cultureName, Dictionary<string, LocalizedString> dictionary)
+    public SimpleLocalizedStringContainer(string path, string cultureName, Dictionary<string, LocalizedString> dictionary)
     {
         _dictionary = dictionary;
+        Path = path;
         CultureName = cultureName;
     }
 
-    public LocalizedString GetOrDefault(string name)
+    public LocalizedString GetLocalizedStringOrDefault(string name)
     {
         return _dictionary.GetOrDefault(name);
     }

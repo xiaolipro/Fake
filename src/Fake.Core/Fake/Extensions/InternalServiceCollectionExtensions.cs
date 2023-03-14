@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using Fake.DependencyInjection;
 using Fake.Logging;
 using Fake.Modularity;
 using Fake.Reflection;
