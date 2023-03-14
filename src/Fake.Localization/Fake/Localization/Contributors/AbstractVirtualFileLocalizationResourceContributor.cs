@@ -94,7 +94,7 @@ public abstract class AbstractVirtualFileLocalizationResourceContributor : ILoca
 
             if (_localizedStringContainers.ContainsKey(container.CultureName))
             {
-                throw new FakeException($"已经存在Culture：{container.CultureName}的本地化文件 {container.Path}");
+                throw new FakeException($"已经存在Culture为：{container.CultureName}的本地化文件 {container.Path}");
             }
             _localizedStringContainers[container.CultureName] = container;
         }

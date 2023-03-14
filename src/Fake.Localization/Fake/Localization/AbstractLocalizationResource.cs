@@ -10,6 +10,9 @@ public abstract class AbstractLocalizationResource
     [CanBeNull]
     public string DefaultCultureName { get; set; }
     public List<string> BaseResourceNames { get; }
+    
+    [NotNull]
+    public LocalizationResourceContributorList Contributors { get; }
     public AbstractLocalizationResource(
         [NotNull] string resourceName,
         [CanBeNull] string defaultCultureName = null)

@@ -6,9 +6,9 @@ using JetBrains.Annotations;
 
 namespace Fake.Localization;
 
-public class LocalizationResource:AbstractLocalizationResource
-{[NotNull]
-    public Type ResourceType { get; }
+public class LocalizationResource : AbstractLocalizationResource
+{
+    [NotNull] public Type ResourceType { get; }
 
     public LocalizationResource(
         [NotNull] Type resourceType,
@@ -21,7 +21,7 @@ public class LocalizationResource:AbstractLocalizationResource
         ResourceType = resourceType;
         AddBaseResourceTypes();
     }
-    
+
     protected virtual void AddBaseResourceTypes()
     {
         var descriptors = ResourceType
