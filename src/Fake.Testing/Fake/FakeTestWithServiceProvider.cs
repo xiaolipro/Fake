@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Fake;
 
-public abstract class FakeTestBase
+public abstract class FakeTestWithServiceProvider
 {
     protected IServiceProvider ServiceProvider { get; set; }
 

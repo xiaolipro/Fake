@@ -6,11 +6,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 using Xunit;
 
-public class UnitOfWorkActionTests : FakeModuleTestBase<FakeUnitOfWorkModule>
+public class UnitOfWorkAction_Tests : FakeIntegrationTest<FakeUnitOfWorkModule>
 {
     private readonly IUnitOfWorkManager _unitOfWorkManager;
 
-    public UnitOfWorkActionTests()
+    public UnitOfWorkAction_Tests()
     {
         _unitOfWorkManager = ServiceProvider.GetRequiredService<IUnitOfWorkManager>();
     }

@@ -1,5 +1,7 @@
 namespace Fake.Modularity;
 
+
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
 public class DependsOnAttribute : Attribute, IDependsOnProvider
 {
     [NotNull]

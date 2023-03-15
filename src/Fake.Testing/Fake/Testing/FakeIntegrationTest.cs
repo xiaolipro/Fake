@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Fake.Testing;
 
-public abstract class FakeModuleTestBase<TStartupModule> : FakeTestBase, IDisposable
+public abstract class FakeIntegrationTest<TStartupModule> : FakeTestWithServiceProvider, IDisposable
     where TStartupModule : IFakeModule
 {
     protected IFakeApplication Application { get; set; }
@@ -14,7 +14,7 @@ public abstract class FakeModuleTestBase<TStartupModule> : FakeTestBase, IDispos
     protected IServiceScope TestServiceScope { get; }
 
 
-    protected FakeModuleTestBase()
+    protected FakeIntegrationTest()
     {
         var services = CreateServiceCollection();
         

@@ -19,7 +19,7 @@ public class DefaultAuthorizationExceptionHandler:IAuthorizationExceptionHandler
         AuthenticationScheme scheme = null;
         var isAuthenticated = httpContext.User.Identity?.IsAuthenticated ?? false;
         
-        if (handlerOptions.AuthenticationScheme.NotNullOrWhiteSpace())
+        if (handlerOptions.AuthenticationScheme.NotBeNullOrWhiteSpace())
         {
             scheme = await authenticationSchemeProvider.GetSchemeAsync(handlerOptions.AuthenticationScheme);
             

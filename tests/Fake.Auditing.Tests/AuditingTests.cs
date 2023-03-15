@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using NSubstitute;
 using Xunit;
 
-public class AuditingTests : FakeAuditingTestBase
+public class AuditingTests : FakeAuditingTest
 {
     protected IAuditingStore AuditingStore;
 

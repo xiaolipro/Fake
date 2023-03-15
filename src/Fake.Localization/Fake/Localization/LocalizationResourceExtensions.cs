@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Fake.Localization.Contributors;
 using JetBrains.Annotations;
 
 namespace Fake.Localization;
@@ -22,13 +23,15 @@ public static class LocalizationResourceExtensions
         return localizationResource;
     }
 
-    public static TLocalizationResource AddJsonFile<TLocalizationResource>(
+    public static TLocalizationResource AddVirtualJson<TLocalizationResource>(
         [NotNull] this TLocalizationResource localizationResource, [NotNull] string virtualPath)
         where TLocalizationResource : AbstractLocalizationResource
     {
         ThrowHelper.ThrowIfNull(localizationResource, nameof(localizationResource));
         ThrowHelper.ThrowIfNull(virtualPath, nameof(virtualPath));
         
-        localizationResource
+        localizationResource.Contributors.Add(new JsonVirtualLocalizationResourceContributor(virtualPath));
+
+        return localizationResource;
     }
 }

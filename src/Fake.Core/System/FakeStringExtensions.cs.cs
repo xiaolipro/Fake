@@ -12,12 +12,12 @@ public static class FakeStringExtensions
     {
         return string.IsNullOrEmpty(str);
     }
-    
+
     /// <summary>
     /// 表示此字符串 不是 null或空字符串。
     /// </summary>
     [ContractAnnotation("str:null => true")]
-    public static bool NotNullOrEmpty(this string str)
+    public static bool NotBeNullOrEmpty(this string str)
     {
         return string.IsNullOrEmpty(str);
     }
@@ -30,12 +30,12 @@ public static class FakeStringExtensions
     {
         return string.IsNullOrWhiteSpace(str);
     }
-    
+
     /// <summary>
     /// 表示此字符串 不是 null或空字符串或空白格。
     /// </summary>
     [ContractAnnotation("str:null => false")]
-    public static bool NotNullOrWhiteSpace(this string str)
+    public static bool NotBeNullOrWhiteSpace(this string str)
     {
         return string.IsNullOrWhiteSpace(str);
     }
@@ -61,15 +61,26 @@ public static class FakeStringExtensions
     /// <param name="comparisonType"></param>
     /// <returns>追加后的结果</returns>
     /// <exception cref="ArgumentNullException">str is null</exception>
-    public static string EndsWithOrAppend([NotNull]this string str, string end,
+    public static string EndsWithOrAppend([NotNull] this string str, [NotNull] string end,
         StringComparison comparisonType = StringComparison.Ordinal)
     {
         ThrowHelper.ThrowIfNull(str, nameof(str));
+        ThrowHelper.ThrowIfNull(end, nameof(end));
+
         if (str.EndsWith(end, comparisonType)) return str;
 
         return str + end;
     }
-    
+
+    public static bool NotBeEndsWith([NotNull] this string str, [NotNull] string start,
+        StringComparison comparisonType = StringComparison.Ordinal)
+    {
+        ThrowHelper.ThrowIfNull(str, nameof(str));
+        ThrowHelper.ThrowIfNull(start, nameof(start));
+
+        return !str.EndsWith(start, comparisonType);
+    }
+
     /// <summary>
     /// 如果str不是以start开始，则在句首追加start
     /// </summary>
@@ -78,12 +89,24 @@ public static class FakeStringExtensions
     /// <param name="comparisonType"></param>
     /// <returns>追加后的结果</returns>
     /// <exception cref="ArgumentNullException">str is null</exception>
-    public static string StartsWithOrAppend([NotNull]this string str, string start,
+    public static string StartsWithOrAppend([NotNull] this string str, [NotNull] string start,
         StringComparison comparisonType = StringComparison.Ordinal)
     {
         ThrowHelper.ThrowIfNull(str, nameof(str));
+        ThrowHelper.ThrowIfNull(start, nameof(start));
+
         if (str.StartsWith(start, comparisonType)) return str;
 
         return start + str;
+    }
+
+
+    public static bool NotBeStartsWith([NotNull] this string str, [NotNull] string start,
+        StringComparison comparisonType = StringComparison.Ordinal)
+    {
+        ThrowHelper.ThrowIfNull(str, nameof(str));
+        ThrowHelper.ThrowIfNull(start, nameof(start));
+
+        return !str.StartsWith(start, comparisonType);
     }
 }

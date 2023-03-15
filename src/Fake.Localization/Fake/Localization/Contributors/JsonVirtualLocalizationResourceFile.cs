@@ -2,12 +2,12 @@ using System.Collections.Generic;
 
 namespace Fake.Localization.Contributors;
 
-public class JsonLocalizationResourceFile
+public class JsonVirtualLocalizationResourceFile
 {
     public string Culture { get; set; }
     public Dictionary<string, string> Texts { get; set; }
 
-    public JsonLocalizationResourceFile()
+    public JsonVirtualLocalizationResourceFile()
     {
         Texts = new Dictionary<string, string>();
     }

@@ -28,10 +28,10 @@ public static class FakeDictionaryExtensions
     }
     
     /// <summary>
-    /// 根据key获取值，不存在则新增，值为factory
+    /// 根据给定key获取值，key不存在则新增，值由factory生成
     /// </summary>
     /// <param name="dictionary"></param>
-    /// <param name="key"></param>
+    /// <param name="key">给定key</param>
     /// <param name="valueFactory">如果在字典中找不到值，则用于创建该值的工厂方法</param>
     /// <returns>存在直接返回，不存在则新增并返回factory value</returns>
     public static TValue GetOrAdd<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, Func<TKey, TValue> valueFactory)
@@ -45,7 +45,7 @@ public static class FakeDictionaryExtensions
     }
     
     /// <summary>
-    /// 尝试添加项到集合，项不存在则成功添加并返回true，否则返回false
+    /// 尝试添加项到集合，项不存在则成功添加并返回true，否则直接返回false
     /// </summary>
     /// <param name="dictionary"></param>
     /// <param name="key"></param>

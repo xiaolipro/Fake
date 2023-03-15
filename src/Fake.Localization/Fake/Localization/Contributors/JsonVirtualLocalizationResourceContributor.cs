@@ -8,9 +8,9 @@ using Microsoft.Extensions.Localization;
 
 namespace Fake.Localization.Contributors;
 
-public class JsonLocalizationResourceContributor:AbstractVirtualFileLocalizationResourceContributor
+public class JsonVirtualLocalizationResourceContributor:AbstractVirtualFileLocalizationResourceContributor
 {
-    public JsonLocalizationResourceContributor(VirtualFileProvider fileProvider, string virtualPath) : base(fileProvider, virtualPath)
+    public JsonVirtualLocalizationResourceContributor(string virtualPath) : base(virtualPath)
     {
     }
 
@@ -29,25 +29,25 @@ public class JsonLocalizationResourceContributor:AbstractVirtualFileLocalization
 
     protected override ILocalizedStringContainer CreateLocalizedStringContainer(string content, string path)
     {
-        JsonLocalizationResourceFile jsonFile;
+        JsonVirtualLocalizationResourceFile jsonVirtualFile;
         try
         {
-            jsonFile = JsonSerializer.Deserialize<JsonLocalizationResourceFile>(content, DeserializeOptions);
+            jsonVirtualFile = JsonSerializer.Deserialize<JsonVirtualLocalizationResourceFile>(content, DeserializeOptions);
         }
         catch (JsonException ex)
         {
             throw new FakeException(path + "无法解析json字符串。" + ex.Message);
         }
 
-        Debug.Assert(jsonFile != null, nameof(jsonFile) + " != null");
-        var culture = jsonFile.Culture;
+        Debug.Assert(jsonVirtualFile != null, nameof(jsonVirtualFile) + " != null");
+        var culture = jsonVirtualFile.Culture;
         if (culture.IsNullOrWhiteSpace())
         {
             throw new FakeException(path + "本地化json文件Culture不能空");
         }
 
         var dic = new Dictionary<string, LocalizedString>();
-        foreach (var item in jsonFile.Texts)
+        foreach (var item in jsonVirtualFile.Texts)
         {
             if (item.Key.IsNullOrWhiteSpace())
             {

@@ -11,16 +11,15 @@ namespace Fake.Localization.Contributors;
 public abstract class AbstractVirtualFileLocalizationResourceContributor : ILocalizationResourceContributor
 {
     private readonly string _virtualPath;
-    private VirtualFileProvider _virtualFileProvider;
+    public VirtualFileProvider VirtualFileProvider { get; set; }
 
     // culture : localized string container
     private volatile Dictionary<string, ILocalizedStringContainer> _localizedStringContainers;
     private bool _subscribedForChanges;
     private readonly object _syncObj = new();
 
-    public AbstractVirtualFileLocalizationResourceContributor(VirtualFileProvider fileProvider, string virtualPath)
+    public AbstractVirtualFileLocalizationResourceContributor(string virtualPath)
     {
-        _virtualFileProvider = fileProvider;
         _virtualPath = virtualPath;
     }
 
@@ -29,6 +28,13 @@ public abstract class AbstractVirtualFileLocalizationResourceContributor : ILoca
         return GetLocalizedStringContainers().GetOrDefault(cultureName)?.GetLocalizedStringOrDefault(name);
     }
 
+    public void Fill(string cultureName, Dictionary<string, LocalizedString> dictionary)
+    {
+        var localizedStringContainer = GetLocalizedStringContainers().GetOrDefault(cultureName);
+
+        localizedStringContainer?.Fill(dictionary);
+    }
+    
     public Task FillAsync(string cultureName, Dictionary<string, LocalizedString> dictionary)
     {
         var localizedStringContainer = GetLocalizedStringContainers().GetOrDefault(cultureName);
@@ -66,7 +72,7 @@ public abstract class AbstractVirtualFileLocalizationResourceContributor : ILoca
             _localizedStringContainers = null;
         }
 
-        ChangeToken.OnChange(() => _virtualFileProvider.Watch(filter), ChangeTokenConsumer);
+        ChangeToken.OnChange(() => VirtualFileProvider.Watch(filter), ChangeTokenConsumer);
 
         _subscribedForChanges = true;
 
@@ -78,7 +84,7 @@ public abstract class AbstractVirtualFileLocalizationResourceContributor : ILoca
     {
         var dic = new Dictionary<string, ILocalizedStringContainer>();
 
-        foreach (var file in _virtualFileProvider.GetDirectoryContents(_virtualPath))
+        foreach (var file in VirtualFileProvider.GetDirectoryContents(_virtualPath))
         {
             if (file.IsDirectory) continue;
 

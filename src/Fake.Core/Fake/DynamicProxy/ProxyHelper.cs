@@ -27,7 +27,7 @@ public static class ProxyHelper
 
     
     /// <summary>
-    /// 如果是代理对象则返回动态代理目标对象，否则直接返回对象，它支持Castle动态代理
+    /// 如果是代理对象则返回动态代理目标对象，否则直接返回对象，支持Castle动态代理
     /// </summary>
     /// <param name="obj"></param>
     /// <returns></returns>

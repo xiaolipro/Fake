@@ -47,7 +47,7 @@ public class FakeEmbeddedFileProvider : AbstractInMemoryFileProvider
 
         foreach (var resourcePath in Assembly.GetManifestResourceNames())
         {
-            if (BaseNamespace.NotNullOrWhiteSpace() && !resourcePath.StartsWith(BaseNamespace))
+            if (BaseNamespace.NotBeNullOrWhiteSpace() && resourcePath.NotBeStartsWith(BaseNamespace))
             {
                 continue;
             }
