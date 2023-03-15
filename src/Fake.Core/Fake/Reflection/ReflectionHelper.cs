@@ -9,6 +9,13 @@ public static class ReflectionHelper
     private static readonly ConcurrentDictionary<string, PropertyInfo> CachedPropertiesDic =
         new ConcurrentDictionary<string, PropertyInfo>();
 
+    /// <summary>
+    /// 尝试为给定对象的属性赋值
+    /// </summary>
+    /// <param name="obj">给定对象</param>
+    /// <param name="propertySelector">属性选择器</param>
+    /// <param name="valueFactory">值工厂</param>
+    /// <param name="ignoreAttributeTypes">忽略特性，如果属性标记了，则忽略赋值</param>
     public static void TrySetProperty<TObject, TValue>(TObject obj, Expression<Func<TObject, TValue>> propertySelector,
         Func<TValue> valueFactory, params Type[] ignoreAttributeTypes)
     {
@@ -61,4 +68,18 @@ public static class ReflectionHelper
         return memberInfo.DeclaringType?.GetType().GetCustomAttributes(typeof(TAttribute), inherit)
             .FirstOrDefault() as TAttribute ?? defaultValue;
     }
+
+
+    /// <summary>
+    /// 获取类型实例
+    /// </summary>
+    /// <param name="type"></param>
+    /// <typeparam name="TInstance"></typeparam>
+    /// <returns></returns>
+    public static TInstance CreateInstance<TInstance>(Type type) where TInstance: class
+    {
+        //TODO: 可以优化
+        return Activator.CreateInstance(type) as TInstance;
+    }
+    
 }

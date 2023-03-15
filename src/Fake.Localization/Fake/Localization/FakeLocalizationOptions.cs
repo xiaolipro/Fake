@@ -1,4 +1,7 @@
-﻿namespace Fake.Localization;
+﻿using Fake.Collections;
+using Fake.Localization.Contributors;
+
+namespace Fake.Localization;
 
 public class FakeLocalizationOptions
 {
@@ -6,6 +9,11 @@ public class FakeLocalizationOptions
     /// 本地化资源字典
     /// </summary>
     public LocalizationResourceDictionary Resources { get; }
+    
+    /// <summary>
+    /// 全局贡献者
+    /// </summary>
+    public ITypeList<ILocalizationResourceContributor> GlobalContributors { get; }
 
     /// <summary>
     /// 默认culture

@@ -2,20 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Fake.Localization.Contributors;
+using Fake.Reflection;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 
 namespace Fake.Localization;
 
-/*
- * 工厂模式
- * 巧妙用到了锁存
- */
 public class FakeStringLocalizerFactory : IStringLocalizerFactory
 {
     private readonly ResourceManagerStringLocalizerFactory _innerFactory;
     private readonly FakeLocalizationOptions _options;
     private readonly Dictionary<string, IStringLocalizer> _localizerCache;
+    // 工厂模式，巧用锁存
     private readonly SemaphoreSlim _semaphore;
 
     public FakeStringLocalizerFactory(IOptions<FakeLocalizationOptions> options,
@@ -50,7 +49,7 @@ public class FakeStringLocalizerFactory : IStringLocalizerFactory
         {
             return _localizerCache.GetOrAdd(resourceResourceName, _ => CreateStringLocalizer(resource));
         }
-        
+
         using (_semaphore.Begin())
         {
             // DCL
@@ -58,13 +57,18 @@ public class FakeStringLocalizerFactory : IStringLocalizerFactory
             {
                 return localizer;
             }
-            
+
             return _localizerCache.GetOrAdd(resourceResourceName, _ => CreateStringLocalizer(resource));
         }
     }
 
     private IStringLocalizer CreateStringLocalizer(AbstractLocalizationResource resource)
     {
+        foreach (var contributor in _options.GlobalContributors)
+        {
+            resource.Contributors.Add(ReflectionHelper.CreateInstance<ILocalizationResourceContributor>(contributor));
+        }
+        
         var inheritsLocalizer = resource.BaseResourceNames
             .Select(baseResourceName =>
             {
@@ -74,6 +78,7 @@ public class FakeStringLocalizerFactory : IStringLocalizerFactory
             })
             .Where(x => x != null)
             .ToList();
+        
         return new InMemoryStringLocalizer(resource, inheritsLocalizer, _options);
     }
 
