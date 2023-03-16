@@ -7,13 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <EmbeddedResource Include="Localization\Resources\**\*.json" />
-    </ItemGroup>
-    
-    <ItemGroup>
-        <ProjectReference Include="..\..\src\Fake.Localization\Fake.Localization.csproj" />
+        <ProjectReference Include="..\..\src\Fake.VirtualFileSystem\Fake.VirtualFileSystem.csproj" />
         <ProjectReference Include="..\AFakeTestEntry\AFakeTestEntry.csproj" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(MicrosoftNETTestSdkPackageVersion)" />
     </ItemGroup>
 
+    <ItemGroup>
+        <EmbeddedResource Include="Assets\**\*" />
+    </ItemGroup>
 </Project>

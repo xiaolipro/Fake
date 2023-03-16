@@ -3,9 +3,9 @@ using System.IO;
 using System.Reflection;
 using Microsoft.Extensions.FileProviders;
 
-namespace Fake.VirtualFileSystem.FileInfo;
+namespace Fake.VirtualFileSystem.Embedded;
 
-public class FakeEmbeddedResourceFileInfo: IFileInfo
+public class FakeEmbeddedFileInfo: IFileInfo
 {
     /// <summary>
     /// 虚拟路径
@@ -35,7 +35,7 @@ public class FakeEmbeddedResourceFileInfo: IFileInfo
     private readonly Assembly _assembly;
     private readonly string _resourcePath;
     
-    public FakeEmbeddedResourceFileInfo(
+    public FakeEmbeddedFileInfo(
         Assembly assembly,
         string resourcePath,
         string virtualPath,
@@ -65,6 +65,6 @@ public class FakeEmbeddedResourceFileInfo: IFileInfo
 
     public override string ToString()
     {
-        return $"[{nameof(FakeEmbeddedResourceFileInfo)}] {Name} ({this.VirtualPath})";
+        return $"[{nameof(FakeEmbeddedFileInfo)}] {Name} ({this.VirtualPath})";
     }
 }

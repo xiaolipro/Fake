@@ -37,7 +37,7 @@ public static class FakeStringExtensions
     [ContractAnnotation("str:null => false")]
     public static bool NotBeNullOrWhiteSpace(this string str)
     {
-        return string.IsNullOrWhiteSpace(str);
+        return !string.IsNullOrWhiteSpace(str);
     }
 
     /// <summary>

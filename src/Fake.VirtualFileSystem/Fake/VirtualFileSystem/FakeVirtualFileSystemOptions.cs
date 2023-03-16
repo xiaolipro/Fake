@@ -2,10 +2,10 @@
 
 public class FakeVirtualFileSystemOptions
 {
-    public VirtualFileProviderSet FileSets { get; }
+    public VirtualFileProviderList FileProviders { get; }
 
     public FakeVirtualFileSystemOptions()
     {
-        FileSets = new VirtualFileProviderSet();
+        FileProviders = new VirtualFileProviderList();
     }
 }

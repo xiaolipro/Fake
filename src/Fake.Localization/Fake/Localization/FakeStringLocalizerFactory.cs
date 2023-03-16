@@ -12,15 +12,19 @@ namespace Fake.Localization;
 public class FakeStringLocalizerFactory : IStringLocalizerFactory
 {
     private readonly ResourceManagerStringLocalizerFactory _innerFactory;
+    private readonly IServiceProvider _serviceProvider;
     private readonly FakeLocalizationOptions _options;
+
     private readonly Dictionary<string, IStringLocalizer> _localizerCache;
+
     // 工厂模式，巧用锁存
     private readonly SemaphoreSlim _semaphore;
 
     public FakeStringLocalizerFactory(IOptions<FakeLocalizationOptions> options,
-        ResourceManagerStringLocalizerFactory innerFactory)
+        ResourceManagerStringLocalizerFactory innerFactory, IServiceProvider serviceProvider)
     {
         _innerFactory = innerFactory;
+        _serviceProvider = serviceProvider;
         _options = options.Value;
         _localizerCache = new Dictionary<string, IStringLocalizer>();
         _semaphore = new SemaphoreSlim(1, 1);
@@ -35,6 +39,10 @@ public class FakeStringLocalizerFactory : IStringLocalizerFactory
         return CreateStringLocalizer(resource, true);
     }
 
+    public IStringLocalizer Create(string baseName, string location)
+    {
+        return _innerFactory.Create(baseName, location);
+    }
 
     private IStringLocalizer CreateStringLocalizer(AbstractLocalizationResource resource, bool latched)
     {
@@ -68,7 +76,14 @@ public class FakeStringLocalizerFactory : IStringLocalizerFactory
         {
             resource.Contributors.Add(ReflectionHelper.CreateInstance<ILocalizationResourceContributor>(contributor));
         }
-        
+
+        var context = new LocalizationResourceInitializationContext(resource, _serviceProvider);
+
+        foreach (var contributor in resource.Contributors)
+        {
+            contributor.Initialize(context);
+        }
+
         var inheritsLocalizer = resource.BaseResourceNames
             .Select(baseResourceName =>
             {
@@ -78,12 +93,7 @@ public class FakeStringLocalizerFactory : IStringLocalizerFactory
             })
             .Where(x => x != null)
             .ToList();
-        
-        return new InMemoryStringLocalizer(resource, inheritsLocalizer, _options);
-    }
 
-    public IStringLocalizer Create(string baseName, string location)
-    {
-        throw new NotImplementedException();
+        return new InMemoryStringLocalizer(resource, inheritsLocalizer, _options);
     }
 }

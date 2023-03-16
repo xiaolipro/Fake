@@ -12,6 +12,10 @@ public abstract class AbstractLocalizationResource
     public string ResourceName { get; }
     [CanBeNull]
     public string DefaultCultureName { get; set; }
+    
+    /// <summary>
+    /// 继承的资源
+    /// </summary>
     public List<string> BaseResourceNames { get; }
     
     [NotNull]

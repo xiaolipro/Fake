@@ -51,11 +51,8 @@ public class InMemoryStringLocalizer : IFakeStringLocalizer
 
         if (_options.TryGetFromDefaultCulture)
         {
-            if (_resource.DefaultCultureName.NotBeNullOrWhiteSpace())
-            {
-                localizedString = _resource.GetOrNull(_resource.DefaultCultureName, name);
-                if (localizedString != null) return localizedString;
-            }
+            localizedString = _resource.GetOrNull(_resource.DefaultCultureName?? _options.DefaultCulture, name);
+            if (localizedString != null) return localizedString;
         }
 
         
@@ -113,6 +110,7 @@ public class InMemoryStringLocalizer : IFakeStringLocalizer
             }
         }
         
+        // 填充自己的strings
         _resource.Fill(cultureName, allStrings);
 
         return allStrings.Values.ToImmutableList();

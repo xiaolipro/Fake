@@ -6,35 +6,31 @@ using Microsoft.Extensions.FileProviders;
 
 namespace Fake.VirtualFileSystem;
 
-public class VirtualFileProviderSet
+public class VirtualFileProviderList : List<IFileProvider>
 {
     private const string ResourceName = "Microsoft.Extensions.FileProviders.Embedded.Manifest.xml";
-    public List<IFileProvider> FileProviders { get; }
 
-    public VirtualFileProviderSet()
-    {
-        FileProviders = new List<IFileProvider>();
-    }
-    
-    public void AddEmbedded<TModule>([CanBeNull] string baseNamespace = null,
-        [CanBeNull] string root = null)
+    /// <summary>
+    /// 添加程序集中指定根目录下的所有嵌入资源。（构建类型是：EmbeddedResource）
+    /// </summary>
+    /// <param name="root">虚拟根目录</param>
+    /// <typeparam name="TModule"></typeparam>
+    public void AddEmbedded<TModule>([CanBeNull] string root = null)
     {
         var assembly = typeof(TModule).Assembly;
-        
+
         var fileProvider = CreateFileProvider(
             assembly,
-            baseNamespace,
             root
         );
-        
-        FileProviders.Add(fileProvider);
+
+        Add(fileProvider);
     }
 
-    private IFileProvider CreateFileProvider([NotNull] Assembly assembly, [CanBeNull] string baseNamespace,
-        [CanBeNull] string root)
+    private IFileProvider CreateFileProvider([NotNull] Assembly assembly, [CanBeNull] string root)
     {
         ThrowHelper.ThrowIfNull(assembly, nameof(assembly));
-        
+
         // 有关给定资源如何持久化的信息
         var info = assembly.GetManifestResourceInfo(ResourceName);
 
@@ -42,7 +38,7 @@ public class VirtualFileProviderSet
             return root == null
                 ? new ManifestEmbeddedFileProvider(assembly)
                 : new ManifestEmbeddedFileProvider(assembly, root);
-        
-        return new FakeEmbeddedFileProvider(assembly, baseNamespace);
+
+        return new FakeEmbeddedFileProvider(assembly, root);
     }
 }

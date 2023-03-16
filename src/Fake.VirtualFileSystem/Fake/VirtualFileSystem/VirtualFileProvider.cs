@@ -33,15 +33,15 @@ public class VirtualFileProvider: IFileProvider
 
     private CompositeFileProvider CreateCompositeFileProvider(DynamicFileProvider dynamicFileProvider)
     {
-        var fileProviders = new List<IFileProvider>();
+        var allVirtualFileProviders = new List<IFileProvider>();
         
-        fileProviders.Add(dynamicFileProvider);
+        allVirtualFileProviders.Add(dynamicFileProvider);
 
-        foreach (var fileSet in _options.FileSets.FileProviders)
+        foreach (var fileSet in _options.FileProviders)
         {
-            fileProviders.Add(fileSet);
+            allVirtualFileProviders.Add(fileSet);
         }
 
-        return new CompositeFileProvider(fileProviders);
+        return new CompositeFileProvider(allVirtualFileProviders);
     }
 }

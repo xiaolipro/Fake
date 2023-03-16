@@ -14,4 +14,8 @@
         <PackageReference Include="xunit.runner.visualstudio" Version="$(xUnitRunnerVisualStudioPackageVersion)" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\src\Fake.Testing\Fake.Testing.csproj" />
+    </ItemGroup>
+
 </Project>

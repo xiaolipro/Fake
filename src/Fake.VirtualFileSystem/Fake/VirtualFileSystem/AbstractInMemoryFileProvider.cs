@@ -13,7 +13,7 @@ public abstract class AbstractInMemoryFileProvider: IFileProvider
     {
         if (subpath == null) return new NotFoundFileInfo("");
 
-        var file = Files.GetOrDefault(subpath);
+        var file = Files.GetOrDefault(subpath.Trim('/'));
 
         if (file == null) return new NotFoundFileInfo(subpath);
 
@@ -30,21 +30,13 @@ public abstract class AbstractInMemoryFileProvider: IFileProvider
 
         var files = new List<IFileInfo>();
 
-        var directoryPath = subpath.EndsWithOrAppend("/");
+        var directoryPath = subpath.Trim('/');
 
         foreach (var fileInfo in Files.Values)
         {
             var fullPath = fileInfo.GetVirtualOrPhysicalPathOrNull();
             
             if (fullPath == null || !fullPath.StartsWith(directoryPath))
-            {
-                continue;
-            }
-            
-            var relativePath = fullPath.Substring(directoryPath.Length);
-            
-            // 跳过目录
-            if (relativePath.Contains("/"))
             {
                 continue;
             }

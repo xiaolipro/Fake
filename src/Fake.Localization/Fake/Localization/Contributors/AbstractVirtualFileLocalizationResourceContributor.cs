@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Fake.VirtualFileSystem;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Primitives;
@@ -11,7 +12,7 @@ namespace Fake.Localization.Contributors;
 public abstract class AbstractVirtualFileLocalizationResourceContributor : ILocalizationResourceContributor
 {
     private readonly string _virtualPath;
-    public VirtualFileProvider VirtualFileProvider { get; set; }
+    private VirtualFileProvider _virtualFileProvider;
 
     // culture : localized string container
     private volatile Dictionary<string, ILocalizedStringContainer> _localizedStringContainers;
@@ -23,19 +24,24 @@ public abstract class AbstractVirtualFileLocalizationResourceContributor : ILoca
         _virtualPath = virtualPath;
     }
 
-    public LocalizedString GetOrNull(string cultureName, string name)
+    public virtual void Initialize(LocalizationResourceInitializationContext context)
+    {
+        _virtualFileProvider = context.ServiceProvider.GetRequiredService<VirtualFileProvider>();
+    }
+
+    public virtual LocalizedString GetOrNull(string cultureName, string name)
     {
         return GetLocalizedStringContainers().GetOrDefault(cultureName)?.GetLocalizedStringOrDefault(name);
     }
 
-    public void Fill(string cultureName, Dictionary<string, LocalizedString> dictionary)
+    public virtual void Fill(string cultureName, Dictionary<string, LocalizedString> dictionary)
     {
         var localizedStringContainer = GetLocalizedStringContainers().GetOrDefault(cultureName);
 
         localizedStringContainer?.Fill(dictionary);
     }
     
-    public Task FillAsync(string cultureName, Dictionary<string, LocalizedString> dictionary)
+    public virtual Task FillAsync(string cultureName, Dictionary<string, LocalizedString> dictionary)
     {
         var localizedStringContainer = GetLocalizedStringContainers().GetOrDefault(cultureName);
 
@@ -44,7 +50,7 @@ public abstract class AbstractVirtualFileLocalizationResourceContributor : ILoca
         return Task.CompletedTask;
     }
 
-    public Task<IEnumerable<string>> GetSupportedCulturesAsync()
+    public virtual Task<IEnumerable<string>> GetSupportedCulturesAsync()
     {
         var cultures = GetLocalizedStringContainers().Keys;
 
@@ -72,7 +78,7 @@ public abstract class AbstractVirtualFileLocalizationResourceContributor : ILoca
             _localizedStringContainers = null;
         }
 
-        ChangeToken.OnChange(() => VirtualFileProvider.Watch(filter), ChangeTokenConsumer);
+        ChangeToken.OnChange(() => _virtualFileProvider.Watch(filter), ChangeTokenConsumer);
 
         _subscribedForChanges = true;
 
@@ -82,9 +88,9 @@ public abstract class AbstractVirtualFileLocalizationResourceContributor : ILoca
 
     private Dictionary<string, ILocalizedStringContainer> CreateLocalizedStringContainers()
     {
-        var dic = new Dictionary<string, ILocalizedStringContainer>();
+        var _localizedStringContainers = new Dictionary<string, ILocalizedStringContainer>();
 
-        foreach (var file in VirtualFileProvider.GetDirectoryContents(_virtualPath))
+        foreach (var file in _virtualFileProvider.GetDirectoryContents(_virtualPath))
         {
             if (file.IsDirectory) continue;
 
@@ -105,7 +111,7 @@ public abstract class AbstractVirtualFileLocalizationResourceContributor : ILoca
             _localizedStringContainers[container.CultureName] = container;
         }
 
-        return dic;
+        return _localizedStringContainers;
     }
 
     /// <summary>

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Fake.VirtualFileSystem.FileInfo;
 using JetBrains.Annotations;
 using Microsoft.Extensions.FileProviders;
 
@@ -11,23 +10,19 @@ namespace Fake.VirtualFileSystem.Embedded;
 
 public class FakeEmbeddedFileProvider : AbstractInMemoryFileProvider
 {
-    [NotNull]
-    public Assembly Assembly { get; }
+    [NotNull] protected virtual Assembly Assembly { get; }
 
-    [CanBeNull]
-    public string BaseNamespace { get; }
+    [CanBeNull] protected virtual string Root { get; }
     
     protected override IDictionary<string, IFileInfo> Files => _fileDic.Value;
     private readonly Lazy<Dictionary<string, IFileInfo>> _fileDic;
     
-    public FakeEmbeddedFileProvider(
-        [NotNull] Assembly assembly,
-        [CanBeNull] string baseNamespace = null)
+    public FakeEmbeddedFileProvider([NotNull] Assembly assembly, [CanBeNull] string root = null)
     {
         ThrowHelper.ThrowIfNull(assembly, nameof(assembly));
 
         Assembly = assembly;
-        BaseNamespace = baseNamespace;
+        Root = root?.Trim('/').Replace("/", ".");
 
         _fileDic = new Lazy<Dictionary<string, IFileInfo>>(
             () =>
@@ -41,25 +36,25 @@ public class FakeEmbeddedFileProvider : AbstractInMemoryFileProvider
     }
 
     
-    public void AddFiles(Dictionary<string, IFileInfo> fileDic)
+    public virtual void AddFiles(Dictionary<string, IFileInfo> fileDic)
     {
         var lastModificationTime = GetLastModificationTime();
 
         foreach (var resourcePath in Assembly.GetManifestResourceNames())
         {
-            if (BaseNamespace.NotBeNullOrWhiteSpace() && resourcePath.NotBeStartsWith(BaseNamespace))
+            if (Root.NotBeNullOrWhiteSpace() && !resourcePath.StartsWith(Root))
             {
                 continue;
             }
-
-            // 命名空间a.b.c->目录层级/a/b/c
-            var fullPath = ConvertToRelativePath(resourcePath).StartsWithOrAppend("/");
+            
+            // 资产名称a.b.c->目录层级/a/b/c
+            var fullPath = ConvertToRelativePath(resourcePath);
 
             // 添加虚拟目录
             AddVirtualDirectoriesRecursively(fileDic, fullPath.Substring(0, fullPath.LastIndexOf('/')), lastModificationTime);
 
             // 添加虚拟文件
-            fileDic[fullPath] = new FakeEmbeddedResourceFileInfo(
+            fileDic[fullPath] = new FakeEmbeddedFileInfo(
                 Assembly,
                 resourcePath,
                 fullPath,
@@ -91,17 +86,17 @@ public class FakeEmbeddedFileProvider : AbstractInMemoryFileProvider
         return lastModified;
     }
     
-    private string ConvertToRelativePath(string resourceName)
+    private string ConvertToRelativePath(string resourcePath)
     {
-        if (!BaseNamespace.IsNullOrEmpty())
+        if (Root.NotBeNullOrWhiteSpace())
         {
-            resourceName = resourceName.Substring(BaseNamespace.Length + 1);
+            resourcePath = resourcePath.Substring(Root.Length + 1);
         }
-
-        var pathParts = resourceName.Split('.');
+        
+        var pathParts = resourcePath.Split('.');
         if (pathParts.Length <= 2)
         {
-            return resourceName;
+            return resourcePath;
         }
 
         // a.b.c.txt => a/b/c.txt
@@ -117,7 +112,7 @@ public class FakeEmbeddedFileProvider : AbstractInMemoryFileProvider
             return;
         }
 
-        fileDic[directoryPath] = new VirtualDirectoryFileInfo(
+        fileDic[directoryPath] = new FakeEmbeddedDirectoryFileInfo(
             directoryPath,
             CalculateFileName(directoryPath),
             lastModificationTime

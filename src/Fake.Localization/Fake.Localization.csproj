@@ -10,12 +10,11 @@
     <ItemGroup>
         <ProjectReference Include="..\Fake.Core\Fake.Core.csproj" />
         <ProjectReference Include="..\Fake.VirtualFileSystem\Fake.VirtualFileSystem.csproj" />
-
         <PackageReference Include="Microsoft.Extensions.Localization" Version="$(MicrosoftPackageVersion)" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Fake\Localization\Resources" />
-    </ItemGroup> 
+        <EmbeddedResource Include="Fake\Localization\Resources\*" />
+    </ItemGroup>
 
 </Project>

@@ -33,6 +33,7 @@ public class FakeLocalizationOptions
 
     public FakeLocalizationOptions()
     {
+        GlobalContributors = new TypeList<ILocalizationResourceContributor>();
         Resources = new LocalizationResourceDictionary();
     }
 }

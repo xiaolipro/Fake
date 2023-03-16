@@ -2,9 +2,9 @@
 using System.IO;
 using Microsoft.Extensions.FileProviders;
 
-namespace Fake.VirtualFileSystem.FileInfo;
+namespace Fake.VirtualFileSystem.Embedded;
 
-public class VirtualDirectoryFileInfo: IFileInfo
+public class FakeEmbeddedDirectoryFileInfo: IFileInfo
 {
     public bool Exists => true;
 
@@ -18,7 +18,7 @@ public class VirtualDirectoryFileInfo: IFileInfo
 
     public bool IsDirectory => true;
 
-    public VirtualDirectoryFileInfo(string physicalPath, string name, DateTimeOffset lastModified)
+    public FakeEmbeddedDirectoryFileInfo(string physicalPath, string name, DateTimeOffset lastModified)
     {
         PhysicalPath = physicalPath;
         Name = name;
