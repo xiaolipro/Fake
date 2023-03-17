@@ -36,7 +36,13 @@ public abstract class AbstractInMemoryFileProvider: IFileProvider
         {
             var fullPath = fileInfo.GetVirtualOrPhysicalPathOrNull();
             
-            if (fullPath == null || !fullPath.StartsWith(directoryPath))
+            if (fullPath == null || !fullPath.StartsWith(directoryPath) || fullPath == directoryPath)
+            {
+                continue;
+            }
+
+            var relativePath = fullPath.Substring(directoryPath.Length + 1);
+            if (relativePath.Contains("/"))
             {
                 continue;
             }

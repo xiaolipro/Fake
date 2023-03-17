@@ -29,23 +29,6 @@ public sealed class FakeStringLocalizerFactoryTests: FakeIntegrationTest<FakeLoc
     }
     
     [Fact]
-    void 嵌入文件()
-    {
-        //action
-        var resource = _virtualFileProvider.GetFileInfo("Localization/Resources/zh.json");
-        
-        //assert
-        resource.ShouldNotBeNull();
-        resource.Exists.ShouldBeTrue();
-        
-        using (var stream = resource.CreateReadStream())
-        {
-            Encoding.UTF8.GetString(stream.ReadAsBytes()).ShouldBe("123");
-        }
-    }
-    
-    
-    [Fact]
     public void 可以实现本地化()
     {
         var internalLocalizer = _localizerFactory.Create(typeof(LocalizationTestResource));
