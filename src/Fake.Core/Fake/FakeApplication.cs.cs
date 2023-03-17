@@ -94,9 +94,9 @@ public class FakeApplication : IFakeApplication
         var assemblies = new HashSet<Assembly>();
         foreach (var module in Modules)
         {
-            if (module.Instance is FakeModule FakeModule)
+            if (module.Instance is FakeModule fakeModule)
             {
-                if (!FakeModule.SkipAutoServiceRegistration)
+                if (!fakeModule.SkipAutoServiceRegistration)
                 {
                     var assembly = module.Type.Assembly;
                     if (!assemblies.Contains(assembly))
