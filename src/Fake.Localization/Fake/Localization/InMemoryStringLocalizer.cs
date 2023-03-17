@@ -51,8 +51,12 @@ public class InMemoryStringLocalizer : IFakeStringLocalizer
 
         if (_options.TryGetFromDefaultCulture)
         {
-            localizedString = _resource.GetOrNull(_resource.DefaultCultureName?? _options.DefaultCulture, name);
-            if (localizedString != null) return localizedString;
+            var defaultCulture = _resource.DefaultCultureName ?? _options.DefaultCulture;
+            if (defaultCulture.NotBeNullOrWhiteSpace())
+            {
+                localizedString = _resource.GetOrNull(defaultCulture, name);
+                if (localizedString != null) return localizedString;
+            }
         }
 
         

@@ -5,11 +5,9 @@ public static class FakeDictionaryExtensions
     /// <summary>
     /// 从字段中获取给定key的值，若不存在，则返回默认值
     /// </summary>
-    /// <param name="dictionary">Dictionary to check and get</param>
-    /// <param name="key">Key to find the value</param>
-    /// <typeparam name="TKey">Type of the key</typeparam>
-    /// <typeparam name="TValue">Type of the value</typeparam>
-    /// <returns>Value if found, default if can not found.</returns>
+    /// <param name="dictionary">给定字典</param>
+    /// <param name="key">给定key</param>
+    /// <returns>存在直接返回，不存在则返回默认值</returns>
     public static TValue GetOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key)
     {
         return dictionary.TryGetValue(key, out var value) ? value : default;

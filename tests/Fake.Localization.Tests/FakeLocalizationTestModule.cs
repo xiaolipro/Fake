@@ -14,7 +14,7 @@ public class FakeLocalizationTestModule:FakeModule
     {
         context.Services.Configure<FakeVirtualFileSystemOptions>(options =>
         {
-            options.FileProviders.AddEmbedded<FakeLocalizationTestModule>();
+            options.FileProviders.AddEmbedded<FakeLocalizationTestModule>("Localization");
         });
 
         context.Services.Configure<FakeLocalizationOptions>(options =>
@@ -23,13 +23,13 @@ public class FakeLocalizationTestModule:FakeModule
             options.TryGetFromDefaultCulture = true;
 
             options.Resources.Add<LocalizationTestResource>("zh")
-                .AddVirtualJson("Localization/Resources");
+                .AddVirtualJson("/Resources");
 
-            options.Resources.Add("LocalizationTestCountryNames")
-                .AddVirtualJson("Localization/Resources/CountryNames");
+            options.Resources.Add("LocalizationTestCountryNames","zh")
+                .AddVirtualJson("/Resources/CountryNames");
 
             options.Resources.Add<LocalizationTestValidationResource>("zh")
-                .AddVirtualJson("Localization/Resources/Validation");
+                .AddVirtualJson("/Resources/Validation");
         });
     }
 }

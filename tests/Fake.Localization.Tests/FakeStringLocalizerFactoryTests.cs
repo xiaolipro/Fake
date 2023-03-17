@@ -1,10 +1,6 @@
-﻿using System;
-using System.Text;
-using Fake.Localization;
+﻿using Fake.Localization;
 using Fake.Testing;
-using Fake.VirtualFileSystem;
 using Localization;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using Shouldly;
 using Xunit;
@@ -12,12 +8,10 @@ using Xunit;
 public sealed class FakeStringLocalizerFactoryTests: FakeIntegrationTest<FakeLocalizationTestModule>
 {
     private readonly IStringLocalizerFactory _localizerFactory;
-    private readonly VirtualFileProvider _virtualFileProvider;
     
     public FakeStringLocalizerFactoryTests()
     {
         _localizerFactory = GetRequiredService<IStringLocalizerFactory>();
-        _virtualFileProvider = ServiceProvider.GetRequiredService<VirtualFileProvider>();
     }
 
     [Fact]
@@ -31,8 +25,26 @@ public sealed class FakeStringLocalizerFactoryTests: FakeIntegrationTest<FakeLoc
     [Fact]
     public void 可以实现本地化()
     {
-        var internalLocalizer = _localizerFactory.Create(typeof(LocalizationTestResource));
+        var localizer = _localizerFactory.Create(typeof(LocalizationTestResource));
         
-        internalLocalizer["Hi"].Value.ShouldBe("你好");
+        localizer["Hi"].Value.ShouldBe("你好");
+    }
+    
+    [Fact]
+    public void 本地化资源可以继承()
+    {
+        var localizer = _localizerFactory.Create(typeof(LocalizationTestResource));
+        
+        localizer["ThisFieldIsRequired"].Value.ShouldBe("此字段是必填字段");
+        localizer["DefaultLanguage"].Value.ShouldBe("默认语言");
+    }
+
+    [Fact]
+    public void 没有给定资源类型的也能支持()
+    {
+        var localizer = _localizerFactory.CreateByResourceName("LocalizationTestCountryNames");
+
+        localizer.ShouldNotBeNull();
+        localizer["USA"].Value.ShouldBe("美利坚");
     }
 }

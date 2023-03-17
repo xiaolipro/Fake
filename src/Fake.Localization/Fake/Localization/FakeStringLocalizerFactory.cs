@@ -4,12 +4,13 @@ using System.Linq;
 using System.Threading;
 using Fake.Localization.Contributors;
 using Fake.Reflection;
+using JetBrains.Annotations;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 
 namespace Fake.Localization;
 
-public class FakeStringLocalizerFactory : IStringLocalizerFactory
+public class FakeStringLocalizerFactory : IStringLocalizerFactory,IFakeStringLocalizerFactory
 {
     private readonly ResourceManagerStringLocalizerFactory _innerFactory;
     private readonly IServiceProvider _serviceProvider;
@@ -30,11 +31,11 @@ public class FakeStringLocalizerFactory : IStringLocalizerFactory
         _semaphore = new SemaphoreSlim(1, 1);
     }
 
-    public IStringLocalizer Create(Type resourceSource)
+    public IStringLocalizer Create(Type resourceType)
     {
-        var resource = _options.Resources.GetOrDefault(resourceSource);
+        var resource = _options.Resources.GetOrDefault(resourceType);
 
-        if (resource == null) return _innerFactory.Create(resourceSource);
+        if (resource == null) return _innerFactory.Create(resourceType);
 
         return CreateStringLocalizer(resource, true);
     }
@@ -43,8 +44,15 @@ public class FakeStringLocalizerFactory : IStringLocalizerFactory
     {
         return _innerFactory.Create(baseName, location);
     }
+    
+    public IStringLocalizer CreateByResourceName(string resourceName)
+    {
+        var resource = _options.Resources.GetOrDefault(resourceName);
 
-    private IStringLocalizer CreateStringLocalizer(AbstractLocalizationResource resource, bool latched)
+        return CreateStringLocalizer(resource, true);
+    }
+
+    private IStringLocalizer CreateStringLocalizer([NotNull]AbstractLocalizationResource resource, bool latched)
     {
         string resourceResourceName = resource.ResourceName;
 
