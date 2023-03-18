@@ -10,6 +10,7 @@
     <ItemGroup>
         <ProjectReference Include="..\Fake.Auditing\Fake.Auditing.csproj" />
         <ProjectReference Include="..\Fake.Core\Fake.Core.csproj" />
+        <ProjectReference Include="..\Fake.Ddd\Fake.Ddd.csproj" />
         <ProjectReference Include="..\Fake.Json.SystemTextJson\Fake.Json.SystemTextJson.csproj" />
         <ProjectReference Include="..\Fake.UnitOfWork\Fake.UnitOfWork.csproj" />
 

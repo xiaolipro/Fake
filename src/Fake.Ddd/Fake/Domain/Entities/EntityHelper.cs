@@ -1,4 +1,5 @@
 ﻿using System;
+using Fake.Domain.Entities.IdGenerators;
 using Fake.Reflection;
 
 namespace Fake.Domain.Entities;

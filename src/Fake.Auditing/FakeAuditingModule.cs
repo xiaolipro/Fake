@@ -39,7 +39,6 @@ public class FakeAuditingModule:FakeModule
         context.Services.AddSingleton(typeof(IAuditingStore), typeof(SimpleLogAuditingStore));
 
         context.Services.AddTransient<IAuditingManager, AuditingManager>();
-        context.Services.AddTransient<IAuditPropertySetter, DefaultAuditPropertySetter>();
         context.Services.AddTransient<AuditingInterceptor>();
     }
     

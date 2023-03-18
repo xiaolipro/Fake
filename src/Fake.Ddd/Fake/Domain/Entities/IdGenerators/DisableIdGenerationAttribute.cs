@@ -1,4 +1,4 @@
-namespace Fake.Domain.Entities;
+namespace Fake.Domain.Entities.IdGenerators;
 
 /// <summary>
 /// 被标记子代fake不在为其生成id

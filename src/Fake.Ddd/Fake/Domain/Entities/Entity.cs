@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Fake.Domain.Entities;
+﻿namespace Fake.Domain.Entities;
 
 [Serializable]
 public abstract class Entity : HasDomainEvent, IEntity
