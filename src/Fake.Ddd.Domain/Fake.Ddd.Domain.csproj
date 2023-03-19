@@ -14,4 +14,9 @@
       <ProjectReference Include="..\Fake.Core\Fake.Core.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Fake\Domain\Events" />
+      <Folder Include="Fake\Domain\Exceptions" />
+    </ItemGroup>
+
 </Project>

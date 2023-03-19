@@ -1,11 +1,12 @@
 ﻿using Fake.Auditing;
+using Fake.Domain.Entities.Auditing;
 using Fake.Domain.Entities.IdGenerators;
 using Fake.Modularity;
 using Microsoft.Extensions.DependencyInjection;
 
 
 [DependsOn(typeof(FakeAuditingModule))]
-public class FakeDddModule:FakeModule
+public class FakeDddDomainModule:FakeModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {

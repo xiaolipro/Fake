@@ -4,7 +4,7 @@ using Fake.Identity.Users;
 using Fake.Reflection;
 using Fake.Timing;
 
-namespace Fake.Auditing;
+namespace Fake.Domain.Entities.Auditing;
 
 public class DefaultAuditPropertySetter : IAuditPropertySetter
 {

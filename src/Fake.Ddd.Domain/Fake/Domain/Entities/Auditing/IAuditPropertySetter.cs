@@ -1,4 +1,4 @@
-﻿namespace Fake.Auditing;
+﻿namespace Fake.Domain.Entities.Auditing;
 
 public interface IAuditPropertySetter
 {

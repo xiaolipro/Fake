@@ -9,12 +9,12 @@
     <ItemGroup>
         <ProjectReference Include="..\..\src\Fake.Autofac\Fake.Autofac.csproj" />
         <ProjectReference Include="..\..\src\Fake.Core\Fake.Core.csproj" />
+        <ProjectReference Include="..\..\src\Fake.Ddd.Domain\Fake.Ddd.Domain.csproj" />
         <ProjectReference Include="..\..\src\Fake.Testing\Fake.Testing.csproj" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(MicrosoftNETTestSdkPackageVersion)" />
     </ItemGroup>
     <ItemGroup>
       <Folder Include="Application" />
-      <Folder Include="Domain" />
     </ItemGroup>
 
 </Project>
