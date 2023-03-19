@@ -75,7 +75,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fake.AppTests", "tests\Fake
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fake.Ddd.Domain", "src\Fake.Ddd.Domain\Fake.Ddd.Domain.csproj", "{67A25A30-9D91-4D51-9B79-AD1BE08BDEB9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fake.MediaR", "src\Fake.MediaR\Fake.MediaR.csproj", "{AFA214FC-3902-40D6-95E5-DD8516C61926}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fake.EventBus", "src\Fake.EventBus\Fake.EventBus.csproj", "{AFA214FC-3902-40D6-95E5-DD8516C61926}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
