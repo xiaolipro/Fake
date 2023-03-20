@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 
 [DependsOn(typeof(FakeAuditingModule))]
+[DependsOn(typeof(FakeEventBusModule))]
 public class FakeDddDomainModule:FakeModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)

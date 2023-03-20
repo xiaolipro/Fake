@@ -57,6 +57,7 @@ public class OrderItem:Entity<Guid>
         return _unitPrice;
     }
     
+    public string GetOrderItemProductName() => _productName;
     
     public void SetNewDiscount(decimal discount)
     {

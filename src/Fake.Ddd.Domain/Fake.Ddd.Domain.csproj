@@ -12,11 +12,7 @@
     <ItemGroup>
       <ProjectReference Include="..\Fake.Auditing\Fake.Auditing.csproj" />
       <ProjectReference Include="..\Fake.Core\Fake.Core.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Fake\Domain\Events" />
-      <Folder Include="Fake\Domain\Exceptions" />
+      <ProjectReference Include="..\Fake.EventBus\Fake.EventBus.csproj" />
     </ItemGroup>
 
 </Project>

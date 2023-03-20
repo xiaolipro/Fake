@@ -76,6 +76,7 @@ public static class ReflectionHelper
     /// <param name="type"></param>
     /// <typeparam name="TInstance"></typeparam>
     /// <returns></returns>
+    [CanBeNull]
     public static TInstance CreateInstance<TInstance>(Type type) where TInstance: class
     {
         //TODO: 可以优化
