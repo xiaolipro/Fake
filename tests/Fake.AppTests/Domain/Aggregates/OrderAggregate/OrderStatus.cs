@@ -1,6 +1,6 @@
 ﻿using Fake.Domain;
 
-namespace Domain.Aggregations;
+namespace Domain.Aggregates.OrderAggregate;
 
 public class OrderStatus:Enumeration
 {

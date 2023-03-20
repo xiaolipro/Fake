@@ -2,7 +2,7 @@
 using Fake;
 using Fake.Domain.Entities;
 
-namespace Domain.Aggregations;
+namespace Domain.Aggregates.OrderAggregate;
 
 public class OrderItem:Entity<Guid>
 {

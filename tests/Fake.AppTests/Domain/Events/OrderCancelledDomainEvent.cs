@@ -1,4 +1,4 @@
-﻿using Domain.Aggregations;
+﻿using Domain.Aggregates.OrderAggregate;
 using Fake.Domain.Entities.Events;
 
 namespace Domain.Events
