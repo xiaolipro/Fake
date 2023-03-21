@@ -41,14 +41,18 @@ public abstract class AppAuditingTests<TStartupModule>:AppTestBase<TStartupModul
         Assert.Equal(1, fakeOrder.DomainEvents.Count);
 
         var orderId = 23;
-        fakeOrder.SetId(orderId); 
-        await _orderRepository.AddAsync(fakeOrder);
-        //await _orderRepository.UnitOfWork.CompleteAsync();
+        fakeOrder.SetId(orderId);
 
-        var order = await _orderRepository.GetAsync(orderId);
+        await WithUnitOfWorkAsync(async () =>
+        {
+            await _orderRepository.AddAsync(fakeOrder);
+            //await _orderRepository.UnitOfWork.CompleteAsync();
 
-        order.ShouldNotBeNull();
-        order.CreationTime.ShouldBeLessThanOrEqualTo(_clock.Now);
-        order.CreatorId.ShouldBe(_currentUserId);
+            var order = await _orderRepository.GetAsync(orderId);
+
+            order.ShouldNotBeNull();
+            order.CreationTime.ShouldBeLessThanOrEqualTo(_clock.Now);
+            order.CreatorId.ShouldBe(_currentUserId);
+        });
     }
 }

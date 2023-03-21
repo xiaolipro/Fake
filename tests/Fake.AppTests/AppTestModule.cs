@@ -1,6 +1,4 @@
-﻿
-using Application.DomainEventHandlers.OrderStartedDomainEventHandlers;
-using Domain.Aggregates.OrderAggregate;
+﻿using Application.DomainEventHandlers.OrderStartedDomainEventHandlers;
 using Domain.Events;
 using Fake.Autofac;
 using Fake.EventBus.Events;
@@ -9,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 [DependsOn(typeof(FakeAutofacModule))]
 [DependsOn(typeof(FakeDddDomainModule))]
-public class FakeAppTestModule:FakeModule
+public class FakeAppTestModule : FakeModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {

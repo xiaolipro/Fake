@@ -1,6 +1,4 @@
-﻿using System;
-using Fake.Domain.Entities.Auditing;
-using Fake.Identity.Users;
+﻿using Fake.Identity.Users;
 using Fake.Reflection;
 using Fake.Timing;
 

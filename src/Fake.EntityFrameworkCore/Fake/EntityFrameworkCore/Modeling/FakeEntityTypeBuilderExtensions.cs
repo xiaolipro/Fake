@@ -59,11 +59,11 @@ public static class FakeEntityTypeBuilderExtensions
         {
             builder.Property(nameof(IHasModifier<TUserId>.LastModifierId))
                 .HasColumnName(nameof(IHasModifier<TUserId>.LastModifierId))
-                .IsRequired(false);
+                .IsRequired();
 
             builder.Property(nameof(IHasModificationTime.LastModificationTime))
                 .HasColumnName(nameof(IHasModificationTime.LastModificationTime))
-                .IsRequired(false);
+                .IsRequired();
         }
 
         return builder;

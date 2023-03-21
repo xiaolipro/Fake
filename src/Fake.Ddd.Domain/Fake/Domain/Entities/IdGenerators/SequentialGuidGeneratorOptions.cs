@@ -6,10 +6,4 @@ public class SequentialGuidGeneratorOptions
     /// 有序Guid类型，默认SequentialAtEnd
     /// </summary>
     public SequentialGuidType SequentialGuidType { get; set; }
-
-
-    public SequentialGuidGeneratorOptions(SequentialGuidType sequentialGuidType = SequentialGuidType.SequentialAsBinaryAtEnd)
-    {
-        SequentialGuidType = sequentialGuidType;
-    }
 }

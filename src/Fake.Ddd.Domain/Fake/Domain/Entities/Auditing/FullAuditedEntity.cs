@@ -9,8 +9,8 @@ public class FullAuditedEntity<TUserId> : IFullAuditedEntity<TUserId>
 {
     public TUserId CreatorId { get; }
     public DateTime CreationTime { get; }
-    public TUserId? LastModifierId { get; }
-    public DateTime? LastModificationTime { get; }
+    public TUserId LastModifierId { get; }
+    public DateTime LastModificationTime { get; }
     public bool IsDeleted { get; }
     public bool HardDeleted { get; }
 }

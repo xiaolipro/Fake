@@ -135,6 +135,7 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
     protected virtual void SetCreator(EntityEntry entry)
     {
         _auditPropertySetter.Value.SetCreationProperties(entry.Entity);
+        _auditPropertySetter.Value.SetModificationProperties(entry.Entity);
     }
 
     protected virtual void SetVersionNum(EntityEntry entry)

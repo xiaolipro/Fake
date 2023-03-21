@@ -4,14 +4,23 @@
     <PropertyGroup>
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>true</ImplicitUsings>
+        <RootNamespace />
     </PropertyGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\..\src\Fake.EntityFrameworkCore\Fake.EntityFrameworkCore.csproj" />
         <ProjectReference Include="..\..\src\Fake.Testing\Fake.Testing.csproj" />
         <ProjectReference Include="..\AFakeTestEntry\AFakeTestEntry.csproj" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(MicrosoftNETTestSdkPackageVersion)" />
         <ProjectReference Include="..\Fake.AppTests\Fake.AppTests.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="$(MicrosoftEntityFrameworkCorePackageVersion)">
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+          <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(MicrosoftNETTestSdkPackageVersion)" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="$(MicrosoftEntityFrameworkCorePackageVersion)" />
     </ItemGroup>
 
 </Project>
