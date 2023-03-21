@@ -22,4 +22,10 @@ public class FakeEntityFrameworkCoreTestModule:FakeModule
             builder.UseSqlite("FileName=./fake.db");
         });
     }
+
+    public override void PreConfigureApplication(ApplicationConfigureContext context)
+    {
+        var orderingContext = context.ServiceProvider.GetService<OrderingContext>();
+        orderingContext.Database.EnsureCreated();
+    }
 }

@@ -13,21 +13,10 @@ public class OrderingContext: FakeDbContext<OrderingContext>
     public DbSet<Order> Orders { get; set; }
     public DbSet<Buyer> Buyers { get; set; }
 
-    public OrderingContext()
-    {
-        
-    }
-
-    public OrderingContext(DbContextOptions<FakeDbContext<OrderingContext>> options, IServiceProvider serviceProvider) : base(options, serviceProvider)
+    public OrderingContext(DbContextOptions<OrderingContext> options, IServiceProvider serviceProvider) : base(options, serviceProvider)
     {
     }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        /*var sqliteConnection = CreateDatabaseAndGetConnection();*/
-        optionsBuilder.UseSqlite("FileName=./fake.db");
-    }
-
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new PaymentMethodEntityTypeConfiguration());
@@ -37,12 +26,5 @@ public class OrderingContext: FakeDbContext<OrderingContext>
         modelBuilder.ApplyConfiguration(new OrderStatusEntityTypeConfiguration());
         modelBuilder.ApplyConfiguration(new BuyerEntityTypeConfiguration());
         base.OnModelCreating(modelBuilder);
-    }
-
-    private static SqliteConnection CreateDatabaseAndGetConnection()
-    {
-        var connection = new SqliteConnection("Data Source=:memory:");
-        
-        return connection;
     }
 }

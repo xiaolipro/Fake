@@ -58,20 +58,20 @@ namespace AppTests.EntityConfigurations
             orderConfiguration.HasOne<PaymentMethod>()
                 .WithMany()
                 // .HasForeignKey("PaymentMethodId")
-                .HasForeignKey("_paymentMethodId")
+                //.HasForeignKey("_paymentMethodId")
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.Restrict);
 
             orderConfiguration.HasOne<Buyer>()
                 .WithMany()
-                .IsRequired(false)
+                .IsRequired(false);
                 // .HasForeignKey("BuyerId");
-                .HasForeignKey("_buyerId");
+                //.HasForeignKey("_buyerId");
 
-            orderConfiguration.HasOne(o => o.OrderStatus)
-                .WithMany()
+                orderConfiguration.HasOne(o => o.OrderStatus)
+                    .WithMany();
                 // .HasForeignKey("OrderStatusId");
-                .HasForeignKey("_orderStatusId");
+                //.HasForeignKey("_orderStatusId");
         }
     }
 }

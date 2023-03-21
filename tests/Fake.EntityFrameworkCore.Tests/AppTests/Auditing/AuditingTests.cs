@@ -1,8 +1,7 @@
 ﻿using Tests;
 
-namespace Fake.EntityFrameworkCore.Tests.AppTests.Auditing;
+namespace AppTests.Auditing;
 
-public class AuditingTests:AppAuditingTests<FakeEntityFrameworkCoreTestModule>
+public class AuditingTests : AppAuditingTests<FakeEntityFrameworkCoreTestModule>
 {
-    
 }

@@ -1,5 +1,4 @@
 ﻿using Domain.Aggregates.BuyerAggregate;
-using Fake.EntityFrameworkCore.Tests.AppTests;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

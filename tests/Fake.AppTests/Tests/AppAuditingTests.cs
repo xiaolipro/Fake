@@ -47,7 +47,10 @@ public abstract class AppAuditingTests<TStartupModule>:AppTestBase<TStartupModul
         {
             await _orderRepository.AddAsync(fakeOrder);
             //await _orderRepository.UnitOfWork.CompleteAsync();
+        });
 
+        await WithUnitOfWorkAsync(async () =>
+        {
             var order = await _orderRepository.GetAsync(orderId);
 
             order.ShouldNotBeNull();
