@@ -18,7 +18,7 @@ public class DefaultAuditPropertySetter : IAuditPropertySetter
     {
         if (targetObject is IHasCreationTime objectWithCreationTime)
         {
-            if (objectWithCreationTime.CreationTime != default)
+            if (objectWithCreationTime.CreationTime == default)
             {
                 ReflectionHelper.TrySetProperty(objectWithCreationTime, x=>x.CreationTime, () => _clock.Now);
             }
@@ -26,7 +26,7 @@ public class DefaultAuditPropertySetter : IAuditPropertySetter
         
         if (targetObject is IHasCreator<Guid> objectWithGuidCreator)
         {
-            if (objectWithGuidCreator.CreatorId != default && Guid.TryParse(_currentUser.UserId, out var userIdAsGuid))
+            if (objectWithGuidCreator.CreatorId == default && Guid.TryParse(_currentUser.UserId, out var userIdAsGuid))
             {
                 ReflectionHelper.TrySetProperty(objectWithGuidCreator, x => x.CreatorId, () => userIdAsGuid);
             }

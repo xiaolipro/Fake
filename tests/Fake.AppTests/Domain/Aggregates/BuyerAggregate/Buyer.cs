@@ -30,7 +30,7 @@ public class Buyer: AggregateRoot<int>
 
     public PaymentMethod AddPaymentMethod(
         int cardTypeId, string alias, string cardNumber,
-        string securityNumber, string cardHolderName, DateTime expiration, int orderId)
+        string securityNumber, string cardHolderName, DateTime expiration, Guid orderId)
     {
         var existingPayment = _paymentMethods
             .SingleOrDefault(p => p.IsEqualTo(cardTypeId, cardNumber, expiration));

@@ -1,4 +1,6 @@
-﻿namespace System;
+﻿using System.Runtime.CompilerServices;
+
+namespace System;
 
 public static class FakeObjectExtensions
 {
@@ -24,5 +26,12 @@ public static class FakeObjectExtensions
     public static T As<T>(this object obj) where T : class
     {
         return obj as T;
+    }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static T Cast<T>(this object obj)
+        where T : class
+    {
+        return (T)obj;
     }
 }

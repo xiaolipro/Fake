@@ -23,15 +23,14 @@ public static class ReflectionHelper
 
         var propertyInfo = CachedPropertiesDic.GetOrAdd(cacheKey, _ =>
         {
-            // 如果不是从字段或属性上读取
+            // 必须从字段或属性上读取
             if (propertySelector.Body.NodeType != ExpressionType.MemberAccess) return null;
 
-            var propertyInfo = obj.GetType().GetProperties().FirstOrDefault(p =>
-            {
-                if (p.Name != propertySelector.Body.As<MemberExpression>()!.Member.Name) return false;
-                if (p.GetSetMethod(true) == null) return false;
-                return true;
-            });
+            var memberExpression = propertySelector.Body.Cast<MemberExpression>();
+            
+            var propertyInfo = obj.GetType().GetProperties().FirstOrDefault(x =>
+                x.Name == memberExpression.Member.Name &&
+                x.GetSetMethod(true) != null);
 
             if (propertyInfo == null) return null;
 

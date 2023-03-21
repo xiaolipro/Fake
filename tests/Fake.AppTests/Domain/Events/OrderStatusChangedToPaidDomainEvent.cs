@@ -1,4 +1,5 @@
-﻿using Domain.Aggregates.OrderAggregate;
+﻿using System;
+using Domain.Aggregates.OrderAggregate;
 using Fake.Domain.Entities.Events;
 
 namespace Domain.Events
@@ -11,10 +12,10 @@ namespace Domain.Events
     public class OrderStatusChangedToPaidDomainEvent
         : DomainEvent
     {
-        public int OrderId { get; }
+        public Guid OrderId { get; }
         public IEnumerable<OrderItem> OrderItems { get; }
 
-        public OrderStatusChangedToPaidDomainEvent(int orderId,
+        public OrderStatusChangedToPaidDomainEvent(Guid orderId,
             IEnumerable<OrderItem> orderItems)
         {
             OrderId = orderId;
