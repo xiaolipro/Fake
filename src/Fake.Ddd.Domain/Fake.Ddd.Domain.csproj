@@ -13,6 +13,7 @@
       <ProjectReference Include="..\Fake.Auditing\Fake.Auditing.csproj" />
       <ProjectReference Include="..\Fake.Core\Fake.Core.csproj" />
       <ProjectReference Include="..\Fake.EventBus\Fake.EventBus.csproj" />
+      <ProjectReference Include="..\Fake.UnitOfWork\Fake.UnitOfWork.csproj" />
     </ItemGroup>
 
 </Project>

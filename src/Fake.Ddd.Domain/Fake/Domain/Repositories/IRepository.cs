@@ -1,4 +1,5 @@
 ﻿using Fake.Domain.Entities;
+using Fake.UnitOfWork;
 
 namespace Fake.Domain.Repositories;
 
@@ -8,6 +9,7 @@ namespace Fake.Domain.Repositories;
 /// <typeparam name="TAggregateRoot">聚合根</typeparam>
 public interface IRepository<TAggregateRoot> where TAggregateRoot : IAggregateRoot
 {
+    //IUnitOfWork UnitOfWork { get; }
 }
 
 /// <summary>

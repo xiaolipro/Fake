@@ -12,6 +12,7 @@
         <ProjectReference Include="..\..\src\Fake.Ddd.Domain\Fake.Ddd.Domain.csproj" />
         <ProjectReference Include="..\..\src\Fake.Testing\Fake.Testing.csproj" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(MicrosoftNETTestSdkPackageVersion)" />
+        <ProjectReference Include="..\AFakeTestEntry\AFakeTestEntry.csproj" />
     </ItemGroup>
     <ItemGroup>
       <Folder Include="Application" />

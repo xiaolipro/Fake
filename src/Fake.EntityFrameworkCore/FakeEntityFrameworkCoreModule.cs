@@ -1,6 +1,6 @@
 ﻿using Fake.Auditing;
-using Fake.EntityFrameworkCore.UnitOfWork;
 using Fake.Modularity;
+using Fake.UnitOfWork.EntityFrameWorkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 
@@ -12,6 +12,6 @@ public class FakeEntityFrameworkCoreModule : FakeModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
-        context.Services.TryAddTransient(typeof(IEfCoreDbContextProvider<>), typeof(EfCoreUnitOfWorkDbContextProvider<>));
+        context.Services.TryAddTransient(typeof(IDbContextProvider<>), typeof(UnitOfWorkDbContextProvider<>));
     }
 }

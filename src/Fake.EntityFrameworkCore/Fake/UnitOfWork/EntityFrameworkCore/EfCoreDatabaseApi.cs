@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Fake.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 
-namespace Fake.EntityFrameworkCore.UnitOfWork;
+namespace Fake.UnitOfWork.EntityFrameWorkCore;
 
 public class EfCoreDatabaseApi: IDatabaseApi, ISupportSaveChanges
 {

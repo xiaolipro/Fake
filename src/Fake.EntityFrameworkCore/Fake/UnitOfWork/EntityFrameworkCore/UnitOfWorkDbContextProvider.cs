@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Fake.EntityFrameworkCore;
 using Fake.Threading;
-using Fake.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -11,26 +11,26 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
-namespace Fake.EntityFrameworkCore.UnitOfWork;
+namespace Fake.UnitOfWork.EntityFrameWorkCore;
 
-public class EfCoreUnitOfWorkDbContextProvider<TDbContext> : IEfCoreDbContextProvider<TDbContext>
+public class UnitOfWorkDbContextProvider<TDbContext> : IDbContextProvider<TDbContext>
     where TDbContext : DbContext
 {
-    public ILogger<EfCoreUnitOfWorkDbContextProvider<TDbContext>> Logger { get; set; }
+    public ILogger<UnitOfWorkDbContextProvider<TDbContext>> Logger { get; set; }
 
     private const string TransactionsNotSupportedErrorMessage = "当前数据库不支持事务！";
     private readonly IUnitOfWorkManager _unitOfWorkManager;
     private readonly ICancellationTokenProvider _cancellationTokenProvider;
     private readonly IConfiguration _configuration;
 
-    public EfCoreUnitOfWorkDbContextProvider(IUnitOfWorkManager unitOfWorkManager,
+    public UnitOfWorkDbContextProvider(IUnitOfWorkManager unitOfWorkManager,
         ICancellationTokenProvider cancellationTokenProvider, IConfiguration configuration)
     {
         _unitOfWorkManager = unitOfWorkManager;
         _cancellationTokenProvider = cancellationTokenProvider;
         _configuration = configuration;
 
-        Logger = NullLogger<EfCoreUnitOfWorkDbContextProvider<TDbContext>>.Instance;
+        Logger = NullLogger<UnitOfWorkDbContextProvider<TDbContext>>.Instance;
     }
 
     public async Task<TDbContext> GetDbContextAsync()

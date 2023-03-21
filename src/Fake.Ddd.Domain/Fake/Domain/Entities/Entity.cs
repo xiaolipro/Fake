@@ -49,6 +49,8 @@ public abstract class Entity<TKey>: Entity, IEntity<TKey>
     {
         Id = id;
     }
+
+    public void SetId(TKey id) => Id = id;
     
     public override object[] GetKeys()
     {

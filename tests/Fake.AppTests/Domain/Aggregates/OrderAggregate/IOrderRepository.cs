@@ -1,10 +1,11 @@
 ﻿using System.Threading.Tasks;
+using Fake.Domain.Repositories;
 
 namespace Domain.Aggregates.OrderAggregate;
 
-public interface IOrderRepository
+public interface IOrderRepository:IRepository<Order>
 {
-    Order Add(Order order);
+    Task<Order> AddAsync(Order order);
 
     void Update(Order order);
 
