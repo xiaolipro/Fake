@@ -32,7 +32,12 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
             BindingFlags.Instance | BindingFlags.NonPublic
         );
 
-    public FakeDbContext(IServiceProvider serviceProvider)
+    public FakeDbContext()
+    {
+        
+    }
+
+    public FakeDbContext(DbContextOptions<FakeDbContext<TDbContext>> options, IServiceProvider serviceProvider)
     {
         _clock = new Lazy<IClock>(serviceProvider.GetRequiredService<IClock>());
         _guidGenerator = new Lazy<IGuidGenerator>(serviceProvider.GetRequiredService<IGuidGenerator>());

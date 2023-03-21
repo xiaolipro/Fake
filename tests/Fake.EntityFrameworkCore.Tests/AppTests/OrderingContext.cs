@@ -7,21 +7,25 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AppTests;
 
-public class OrderingContext:FakeDbContext<OrderingContext>
+public class OrderingContext: FakeDbContext<OrderingContext>
 {
     public const string DefaultSchema = "ordering";
     public DbSet<Order> Orders { get; set; }
     public DbSet<Buyer> Buyers { get; set; }
-    
-    public OrderingContext(IServiceProvider serviceProvider) : base(serviceProvider)
+
+    public OrderingContext()
+    {
+        
+    }
+
+    public OrderingContext(DbContextOptions<FakeDbContext<OrderingContext>> options, IServiceProvider serviceProvider) : base(options, serviceProvider)
     {
     }
 
-
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        var sqliteConnection = CreateDatabaseAndGetConnection();
-        optionsBuilder.UseSqlite(sqliteConnection);
+        /*var sqliteConnection = CreateDatabaseAndGetConnection();*/
+        optionsBuilder.UseSqlite("FileName=./fake.db");
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -12,11 +12,16 @@ public class OrderRepository:EfCoreRepository<OrderingContext>, IOrderRepository
     {
     }
     
-    public async Task<Order> AddAsync(Order order)
+    /*public async Task<Order> AddAsync(Order order)
     {
         var context = await GetDbContextAsync();
         var entry = await context.Orders.AddAsync(order);
         return entry.Entity;
+    }*/
+
+    public Task<Order> AddAsync(Order order)
+    {
+        throw new NotImplementedException();
     }
 
     public void Update(Order order)
@@ -24,7 +29,12 @@ public class OrderRepository:EfCoreRepository<OrderingContext>, IOrderRepository
         throw new NotImplementedException();
     }
 
-    public async Task<Order> GetAsync(int orderId)
+    public Task<Order> GetAsync(int orderId)
+    {
+        throw new NotImplementedException();
+    }
+
+    /*public async Task<Order> GetAsync(int orderId)
     {
         var context = await GetDbContextAsync();
         var order = await context
@@ -47,5 +57,5 @@ public class OrderRepository:EfCoreRepository<OrderingContext>, IOrderRepository
         }
 
         return order;
-    }
+    }*/
 }
