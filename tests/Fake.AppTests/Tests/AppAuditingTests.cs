@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Domain.Aggregates.OrderAggregate;
+using Fake.Identity.Users;
 using Fake.Modularity;
 using Fake.Timing;
+using Microsoft.Extensions.DependencyInjection;
+using NSubstitute;
 using Shouldly;
 using Xunit;
 
@@ -10,7 +13,7 @@ namespace Tests;
 
 public abstract class AppAuditingTests<TStartupModule>:AppTestBase<TStartupModule> where TStartupModule : IFakeModule
 {
-    private Guid _currentUserId;
+    private Guid CurrentUserId;
     private readonly IOrderRepository _orderRepository;
     private readonly IClock _clock;
 
@@ -20,11 +23,20 @@ public abstract class AppAuditingTests<TStartupModule>:AppTestBase<TStartupModul
         _clock = GetRequiredService<IClock>();
     }
 
+    protected override void AfterAddFakeApplication(IServiceCollection services)
+    {
+        var currentUser = Substitute.For<ICurrentUser>();
+        currentUser.UserId.Returns(ci => CurrentUserId.ToString());
+
+        services.AddSingleton(currentUser);
+    }
+
     [Theory]
+    [InlineData(null)]
     [InlineData("4b2790fc-3f51-43d5-88a1-a92d96a9e6ea")]
     public async Task 创建审计(string currentUserId)
     {
-        if (currentUserId != null) _currentUserId = Guid.Parse(currentUserId);
+        if (currentUserId != null) CurrentUserId = Guid.Parse(currentUserId);
         
         var street = "fakeStreet";
         var city = "FakeCity";
@@ -40,19 +52,21 @@ public abstract class AppAuditingTests<TStartupModule>:AppTestBase<TStartupModul
         
         Assert.Equal(1, fakeOrder.DomainEvents.Count);
 
-        var orderId = 23;
-        fakeOrder.SetId(orderId);
+        Guid orderId = default;
+        await WithUnitOfWorkAsync(async () =>
+        {
+            var order = await _orderRepository.AddAsync(fakeOrder);
+            orderId = order.Id;
+            //await _orderRepository.UnitOfWork.CompleteAsync();
+        });
 
         await WithUnitOfWorkAsync(async () =>
         {
-            await _orderRepository.AddAsync(fakeOrder);
-            //await _orderRepository.UnitOfWork.CompleteAsync();
-
             var order = await _orderRepository.GetAsync(orderId);
 
             order.ShouldNotBeNull();
             order.CreationTime.ShouldBeLessThanOrEqualTo(_clock.Now);
-            order.CreatorId.ShouldBe(_currentUserId);
+            order.CreatorId.ShouldBe(CurrentUserId);
         });
     }
 }

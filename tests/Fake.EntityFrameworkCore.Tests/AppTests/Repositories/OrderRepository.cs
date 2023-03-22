@@ -24,7 +24,7 @@ public class OrderRepository:EfCoreRepository<OrderingContext>, IOrderRepository
         throw new NotImplementedException();
     }
 
-    public async Task<Order> GetAsync(int orderId)
+    public async Task<Order> GetAsync(Guid orderId)
     {
         var context = await GetDbContextAsync();
         var order = await context

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Fake.Domain.Repositories;
 
 namespace Domain.Aggregates.OrderAggregate;
@@ -9,5 +10,5 @@ public interface IOrderRepository:IRepository<Order>
 
     void Update(Order order);
 
-    Task<Order> GetAsync(int orderId);
+    Task<Order> GetAsync(Guid orderId);
 }

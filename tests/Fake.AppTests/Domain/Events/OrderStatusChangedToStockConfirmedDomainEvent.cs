@@ -1,4 +1,5 @@
-﻿using Fake.Domain.Entities.Events;
+﻿using System;
+using Fake.Domain.Entities.Events;
 
 namespace Domain.Events
 {
@@ -9,9 +10,9 @@ namespace Domain.Events
     public class OrderStatusChangedToStockConfirmedDomainEvent
         : DomainEvent
     {
-        public int OrderId { get; }
+        public Guid OrderId { get; }
 
-        public OrderStatusChangedToStockConfirmedDomainEvent(int orderId)
+        public OrderStatusChangedToStockConfirmedDomainEvent(Guid orderId)
             => OrderId = orderId;
     }
 }

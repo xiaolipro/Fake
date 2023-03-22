@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Domain.Events;
 using Fake;
-using Fake.Domain.Entities;
 using Fake.Domain.Entities.Auditing;
 
 namespace Domain.Aggregates.OrderAggregate;
 
-public class Order : FullAuditedAggregate<int, Guid>
+public class Order : FullAuditedAggregate<Guid, Guid>
 {
     // DDD Patterns comment
     // Using private fields, allowed since EF Core 1.1, is a much better encapsulation

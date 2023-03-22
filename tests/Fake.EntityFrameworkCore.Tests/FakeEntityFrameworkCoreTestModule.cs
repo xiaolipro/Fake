@@ -30,4 +30,10 @@ public class FakeEntityFrameworkCoreTestModule:FakeModule
         ctx.Database.EnsureDeleted();
         ctx.Database.EnsureCreated();
     }
+
+    public override void PreConfigureApplication(ApplicationConfigureContext context)
+    {
+        var orderingContext = context.ServiceProvider.GetService<OrderingContext>();
+        orderingContext.Database.EnsureCreated();
+    }
 }

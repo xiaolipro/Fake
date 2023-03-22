@@ -1,4 +1,9 @@
-﻿using Fake.Domain.Entities;
+﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
+using Fake.Domain.Entities;
 using Fake.Domain.Entities.Auditing;
 using Fake.Domain.Entities.IdGenerators;
 using Fake.EntityFrameworkCore.Modeling;
@@ -30,7 +35,7 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
             BindingFlags.Instance | BindingFlags.NonPublic
         );
 
-    public FakeDbContext(DbContextOptions<TDbContext> options, IServiceProvider serviceProvider) : base(options)
+    protected FakeDbContext(DbContextOptions<TDbContext> options, IServiceProvider serviceProvider):base(options)
     {
         _clock = new Lazy<IClock>(serviceProvider.GetRequiredService<IClock>());
         _guidGenerator = new Lazy<IGuidGenerator>(serviceProvider.GetRequiredService<IGuidGenerator>());

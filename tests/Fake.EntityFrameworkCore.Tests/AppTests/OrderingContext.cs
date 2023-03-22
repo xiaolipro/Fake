@@ -16,12 +16,7 @@ public class OrderingContext: FakeDbContext<OrderingContext>
     public OrderingContext(DbContextOptions<OrderingContext> options, IServiceProvider serviceProvider) : base(options, serviceProvider)
     {
     }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        /*var sqliteConnection = CreateDatabaseAndGetConnection();*/
-    }
-
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new PaymentMethodEntityTypeConfiguration());
@@ -31,12 +26,5 @@ public class OrderingContext: FakeDbContext<OrderingContext>
         modelBuilder.ApplyConfiguration(new OrderStatusEntityTypeConfiguration());
         modelBuilder.ApplyConfiguration(new BuyerEntityTypeConfiguration());
         base.OnModelCreating(modelBuilder);
-    }
-
-    private static SqliteConnection CreateDatabaseAndGetConnection()
-    {
-        var connection = new SqliteConnection("Data Source=:memory:");
-        
-        return connection;
     }
 }

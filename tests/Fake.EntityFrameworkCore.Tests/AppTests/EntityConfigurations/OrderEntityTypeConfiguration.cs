@@ -49,29 +49,29 @@ namespace AppTests.EntityConfigurations
 
             orderConfiguration.Property<string>("Description").IsRequired(false);
 
-            var navigation = orderConfiguration.Metadata.FindNavigation(nameof(Order.OrderItems));
-
-            // DDD Patterns comment:
-            //Set as field (New since EF 1.1) to access the OrderItem collection property through its field
-            navigation.SetPropertyAccessMode(PropertyAccessMode.Field);
-
-            orderConfiguration.HasOne<PaymentMethod>()
-                .WithMany()
-                // .HasForeignKey("PaymentMethodId")
-                .HasForeignKey("_paymentMethodId")
-                .IsRequired(false)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            orderConfiguration.HasOne<Buyer>()
-                .WithMany()
-                .IsRequired(false)
-                // .HasForeignKey("BuyerId");
-                .HasForeignKey("_buyerId");
-
-            orderConfiguration.HasOne(o => o.OrderStatus)
-                .WithMany()
-                // .HasForeignKey("OrderStatusId");
-                .HasForeignKey("_orderStatusId");
+            // var navigation = orderConfiguration.Metadata.FindNavigation(nameof(Order.OrderItems));
+            //
+            // // DDD Patterns comment:
+            // //Set as field (New since EF 1.1) to access the OrderItem collection property through its field
+            // navigation.SetPropertyAccessMode(PropertyAccessMode.Field);
+            //
+            // orderConfiguration.HasOne<PaymentMethod>()
+            //     .WithMany()
+            //     // .HasForeignKey("PaymentMethodId")
+            //     .HasForeignKey("_paymentMethodId")
+            //     .IsRequired(false)
+            //     .OnDelete(DeleteBehavior.Restrict);
+            //
+            // orderConfiguration.HasOne<Buyer>()
+            //     .WithMany()
+            //     .IsRequired(false)
+            //     // .HasForeignKey("BuyerId");
+            //     .HasForeignKey("_buyerId");
+            //
+            // orderConfiguration.HasOne(o => o.OrderStatus)
+            //     .WithMany()
+            //     // .HasForeignKey("OrderStatusId");
+            //     .HasForeignKey("_orderStatusId");
         }
     }
 }
