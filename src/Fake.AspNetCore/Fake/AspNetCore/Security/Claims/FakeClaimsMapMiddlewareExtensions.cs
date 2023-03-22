@@ -6,7 +6,7 @@ public static class FakeClaimsMapMiddlewareExtensions
 {
     public const string FakeClaimsMapMiddlewareMaker = nameof(FakeClaimsMapMiddlewareMaker);
     
-    public static IApplicationBuilder UseAbpClaimsMap(this IApplicationBuilder app)
+    public static IApplicationBuilder UseFakeClaimsMap(this IApplicationBuilder app)
     {
         return app.VerifyMiddlewareAreRegistered(FakeClaimsMapMiddlewareMaker)
             ? app

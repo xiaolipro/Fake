@@ -6,7 +6,7 @@ public static class FakeExceptionHandlingMiddlewareExtensions
 {
     public const string FakeExceptionHandlingMiddlewareMarker = nameof(FakeExceptionHandlingMiddlewareMarker);
 
-    public static IApplicationBuilder UseAbpExceptionHandling(this IApplicationBuilder app)
+    public static IApplicationBuilder UseFakeExceptionHandling(this IApplicationBuilder app)
     {
         return app.VerifyMiddlewareAreRegistered(FakeExceptionHandlingMiddlewareMarker)
             ? app

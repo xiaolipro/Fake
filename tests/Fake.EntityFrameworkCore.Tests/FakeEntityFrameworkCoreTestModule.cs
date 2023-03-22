@@ -28,7 +28,7 @@ public class FakeEntityFrameworkCoreTestModule:FakeModule
 
     public override void PreConfigureApplication(ApplicationConfigureContext context)
     {
-        var ctx = context.ServiceProvider.GetService<OrderingContext>();
+        var ctx = context.ServiceProvider.GetRequiredService<OrderingContext>();
         
         ctx.Database.EnsureDeleted();
         ctx.Database.EnsureCreated();
