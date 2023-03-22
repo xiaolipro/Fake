@@ -5,8 +5,8 @@ using Fake.EntityFrameworkCore;
 using Fake.Modularity;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
 [DependsOn(typeof(FakeAppTestModule))]
 [DependsOn(typeof(FakeEntityFrameworkCoreModule))]
@@ -18,8 +18,16 @@ public class FakeEntityFrameworkCoreTestModule:FakeModule
 
         context.Services.AddDbContextFactory<OrderingContext>(builder =>
         {
-            /*builder.UseSqlite(new SqliteConnection("Data Source=:memory:"));*/
-            builder.UseSqlite("FileName=./fake.db");
+            builder.UseSqlite(new SqliteConnection("Data Source=:memory:"));
+            /*builder.UseSqlite("FileName=./fake.db");*/
         });
+
+    }
+
+    public override void PreConfigureApplication(ApplicationConfigureContext context)
+    {
+        var ctx = context.ServiceProvider.GetService<OrderingContext>();
+        ctx.Database.EnsureDeleted();
+        ctx.Database.EnsureCreated();
     }
 }
