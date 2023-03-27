@@ -74,6 +74,11 @@ public class ChildUnitOfWork : IUnitOfWork
         return _parent.RollbackAsync(cancellationToken);
     }
 
+    public Task SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        return _parent.SaveChangesAsync(cancellationToken);
+    }
+
     public Task CompleteAsync(CancellationToken cancellationToken = default)
     {
         return Task.CompletedTask;

@@ -27,6 +27,13 @@ public interface IUnitOfWork : IDatabaseApiContainer, ITransactionApiContainer, 
     Task RollbackAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// 保存变更到数据库
+    /// </summary>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    Task SaveChangesAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// 完成所有操作（包括数据保存、事务提交）
     /// </summary>
     /// <param name="cancellationToken"></param>

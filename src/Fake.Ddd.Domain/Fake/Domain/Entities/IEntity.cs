@@ -22,7 +22,8 @@ public interface IEntity : IHasDomainEvent
 /// 实体顶层泛型抽象
 /// </summary>
 /// <typeparam name="TKey">唯一主键类型</typeparam>
-public interface IEntity<out TKey> : IEntity
+// ReSharper disable once TypeParameterCanBeVariant
+public interface IEntity<TKey> : IEntity
 {
     /// <summary>
     /// 实体唯一标识

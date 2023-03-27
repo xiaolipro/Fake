@@ -19,6 +19,6 @@ public interface IAggregateRoot : IEntity
 /// 定义聚合根，单主键用这个
 /// </summary>
 /// <typeparam name="TKey">实体主键类型</typeparam>
-public interface IAggregateRoot<out TKey> : IEntity<TKey>, IAggregateRoot
+public interface IAggregateRoot<TKey> : IEntity<TKey>, IAggregateRoot
 {
 }

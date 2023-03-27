@@ -1,17 +1,15 @@
 ﻿using Domain.Aggregates.OrderAggregate;
 using Fake.Domain.Repositories.EntityFrameWorkCore;
-using Fake.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace AppTests.Repositories;
 
-public class OrderRepository:EfCoreRepository<OrderingContext>, IOrderRepository
+public class OrderRepository : EfCoreRepository<OrderingContext, Order>, IOrderRepository
 {
-
-    public OrderRepository(IDbContextProvider<OrderingContext> dbContextProvider) : base(dbContextProvider)
+    public OrderRepository(IServiceProvider serviceProvider) : base(serviceProvider)
     {
     }
-    
+
     public async Task<Order> AddAsync(Order order)
     {
         var context = await GetDbContextAsync();
@@ -38,6 +36,7 @@ public class OrderRepository:EfCoreRepository<OrderingContext>, IOrderRepository
                 .Local
                 .FirstOrDefault(o => o.Id == orderId);
         }
+
         if (order != null)
         {
             await context.Entry(order)
