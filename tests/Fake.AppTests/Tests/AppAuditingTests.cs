@@ -55,10 +55,10 @@ public abstract class AppAuditingTests<TStartupModule>:AppTestBase<TStartupModul
 
         var order = await _orderRepository.InsertAsync(fakeOrder);
 
-        var order2 = await _orderRepository.GetAsync(order.Id);
+        order = await _orderRepository.GetAsync(order.Id);
 
-        order2.ShouldNotBeNull();
-        order2.CreationTime.ShouldBeLessThanOrEqualTo(_clock.Now);
-        order2.CreatorId.ShouldBe(_currentUserId);
+        order.ShouldNotBeNull();
+        order.CreationTime.ShouldBeLessThanOrEqualTo(_clock.Now);
+        order.CreatorId.ShouldBe(_currentUserId);
     }
 }
