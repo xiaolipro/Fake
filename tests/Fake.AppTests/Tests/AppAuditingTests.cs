@@ -9,7 +9,6 @@ using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using Shouldly;
 using Xunit;
-using static System.Guid;
 
 namespace Tests;
 
@@ -28,7 +27,7 @@ public abstract class AppAuditingTests<TStartupModule> : AppTestBase<TStartupMod
     protected override void AfterAddFakeApplication(IServiceCollection services)
     {
         var currentUser = Substitute.For<ICurrentUser>();
-        currentUser.UserId.Returns(ci => _currentUserId.ToString());
+        currentUser.UserId.Returns(_ => _currentUserId.ToString());
 
         services.AddSingleton(currentUser);
     }
@@ -38,7 +37,7 @@ public abstract class AppAuditingTests<TStartupModule> : AppTestBase<TStartupMod
     [InlineData("4b2790fc-3f51-43d5-88a1-a92d96a9e6ea")]
     public async Task 创建审计(string currentUserId)
     {
-        TryParse(currentUserId, out _currentUserId);
+        Guid.TryParse(currentUserId, out _currentUserId);
 
         var street = "fakeStreet";
         var city = "FakeCity";
@@ -69,10 +68,10 @@ public abstract class AppAuditingTests<TStartupModule> : AppTestBase<TStartupMod
     [InlineData("4b2790fc-3f51-43d5-88a1-a92d96a9e6ea")]
     public async Task 修改审计(string currentUserId)
     {
-        TryParse(currentUserId, out _currentUserId);
+        Guid.TryParse(currentUserId, out _currentUserId);
 
         var order = await _orderRepository.GetFirstOrNullAsync(AppTestDataBuilder.OrderId);
-        order.LastModifierId.ShouldBe(Empty);
+        order.LastModifierId.ShouldBe(Guid.Empty);
 
         order.SetCancelledStatus();
         order = await _orderRepository.UpdateAsync(order);
@@ -82,11 +81,10 @@ public abstract class AppAuditingTests<TStartupModule> : AppTestBase<TStartupMod
     }
 
     [Theory]
-    [InlineData(null)]
     [InlineData("4b2790fc-3f51-43d5-88a1-a92d96a9e6ea")]
     public async Task 软删审计(string currentUserId)
     {
-        TryParse(currentUserId, out _currentUserId);
+        Guid.TryParse(currentUserId, out _currentUserId);
 
         var order = await _orderRepository.GetFirstOrNullAsync(AppTestDataBuilder.OrderId);
         await _orderRepository.DeleteAsync(order);

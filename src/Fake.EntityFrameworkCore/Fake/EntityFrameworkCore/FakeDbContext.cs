@@ -185,8 +185,10 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
 
     protected virtual void ConfigureBaseProperties(ModelBuilder modelBuilder, IMutableEntityType mutableEntityType)
     {
-        // 可移动实体类型是以特殊方式持久存储的实体，其有一个外键关联到另一个实体，而没有它自己的表。
-        // 可移动的实例会与主要实例一起被创建和保存，而不仅仅是单独的外键。
+        /*
+         * 如果是附庸实体，意味着其作为一个字段直接由另一个实体持有，它没有自己的表。
+         * 它会伴随所属实体一同被创建更新或销毁，在DDD中很生动的对应着值对象。
+         */
         if (mutableEntityType.IsOwned()) return;
 
         if (!mutableEntityType.ClrType.IsAssignableTo(typeof(IEntity))) return;
