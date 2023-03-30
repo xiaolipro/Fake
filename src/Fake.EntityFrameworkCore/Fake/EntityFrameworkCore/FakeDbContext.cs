@@ -15,11 +15,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
 
 namespace Fake.EntityFrameworkCore;
 
@@ -121,8 +116,8 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
             entry.Reload();
 
             ReflectionHelper.TrySetProperty(entityWithSoftDelete, x => x.IsDeleted, () => true);
-
-            SetModifier(entry);
+            
+            _auditPropertySetter.Value.SetModificationProperties(entry.Entity);
         }
     }
 
@@ -246,7 +241,6 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
         IMutableEntityType mutableEntityType)
         where TEntity : class
     {
-        // TODO: 我没看懂这个设计
         // 如果实体有父类则不应该拦截
         if (mutableEntityType.BaseType != null) return;
 

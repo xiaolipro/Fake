@@ -36,7 +36,7 @@ public abstract class RepositoryBase<TEntity> : IRepository<TEntity>, IServicePr
     public abstract Task<TEntity> InsertAsync(TEntity entity, bool autoSave = false,
         CancellationToken cancellationToken = default);
 
-    public virtual async Task InsertAsync(IEnumerable<TEntity> entities, bool autoSave = false,
+    public virtual async Task InsertRangeAsync(IEnumerable<TEntity> entities, bool autoSave = false,
         CancellationToken cancellationToken = default)
     {
         foreach (var entity in entities)
@@ -46,26 +46,53 @@ public abstract class RepositoryBase<TEntity> : IRepository<TEntity>, IServicePr
         if (autoSave) await SaveChangesAsync(cancellationToken);
     }
 
-    public Task<TEntity> UpdateAsync(TEntity entity, bool autoSave = false,
+    public abstract Task<TEntity> UpdateAsync(TEntity entity, bool autoSave = false,
+        CancellationToken cancellationToken = default);
+    public virtual Task UpdateRangeAsync(IEnumerable<TEntity> entities, bool autoSave = false,
         CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
     }
 
-    public Task UpdateAsync(IEnumerable<TEntity> entities, bool autoSave = false,
+    public abstract Task DeleteAsync(TEntity entity, bool autoSave = false,
+        CancellationToken cancellationToken = default);
+
+    public virtual Task DeleteRangeAsync(IEnumerable<TEntity> entities, bool autoSave = false,
         CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
     }
+}
 
-    public Task DeleteAsync(TEntity entity, bool autoSave = false, CancellationToken cancellationToken = default)
+public abstract class RepositoryBase<TEntity,TKey> :  RepositoryBase<TEntity>, IRepository<TEntity,TKey>
+    where TEntity : class, IAggregateRoot<TKey>
+{
+    protected RepositoryBase(IServiceProvider serviceProvider) : base(serviceProvider)
     {
-        throw new NotImplementedException();
+    }
+    public abstract Task<TEntity> GetFirstOrNullAsync(TKey id, CancellationToken cancellationToken = default);
+
+    public async Task DeleteAsync(TKey id, bool autoSave = false, CancellationToken cancellationToken = default)
+    {
+        var entity = await GetFirstOrNullAsync(id, cancellationToken);
+        if (entity == null)
+        {
+            return;
+        }
+
+        await DeleteAsync(entity, autoSave, cancellationToken);
     }
 
-    public Task DeleteAsync(IEnumerable<TEntity> entities, bool autoSave = false,
-        CancellationToken cancellationToken = default)
+    public async Task DeleteRangeAsync(IEnumerable<TKey> ids, bool autoSave = false, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        foreach (var id in ids)
+        {
+            await DeleteAsync(id, cancellationToken:cancellationToken);
+        }
+
+        if (autoSave)
+        {
+            await SaveChangesAsync(cancellationToken);
+        }
     }
 }

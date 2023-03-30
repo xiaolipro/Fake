@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AppTests.Repositories;
 
-public class OrderRepository : EfCoreRepository<OrderingContext, Order>, IOrderRepository
+public class OrderRepository : EfCoreRepository<OrderingContext, Order, Guid>, IOrderRepository
 {
     public OrderRepository(IServiceProvider serviceProvider) : base(serviceProvider)
     {

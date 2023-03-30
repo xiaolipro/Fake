@@ -1,4 +1,6 @@
 #nullable enable
+using JetBrains.Annotations;
+
 namespace Fake.Domain.Entities.Auditing;
 
 /// <summary>

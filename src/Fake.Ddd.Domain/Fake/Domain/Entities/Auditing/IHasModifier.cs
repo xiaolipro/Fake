@@ -5,7 +5,8 @@ namespace Fake.Domain.Entities.Auditing;
 public interface IHasModifier<out TUserId>
 {
     /// <summary>
-    /// 上一次修改者Id
+    /// 最近一次修改者Id
     /// </summary>
+    [NotNull]
     TUserId LastModifierId { get; }
 }

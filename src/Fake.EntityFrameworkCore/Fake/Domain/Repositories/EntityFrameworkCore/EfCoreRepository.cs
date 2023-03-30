@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Fake.Domain.Entities;
@@ -9,61 +10,153 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Fake.Domain.Repositories.EntityFrameWorkCore;
 
-public class EfCoreRepository<TDbContext, TEntity> :RepositoryBase<TEntity>
-    where TDbContext : DbContext 
+public class EfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntity>, IEfCoreRepository<TDbContext, TEntity>
+    where TDbContext : DbContext
     where TEntity : class, IAggregateRoot
 {
-    private readonly IServiceProvider _serviceProvider;
     private readonly IDbContextProvider<TDbContext> _dbContextProvider;
 
-    protected EfCoreRepository(IServiceProvider serviceProvider):base(serviceProvider)
+    public EfCoreRepository(IServiceProvider serviceProvider) : base(serviceProvider)
     {
-        _serviceProvider = serviceProvider;
         _dbContextProvider = serviceProvider.GetRequiredService<IDbContextProvider<TDbContext>>();
     }
 
-    protected Task<TDbContext> GetDbContextAsync()
+    public Task<TDbContext> GetDbContextAsync()
     {
         return _dbContextProvider.GetDbContextAsync();
     }
 
-    public override async Task<TEntity> InsertAsync(TEntity entity, bool autoSave = false, CancellationToken cancellationToken = default)
+    public async Task<DbSet<TEntity>> GetDbSetAsync()
+    {
+        var dbContext = await _dbContextProvider.GetDbContextAsync();
+        return dbContext.Set<TEntity>();
+    }
+
+    public override async Task<TEntity> InsertAsync(TEntity entity, bool autoSave = false,
+        CancellationToken cancellationToken = default)
     {
         var dbContext = await GetDbContextAsync();
 
-        var entry =await dbContext.Set<TEntity>().AddAsync(entity, GetCancellationToken(cancellationToken));
+        /*
+         * EFCore的AddAsync与Add区别
+         * https://stackoverflow.com/questions/47135262/addasync-vs-add-in-ef-core
+         */
+        var entry = await dbContext.AddAsync(entity, GetCancellationToken(cancellationToken));
 
-        if (autoSave) await dbContext.SaveChangesAsync(GetCancellationToken(cancellationToken));
+        if (autoSave)
+        {
+            await dbContext.SaveChangesAsync(GetCancellationToken(cancellationToken));
+        }
 
         return entry.Entity;
     }
 
-    public override async Task InsertAsync(IEnumerable<TEntity> entities, bool autoSave = false, CancellationToken cancellationToken = default)
+    public override async Task InsertRangeAsync(IEnumerable<TEntity> entities, bool autoSave = false,
+        CancellationToken cancellationToken = default)
+    {
+        var dbContext = await GetDbContextAsync();
+
+        await dbContext.Set<TEntity>().AddRangeAsync(entities, cancellationToken);
+
+        if (autoSave)
+        {
+            await dbContext.SaveChangesAsync(GetCancellationToken(cancellationToken));
+        }
+    }
+
+    public override async Task<TEntity> UpdateAsync(TEntity entity, bool autoSave = false,
+        CancellationToken cancellationToken = default)
     {
         var dbContext = await GetDbContextAsync();
         
-        await dbContext.Set<TEntity>().AddRangeAsync(entities, cancellationToken);
-        
-        if (autoSave) await dbContext.SaveChangesAsync(GetCancellationToken(cancellationToken));
+        dbContext.Attach(entity);
+        var entry = dbContext.Set<TEntity>().Update(entity);
+
+        if (autoSave)
+        {
+            await dbContext.SaveChangesAsync(GetCancellationToken(cancellationToken));
+        }
+
+        return entry.Entity;
     }
 
-    public Task<TEntity> UpdateAsync(TEntity aggregate, bool autoSave = false, CancellationToken cancellationToken = default)
+    public override async Task UpdateRangeAsync(IEnumerable<TEntity> entities, bool autoSave = false,
+        CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        cancellationToken = GetCancellationToken(cancellationToken);
+
+        var dbContext = await GetDbContextAsync();
+
+        dbContext.Set<TEntity>().UpdateRange(entities);
+
+        if (autoSave)
+        {
+            await dbContext.SaveChangesAsync(cancellationToken);
+        }
     }
 
-    public Task<TEntity> UpdateAsync(IEnumerable<TEntity> aggregates, bool autoSave = false, CancellationToken cancellationToken = default)
+    public override async Task DeleteAsync(TEntity entity, bool autoSave = false, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var dbContext = await GetDbContextAsync();
+
+        dbContext.Set<TEntity>().Remove(entity);
+
+        if (autoSave)
+        {
+            await dbContext.SaveChangesAsync(GetCancellationToken(cancellationToken));
+        }
     }
 
-    public Task DeleteAsync(TEntity aggregate, bool autoSave = false, CancellationToken cancellationToken = default)
+    public override async Task DeleteRangeAsync(IEnumerable<TEntity> entities, bool autoSave = false,
+        CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        cancellationToken = GetCancellationToken(cancellationToken);
+
+        var dbContext = await GetDbContextAsync();
+
+        dbContext.RemoveRange(entities);
+
+        if (autoSave)
+        {
+            await dbContext.SaveChangesAsync(cancellationToken);
+        }
+    }
+}
+
+public class EfCoreRepository<TDbContext, TEntity, TKey> : EfCoreRepository<TDbContext, TEntity>,
+    IEfCoreRepository<TDbContext, TEntity, TKey>
+    where TDbContext : DbContext
+    where TEntity : class, IAggregateRoot<TKey>
+{
+    public EfCoreRepository(IServiceProvider serviceProvider) : base(serviceProvider)
+    {
     }
 
-    public Task DeleteAsync(IEnumerable<TEntity> aggregates, bool autoSave = false, CancellationToken cancellationToken = default)
+    public async Task<TEntity> GetFirstOrNullAsync(TKey id, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var set = await GetDbSetAsync();
+        return await set.FindAsync(new object[]{id}, cancellationToken: GetCancellationToken(cancellationToken));
+    }
+
+    public async Task DeleteAsync(TKey id, bool autoSave = false, CancellationToken cancellationToken = default)
+    {
+        var entity = await GetFirstOrNullAsync(id, cancellationToken);
+        if (entity == null)
+        {
+            return;
+        }
+
+        await DeleteAsync(entity, autoSave, cancellationToken);
+    }
+
+
+    public async Task DeleteRangeAsync(IEnumerable<TKey> ids, bool autoSave = false, CancellationToken cancellationToken = default)
+    {
+        cancellationToken = GetCancellationToken(cancellationToken);
+
+        var set = await GetDbSetAsync();
+        var entities = await set.Where(x => ids.Contains(x.Id)).ToListAsync(cancellationToken);
+
+        await DeleteRangeAsync(entities, autoSave, cancellationToken);
     }
 }

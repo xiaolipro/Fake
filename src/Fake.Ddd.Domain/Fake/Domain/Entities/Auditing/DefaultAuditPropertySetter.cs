@@ -42,7 +42,7 @@ public class DefaultAuditPropertySetter : IAuditPropertySetter
         
         if (targetObject is IHasModifier<Guid> objectWithGuidModifier)
         {
-            if (objectWithGuidModifier.LastModifierId != default && Guid.TryParse(_currentUser.UserId, out var userIdAsGuid))
+            if (Guid.TryParse(_currentUser.UserId, out var userIdAsGuid))
             {
                 ReflectionHelper.TrySetProperty(objectWithGuidModifier, x => x.LastModifierId, () => userIdAsGuid);
             }

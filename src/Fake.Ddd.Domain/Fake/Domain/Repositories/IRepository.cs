@@ -1,26 +1,27 @@
 ﻿using Fake.Domain.Entities;
-using Fake.UnitOfWork;
 using JetBrains.Annotations;
 
 namespace Fake.Domain.Repositories;
 
+/// <summary>
+/// 仓储，专注于聚合的持久化
+/// </summary>
 public interface IRepository
 {
-    IUnitOfWork UnitOfWork { get; }
 }
 
 /// <summary>
 /// 仓储，专注于聚合的持久化
 /// </summary>
 /// <typeparam name="TEntity">聚合根</typeparam>
-public interface IRepository<TEntity> where TEntity : IAggregateRoot
+public interface IRepository<TEntity> : IRepository where TEntity : IAggregateRoot
 {
     [NotNull]
     Task<TEntity> InsertAsync([NotNull] TEntity entity, bool autoSave = false,
         CancellationToken cancellationToken = default);
 
     [NotNull]
-    Task InsertAsync([NotNull] IEnumerable<TEntity> entities, bool autoSave = false,
+    Task InsertRangeAsync([NotNull] IEnumerable<TEntity> entities, bool autoSave = false,
         CancellationToken cancellationToken = default);
 
     [NotNull]
@@ -28,13 +29,13 @@ public interface IRepository<TEntity> where TEntity : IAggregateRoot
         CancellationToken cancellationToken = default);
 
     [NotNull]
-    Task UpdateAsync([NotNull] IEnumerable<TEntity> entities, bool autoSave = false,
+    Task UpdateRangeAsync([NotNull] IEnumerable<TEntity> entities, bool autoSave = false,
         CancellationToken cancellationToken = default);
 
     Task DeleteAsync([NotNull] TEntity entity, bool autoSave = false,
         CancellationToken cancellationToken = default);
 
-    Task DeleteAsync([NotNull] IEnumerable<TEntity> entities, bool autoSave = false,
+    Task DeleteRangeAsync([NotNull] IEnumerable<TEntity> entities, bool autoSave = false,
         CancellationToken cancellationToken = default);
 }
 
@@ -47,24 +48,10 @@ public interface IRepository<TEntity> where TEntity : IAggregateRoot
 public interface IRepository<TEntity, TKey> : IRepository<TEntity>
     where TEntity : IAggregateRoot<TKey>
 {
-    [NotNull]
-    Task<TEntity> InsertAsync(int id, bool autoSave = false,
-        CancellationToken cancellationToken = default);
+    Task<TEntity> GetFirstOrNullAsync(TKey id, CancellationToken cancellationToken = default);
 
-    [NotNull]
-    Task<TEntity> InsertAsync([NotNull] IEnumerable<int> ids, bool autoSave = false,
-        CancellationToken cancellationToken = default);
+    Task DeleteAsync(TKey id, bool autoSave = false, CancellationToken cancellationToken = default);
 
-    [NotNull]
-    Task<TEntity> UpdateAsync(int id, bool autoSave = false,
-        CancellationToken cancellationToken = default);
-
-    [NotNull]
-    Task<TEntity> UpdateAsync([NotNull] IEnumerable<int> ids, bool autoSave = false,
-        CancellationToken cancellationToken = default);
-
-    Task DeleteAsync(int id, bool autoSave = false, CancellationToken cancellationToken = default);
-
-    Task DeleteAsync([NotNull] IEnumerable<int> ids, bool autoSave = false,
+    Task DeleteRangeAsync([NotNull] IEnumerable<TKey> ids, bool autoSave = false,
         CancellationToken cancellationToken = default);
 }
