@@ -39,7 +39,7 @@ public static class FakeEntityTypeBuilderExtensions
 
     public static EntityTypeBuilder TryConfigureCreator<TUserId>(this EntityTypeBuilder builder)
     {
-        if (builder.Metadata.ClrType.IsAssignableTo<IHasCreator<TUserId>>())
+        if (builder.Metadata.ClrType.IsAssignableTo(typeof(IHasCreator<>)))
         {
             builder.Property(nameof(IHasCreator<TUserId>.CreatorId))
                 .HasColumnName(nameof(IHasCreator<TUserId>.CreatorId))

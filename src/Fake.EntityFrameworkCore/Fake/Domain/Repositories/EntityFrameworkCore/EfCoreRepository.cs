@@ -28,7 +28,7 @@ public class EfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntity>, IE
 
     public async Task<DbSet<TEntity>> GetDbSetAsync()
     {
-        var dbContext = await _dbContextProvider.GetDbContextAsync();
+        var dbContext = await GetDbContextAsync();
         return dbContext.Set<TEntity>();
     }
 

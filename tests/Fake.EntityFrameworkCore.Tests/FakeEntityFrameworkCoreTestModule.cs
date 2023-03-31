@@ -39,7 +39,6 @@ public class FakeEntityFrameworkCoreTestModule : FakeModule
     {
         var ctx = context.ServiceProvider.GetRequiredService<OrderingContext>();
 
-        ctx.Database.EnsureDeleted();
         ctx.Database.EnsureCreated();
     }
 }

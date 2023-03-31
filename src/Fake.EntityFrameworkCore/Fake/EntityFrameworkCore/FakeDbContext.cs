@@ -24,13 +24,13 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
     private readonly Lazy<IGuidGenerator> _guidGenerator;
     private readonly Lazy<IAuditPropertySetter> _auditPropertySetter;
 
-    private static readonly MethodInfo ConfigureGlobalFiltersMethodInfo = typeof(FakeDbContext<TDbContext>)
+    private static readonly MethodInfo ConfigureBasePropertiesMethodInfo = typeof(FakeDbContext<TDbContext>)
         .GetMethod(
-            nameof(ConfigureGlobalFilters),
+            nameof(ConfigureBaseProperties),
             BindingFlags.Instance | BindingFlags.NonPublic
         );
 
-    protected FakeDbContext(DbContextOptions<TDbContext> options, IServiceProvider serviceProvider):base(options)
+    protected FakeDbContext(DbContextOptions<TDbContext> options, IServiceProvider serviceProvider) : base(options)
     {
         _clock = new Lazy<IClock>(serviceProvider.GetRequiredService<IClock>());
         _guidGenerator = new Lazy<IGuidGenerator>(serviceProvider.GetRequiredService<IGuidGenerator>());
@@ -46,7 +46,10 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
 
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())
         {
-            ConfigureBaseProperties(modelBuilder, entityType);
+            ConfigureBasePropertiesMethodInfo
+                .MakeGenericMethod(entityType.ClrType)
+                .Invoke(this, new object[] { modelBuilder, entityType });
+            
             ConfigureValueConverter(modelBuilder, entityType);
         }
     }
@@ -116,7 +119,7 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
             entry.Reload();
 
             ReflectionHelper.TrySetProperty(entityWithSoftDelete, x => x.IsDeleted, () => true);
-            
+
             _auditPropertySetter.Value.SetModificationProperties(entry.Entity);
         }
     }
@@ -183,7 +186,8 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
         }
     }
 
-    protected virtual void ConfigureBaseProperties(ModelBuilder modelBuilder, IMutableEntityType mutableEntityType)
+    protected virtual void ConfigureBaseProperties<TEntity>(ModelBuilder modelBuilder,
+        IMutableEntityType mutableEntityType) where TEntity : class
     {
         /*
          * 如果是附庸实体，意味着其作为一个字段直接由另一个实体持有，它没有自己的表。
@@ -191,10 +195,10 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
          */
         if (mutableEntityType.IsOwned()) return;
 
-        if (!mutableEntityType.ClrType.IsAssignableTo(typeof(IEntity))) return;
+        if (!typeof(TEntity).IsAssignableTo(typeof(IEntity))) return;
 
         // TODO: 这里被迫选用一个类型事实上UserId类型是可以自定义的
-        modelBuilder.Entity(mutableEntityType.ClrType)
+        modelBuilder.Entity<TEntity>()
             .TryConfigureCreator<Guid>()
             .TryConfigureModifier<Guid>()
             .TryConfigureSoftDelete<Guid>()
@@ -202,9 +206,7 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
             .TryConfigureVersionNum();
 
         // 配置全局过滤器
-        ConfigureGlobalFiltersMethodInfo
-            .MakeGenericMethod(mutableEntityType.ClrType)
-            .Invoke(this, new object[] { modelBuilder, mutableEntityType });
+        ConfigureGlobalFilters<TEntity>(modelBuilder, mutableEntityType);
     }
 
     protected virtual void ConfigureValueConverter(ModelBuilder modelBuilder, IMutableEntityType mutableEntityType)
@@ -248,7 +250,7 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
 
         Expression<Func<TEntity, bool>> expression = null;
 
-        if (mutableEntityType.ClrType.IsAssignableTo(typeof(ISoftDelete)))
+        if (typeof(TEntity).IsAssignableTo(typeof(ISoftDelete)))
         {
             expression = entity => !EF.Property<bool>(entity, nameof(ISoftDelete.IsDeleted));
         }

@@ -18,12 +18,15 @@ public class OrderingContext: FakeDbContext<OrderingContext>
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+
         modelBuilder.ApplyConfiguration(new PaymentMethodEntityTypeConfiguration());
         modelBuilder.ApplyConfiguration(new OrderEntityTypeConfiguration());
         modelBuilder.ApplyConfiguration(new OrderItemEntityTypeConfiguration());
         modelBuilder.ApplyConfiguration(new CardTypeEntityTypeConfiguration());
         modelBuilder.ApplyConfiguration(new OrderStatusEntityTypeConfiguration());
         modelBuilder.ApplyConfiguration(new BuyerEntityTypeConfiguration());
-        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<Order>().HasQueryFilter(x => !x.IsDeleted);
     }
 }
