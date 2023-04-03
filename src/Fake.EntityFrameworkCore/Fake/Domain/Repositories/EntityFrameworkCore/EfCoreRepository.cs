@@ -68,7 +68,7 @@ public class EfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntity>, IE
         CancellationToken cancellationToken = default)
     {
         var dbContext = await GetDbContextAsync();
-        
+
         dbContext.Attach(entity);
         var entry = dbContext.Set<TEntity>().Update(entity);
 
@@ -95,7 +95,8 @@ public class EfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntity>, IE
         }
     }
 
-    public override async Task DeleteAsync(TEntity entity, bool autoSave = false, CancellationToken cancellationToken = default)
+    public override async Task DeleteAsync(TEntity entity, bool autoSave = false,
+        CancellationToken cancellationToken = default)
     {
         var dbContext = await GetDbContextAsync();
 
@@ -135,7 +136,7 @@ public class EfCoreRepository<TDbContext, TEntity, TKey> : EfCoreRepository<TDbC
     public async Task<TEntity> GetFirstOrNullAsync(TKey id, CancellationToken cancellationToken = default)
     {
         var set = await GetDbSetAsync();
-        return await set.FindAsync(new object[]{id}, cancellationToken: GetCancellationToken(cancellationToken));
+        return await set.FindAsync(new object[] { id }, cancellationToken: GetCancellationToken(cancellationToken));
     }
 
     public async Task DeleteAsync(TKey id, bool autoSave = false, CancellationToken cancellationToken = default)
@@ -150,7 +151,8 @@ public class EfCoreRepository<TDbContext, TEntity, TKey> : EfCoreRepository<TDbC
     }
 
 
-    public async Task DeleteRangeAsync(IEnumerable<TKey> ids, bool autoSave = false, CancellationToken cancellationToken = default)
+    public async Task DeleteRangeAsync(IEnumerable<TKey> ids, bool autoSave = false,
+        CancellationToken cancellationToken = default)
     {
         cancellationToken = GetCancellationToken(cancellationToken);
 
