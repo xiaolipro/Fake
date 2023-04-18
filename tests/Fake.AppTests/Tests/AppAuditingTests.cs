@@ -88,8 +88,12 @@ public abstract class AppAuditingTests<TStartupModule> : AppTestBase<TStartupMod
 
         var order = await _orderRepository.GetFirstOrNullAsync(AppTestDataBuilder.OrderId);
         order.CreationTime.ShouldBeLessThanOrEqualTo(_clock.Now);
+        order.LastModifierId.ShouldBe(Guid.Empty);
         await _orderRepository.DeleteAsync(order);
+        
         order.IsDeleted.ShouldBe(true);
+        order.LastModifierId.ShouldBe(_currentUserId);
+        order.LastModificationTime.ShouldBeLessThanOrEqualTo(_clock.Now);
 
         //TODO：被删除（软）的数据不应该被查询到（默认情况下）
         order = await _orderRepository.GetFirstOrNullAsync(AppTestDataBuilder.OrderId);

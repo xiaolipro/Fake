@@ -26,7 +26,5 @@ public class OrderingContext: FakeDbContext<OrderingContext>
         modelBuilder.ApplyConfiguration(new CardTypeEntityTypeConfiguration());
         modelBuilder.ApplyConfiguration(new OrderStatusEntityTypeConfiguration());
         modelBuilder.ApplyConfiguration(new BuyerEntityTypeConfiguration());
-
-        modelBuilder.Entity<Order>().HasQueryFilter(x => !x.IsDeleted);
     }
 }
