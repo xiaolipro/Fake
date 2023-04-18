@@ -136,7 +136,7 @@ public class EfCoreRepository<TDbContext, TEntity, TKey> : EfCoreRepository<TDbC
     public async Task<TEntity> GetFirstOrNullAsync(TKey id, CancellationToken cancellationToken = default)
     {
         var set = await GetDbSetAsync();
-        return await set.FindAsync(new object[] { id }, cancellationToken: GetCancellationToken(cancellationToken));
+        return await set.FirstOrDefaultAsync(x => x.Id.Equals(id), cancellationToken: GetCancellationToken(cancellationToken));
     }
 
     public async Task DeleteAsync(TKey id, bool autoSave = false, CancellationToken cancellationToken = default)
@@ -149,7 +149,6 @@ public class EfCoreRepository<TDbContext, TEntity, TKey> : EfCoreRepository<TDbC
 
         await DeleteAsync(entity, autoSave, cancellationToken);
     }
-
 
     public async Task DeleteRangeAsync(IEnumerable<TKey> ids, bool autoSave = false,
         CancellationToken cancellationToken = default)
