@@ -123,7 +123,7 @@ public class EfCoreRepository<TDbContext, TEntity, TKey> : EfCoreRepository<TDbC
     where TDbContext : DbContext
     where TEntity : class, IAggregateRoot<TKey>
 {
-    public async Task<TEntity> GetFirstOrNullAsync(TKey id, CancellationToken cancellationToken = default)
+    public async Task<TEntity> GetAsync(TKey id, CancellationToken cancellationToken = default)
     {
         var set = await GetDbSetAsync();
         return await set.FirstOrDefaultAsync(x => x.Id.Equals(id),
@@ -132,7 +132,7 @@ public class EfCoreRepository<TDbContext, TEntity, TKey> : EfCoreRepository<TDbC
 
     public async Task DeleteAsync(TKey id, bool autoSave = false, CancellationToken cancellationToken = default)
     {
-        var entity = await GetFirstOrNullAsync(id, cancellationToken);
+        var entity = await GetAsync(id, cancellationToken);
         if (entity == null)
         {
             return;

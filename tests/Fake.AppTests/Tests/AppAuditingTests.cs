@@ -56,7 +56,7 @@ public abstract class AppAuditingTests<TStartupModule> : AppTestBase<TStartupMod
 
         var order = await _orderRepository.InsertAsync(fakeOrder);
 
-        order = await _orderRepository.GetFirstOrNullAsync(order.Id);
+        order = await _orderRepository.GetAsync(order.Id);
 
         order.ShouldNotBeNull();
         order.CreationTime.ShouldBeLessThanOrEqualTo(_clock.Now);
@@ -70,7 +70,7 @@ public abstract class AppAuditingTests<TStartupModule> : AppTestBase<TStartupMod
     {
         Guid.TryParse(currentUserId, out _currentUserId);
 
-        var order = await _orderRepository.GetFirstOrNullAsync(AppTestDataBuilder.OrderId);
+        var order = await _orderRepository.GetAsync(AppTestDataBuilder.OrderId);
         order.LastModifierId.ShouldBe(Guid.Empty);
 
         order.SetCancelledStatus();
@@ -86,7 +86,7 @@ public abstract class AppAuditingTests<TStartupModule> : AppTestBase<TStartupMod
     {
         Guid.TryParse(currentUserId, out _currentUserId);
 
-        var order = await _orderRepository.GetFirstOrNullAsync(AppTestDataBuilder.OrderId);
+        var order = await _orderRepository.GetAsync(AppTestDataBuilder.OrderId);
         order.CreationTime.ShouldBeLessThanOrEqualTo(_clock.Now);
         order.LastModifierId.ShouldBe(Guid.Empty);
         await _orderRepository.DeleteAsync(order);
@@ -96,7 +96,7 @@ public abstract class AppAuditingTests<TStartupModule> : AppTestBase<TStartupMod
         order.LastModificationTime.ShouldBeLessThanOrEqualTo(_clock.Now);
 
         //TODO：被删除（软）的数据不应该被查询到（默认情况下）
-        order = await _orderRepository.GetFirstOrNullAsync(AppTestDataBuilder.OrderId);
+        order = await _orderRepository.GetAsync(AppTestDataBuilder.OrderId);
         order.ShouldBeNull();
     }
 }

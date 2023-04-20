@@ -50,7 +50,7 @@ public interface IRepository<TEntity> : IRepository where TEntity : IAggregateRo
 public interface IRepository<TEntity, TKey> : IRepository<TEntity>
     where TEntity : IAggregateRoot<TKey>
 {
-    Task<TEntity> GetFirstOrNullAsync(TKey id, CancellationToken cancellationToken = default);
+    Task<TEntity> GetAsync(TKey id, CancellationToken cancellationToken = default);
 
     Task DeleteAsync(TKey id, bool autoSave = false, CancellationToken cancellationToken = default);
 
