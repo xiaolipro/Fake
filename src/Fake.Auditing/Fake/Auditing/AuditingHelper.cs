@@ -54,7 +54,7 @@ public class AuditingHelper : IAuditingHelper
     {
         return new AuditLogActionInfo()
         {
-            ServiceName = invocation.TargetObject.GetType().FullName,
+            ServiceName = invocation.TargetObject.GetType().Name,
             MethodName = invocation.Method.Name,
             Parameters = SerializeParameter(invocation.ArgumentsDictionary),
             ExecutionTime = _clock.Now

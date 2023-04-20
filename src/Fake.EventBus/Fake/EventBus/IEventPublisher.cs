@@ -4,6 +4,9 @@ using Fake.EventBus.Events;
 
 namespace Fake.EventBus;
 
+/// <summary>
+/// 事件发布者--发布者模式
+/// </summary>
 public interface IEventPublisher
 {
     /// <summary>

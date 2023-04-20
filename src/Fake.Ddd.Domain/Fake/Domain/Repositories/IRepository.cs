@@ -1,5 +1,4 @@
-﻿using System.Linq.Expressions;
-using Fake.Domain.Entities;
+﻿using Fake.Domain.Entities;
 using Fake.UnitOfWork;
 using JetBrains.Annotations;
 
@@ -20,7 +19,7 @@ public interface IRepository : IUnitOfWorkEnabled
 public interface IRepository<TEntity> : IRepository where TEntity : IAggregateRoot
 {
     Task<IQueryable<TEntity>> GetQueryableAsync(CancellationToken cancellationToken = default);
-    
+
     [NotNull]
     Task<TEntity> InsertAsync([NotNull] TEntity entity, bool autoSave = false,
         CancellationToken cancellationToken = default);
@@ -51,7 +50,6 @@ public interface IRepository<TEntity> : IRepository where TEntity : IAggregateRo
 public interface IRepository<TEntity, TKey> : IRepository<TEntity>
     where TEntity : IAggregateRoot<TKey>
 {
-    [CanBeNull]
     Task<TEntity> GetAsync(TKey id, CancellationToken cancellationToken = default);
 
     Task DeleteAsync(TKey id, bool autoSave = false, CancellationToken cancellationToken = default);
