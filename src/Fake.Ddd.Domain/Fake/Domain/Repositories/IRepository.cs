@@ -1,4 +1,5 @@
-﻿using Fake.Domain.Entities;
+﻿using System.Linq.Expressions;
+using Fake.Domain.Entities;
 using Fake.UnitOfWork;
 using JetBrains.Annotations;
 
@@ -18,11 +19,12 @@ public interface IRepository : IUnitOfWorkEnabled
 /// <typeparam name="TEntity">聚合根</typeparam>
 public interface IRepository<TEntity> : IRepository where TEntity : IAggregateRoot
 {
+    Task<IQueryable<TEntity>> GetQueryableAsync(CancellationToken cancellationToken = default);
+    
     [NotNull]
     Task<TEntity> InsertAsync([NotNull] TEntity entity, bool autoSave = false,
         CancellationToken cancellationToken = default);
 
-    [NotNull]
     Task InsertRangeAsync([NotNull] IEnumerable<TEntity> entities, bool autoSave = false,
         CancellationToken cancellationToken = default);
 
@@ -30,7 +32,6 @@ public interface IRepository<TEntity> : IRepository where TEntity : IAggregateRo
     Task<TEntity> UpdateAsync([NotNull] TEntity entity, bool autoSave = false,
         CancellationToken cancellationToken = default);
 
-    [NotNull]
     Task UpdateRangeAsync([NotNull] IEnumerable<TEntity> entities, bool autoSave = false,
         CancellationToken cancellationToken = default);
 
@@ -50,6 +51,7 @@ public interface IRepository<TEntity> : IRepository where TEntity : IAggregateRo
 public interface IRepository<TEntity, TKey> : IRepository<TEntity>
     where TEntity : IAggregateRoot<TKey>
 {
+    [CanBeNull]
     Task<TEntity> GetAsync(TKey id, CancellationToken cancellationToken = default);
 
     Task DeleteAsync(TKey id, bool autoSave = false, CancellationToken cancellationToken = default);

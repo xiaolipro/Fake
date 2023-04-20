@@ -26,6 +26,8 @@ public abstract class RepositoryBase<TEntity> : IRepository<TEntity>
             : Task.CompletedTask;
     }
 
+    public abstract Task<IQueryable<TEntity>> GetQueryableAsync(CancellationToken cancellationToken = default);
+
     public abstract Task<TEntity> InsertAsync(TEntity entity, bool autoSave = false,
         CancellationToken cancellationToken = default);
 

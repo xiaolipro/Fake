@@ -13,6 +13,10 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Fake.UnitOfWork.EntityFrameWorkCore;
 
+/// <summary>
+/// 基于工作单元的DbContext
+/// </summary>
+/// <typeparam name="TDbContext"></typeparam>
 public class UnitOfWorkDbContextProvider<TDbContext> : IDbContextProvider<TDbContext>
     where TDbContext : DbContext
 {
@@ -33,7 +37,7 @@ public class UnitOfWorkDbContextProvider<TDbContext> : IDbContextProvider<TDbCon
         Logger = NullLogger<UnitOfWorkDbContextProvider<TDbContext>>.Instance;
     }
 
-    public async Task<TDbContext> GetDbContextAsync()
+    public async Task<TDbContext> GetDbContextAsync(CancellationToken cancellationToken = default)
     {
         var unitOfWork = _unitOfWorkManager.Current;
 
@@ -50,7 +54,7 @@ public class UnitOfWorkDbContextProvider<TDbContext> : IDbContextProvider<TDbCon
 
         if (databaseApi == null)
         {
-            var dbContext = await CreateDbContextAsync(unitOfWork, connectionString);
+            var dbContext = await CreateDbContextAsync(unitOfWork, connectionString, cancellationToken);
             databaseApi = new EfCoreDatabaseApi(dbContext);
 
             unitOfWork.AddDatabaseApi(dbContextKey, databaseApi);
@@ -61,13 +65,13 @@ public class UnitOfWorkDbContextProvider<TDbContext> : IDbContextProvider<TDbCon
 
 
     private async Task<TDbContext> CreateDbContextAsync(IUnitOfWork unitOfWork,
-        string connectionString)
+        string connectionString, CancellationToken cancellationToken = default)
     {
         var creationContext = new DbContextCreationContext(connectionString);
         using (DbContextCreationContext.Use(creationContext))
         {
             var dbContext = unitOfWork.Context.IsTransactional
-                ? await CreateDbContextWithTransactionAsync(unitOfWork)
+                ? await CreateDbContextWithTransactionAsync(unitOfWork, cancellationToken)
                 : unitOfWork.ServiceProvider.GetRequiredService<TDbContext>();
 
             if (dbContext is FakeDbContext<TDbContext> fakeDbContext)
@@ -80,7 +84,8 @@ public class UnitOfWorkDbContextProvider<TDbContext> : IDbContextProvider<TDbCon
     }
 
 
-    private async Task<TDbContext> CreateDbContextWithTransactionAsync(IUnitOfWork unitOfWork)
+    private async Task<TDbContext> CreateDbContextWithTransactionAsync(IUnitOfWork unitOfWork,
+        CancellationToken cancellationToken = default)
     {
         var transactionApiKey = $"EntityFrameworkCore_{DbContextCreationContext.Current.ConnectionString}";
         var activeTransaction = unitOfWork.FindTransactionApi(transactionApiKey) as EfCoreTransactionApi;
@@ -92,11 +97,11 @@ public class UnitOfWorkDbContextProvider<TDbContext> : IDbContextProvider<TDbCon
         {
             try
             {
+                var token = GetCancellationToken(cancellationToken);
                 // 开启数据库事务
                 var dbTransaction = unitOfWork.Context.IsolationLevel.HasValue
-                    ? await dbContext.Database.BeginTransactionAsync(unitOfWork.Context.IsolationLevel.Value,
-                        GetCancellationToken())
-                    : await dbContext.Database.BeginTransactionAsync(GetCancellationToken());
+                    ? await dbContext.Database.BeginTransactionAsync(unitOfWork.Context.IsolationLevel.Value, token)
+                    : await dbContext.Database.BeginTransactionAsync(token);
 
                 unitOfWork.AddTransactionApi(
                     transactionApiKey,
@@ -120,6 +125,8 @@ public class UnitOfWorkDbContextProvider<TDbContext> : IDbContextProvider<TDbCon
             DbContextCreationContext.Current.ExistingConnection =
                 activeTransaction.DbContextTransaction.GetDbTransaction().Connection;
 
+            var token = GetCancellationToken(cancellationToken);
+
             // 如果是关系型数据库
             if (dbContext.Database.GetService<IDbContextTransactionManager>() is IRelationalTransactionManager)
             {
@@ -128,7 +135,9 @@ public class UnitOfWorkDbContextProvider<TDbContext> : IDbContextProvider<TDbCon
                 {
                     // 使当前数据库操作使用已开启的事务
                     await dbContext.Database.UseTransactionAsync(
-                        activeTransaction.DbContextTransaction.GetDbTransaction(), GetCancellationToken());
+                        activeTransaction.DbContextTransaction.GetDbTransaction(),
+                        token
+                    );
                 }
                 else
                 {
@@ -141,14 +150,12 @@ public class UnitOfWorkDbContextProvider<TDbContext> : IDbContextProvider<TDbCon
                         {
                             await dbContext.Database.BeginTransactionAsync(
                                 unitOfWork.Context.IsolationLevel.Value,
-                                GetCancellationToken()
+                                token
                             );
                         }
                         else
                         {
-                            await dbContext.Database.BeginTransactionAsync(
-                                GetCancellationToken()
-                            );
+                            await dbContext.Database.BeginTransactionAsync(token);
                         }
                     }
                     catch (Exception e) when (e is InvalidOperationException || e is NotSupportedException)
@@ -164,7 +171,7 @@ public class UnitOfWorkDbContextProvider<TDbContext> : IDbContextProvider<TDbCon
             {
                 try
                 {
-                    await dbContext.Database.BeginTransactionAsync(GetCancellationToken());
+                    await dbContext.Database.BeginTransactionAsync(token);
                 }
                 catch (Exception e) when (e is InvalidOperationException || e is NotSupportedException)
                 {
