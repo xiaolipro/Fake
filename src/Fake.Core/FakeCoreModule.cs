@@ -1,4 +1,5 @@
-﻿using Fake.Modularity;
+﻿using Fake.DependencyInjection;
+using Fake.Modularity;
 using Fake.Threading;
 using Fake.Timing;
 
@@ -13,5 +14,7 @@ public class FakeCoreModule : FakeModule
         context.Services.AddTransient<IClock, Clock>();
         context.Services.AddTransient(typeof(IAmbientScopeProvider<>), typeof(AmbientScopeProvider<>));
         context.Services.AddTransient<ICancellationTokenProvider, NullCancellationTokenProvider>();
+
+        context.Services.AddTransient<IFakeLazyServiceProvider, FakeLazyServiceProvider>();
     }
 }

@@ -6,10 +6,6 @@ namespace AppTests.Repositories;
 
 public class OrderRepository : EfCoreRepository<OrderingContext, Order, Guid>, IOrderRepository
 {
-    public OrderRepository(IServiceProvider serviceProvider) : base(serviceProvider)
-    {
-    }
-
     public async Task<Order> AddAsync(Order order)
     {
         var context = await GetDbContextAsync();

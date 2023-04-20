@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Fake.Domain.Entities;
 using Fake.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Fake.Domain.Repositories.EntityFrameWorkCore;
 
@@ -14,16 +12,12 @@ public class EfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntity>, IE
     where TDbContext : DbContext
     where TEntity : class, IAggregateRoot
 {
-    private readonly IDbContextProvider<TDbContext> _dbContextProvider;
-
-    public EfCoreRepository(IServiceProvider serviceProvider) : base(serviceProvider)
-    {
-        _dbContextProvider = serviceProvider.GetRequiredService<IDbContextProvider<TDbContext>>();
-    }
+    private IDbContextProvider<TDbContext> DbContextProvider =>
+        LazyServiceProvider.GetRequiredLazyService<IDbContextProvider<TDbContext>>();
 
     public Task<TDbContext> GetDbContextAsync()
     {
-        return _dbContextProvider.GetDbContextAsync();
+        return DbContextProvider.GetDbContextAsync();
     }
 
     public async Task<DbSet<TEntity>> GetDbSetAsync()
@@ -129,14 +123,11 @@ public class EfCoreRepository<TDbContext, TEntity, TKey> : EfCoreRepository<TDbC
     where TDbContext : DbContext
     where TEntity : class, IAggregateRoot<TKey>
 {
-    public EfCoreRepository(IServiceProvider serviceProvider) : base(serviceProvider)
-    {
-    }
-
     public async Task<TEntity> GetFirstOrNullAsync(TKey id, CancellationToken cancellationToken = default)
     {
         var set = await GetDbSetAsync();
-        return await set.FirstOrDefaultAsync(x => x.Id.Equals(id), cancellationToken: GetCancellationToken(cancellationToken));
+        return await set.FirstOrDefaultAsync(x => x.Id.Equals(id),
+            cancellationToken: GetCancellationToken(cancellationToken));
     }
 
     public async Task DeleteAsync(TKey id, bool autoSave = false, CancellationToken cancellationToken = default)

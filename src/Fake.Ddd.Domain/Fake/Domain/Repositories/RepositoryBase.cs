@@ -2,34 +2,27 @@
 using Fake.Domain.Entities;
 using Fake.Threading;
 using Fake.UnitOfWork;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Fake.Domain.Repositories;
 
-public abstract class RepositoryBase<TEntity> : IRepository<TEntity>, IServiceProviderAccessor
+public abstract class RepositoryBase<TEntity> : IRepository<TEntity>
     where TEntity : class, IAggregateRoot
 {
-    public readonly Lazy<ICancellationTokenProvider> CancellationTokenProvider;
-    public readonly Lazy<IUnitOfWorkManager> UnitOfWorkManager;
-    public IServiceProvider ServiceProvider { get; }
-
-    protected RepositoryBase(IServiceProvider serviceProvider)
-    {
-        ServiceProvider = serviceProvider;
-        CancellationTokenProvider =
-            new Lazy<ICancellationTokenProvider>(serviceProvider.GetRequiredService<ICancellationTokenProvider>);
-        UnitOfWorkManager = new Lazy<IUnitOfWorkManager>(serviceProvider.GetRequiredService<IUnitOfWorkManager>);
-    }
+    // ReSharper disable once UnusedAutoPropertyAccessor.Global
+    public IFakeLazyServiceProvider LazyServiceProvider { get; set;}  // 属性注入
+    
+    public ICancellationTokenProvider CancellationTokenProvider=> LazyServiceProvider.GetRequiredLazyService<ICancellationTokenProvider>();
+    public IUnitOfWorkManager UnitOfWorkManager => LazyServiceProvider.GetRequiredLazyService<IUnitOfWorkManager>();
 
     protected virtual CancellationToken GetCancellationToken(CancellationToken preferredValue = default)
     {
-        return CancellationTokenProvider.Value.FallbackToProvider(preferredValue);
+        return CancellationTokenProvider.FallbackToProvider(preferredValue);
     }
 
     protected virtual Task SaveChangesAsync(CancellationToken cancellationToken)
     {
-        return UnitOfWorkManager.Value.Current != null
-            ? UnitOfWorkManager.Value.Current.SaveChangesAsync(cancellationToken)
+        return UnitOfWorkManager.Current != null
+            ? UnitOfWorkManager.Current.SaveChangesAsync(cancellationToken)
             : Task.CompletedTask;
     }
 
@@ -67,9 +60,6 @@ public abstract class RepositoryBase<TEntity> : IRepository<TEntity>, IServicePr
 public abstract class RepositoryBase<TEntity,TKey> :  RepositoryBase<TEntity>, IRepository<TEntity,TKey>
     where TEntity : class, IAggregateRoot<TKey>
 {
-    protected RepositoryBase(IServiceProvider serviceProvider) : base(serviceProvider)
-    {
-    }
     public abstract Task<TEntity> GetFirstOrNullAsync(TKey id, CancellationToken cancellationToken = default);
 
     public async Task DeleteAsync(TKey id, bool autoSave = false, CancellationToken cancellationToken = default)
