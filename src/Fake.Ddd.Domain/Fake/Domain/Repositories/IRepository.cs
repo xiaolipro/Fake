@@ -1,12 +1,14 @@
 ﻿using Fake.Domain.Entities;
+using Fake.UnitOfWork;
 using JetBrains.Annotations;
 
 namespace Fake.Domain.Repositories;
 
 /// <summary>
 /// 仓储，专注于聚合的持久化
+/// tips：仓储中的每一个行为都是最小执行单元
 /// </summary>
-public interface IRepository
+public interface IRepository : IUnitOfWorkEnabled
 {
 }
 

@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Fake.Domain.Repositories;
 
-public abstract class RepositoryBase<TEntity> : IRepository<TEntity>, IServiceProviderAccessor, IUnitOfWorkEnabled
+public abstract class RepositoryBase<TEntity> : IRepository<TEntity>, IServiceProviderAccessor
     where TEntity : class, IAggregateRoot
 {
     public readonly Lazy<ICancellationTokenProvider> CancellationTokenProvider;
