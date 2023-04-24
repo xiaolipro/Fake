@@ -14,26 +14,26 @@ namespace Fake.EventBus;
 /// <summary>
 /// 简易的发布者交互模式
 /// </summary>
-public class FakeEventPublisher : IEventPublisher
+public class EventPublisher : IEventPublisher
 {
     private readonly IServiceProvider _serviceProvider;
 
     private readonly ConcurrentDictionary<Type, EventHandlerWrapper> _eventHandlers;
 
-    public FakeEventPublisher(IServiceProvider serviceProvider)
+    public EventPublisher(IServiceProvider serviceProvider)
     {
         _serviceProvider = serviceProvider;
         _eventHandlers = new ConcurrentDictionary<Type, EventHandlerWrapper>();
     }
 
-    public Task Publish([NotNull]IEvent @event, CancellationToken cancellationToken = default)
+    public Task PublishAsync([NotNull]IEvent @event, CancellationToken cancellationToken = default)
     {
         ThrowHelper.ThrowIfNull(@event, nameof(@event));
 
-        return PublishEvent(@event, cancellationToken);
+        return PublishInternal(@event, cancellationToken);
     }
 
-    private Task PublishEvent(IEvent @event, CancellationToken cancellationToken)
+    private Task PublishInternal(IEvent @event, CancellationToken cancellationToken)
     {
         var eventHandler = _eventHandlers.GetOrAdd(@event.GetType(), eventType =>
         {
@@ -43,7 +43,7 @@ public class FakeEventPublisher : IEventPublisher
 
             if (wrapper == null)
             {
-                throw new FakeException($"无法创建类型{eventType}的{nameof(EventHandlerWrapper)}");
+                throw new FakeException($"无法为类型{eventType}创建{nameof(EventHandlerWrapper)}");
             }
 
             return wrapper;

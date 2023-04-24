@@ -6,6 +6,6 @@ public class FakeEventBusModule:FakeModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
-        context.Services.AddSingleton<IEventPublisher, FakeEventPublisher>();
+        context.Services.AddSingleton<IEventPublisher, EventPublisher>();
     }
 }

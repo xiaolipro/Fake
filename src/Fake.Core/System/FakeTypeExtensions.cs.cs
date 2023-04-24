@@ -29,4 +29,24 @@ public static class FakeTypeExtensions
 
         return targetType.IsAssignableFrom(fromType);
     }
+    
+    /// <summary>
+    /// 获取类型约定名称
+    /// 约定如下：
+    /// 1.非泛型直接返回Name
+    /// 2.泛型参数以separator拼接
+    /// </summary>
+    /// <param name="type"></param>
+    /// <param name="separator"></param>
+    /// <returns></returns>
+    public static string GetName(this Type type,string separator = ",")
+    {
+        // 不是泛型直接返回
+        if (!type.IsGenericType) return type.Name;
+
+        var genericTypes = string.Join(separator, type.GetGenericArguments().Select(x => x.Name).ToArray());
+            
+        // <A,B>
+        return $"{type.Name.Remove(type.Name.IndexOf('`'))}<{genericTypes}>";
+    }
 }
