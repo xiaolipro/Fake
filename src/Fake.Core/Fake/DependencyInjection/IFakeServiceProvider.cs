@@ -1,6 +1,6 @@
 namespace Fake.DependencyInjection;
 
-public interface IFakeLazyServiceProvider
+public interface IFakeServiceProvider
 {
     T GetLazyService<T>(Func<IServiceProvider, object> valueFactory = null) where T: class;
 

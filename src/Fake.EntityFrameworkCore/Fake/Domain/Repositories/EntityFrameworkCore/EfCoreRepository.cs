@@ -13,7 +13,7 @@ public class EfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntity>, IE
     where TEntity : class, IAggregateRoot
 {
     private IDbContextProvider<TDbContext> DbContextProvider =>
-        LazyServiceProvider.GetRequiredLazyService<IDbContextProvider<TDbContext>>();
+        ServiceProvider.GetRequiredLazyService<IDbContextProvider<TDbContext>>();
 
     public Task<TDbContext> GetDbContextAsync(CancellationToken cancellationToken = default)
     {

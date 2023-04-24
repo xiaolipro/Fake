@@ -2,12 +2,12 @@
 
 namespace Fake.DependencyInjection;
 
-public class FakeLazyServiceProvider : IFakeLazyServiceProvider
+public class FakeServiceProvider : IFakeServiceProvider
 {
     protected IServiceProvider ServiceProvider { get; }
     protected ConcurrentDictionary<Type, Lazy<object>> ServiceCacheDic { get; }
 
-    public FakeLazyServiceProvider(IServiceProvider serviceProvider)
+    public FakeServiceProvider(IServiceProvider serviceProvider)
     {
         ServiceProvider = serviceProvider;
         ServiceCacheDic = new ConcurrentDictionary<Type, Lazy<object>>();
