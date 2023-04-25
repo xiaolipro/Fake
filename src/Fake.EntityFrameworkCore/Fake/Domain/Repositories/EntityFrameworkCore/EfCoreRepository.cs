@@ -27,40 +27,93 @@ public class EfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntity>, IE
         return (await GetDbContextAsync(cancellationToken)).Set<TEntity>();
     }
 
-    public override async Task<IQueryable<TEntity>> GetQueryableAsync(bool isInclude = false,
+    public override async Task<IQueryable<TEntity>> QueryableAsync(
+        Expression<Func<TEntity, bool>> predicate = null,
+        bool isInclude = true,
         CancellationToken cancellationToken = default)
-    {
-        if (isInclude)
-        {
-            var dbContext = (await GetDbContextAsync(cancellationToken));
-            var query = dbContext.Set<TEntity>().AsQueryable();
-            var entityType = dbContext.Model.FindEntityType(typeof(TEntity));
-
-            if (entityType == null) return query;
-
-            // 获取导航属性
-            var navigationProperties = entityType.GetNavigations();
-            
-            return navigationProperties.Aggregate(query,
-                (current, navigationProperty) => current.Include(navigationProperty.Name));
-        }
-
-        return (await GetDbSetAsync(cancellationToken)).AsQueryable();
-    }
-
-    public override async Task<List<TEntity>> GetListAsync(Expression<Func<TEntity, bool>> expression,
-        bool isInclude = false, CancellationToken cancellationToken = default)
     {
         cancellationToken = GetCancellationToken(cancellationToken);
 
-        var query = await GetQueryableAsync(isInclude, cancellationToken);
+        var query = (await GetDbSetAsync(cancellationToken)).AsQueryable();
 
-        if (expression != null)
+        if (isInclude)
         {
-            query = query.Where(expression);
+            var entityType = (await GetDbContextAsync(cancellationToken)).Model.FindEntityType(typeof(TEntity));
+
+            if (entityType != null)
+            {
+                entityType.GetNavigations().Aggregate(
+                    query,
+                    (current, navigationProperty)
+                        => current.Include(navigationProperty.Name)
+                );
+            }
         }
-        
-        return await query.ToListAsync(cancellationToken);
+
+        if (predicate != null)
+        {
+            query = query.Where(predicate);
+        }
+
+        return query;
+    }
+
+    public override async Task<TEntity> FirstOrDefaultAsync(
+        Expression<Func<TEntity, bool>> predicate,
+        bool isInclude = true,
+        CancellationToken cancellationToken = default)
+    {
+        cancellationToken = GetCancellationToken(cancellationToken);
+
+        var query = await QueryableAsync(predicate, isInclude, cancellationToken);
+
+        return await query.FirstOrDefaultAsync(predicate, cancellationToken);
+    }
+
+    public override async Task<List<TEntity>> GetListAsync(Expression<Func<TEntity, bool>> predicate = null,
+        Dictionary<string, bool> sorting = null, bool isInclude = true,
+        CancellationToken cancellationToken = default)
+    {
+        cancellationToken = GetCancellationToken(cancellationToken);
+
+        var query = await QueryableAsync(predicate, isInclude, cancellationToken);
+
+        sorting ??= new Dictionary<string, bool>();
+        return await query.OrderBy(sorting).ToListAsync(cancellationToken);
+    }
+
+    public override async Task<List<TEntity>> GetPaginatedListAsync(Expression<Func<TEntity, bool>> predicate,
+        int skip,
+        int take,
+        Dictionary<string, bool> sorting = null,
+        bool isInclude = true,
+        CancellationToken cancellationToken = default)
+    {
+        cancellationToken = GetCancellationToken(cancellationToken);
+
+        var query = await QueryableAsync(predicate, isInclude, cancellationToken);
+
+        return await query.OrderBy(sorting).Skip(skip).Take(take).ToListAsync(cancellationToken);
+    }
+
+    public override async Task<long> GetCountAsync(Expression<Func<TEntity, bool>> predicate = null,
+        CancellationToken cancellationToken = default)
+    {
+        cancellationToken = GetCancellationToken(cancellationToken);
+
+        var query = await QueryableAsync(predicate, false, cancellationToken);
+
+        return await query.LongCountAsync(cancellationToken);
+    }
+
+    public override async Task<bool> AnyAsync(Expression<Func<TEntity, bool>> predicate = null,
+        CancellationToken cancellationToken = default)
+    {
+        cancellationToken = GetCancellationToken(cancellationToken);
+
+        var query = await QueryableAsync(predicate, false, cancellationToken);
+
+        return await query.AnyAsync(cancellationToken);
     }
 
     public override async Task<TEntity> InsertAsync(TEntity entity, bool autoSave = false,
@@ -153,41 +206,16 @@ public class EfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntity>, IE
             await dbContext.SaveChangesAsync(cancellationToken);
         }
     }
-}
 
-public class EfCoreRepository<TDbContext, TEntity, TKey> : EfCoreRepository<TDbContext, TEntity>,
-    IEfCoreRepository<TDbContext, TEntity, TKey>
-    where TDbContext : DbContext
-    where TEntity : class, IAggregateRoot<TKey>
-{
-    public async Task<TEntity> GetAsync(TKey id, bool isInclude = false, CancellationToken cancellationToken = default)
-    {
-        cancellationToken = GetCancellationToken(cancellationToken);
-
-        var query = await GetQueryableAsync(isInclude, cancellationToken);
-
-        return await query.FirstOrDefaultAsync(x => x.Id.Equals(id),
-            cancellationToken);
-    }
-
-    public async Task DeleteAsync(TKey id, bool autoSave = false, CancellationToken cancellationToken = default)
-    {
-        var entity = await GetAsync(id, true, cancellationToken);
-        if (entity == null)
-        {
-            return;
-        }
-
-        await DeleteAsync(entity, autoSave, cancellationToken);
-    }
-
-    public async Task DeleteRangeAsync(IEnumerable<TKey> ids, bool autoSave = false,
+    public override async Task DeleteAsync(Expression<Func<TEntity, bool>> predicate, bool autoSave = false,
         CancellationToken cancellationToken = default)
     {
         cancellationToken = GetCancellationToken(cancellationToken);
+        var dbContext = await GetDbContextAsync(cancellationToken);
 
-        var db = await GetDbContextAsync(cancellationToken);
-        var entities = await db.Set<TEntity>().Where(x => ids.Contains(x.Id)).ToListAsync(cancellationToken);
+        var entities = await dbContext.Set<TEntity>()
+            .Where(predicate)
+            .ToListAsync(cancellationToken);
 
         await DeleteRangeAsync(entities, autoSave, cancellationToken);
     }

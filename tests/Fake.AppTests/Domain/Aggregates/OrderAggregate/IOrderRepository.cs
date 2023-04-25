@@ -4,7 +4,7 @@ using Fake.Domain.Repositories;
 
 namespace Domain.Aggregates.OrderAggregate;
 
-public interface IOrderRepository:IRepository<Order, Guid>
+public interface IOrderRepository:IRepository<Order>
 {
     Task<Order> AddAsync(Order order);
 

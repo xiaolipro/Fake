@@ -1,4 +1,4 @@
-﻿using System.Linq.Expressions;
+using System.Linq.Expressions;
 using Fake.DependencyInjection;
 using Fake.Domain.Entities;
 using Fake.Threading;
@@ -29,10 +29,33 @@ public abstract class RepositoryBase<TEntity> : IRepository<TEntity>
             : Task.CompletedTask;
     }
 
-    public abstract Task<IQueryable<TEntity>> GetQueryableAsync(bool isInclude = false, CancellationToken cancellationToken = default);
-
-    public abstract Task<List<TEntity>> GetListAsync(Expression<Func<TEntity, bool>> expression, bool isInclude = false,
+    public abstract Task<IQueryable<TEntity>> QueryableAsync(
+        Expression<Func<TEntity, bool>> predicate = null,
+        bool isInclude = true,
         CancellationToken cancellationToken = default);
+
+    public abstract Task<TEntity> FirstOrDefaultAsync(
+        Expression<Func<TEntity, bool>> predicate = null,
+        bool isInclude = true,
+        CancellationToken cancellationToken = default);
+
+    public abstract Task<List<TEntity>> GetListAsync(
+        Expression<Func<TEntity, bool>> predicate = null,
+        Dictionary<string, bool> sorting = null, 
+        bool isInclude = true,
+        CancellationToken cancellationToken = default);
+
+    public abstract Task<List<TEntity>> GetPaginatedListAsync(Expression<Func<TEntity, bool>> predicate,
+        int skip,
+        int take,
+        Dictionary<string, bool> sorting = null,
+        bool isInclude = true,
+        CancellationToken cancellationToken = default);
+
+    public abstract Task<long> GetCountAsync(Expression<Func<TEntity, bool>> predicate = null,
+        CancellationToken cancellationToken = default);
+
+    public abstract Task<bool> AnyAsync(Expression<Func<TEntity, bool>> predicate = null, CancellationToken cancellationToken = default);
 
     public abstract Task<TEntity> InsertAsync(TEntity entity, bool autoSave = false,
         CancellationToken cancellationToken = default);
@@ -75,36 +98,7 @@ public abstract class RepositoryBase<TEntity> : IRepository<TEntity>
 
         if (autoSave) await SaveChangesAsync(cancellationToken);
     }
-}
 
-public abstract class RepositoryBase<TEntity, TKey> : RepositoryBase<TEntity>, IRepository<TEntity, TKey>
-    where TEntity : class, IAggregateRoot<TKey>
-{
-    public abstract Task<TEntity> GetAsync(TKey id, bool isInclude = false,
+    public abstract Task DeleteAsync(Expression<Func<TEntity, bool>> predicate, bool autoSave = false,
         CancellationToken cancellationToken = default);
-
-    public async Task DeleteAsync(TKey id, bool autoSave = false, CancellationToken cancellationToken = default)
-    {
-        var entity = await GetAsync(id, true, cancellationToken);
-        if (entity == null)
-        {
-            return;
-        }
-
-        await DeleteAsync(entity, autoSave, cancellationToken);
-    }
-
-    public async Task DeleteRangeAsync(IEnumerable<TKey> ids, bool autoSave = false,
-        CancellationToken cancellationToken = default)
-    {
-        foreach (var id in ids)
-        {
-            await DeleteAsync(id, cancellationToken: cancellationToken);
-        }
-
-        if (autoSave)
-        {
-            await SaveChangesAsync(cancellationToken);
-        }
-    }
 }

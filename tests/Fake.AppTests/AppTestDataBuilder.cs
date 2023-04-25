@@ -6,12 +6,12 @@ using Fake.Domain.Repositories;
 
 public class AppTestDataBuilder
 {
-    private readonly IRepository<Order, Guid> _orderRepository;
+    private readonly IRepository<Order> _orderRepository;
 
     public static Guid TestUser = new("1fcf46b2-28c3-48d0-8bac-fa53268a2775");
     public static Guid OrderId = new("4d734a0e-3e6b-4bad-bb43-ef8cf1b09633");
 
-    public AppTestDataBuilder(IRepository<Order, Guid> orderRepository)
+    public AppTestDataBuilder(IRepository<Order> orderRepository)
     {
         _orderRepository = orderRepository;
     }

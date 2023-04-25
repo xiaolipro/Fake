@@ -17,11 +17,36 @@ public interface IRepository : IUnitOfWorkEnabled
 /// 仓储，专注于聚合的持久化
 /// </summary>
 /// <typeparam name="TEntity">聚合根</typeparam>
-public interface IRepository<TEntity> : IRepository where TEntity : IAggregateRoot
+public interface IRepository<TEntity> : IRepository where TEntity : class, IAggregateRoot
 {
-    Task<IQueryable<TEntity>> GetQueryableAsync(bool isInclude = false, CancellationToken cancellationToken = default);
+    Task<IQueryable<TEntity>> QueryableAsync(
+        Expression<Func<TEntity, bool>> predicate = null, 
+        bool isInclude = true,
+        CancellationToken cancellationToken = default);
 
-    Task<List<TEntity>> GetListAsync(Expression<Func<TEntity, bool>> expression, bool isInclude = false,
+    Task<TEntity> FirstOrDefaultAsync(
+        Expression<Func<TEntity, bool>> predicate = null,
+        bool isInclude = true,
+        CancellationToken cancellationToken = default);
+
+    Task<List<TEntity>> GetListAsync(
+        Expression<Func<TEntity, bool>> predicate = null,
+        Dictionary<string, bool> sorting = null,
+        bool isInclude = true,
+        CancellationToken cancellationToken = default);
+
+    Task<List<TEntity>> GetPaginatedListAsync(Expression<Func<TEntity, bool>> predicate = null,
+        int skip = 0,
+        int take = 20,
+        Dictionary<string, bool> sorting = null,
+        bool isInclude = true,
+        CancellationToken cancellationToken = default);
+
+    Task<long> GetCountAsync(
+        Expression<Func<TEntity, bool>> predicate = null,
+        CancellationToken cancellationToken = default);
+
+    Task<bool> AnyAsync(Expression<Func<TEntity, bool>> predicate = null,
         CancellationToken cancellationToken = default);
 
     [NotNull]
@@ -43,21 +68,10 @@ public interface IRepository<TEntity> : IRepository where TEntity : IAggregateRo
 
     Task DeleteRangeAsync([NotNull] IEnumerable<TEntity> entities, bool autoSave = false,
         CancellationToken cancellationToken = default);
-}
 
-/// <summary>
-/// 仓储，关注于单一聚合的持久化
-/// </summary>
-/// <typeparam name="TEntity">聚合根</typeparam>
-/// <typeparam name="TKey">主键类型</typeparam>
-// ReSharper disable once TypeParameterCanBeVariant
-public interface IRepository<TEntity, TKey> : IRepository<TEntity>
-    where TEntity : IAggregateRoot<TKey>
-{
-    Task<TEntity> GetAsync(TKey id, bool isInclude = false, CancellationToken cancellationToken = default);
-
-    Task DeleteAsync(TKey id, bool autoSave = false, CancellationToken cancellationToken = default);
-
-    Task DeleteRangeAsync([NotNull] IEnumerable<TKey> ids, bool autoSave = false,
-        CancellationToken cancellationToken = default);
+    Task DeleteAsync(
+        [NotNull] Expression<Func<TEntity, bool>> predicate,
+        bool autoSave = false,
+        CancellationToken cancellationToken = default
+    );
 }
