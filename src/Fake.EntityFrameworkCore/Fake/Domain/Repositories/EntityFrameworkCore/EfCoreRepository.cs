@@ -5,7 +5,6 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Fake.Domain.Entities;
-using Fake.Domain.Repositories.Extension;
 using Fake.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,9 +22,45 @@ public class EfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntity>, IE
         return DbContextProvider.GetDbContextAsync(cancellationToken);
     }
 
-    public override async Task<IQueryable<TEntity>> GetQueryableAsync(CancellationToken cancellationToken = default)
+    public async Task<DbSet<TEntity>> GetDbSetAsync(CancellationToken cancellationToken = default)
     {
-        return (await GetDbContextAsync(cancellationToken)).Set<TEntity>().AsQueryable();
+        return (await GetDbContextAsync(cancellationToken)).Set<TEntity>();
+    }
+
+    public override async Task<IQueryable<TEntity>> GetQueryableAsync(bool isInclude = false,
+        CancellationToken cancellationToken = default)
+    {
+        if (isInclude)
+        {
+            var dbContext = (await GetDbContextAsync(cancellationToken));
+            var query = dbContext.Set<TEntity>().AsQueryable();
+            var entityType = dbContext.Model.FindEntityType(typeof(TEntity));
+
+            if (entityType == null) return query;
+
+            // 获取导航属性
+            var navigationProperties = entityType.GetNavigations();
+            
+            return navigationProperties.Aggregate(query,
+                (current, navigationProperty) => current.Include(navigationProperty.Name));
+        }
+
+        return (await GetDbSetAsync(cancellationToken)).AsQueryable();
+    }
+
+    public override async Task<List<TEntity>> GetListAsync(Expression<Func<TEntity, bool>> expression,
+        bool isInclude = false, CancellationToken cancellationToken = default)
+    {
+        cancellationToken = GetCancellationToken(cancellationToken);
+
+        var query = await GetQueryableAsync(isInclude, cancellationToken);
+
+        if (expression != null)
+        {
+            query = query.Where(expression);
+        }
+        
+        return await query.ToListAsync(cancellationToken);
     }
 
     public override async Task<TEntity> InsertAsync(TEntity entity, bool autoSave = false,
@@ -118,32 +153,6 @@ public class EfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntity>, IE
             await dbContext.SaveChangesAsync(cancellationToken);
         }
     }
-
-    public virtual async Task<List<T>> GetListAsync<T>(
-        Expression<Func<T, bool>> exp,
-        bool isInclude = false,
-        CancellationToken cancellationToken = default)
-        where T : class
-    {
-        cancellationToken = GetCancellationToken(cancellationToken);
-        var dbContext = await GetDbContextAsync(cancellationToken);
-
-        var query = dbContext.Set<T>().Where(exp);
-
-        if (isInclude)
-        {
-            var entityType = dbContext.Model.FindEntityType(typeof(T));
-            if (entityType != null)
-            {
-                //获取导航属性
-                var navigationProperties = entityType.GetNavigations();
-                query = navigationProperties.Aggregate(query, (current, navigationProperty) => current.Include(navigationProperty.Name));
-            }
-        }
-
-        return await query.ToListAsync(cancellationToken);
-    }
-
 }
 
 public class EfCoreRepository<TDbContext, TEntity, TKey> : EfCoreRepository<TDbContext, TEntity>,
@@ -151,16 +160,19 @@ public class EfCoreRepository<TDbContext, TEntity, TKey> : EfCoreRepository<TDbC
     where TDbContext : DbContext
     where TEntity : class, IAggregateRoot<TKey>
 {
-    public async Task<TEntity> GetAsync(TKey id, CancellationToken cancellationToken = default)
+    public async Task<TEntity> GetAsync(TKey id, bool isInclude = false, CancellationToken cancellationToken = default)
     {
-        var db = await GetDbContextAsync(cancellationToken);
-        return await db.Set<TEntity>().FirstOrDefaultAsync(x => x.Id.Equals(id),
-            cancellationToken: GetCancellationToken(cancellationToken));
+        cancellationToken = GetCancellationToken(cancellationToken);
+
+        var query = await GetQueryableAsync(isInclude, cancellationToken);
+
+        return await query.FirstOrDefaultAsync(x => x.Id.Equals(id),
+            cancellationToken);
     }
 
     public async Task DeleteAsync(TKey id, bool autoSave = false, CancellationToken cancellationToken = default)
     {
-        var entity = await GetAsync(id, cancellationToken);
+        var entity = await GetAsync(id, true, cancellationToken);
         if (entity == null)
         {
             return;

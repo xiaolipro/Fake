@@ -4,8 +4,6 @@ using Domain.Aggregates.OrderAggregate;
 using Fake.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace AppTests;
-
 public class OrderingContext: FakeDbContext<OrderingContext>
 {
     public const string DefaultSchema = "ordering";

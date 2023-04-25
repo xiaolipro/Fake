@@ -1,4 +1,5 @@
-﻿using Fake.Domain.Entities;
+﻿using System.Linq.Expressions;
+using Fake.Domain.Entities;
 using Fake.UnitOfWork;
 using JetBrains.Annotations;
 
@@ -18,7 +19,10 @@ public interface IRepository : IUnitOfWorkEnabled
 /// <typeparam name="TEntity">聚合根</typeparam>
 public interface IRepository<TEntity> : IRepository where TEntity : IAggregateRoot
 {
-    Task<IQueryable<TEntity>> GetQueryableAsync(CancellationToken cancellationToken = default);
+    Task<IQueryable<TEntity>> GetQueryableAsync(bool isInclude = false, CancellationToken cancellationToken = default);
+
+    Task<List<TEntity>> GetListAsync(Expression<Func<TEntity, bool>> expression, bool isInclude = false,
+        CancellationToken cancellationToken = default);
 
     [NotNull]
     Task<TEntity> InsertAsync([NotNull] TEntity entity, bool autoSave = false,
@@ -50,7 +54,7 @@ public interface IRepository<TEntity> : IRepository where TEntity : IAggregateRo
 public interface IRepository<TEntity, TKey> : IRepository<TEntity>
     where TEntity : IAggregateRoot<TKey>
 {
-    Task<TEntity> GetAsync(TKey id, CancellationToken cancellationToken = default);
+    Task<TEntity> GetAsync(TKey id, bool isInclude = false, CancellationToken cancellationToken = default);
 
     Task DeleteAsync(TKey id, bool autoSave = false, CancellationToken cancellationToken = default);
 

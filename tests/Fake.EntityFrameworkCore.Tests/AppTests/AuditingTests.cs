@@ -1,6 +1,6 @@
 ﻿using Tests;
 
-namespace AppTests.Auditing;
+namespace AppTests;
 
 public class AuditingTests : AppAuditingTests<FakeEntityFrameworkCoreTestModule>
 {

@@ -1,4 +1,5 @@
-﻿using Fake.DependencyInjection;
+﻿using System.Linq.Expressions;
+using Fake.DependencyInjection;
 using Fake.Domain.Entities;
 using Fake.Threading;
 using Fake.UnitOfWork;
@@ -9,9 +10,11 @@ public abstract class RepositoryBase<TEntity> : IRepository<TEntity>
     where TEntity : class, IAggregateRoot
 {
     // ReSharper disable once UnusedAutoPropertyAccessor.Global
-    public IFakeServiceProvider ServiceProvider { get; set;}  // 属性注入
-    
-    public ICancellationTokenProvider CancellationTokenProvider=> ServiceProvider.GetRequiredLazyService<ICancellationTokenProvider>();
+    public IFakeServiceProvider ServiceProvider { get; set; } // 属性注入
+
+    public ICancellationTokenProvider CancellationTokenProvider =>
+        ServiceProvider.GetRequiredLazyService<ICancellationTokenProvider>();
+
     public IUnitOfWorkManager UnitOfWorkManager => ServiceProvider.GetRequiredLazyService<IUnitOfWorkManager>();
 
     protected virtual CancellationToken GetCancellationToken(CancellationToken preferredValue = default)
@@ -26,7 +29,10 @@ public abstract class RepositoryBase<TEntity> : IRepository<TEntity>
             : Task.CompletedTask;
     }
 
-    public abstract Task<IQueryable<TEntity>> GetQueryableAsync(CancellationToken cancellationToken = default);
+    public abstract Task<IQueryable<TEntity>> GetQueryableAsync(bool isInclude = false, CancellationToken cancellationToken = default);
+
+    public abstract Task<List<TEntity>> GetListAsync(Expression<Func<TEntity, bool>> expression, bool isInclude = false,
+        CancellationToken cancellationToken = default);
 
     public abstract Task<TEntity> InsertAsync(TEntity entity, bool autoSave = false,
         CancellationToken cancellationToken = default);
@@ -38,11 +44,13 @@ public abstract class RepositoryBase<TEntity> : IRepository<TEntity>
         {
             await InsertAsync(entity, cancellationToken: cancellationToken);
         }
+
         if (autoSave) await SaveChangesAsync(cancellationToken);
     }
 
     public abstract Task<TEntity> UpdateAsync(TEntity entity, bool autoSave = false,
         CancellationToken cancellationToken = default);
+
     public virtual async Task UpdateRangeAsync(IEnumerable<TEntity> entities, bool autoSave = false,
         CancellationToken cancellationToken = default)
     {
@@ -50,6 +58,7 @@ public abstract class RepositoryBase<TEntity> : IRepository<TEntity>
         {
             await UpdateAsync(entity, cancellationToken: cancellationToken);
         }
+
         if (autoSave) await SaveChangesAsync(cancellationToken);
     }
 
@@ -63,18 +72,20 @@ public abstract class RepositoryBase<TEntity> : IRepository<TEntity>
         {
             await DeleteAsync(entity, cancellationToken: cancellationToken);
         }
+
         if (autoSave) await SaveChangesAsync(cancellationToken);
     }
 }
 
-public abstract class RepositoryBase<TEntity,TKey> :  RepositoryBase<TEntity>, IRepository<TEntity,TKey>
+public abstract class RepositoryBase<TEntity, TKey> : RepositoryBase<TEntity>, IRepository<TEntity, TKey>
     where TEntity : class, IAggregateRoot<TKey>
 {
-    public abstract Task<TEntity> GetAsync(TKey id, CancellationToken cancellationToken = default);
+    public abstract Task<TEntity> GetAsync(TKey id, bool isInclude = false,
+        CancellationToken cancellationToken = default);
 
     public async Task DeleteAsync(TKey id, bool autoSave = false, CancellationToken cancellationToken = default)
     {
-        var entity = await GetAsync(id, cancellationToken);
+        var entity = await GetAsync(id, true, cancellationToken);
         if (entity == null)
         {
             return;
@@ -83,11 +94,12 @@ public abstract class RepositoryBase<TEntity,TKey> :  RepositoryBase<TEntity>, I
         await DeleteAsync(entity, autoSave, cancellationToken);
     }
 
-    public async Task DeleteRangeAsync(IEnumerable<TKey> ids, bool autoSave = false, CancellationToken cancellationToken = default)
+    public async Task DeleteRangeAsync(IEnumerable<TKey> ids, bool autoSave = false,
+        CancellationToken cancellationToken = default)
     {
         foreach (var id in ids)
         {
-            await DeleteAsync(id, cancellationToken:cancellationToken);
+            await DeleteAsync(id, cancellationToken: cancellationToken);
         }
 
         if (autoSave)
