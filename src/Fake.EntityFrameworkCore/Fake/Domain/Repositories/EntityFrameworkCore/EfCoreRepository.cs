@@ -27,7 +27,7 @@ public class EfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntity>, IE
         return (await GetDbContextAsync(cancellationToken)).Set<TEntity>();
     }
 
-    public override async Task<IQueryable<TEntity>> QueryableAsync(
+    public override async Task<IQueryable<TEntity>> GetQueryableAsync(
         Expression<Func<TEntity, bool>> predicate = null,
         bool isInclude = true,
         CancellationToken cancellationToken = default)
@@ -59,64 +59,80 @@ public class EfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntity>, IE
     }
 
     public override async Task<TEntity> FirstOrDefaultAsync(
-        Expression<Func<TEntity, bool>> predicate,
+        Expression<Func<TEntity, bool>> predicate = null,
         bool isInclude = true,
         CancellationToken cancellationToken = default)
     {
         cancellationToken = GetCancellationToken(cancellationToken);
 
-        var query = await QueryableAsync(predicate, isInclude, cancellationToken);
+        var query = await GetQueryableAsync(predicate, isInclude, cancellationToken);
 
+        if (predicate == null)
+        {
+            return await query.FirstOrDefaultAsync(cancellationToken);
+        }
+        
         return await query.FirstOrDefaultAsync(predicate, cancellationToken);
     }
 
-    public override async Task<List<TEntity>> GetListAsync(Expression<Func<TEntity, bool>> predicate = null,
-        Dictionary<string, bool> sorting = null, bool isInclude = true,
+    public override async Task<List<TEntity>> GetListAsync(
+        Expression<Func<TEntity, bool>> predicate = null,
+        Dictionary<string, bool> sorting = null, 
+        bool isInclude = true,
         CancellationToken cancellationToken = default)
     {
         cancellationToken = GetCancellationToken(cancellationToken);
 
-        var query = await QueryableAsync(predicate, isInclude, cancellationToken);
+        var query = await GetQueryableAsync(predicate, isInclude, cancellationToken);
 
         sorting ??= new Dictionary<string, bool>();
         return await query.OrderBy(sorting).ToListAsync(cancellationToken);
     }
 
-    public override async Task<List<TEntity>> GetPaginatedListAsync(Expression<Func<TEntity, bool>> predicate,
-        int skip,
-        int take,
+    public override async Task<List<TEntity>> GetPaginatedListAsync(
+        Expression<Func<TEntity, bool>> predicate,
+        int pageIndex = 1,
+        int pageSize = 20,
         Dictionary<string, bool> sorting = null,
         bool isInclude = true,
         CancellationToken cancellationToken = default)
     {
         cancellationToken = GetCancellationToken(cancellationToken);
 
-        var query = await QueryableAsync(predicate, isInclude, cancellationToken);
+        var query = await GetQueryableAsync(predicate, isInclude, cancellationToken);
 
-        return await query.OrderBy(sorting).Skip(skip).Take(take).ToListAsync(cancellationToken);
+        return await query
+            .OrderBy(sorting)
+            .Skip(((pageIndex < 1 ? 1 : pageIndex) - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
     }
 
-    public override async Task<long> GetCountAsync(Expression<Func<TEntity, bool>> predicate = null,
+    public override async Task<long> GetCountAsync(
+        Expression<Func<TEntity, bool>> predicate = null,
         CancellationToken cancellationToken = default)
     {
         cancellationToken = GetCancellationToken(cancellationToken);
 
-        var query = await QueryableAsync(predicate, false, cancellationToken);
+        var query = await GetQueryableAsync(predicate, false, cancellationToken);
 
         return await query.LongCountAsync(cancellationToken);
     }
 
-    public override async Task<bool> AnyAsync(Expression<Func<TEntity, bool>> predicate = null,
+    public override async Task<bool> AnyAsync(
+        Expression<Func<TEntity, bool>> predicate = null,
         CancellationToken cancellationToken = default)
     {
         cancellationToken = GetCancellationToken(cancellationToken);
 
-        var query = await QueryableAsync(predicate, false, cancellationToken);
+        var query = await GetQueryableAsync(predicate, false, cancellationToken);
 
         return await query.AnyAsync(cancellationToken);
     }
 
-    public override async Task<TEntity> InsertAsync(TEntity entity, bool autoSave = false,
+    public override async Task<TEntity> InsertAsync(
+        TEntity entity, 
+        bool autoSave = false,
         CancellationToken cancellationToken = default)
     {
         var dbContext = await GetDbContextAsync(cancellationToken);
@@ -135,7 +151,9 @@ public class EfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntity>, IE
         return entry.Entity;
     }
 
-    public override async Task InsertRangeAsync(IEnumerable<TEntity> entities, bool autoSave = false,
+    public override async Task InsertRangeAsync(
+        IEnumerable<TEntity> entities, 
+        bool autoSave = false,
         CancellationToken cancellationToken = default)
     {
         var dbContext = await GetDbContextAsync(cancellationToken);
@@ -148,7 +166,9 @@ public class EfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntity>, IE
         }
     }
 
-    public override async Task<TEntity> UpdateAsync(TEntity entity, bool autoSave = false,
+    public override async Task<TEntity> UpdateAsync(
+        TEntity entity,
+        bool autoSave = false,
         CancellationToken cancellationToken = default)
     {
         var dbContext = await GetDbContextAsync(cancellationToken);
@@ -164,7 +184,9 @@ public class EfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntity>, IE
         return entry.Entity;
     }
 
-    public override async Task UpdateRangeAsync(IEnumerable<TEntity> entities, bool autoSave = false,
+    public override async Task UpdateRangeAsync(
+        IEnumerable<TEntity> entities,
+        bool autoSave = false,
         CancellationToken cancellationToken = default)
     {
         cancellationToken = GetCancellationToken(cancellationToken);
@@ -179,7 +201,9 @@ public class EfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntity>, IE
         }
     }
 
-    public override async Task DeleteAsync(TEntity entity, bool autoSave = false,
+    public override async Task DeleteAsync(
+        TEntity entity, 
+        bool autoSave = false,
         CancellationToken cancellationToken = default)
     {
         var dbContext = await GetDbContextAsync(cancellationToken);
@@ -192,7 +216,9 @@ public class EfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntity>, IE
         }
     }
 
-    public override async Task DeleteRangeAsync(IEnumerable<TEntity> entities, bool autoSave = false,
+    public override async Task DeleteRangeAsync(
+        IEnumerable<TEntity> entities, 
+        bool autoSave = false,
         CancellationToken cancellationToken = default)
     {
         cancellationToken = GetCancellationToken(cancellationToken);
@@ -207,7 +233,9 @@ public class EfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntity>, IE
         }
     }
 
-    public override async Task DeleteAsync(Expression<Func<TEntity, bool>> predicate, bool autoSave = false,
+    public override async Task DeleteAsync(
+        Expression<Func<TEntity, bool>> predicate, 
+        bool autoSave = false,
         CancellationToken cancellationToken = default)
     {
         cancellationToken = GetCancellationToken(cancellationToken);

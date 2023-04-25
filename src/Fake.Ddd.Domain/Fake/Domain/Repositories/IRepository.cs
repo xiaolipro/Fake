@@ -19,7 +19,7 @@ public interface IRepository : IUnitOfWorkEnabled
 /// <typeparam name="TEntity">聚合根</typeparam>
 public interface IRepository<TEntity> : IRepository where TEntity : class, IAggregateRoot
 {
-    Task<IQueryable<TEntity>> QueryableAsync(
+    Task<IQueryable<TEntity>> GetQueryableAsync(
         Expression<Func<TEntity, bool>> predicate = null, 
         bool isInclude = true,
         CancellationToken cancellationToken = default);
@@ -35,9 +35,10 @@ public interface IRepository<TEntity> : IRepository where TEntity : class, IAggr
         bool isInclude = true,
         CancellationToken cancellationToken = default);
 
-    Task<List<TEntity>> GetPaginatedListAsync(Expression<Func<TEntity, bool>> predicate = null,
-        int skip = 0,
-        int take = 20,
+    Task<List<TEntity>> GetPaginatedListAsync(
+        Expression<Func<TEntity, bool>> predicate = null,
+        int pageIndex = 1,
+        int pageSize = 20,
         Dictionary<string, bool> sorting = null,
         bool isInclude = true,
         CancellationToken cancellationToken = default);

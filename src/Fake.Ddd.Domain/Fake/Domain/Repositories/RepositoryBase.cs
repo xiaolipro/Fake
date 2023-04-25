@@ -29,7 +29,7 @@ public abstract class RepositoryBase<TEntity> : IRepository<TEntity>
             : Task.CompletedTask;
     }
 
-    public abstract Task<IQueryable<TEntity>> QueryableAsync(
+    public abstract Task<IQueryable<TEntity>> GetQueryableAsync(
         Expression<Func<TEntity, bool>> predicate = null,
         bool isInclude = true,
         CancellationToken cancellationToken = default);
@@ -45,9 +45,10 @@ public abstract class RepositoryBase<TEntity> : IRepository<TEntity>
         bool isInclude = true,
         CancellationToken cancellationToken = default);
 
-    public abstract Task<List<TEntity>> GetPaginatedListAsync(Expression<Func<TEntity, bool>> predicate,
-        int skip,
-        int take,
+    public abstract Task<List<TEntity>> GetPaginatedListAsync(
+        Expression<Func<TEntity, bool>> predicate,
+        int pageIndex = 1,
+        int pageSize = 20,
         Dictionary<string, bool> sorting = null,
         bool isInclude = true,
         CancellationToken cancellationToken = default);
