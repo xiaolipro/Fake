@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Fake.Domain.Entities;
+using Fake.Domain.Repositories.Extension;
 using Fake.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -115,6 +118,32 @@ public class EfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntity>, IE
             await dbContext.SaveChangesAsync(cancellationToken);
         }
     }
+
+    public virtual async Task<List<T>> GetListAsync<T>(
+        Expression<Func<T, bool>> exp,
+        bool isInclude = false,
+        CancellationToken cancellationToken = default)
+        where T : class
+    {
+        cancellationToken = GetCancellationToken(cancellationToken);
+        var dbContext = await GetDbContextAsync(cancellationToken);
+
+        var query = dbContext.Set<T>().Where(exp);
+
+        if (isInclude)
+        {
+            var entityType = dbContext.Model.FindEntityType(typeof(T));
+            if (entityType != null)
+            {
+                //获取导航属性
+                var navigationProperties = entityType.GetNavigations();
+                query = navigationProperties.Aggregate(query, (current, navigationProperty) => current.Include(navigationProperty.Name));
+            }
+        }
+
+        return await query.ToListAsync(cancellationToken);
+    }
+
 }
 
 public class EfCoreRepository<TDbContext, TEntity, TKey> : EfCoreRepository<TDbContext, TEntity>,
