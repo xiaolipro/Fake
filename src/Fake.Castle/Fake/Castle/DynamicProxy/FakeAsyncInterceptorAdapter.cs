@@ -5,11 +5,11 @@ using Fake.DynamicProxy;
 
 namespace Fake.Castle.DynamicProxy;
 
-public class FakeInterceptorAdapter<TInterceptor> : AsyncInterceptorBase where TInterceptor : IFakeInterceptor
+public class FakeAsyncInterceptorAdapter<TInterceptor> : AsyncInterceptorBase where TInterceptor : IFakeInterceptor
 {
     private readonly TInterceptor _fakeInterceptor;
 
-    public FakeInterceptorAdapter(TInterceptor fakeInterceptor)
+    public FakeAsyncInterceptorAdapter(TInterceptor fakeInterceptor)
     {
         _fakeInterceptor = fakeInterceptor;
     }

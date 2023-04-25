@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Fake.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -17,6 +18,7 @@ public class SimpleAuditingStore:IAuditingStore
     public Task SaveAsync(AuditLogInfo auditInfo)
     {
         _logger.LogInformation(auditInfo.ToString());
+        Console.WriteLine(auditInfo);
         return Task.FromResult(0);
     }
 }

@@ -7,7 +7,7 @@ public class FakeAsyncDeterminationInterceptor<TInterceptor> : AsyncDeterminatio
     where TInterceptor : IFakeInterceptor
 {
     public FakeAsyncDeterminationInterceptor(TInterceptor fakeInterceptor) : base(
-        new FakeInterceptorAdapter<TInterceptor>(fakeInterceptor))
+        new FakeAsyncInterceptorAdapter<TInterceptor>(fakeInterceptor))
     {
     }
 }
