@@ -6,42 +6,36 @@
         /// <summary>
         /// Broker
         /// </summary>
-        public string BrokerName { get; set; } = "Fake.Exchange.EventBus";
+        public string BrokerName { get; set; }
 
         /// <summary>
         /// 订阅客户端
         /// </summary>
         public string SubscriptionClientName { get; set; }
-
-        /// <summary>
-        /// 发布失败重试次数，默认5次
-        /// </summary>
-        public int PublishFailureRetryCount { get; set; } = 5;
-
-
+        
         #region Qos
 
         /// <summary>
-        /// 消息大小限制，默认0无限制
+        /// 消息大小限制
         /// </summary>
-        public uint PrefetchSize { get; set; } = 0;
+        public uint PrefetchSize { get; set; }
 
         /// <summary>
-        /// 每次预取的消息条数，默认1条
+        /// 每次预取的消息条数
         /// </summary>
-        public ushort PrefetchCount { get; set; } = 1;
+        public ushort PrefetchCount { get; set; }
 
         #endregion
 
         #region DLX
 
         /// <summary>
-        /// 启动DLX，默认true
+        /// 启动死信
         /// </summary>
-        public bool EnableDLX { get; set; } = true;
+        public bool EnableDLX { get; set; }
 
         /// <summary>
-        /// 设置消息过期时间，过期则自动判定为死信，默认为0无限制
+        /// 设置消息过期时间，过期则自动判定为死信
         /// </summary>
         public int MessageTTL { get; set; }
 

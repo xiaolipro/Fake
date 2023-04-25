@@ -10,9 +10,6 @@ using JetBrains.Annotations;
 
 namespace Fake.EventBus;
 
-/// <summary>
-/// 简易的发布者模式
-/// </summary>
 public class EventPublisher : IEventPublisher
 {
     private readonly IServiceProvider _serviceProvider;

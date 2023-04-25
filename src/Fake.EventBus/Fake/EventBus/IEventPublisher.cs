@@ -5,7 +5,7 @@ using Fake.EventBus.Events;
 namespace Fake.EventBus;
 
 /// <summary>
-/// 事件发布者--发布者模式
+/// 事件发布者--观察者模式
 /// </summary>
 public interface IEventPublisher
 {
@@ -13,6 +13,5 @@ public interface IEventPublisher
     /// 发布事件
     /// </summary>
     /// <param name="event">事件</param>
-    /// <param name="cancellationToken"></param>
     void Publish(IEvent @event);
 }
