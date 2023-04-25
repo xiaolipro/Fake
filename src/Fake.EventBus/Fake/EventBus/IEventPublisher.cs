@@ -14,5 +14,5 @@ public interface IEventPublisher
     /// </summary>
     /// <param name="event">事件</param>
     /// <param name="cancellationToken"></param>
-    Task PublishAsync(IEvent @event, CancellationToken cancellationToken = default);
+    void Publish(IEvent @event);
 }

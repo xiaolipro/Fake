@@ -1,11 +1,9 @@
 ﻿using System;
 using System.IO;
-using System.Net.Sockets;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using RabbitMQ.Client.Exceptions;
 
 namespace Fake.EventBus.RabbitMQ.Fake.EventBus.RabbitMQ
 {
@@ -17,19 +15,17 @@ namespace Fake.EventBus.RabbitMQ.Fake.EventBus.RabbitMQ
     {
         private readonly ILogger<RabbitMqConnector> _logger;
         private readonly IConnectionFactory _connectionFactory;
-        private readonly int _retries;
         private readonly object _lock = new object();
 
         private IConnection _connection;
         private bool _disposed;
 
 
-        public RabbitMqConnector(ILogger<RabbitMqConnector> logger, IOptions<RabbitMQClientOptions> config, int retries = 5)
+        public RabbitMqConnector(ILogger<RabbitMqConnector> logger, IOptions<RabbitMQClientOptions> config)
         {
             _logger = logger;
             var clientConfig = config.Value;
             _connectionFactory = GetConnectionFactory(clientConfig);
-            _retries = retries;
         }
 
 
@@ -89,19 +85,7 @@ namespace Fake.EventBus.RabbitMQ.Fake.EventBus.RabbitMQ
 
             lock (_lock)
             {
-                var retryPolicy = Policy.Handle<SocketException>() //socket异常时
-                    .Or<BrokerUnreachableException>() //broker不可达异常时
-                    .WaitAndRetry(_retries, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
-                        (ex, time) =>
-                        {
-                            _logger.LogWarning(ex, "在{TimeOut}s 后无法连接到RabbitMQ客户端，异常消息：{Message}", $"{time.TotalSeconds:f1}", ex.Message);
-                        }
-                    );
-
-                retryPolicy.Execute(() =>
-                {
-                    _connection = _connectionFactory.CreateConnection();
-                });
+                _connection = _connectionFactory.CreateConnection();
 
                 if (!IsConnected) throw new Exception("致命错误：无法创建和打开RabbitMQ连接");
 

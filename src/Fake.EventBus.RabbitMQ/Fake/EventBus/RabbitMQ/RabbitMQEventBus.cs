@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using Fake.EventBus.Events;
 using Fake.EventBus.Subscriptions;
@@ -58,24 +59,9 @@ namespace Fake.EventBus.RabbitMQ.Fake.EventBus.RabbitMQ
         }
 
 
-        public Task PublishAsync(IEvent @event)
+        public void Publish(IEvent @event)
         {
             _rabbitMqConnector.KeepAlive();
-
-            #region 定义重试策略
-
-            var retryPolicy = Policy.Handle<SocketException>() //socket异常时
-                .Or<BrokerUnreachableException>() //broker不可达异常时
-                .WaitAndRetry(_eventBusOptions.PublishFailureRetryCount,
-                    retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
-                    (ex, time) =>
-                    {
-                        _logger.LogWarning(ex, "在{TimeOut}s 后无法连接到RabbitMQ客户端，异常消息：{Message}",
-                            $"{time.TotalSeconds:f1}", ex.Message);
-                    }
-                );
-
-            #endregion
 
             var eventName = @event.GetType().Name;
 
@@ -92,15 +78,12 @@ namespace Fake.EventBus.RabbitMQ.Fake.EventBus.RabbitMQ
                     WriteIndented = true
                 });
 
-                retryPolicy.Execute(() =>
-                {
-                    var properties = channel.CreateBasicProperties();
-                    properties.DeliveryMode = 2; // Non-persistent (1) or persistent (2).
+                var properties = channel.CreateBasicProperties();
+                properties.DeliveryMode = 2; // Non-persistent (1) or persistent (2).
 
-                    _logger.LogInformation("发布事件到RabbitMQ: {EventId}（{EventName}）", @event.Id, eventName);
-                    channel.BasicPublish(exchange: _brokerName, routingKey: eventName, mandatory: true,
-                        basicProperties: properties, body: body);
-                });
+                _logger.LogInformation("发布事件到RabbitMQ: {EventId}（{EventName}）", @event.Id, eventName);
+                channel.BasicPublish(exchange: _brokerName, routingKey: eventName, mandatory: true,
+                    basicProperties: properties, body: body);
             }
         }
 
@@ -110,7 +93,7 @@ namespace Fake.EventBus.RabbitMQ.Fake.EventBus.RabbitMQ
             var eventName = _subscriptionsManager.GetEventName<TEvent>();
             _logger.LogInformation("{EventHandler}订阅了事件{EventName}", typeof(THandler).GetName(), eventName);
 
-            DoRabbitMQSubscription(eventName);
+            DoRabbitMqSubscription(eventName);
             _subscriptionsManager.AddSubscription<TEvent, THandler>();
             StartBasicConsume();
         }
@@ -118,7 +101,7 @@ namespace Fake.EventBus.RabbitMQ.Fake.EventBus.RabbitMQ
         public void SubscribeDynamic<THandler>(string eventName) where THandler : IDynamicEventHandler
         {
             _logger.LogInformation("{EventHandler}订阅了动态事件{EventName}", typeof(THandler).GetName(), eventName);
-            DoRabbitMQSubscription(eventName);
+            DoRabbitMqSubscription(eventName);
             _subscriptionsManager.AddDynamicSubscription<THandler>(eventName);
             StartBasicConsume();
         }
@@ -132,7 +115,7 @@ namespace Fake.EventBus.RabbitMQ.Fake.EventBus.RabbitMQ
 
             _subscriptionsManager.RemoveSubscription<TEvent, THandler>();
 
-            DoRabbitMQUnSubscription(eventName);
+            DoRabbitMqSubscription(eventName);
         }
 
         public void UnsubscribeDynamic<THandler>(string eventName) where THandler : IDynamicEventHandler
@@ -141,7 +124,7 @@ namespace Fake.EventBus.RabbitMQ.Fake.EventBus.RabbitMQ
 
             _subscriptionsManager.RemoveDynamicSubscription<THandler>(eventName);
 
-            DoRabbitMQUnSubscription(eventName);
+            DoRabbitMqSubscription(eventName);
         }
 
         public void Dispose()

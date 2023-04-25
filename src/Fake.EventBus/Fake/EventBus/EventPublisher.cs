@@ -10,9 +10,8 @@ using JetBrains.Annotations;
 
 namespace Fake.EventBus;
 
-
 /// <summary>
-/// 简易的发布者交互模式
+/// 简易的发布者模式
 /// </summary>
 public class EventPublisher : IEventPublisher
 {
@@ -26,20 +25,14 @@ public class EventPublisher : IEventPublisher
         _eventHandlers = new ConcurrentDictionary<Type, EventHandlerWrapper>();
     }
 
-    public Task PublishAsync([NotNull]IEvent @event, CancellationToken cancellationToken = default)
+    public void Publish([NotNull] IEvent @event)
     {
         ThrowHelper.ThrowIfNull(@event, nameof(@event));
 
-        return PublishInternal(@event, cancellationToken);
-    }
-
-    private Task PublishInternal(IEvent @event, CancellationToken cancellationToken)
-    {
         var eventHandler = _eventHandlers.GetOrAdd(@event.GetType(), eventType =>
         {
-            var wrapper =
-                ReflectionHelper.CreateInstance<EventHandlerWrapper>(
-                    typeof(EventHandlerWrapperImpl<>).MakeGenericType(eventType));
+            var wrapper = ReflectionHelper.CreateInstance<EventHandlerWrapper>(
+                typeof(EventHandlerWrapperImpl<>).MakeGenericType(eventType));
 
             if (wrapper == null)
             {
@@ -50,15 +43,15 @@ public class EventPublisher : IEventPublisher
         });
 
 
-        return eventHandler.Handle(@event, _serviceProvider, PublishCore, cancellationToken);
+        eventHandler.Handle(@event, _serviceProvider, PublishCore, default);
     }
 
-    protected virtual async Task PublishCore(IEnumerable<EventHandlerExecutor> eventHandlerExecutors, IEvent @event, CancellationToken cancellationToken)
+    protected virtual async Task PublishCore(IEnumerable<EventHandlerExecutor> eventHandlerExecutors, IEvent @event,
+        CancellationToken cancellationToken)
     {
         foreach (var eventHandlerExecutor in eventHandlerExecutors)
         {
             await eventHandlerExecutor.HandlerCallback(@event, cancellationToken);
         }
     }
-
 }
