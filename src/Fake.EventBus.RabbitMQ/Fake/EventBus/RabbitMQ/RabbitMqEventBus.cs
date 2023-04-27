@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Fake.EventBus.Events;
 using Fake.EventBus.Subscriptions;
+using Fake.RabbitMQ;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -36,7 +37,8 @@ namespace Fake.EventBus.RabbitMQ
         /// </summary>
         private IModel _consumerChannel;
 
-        public RabbitMqEventBus(IRabbitMqConnector rabbitMqConnector,
+        public RabbitMqEventBus(
+            IRabbitMqConnector rabbitMqConnector,
             ILogger<RabbitMqEventBus> logger,
             IServiceProvider serviceProvider,
             ISubscriptionsManager subscriptionsManager,
@@ -58,30 +60,28 @@ namespace Fake.EventBus.RabbitMQ
 
         public void Publish(IEvent @event)
         {
-            _rabbitMqConnector.KeepAlive();
-
             var eventName = @event.GetType().Name;
 
             _logger.LogTrace("创建定义RabbitMQ通道以发布事件: {EventId}（{EventName}）", @event.Id, eventName);
-            using (var channel = _rabbitMqConnector.CreateChannel())
+            
+            using var channel = _rabbitMqConnector.CreateChannel(_eventBusOptions.ConnectionName);
+            
+            _logger.LogTrace("定义RabbitMQ Direct交换机（{ExchangeName}）以发布事件：{EventId}（{EventName}）", _brokerName,
+                @event.Id, eventName);
+
+            channel.ExchangeDeclare(exchange: _brokerName, ExchangeType.Direct);
+
+            var body = JsonSerializer.SerializeToUtf8Bytes(@event, @event.GetType(), new JsonSerializerOptions
             {
-                _logger.LogTrace("定义RabbitMQ Direct交换机（{ExchangeName}）以发布事件：{EventId}（{EventName}）", _brokerName,
-                    @event.Id, eventName);
+                WriteIndented = true
+            });
 
-                channel.ExchangeDeclare(exchange: _brokerName, ExchangeType.Direct);
+            var properties = channel.CreateBasicProperties();
+            properties.DeliveryMode = 2; // Non-persistent (1) or persistent (2).
 
-                var body = JsonSerializer.SerializeToUtf8Bytes(@event, @event.GetType(), new JsonSerializerOptions
-                {
-                    WriteIndented = true
-                });
-
-                var properties = channel.CreateBasicProperties();
-                properties.DeliveryMode = 2; // Non-persistent (1) or persistent (2).
-
-                _logger.LogInformation("发布事件到RabbitMQ: {EventId}（{EventName}）", @event.Id, eventName);
-                channel.BasicPublish(exchange: _brokerName, routingKey: eventName, mandatory: true,
-                    basicProperties: properties, body: body);
-            }
+            _logger.LogInformation("发布事件到RabbitMQ: {EventId}（{EventName}）", @event.Id, eventName);
+            channel.BasicPublish(exchange: _brokerName, routingKey: eventName, mandatory: true,
+                basicProperties: properties, body: body);
         }
 
         public void Subscribe<TEvent, THandler>() where TEvent : IEvent
@@ -121,7 +121,7 @@ namespace Fake.EventBus.RabbitMQ
 
             _subscriptionsManager.RemoveDynamicSubscription<THandler>(eventName);
 
-            DoRabbitMqSubscription(eventName);
+            DoRabbitMqUnSubscription(eventName);
         }
 
         public void Dispose()
@@ -145,7 +145,7 @@ namespace Fake.EventBus.RabbitMQ
             // 一个事件一个消费监听
             if (_subscriptionsManager.HasSubscriptions(eventName)) return;
 
-            _rabbitMqConnector.KeepAlive();
+            _rabbitMqConnector.KeepAlive(_eventBusOptions.ConnectionName);
 
             _consumerChannel.QueueBind(queue: _subscriptionQueueName, exchange: _brokerName, routingKey: eventName);
         }
@@ -157,24 +157,20 @@ namespace Fake.EventBus.RabbitMQ
         /// <exception cref="NotImplementedException"></exception>
         private void DoRabbitMqUnSubscription(string eventName)
         {
-            _rabbitMqConnector.KeepAlive();
+            _rabbitMqConnector.KeepAlive(_eventBusOptions.ConnectionName);
 
             _consumerChannel.QueueUnbind(queue: _subscriptionQueueName, exchange: _brokerName, routingKey: eventName);
         }
 
         private void OnEventRemoved(object sender, string eventName)
         {
-            _rabbitMqConnector.KeepAlive();
+            using var channel = _rabbitMqConnector.CreateChannel(_eventBusOptions.ConnectionName);
+            // 解绑
+            channel.QueueUnbind(queue: _subscriptionQueueName, exchange: _brokerName, routingKey: eventName);
 
-            using (var channel = _rabbitMqConnector.CreateChannel())
+            if (_subscriptionsManager.IsEmpty)
             {
-                // 解绑
-                channel.QueueUnbind(queue: _subscriptionQueueName, exchange: _brokerName, routingKey: eventName);
-
-                if (_subscriptionsManager.IsEmpty)
-                {
-                    Dispose();
-                }
+                Dispose();
             }
         }
 
@@ -244,7 +240,7 @@ namespace Fake.EventBus.RabbitMQ
                     // see：https://stackoverflow.com/questions/22645024/when-would-i-use-task-yield
                     await Task.Yield();
                     _logger.LogTrace("正在处理集成事件: {EventName}", eventName);
-                    handle?.Invoke(handler, new object[] { integrationEvent });
+                    handle?.Invoke(handler, new[] { integrationEvent });
                 }
             }
         }
@@ -257,7 +253,7 @@ namespace Fake.EventBus.RabbitMQ
         {
             _logger.LogTrace("创建RabbitMQ消费者通道");
 
-            _rabbitMqConnector.KeepAlive();
+            _rabbitMqConnector.KeepAlive(_eventBusOptions.ConnectionName);
 
             var arguments = new Dictionary<string, object>();
 
@@ -268,23 +264,23 @@ namespace Fake.EventBus.RabbitMQ
              */
             if (_eventBusOptions.EnableDLX)
             {
-                string DLXExchangeName = "DLX." + _brokerName;
-                string DLXQueueName = "DLX." + _subscriptionQueueName;
-                string DLXRouteKey = DLXQueueName;
+                string dlxExchangeName = "DLX." + _brokerName;
+                string dlxQueueName = "DLX." + _subscriptionQueueName;
+                string dlxRouteKey = dlxQueueName;
 
                 _logger.LogTrace("创建RabbitMQ死信交换DLX");
-                using (var deadLetterChannel = _rabbitMqConnector.CreateChannel())
+                using (var deadLetterChannel = _rabbitMqConnector.CreateChannel(_eventBusOptions.ConnectionName))
                 {
                     // 声明死信交换机
-                    deadLetterChannel.ExchangeDeclare(exchange: DLXExchangeName, type: ExchangeType.Direct);
+                    deadLetterChannel.ExchangeDeclare(exchange: dlxExchangeName, type: ExchangeType.Direct);
                     // 声明死信队列
-                    deadLetterChannel.QueueDeclare(DLXQueueName, durable: true, exclusive: false, autoDelete: false);
+                    deadLetterChannel.QueueDeclare(dlxQueueName, durable: true, exclusive: false, autoDelete: false);
                     // 绑定死信交换机和死信队列
-                    deadLetterChannel.QueueBind(DLXQueueName, DLXExchangeName, DLXRouteKey);
+                    deadLetterChannel.QueueBind(dlxQueueName, dlxExchangeName, dlxRouteKey);
                 }
 
-                arguments.Add("x-dead-letter-exchange", DLXExchangeName); // 设置DLX
-                arguments.Add("x-dead-letter-routing-key", DLXRouteKey); // DLX会根据该值去找到死信消息存放的队列
+                arguments.Add("x-dead-letter-exchange", dlxExchangeName); // 设置DLX
+                arguments.Add("x-dead-letter-routing-key", dlxRouteKey); // DLX会根据该值去找到死信消息存放的队列
 
                 if (_eventBusOptions.MessageTTL > 0)
                 {
@@ -297,7 +293,7 @@ namespace Fake.EventBus.RabbitMQ
                 }
             }
 
-            var consumerChannel = _rabbitMqConnector.CreateChannel();
+            var consumerChannel = _rabbitMqConnector.CreateChannel(_eventBusOptions.ConnectionName);
             // 声明直连交换机
             consumerChannel.ExchangeDeclare(exchange: _brokerName, type: ExchangeType.Direct);
             // 声明队列
@@ -314,7 +310,7 @@ namespace Fake.EventBus.RabbitMQ
             _consumerChannel.BasicQos(_eventBusOptions.PrefetchSize, _eventBusOptions.PrefetchCount, false);
 
             // 当通道调用的回调中发生异常时发出信号
-            consumerChannel.CallbackException += (sender, args) =>
+            consumerChannel.CallbackException += (_, args) =>
             {
                 _logger.LogWarning(args.Exception, "重新创建RabbitMQ消费者通道");
 
