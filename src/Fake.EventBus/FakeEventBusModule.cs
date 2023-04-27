@@ -1,8 +1,9 @@
 ﻿using System.Threading.Channels;
-using Fake.EventBus;
 using Fake.Modularity;
 using Microsoft.Extensions.DependencyInjection;
 
+// ReSharper disable once CheckNamespace
+namespace Fake.EventBus;
 public class FakeEventBusModule:FakeModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)

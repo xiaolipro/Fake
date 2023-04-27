@@ -1,7 +1,7 @@
 ﻿using System;
 using RabbitMQ.Client;
 
-namespace Fake.EventBus.RabbitMQ.Fake.EventBus.RabbitMQ
+namespace Fake.EventBus.RabbitMQ
 {
     /// <summary>
     /// RabbitMQ--Channel工厂
