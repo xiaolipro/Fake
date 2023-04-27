@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
-using System.Threading;
 using System.Threading.Tasks;
 using Fake.EventBus.Events;
 using Fake.EventBus.Subscriptions;
@@ -13,9 +11,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using RabbitMQ.Client.Exceptions;
 
-namespace Fake.EventBus.RabbitMQ.Fake.EventBus.RabbitMQ
+namespace Fake.EventBus.RabbitMQ
 {
     /// <summary>
     /// 基于RabbitMessageQueue实现的事件总线

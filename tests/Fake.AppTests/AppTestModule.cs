@@ -1,6 +1,7 @@
 ﻿using Application.DomainEventHandlers.OrderStartedDomainEventHandlers;
 using Domain.Events;
 using Fake.Autofac;
+using Fake.Ddd.Domain;
 using Fake.EventBus.Events;
 using Fake.Helpers;
 using Fake.Modularity;

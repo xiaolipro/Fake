@@ -2,6 +2,7 @@
 
 public class RabbitMqEventBusOptions
 {
+    public string ConnectionName { get; set; } = "Default";
 
     /// <summary>
     /// Broker
@@ -46,4 +47,12 @@ public class RabbitMqEventBusOptions
 
     #endregion
 
+    public RabbitMqEventBusOptions()
+    {
+        BrokerName = "Fake.Exchange.EventBus"; // 交换机名称
+        PrefetchSize = 0; // Prefetch消息大小无限制
+        PrefetchCount = 1; // 每次预取1条
+        EnableDLX = true; // 启用DLX
+        MessageTTL = 0; // 无限制
+    }
 }

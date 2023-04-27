@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Fake.RabbitMQ;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
@@ -14,18 +15,19 @@ namespace Fake.EventBus.RabbitMQ;
 public class RabbitMqConnector : IRabbitMqConnector
 {
     private readonly ILogger<RabbitMqConnector> _logger;
-    private readonly IConnectionFactory _connectionFactory;
-    private readonly object _lock = new object();
-
+    private readonly IRabbitMqConnectionPool _connectionPool;
+    private readonly RabbitMqEventBusOptions _options;
     private IConnection _connection;
+    private readonly object _lock = new();
+
     private bool _disposed;
 
 
-    public RabbitMqConnector(ILogger<RabbitMqConnector> logger, IOptions<RabbitMQClientOptions> config)
+    public RabbitMqConnector(ILogger<RabbitMqConnector> logger, IRabbitMqConnectionPool connectionPool, IOptions<RabbitMqEventBusOptions> options)
     {
         _logger = logger;
-        var clientConfig = config.Value;
-        _connectionFactory = GetConnectionFactory(clientConfig);
+        _connectionPool = connectionPool;
+        _options = options.Value;
     }
 
 
@@ -73,7 +75,7 @@ public class RabbitMqConnector : IRabbitMqConnector
     /// <summary>
     /// 是连接状态
     /// </summary>
-    private bool IsConnected => _connection != null && _connection.IsOpen && !_disposed;
+    private bool IsConnected => _connection is { IsOpen: true } && !_disposed;
 
     /// <summary>
     /// 重连
@@ -85,9 +87,9 @@ public class RabbitMqConnector : IRabbitMqConnector
 
         lock (_lock)
         {
-            _connection = _connectionFactory.CreateConnection();
+            _connection = _connectionPool.Get(_options.ConnectionName);
 
-            if (!IsConnected) throw new Exception("致命错误：无法创建和打开RabbitMQ连接");
+            if (!IsConnected) throw new FakeException("致命错误：无法创建和打开RabbitMQ连接");
 
             _connection.ConnectionShutdown += OnConnectionShutdown;
             _connection.CallbackException += OnCallbackException;
@@ -96,50 +98,9 @@ public class RabbitMqConnector : IRabbitMqConnector
             // 比若说CPU/IO/RAM资源下降，队列堆积，导致堵塞，就会触发这个事件
             _connection.ConnectionBlocked += OnConnectionBlocked;
 
-            _logger.LogInformation("{HostName}获得到了RabbitMQ客户端的持久连接", _connection.Endpoint.HostName);
+            _logger.LogInformation("成功获得RabbitMQ:{HostName}的客户端持久连接", _connection.Endpoint.HostName);
         }
 
-    }
-
-    /// <summary>
-    /// 获取连接工厂
-    /// </summary>
-    /// <param name="config"></param>
-    /// <returns></returns>
-    private IConnectionFactory GetConnectionFactory(RabbitMQClientOptions config)
-    {
-        var connectionFactory = new ConnectionFactory()
-        {
-            DispatchConsumersAsync = true
-        };
-
-        if (!string.IsNullOrWhiteSpace(config.HostName))
-        {
-            connectionFactory.HostName = config.HostName;
-        }
-
-        if (!string.IsNullOrWhiteSpace(config.HostName))
-        {
-            connectionFactory.Port = config.Port;
-
-        }
-
-        if (!string.IsNullOrWhiteSpace(config.HostName))
-        {
-            connectionFactory.UserName = config.UserName;
-        }
-
-        if (!string.IsNullOrWhiteSpace(config.HostName))
-        {
-            connectionFactory.Password = config.Password;
-        }
-
-        if (!string.IsNullOrWhiteSpace(config.HostName))
-        {
-            connectionFactory.VirtualHost = config.VirtualHost;
-        }
-
-        return connectionFactory;
     }
 
     /// <summary>
@@ -151,7 +112,7 @@ public class RabbitMqConnector : IRabbitMqConnector
     {
         if (_disposed) return;
 
-        _logger.LogWarning("RabbitMQ连接被阻止，正在尝试重新连接。。。");
+        _logger.LogWarning("RabbitMQ连接被阻塞，正在尝试重新连接。。。");
 
         ConnectRabbitMq();
     }

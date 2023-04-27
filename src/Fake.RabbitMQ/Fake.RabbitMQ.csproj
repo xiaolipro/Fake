@@ -10,8 +10,12 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Fake.Core\Fake.Core.csproj" />
-      <ProjectReference Include="..\Fake.EventBus\Fake.EventBus.csproj" />
-      <ProjectReference Include="..\Fake.RabbitMQ\Fake.RabbitMQ.csproj" />
+    </ItemGroup>
+
+
+
+    <ItemGroup>
+        <PackageReference Include="RabbitMQ.Client" Version="6.5.0" />
     </ItemGroup>
 
 </Project>

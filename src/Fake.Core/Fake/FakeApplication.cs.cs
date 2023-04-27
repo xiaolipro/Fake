@@ -247,7 +247,7 @@ public class FakeApplication : IFakeApplication
             return options.ApplicationName;
         }
 
-        var configuration = options.Services.GetConfigurationOrDefault();
+        var configuration = options.Services.GetConfigurationOrNull();
 
         if (configuration == default) return Assembly.GetEntryAssembly()?.GetName().Name;
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Fake;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 
@@ -6,13 +7,21 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public static class FakeServiceCollectionConfigurationExtensions
 {
-    public static IServiceCollection ReplaceConfiguration(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection ReplaceConfiguration(this IServiceCollection services,
+        IConfiguration configuration)
     {
         return services.Replace(ServiceDescriptor.Singleton<IConfiguration>(configuration));
     }
-    
+
+    [NotNull]
+    public static IConfiguration GetConfiguration(this IServiceCollection services)
+    {
+        return services.GetConfigurationOrNull() ??
+               throw new FakeException($"service collection中找不到{typeof(IConfiguration).AssemblyQualifiedName}的实现");
+    }
+
     [CanBeNull]
-    public static IConfiguration GetConfigurationOrDefault(this IServiceCollection services)
+    public static IConfiguration GetConfigurationOrNull(this IServiceCollection services)
     {
         var hostBuilderContext = services.GetSingletonInstanceOrNull<HostBuilderContext>();
         if (hostBuilderContext?.Configuration != null)
