@@ -83,6 +83,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fake.RabbitMQ", "src\Fake.R
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fake.EntityFrameworkCore.IntegrationEventLog", "src\Fake.EntityFrameworkCore.IntegrationEventLog\Fake.EntityFrameworkCore.IntegrationEventLog.csproj", "{8A110FDF-BF6A-4C78-A1DF-326E7CABC7D4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fake.EventBus.Tests", "tests\Fake.EventBus.Tests\Fake.EventBus.Tests.csproj", "{3087C7AA-17B7-4187-8AB4-7ADB1038C0D8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -209,6 +211,10 @@ Global
 		{8A110FDF-BF6A-4C78-A1DF-326E7CABC7D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8A110FDF-BF6A-4C78-A1DF-326E7CABC7D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8A110FDF-BF6A-4C78-A1DF-326E7CABC7D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3087C7AA-17B7-4187-8AB4-7ADB1038C0D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3087C7AA-17B7-4187-8AB4-7ADB1038C0D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3087C7AA-17B7-4187-8AB4-7ADB1038C0D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3087C7AA-17B7-4187-8AB4-7ADB1038C0D8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{50A2B676-5383-4A7A-A6F4-852D7D5C5342} = {AC56DAD8-C5AB-4E41-A280-1BCC08A2BE60}
@@ -241,5 +247,6 @@ Global
 		{9003CD4C-3B5C-4BF7-83C3-37C078209476} = {AC56DAD8-C5AB-4E41-A280-1BCC08A2BE60}
 		{9C12BDF1-4745-4B3F-9979-B61CCAB93E9D} = {AC56DAD8-C5AB-4E41-A280-1BCC08A2BE60}
 		{8A110FDF-BF6A-4C78-A1DF-326E7CABC7D4} = {AC56DAD8-C5AB-4E41-A280-1BCC08A2BE60}
+		{3087C7AA-17B7-4187-8AB4-7ADB1038C0D8} = {310D0E30-AC20-44C8-B0A2-155C880ED934}
 	EndGlobalSection
 EndGlobal
