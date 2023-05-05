@@ -20,7 +20,7 @@ namespace Fake.EntityFrameworkCore;
 
 public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : DbContext
 {
-    private readonly Lazy<IClock> _clock;
+    private readonly Lazy<IFakeClock> _clock;
     private readonly Lazy<IGuidGenerator> _guidGenerator;
     private readonly Lazy<IAuditPropertySetter> _auditPropertySetter;
 
@@ -32,7 +32,7 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
 
     protected FakeDbContext(DbContextOptions<TDbContext> options, IServiceProvider serviceProvider) : base(options)
     {
-        _clock = new Lazy<IClock>(serviceProvider.GetRequiredService<IClock>());
+        _clock = new Lazy<IFakeClock>(serviceProvider.GetRequiredService<IFakeClock>());
         _guidGenerator = new Lazy<IGuidGenerator>(serviceProvider.GetRequiredService<IGuidGenerator>());
         _auditPropertySetter =
             new Lazy<IAuditPropertySetter>(serviceProvider.GetRequiredService<IAuditPropertySetter>());

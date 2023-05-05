@@ -1,8 +1,7 @@
-﻿using System;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Fake.Json.SystemTextJson.JsonConverters;
+namespace Fake.Json.Converters;
 
 /// <summary>
 /// 解决反序列化属性为object时，不会尝试推测，将直接创建JsonElement对象的问题

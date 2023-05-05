@@ -11,7 +11,7 @@ public class FakeCoreModule : FakeModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
-        context.Services.AddTransient<IClock, Clock>();
+        context.Services.AddTransient<IFakeClock, FakeClock>();
         context.Services.AddTransient(typeof(IAmbientScopeProvider<>), typeof(AmbientScopeProvider<>));
         context.Services.AddTransient<ICancellationTokenProvider, NullCancellationTokenProvider>();
 

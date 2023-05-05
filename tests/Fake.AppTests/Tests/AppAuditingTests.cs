@@ -16,12 +16,12 @@ public abstract class AppAuditingTests<TStartupModule> : AppTestBase<TStartupMod
 {
     private Guid _currentUserId;
     private readonly IRepository<Order> _orderRepository;
-    private readonly IClock _clock;
+    private readonly IFakeClock _fakeClock;
 
     public AppAuditingTests()
     {
         _orderRepository = GetRequiredService<IRepository<Order>>();
-        _clock = GetRequiredService<IClock>();
+        _fakeClock = GetRequiredService<IFakeClock>();
     }
 
     protected override void AfterAddFakeApplication(IServiceCollection services)
@@ -59,7 +59,7 @@ public abstract class AppAuditingTests<TStartupModule> : AppTestBase<TStartupMod
         order = await _orderRepository.FirstOrDefaultAsync(x => x.Id == order.Id);
 
         order.ShouldNotBeNull();
-        order.CreationTime.ShouldBeLessThanOrEqualTo(_clock.Now);
+        order.CreationTime.ShouldBeLessThanOrEqualTo(_fakeClock.Now);
         order.CreatorId.ShouldBe(_currentUserId);
     }
 
@@ -77,7 +77,7 @@ public abstract class AppAuditingTests<TStartupModule> : AppTestBase<TStartupMod
         order = await _orderRepository.UpdateAsync(order);
 
         order.LastModifierId.ShouldBe(_currentUserId);
-        order.LastModificationTime.ShouldBeLessThanOrEqualTo(_clock.Now);
+        order.LastModificationTime.ShouldBeLessThanOrEqualTo(_fakeClock.Now);
     }
 
     [Theory]
@@ -87,13 +87,13 @@ public abstract class AppAuditingTests<TStartupModule> : AppTestBase<TStartupMod
         Guid.TryParse(currentUserId, out _currentUserId);
 
         var order = await _orderRepository.FirstOrDefaultAsync(x => x.Id ==AppTestDataBuilder.OrderId);
-        order.CreationTime.ShouldBeLessThanOrEqualTo(_clock.Now);
+        order.CreationTime.ShouldBeLessThanOrEqualTo(_fakeClock.Now);
         order.LastModifierId.ShouldBe(Guid.Empty);
         await _orderRepository.DeleteAsync(order);
 
         order.IsDeleted.ShouldBe(true);
         order.LastModifierId.ShouldBe(_currentUserId);
-        order.LastModificationTime.ShouldBeLessThanOrEqualTo(_clock.Now);
+        order.LastModificationTime.ShouldBeLessThanOrEqualTo(_fakeClock.Now);
 
         //TODO：被删除（软）的数据不应该被查询到（默认情况下）
         order = await _orderRepository.FirstOrDefaultAsync(x => x.Id ==AppTestDataBuilder.OrderId);

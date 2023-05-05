@@ -7,12 +7,12 @@ namespace Fake.Domain.Entities.Auditing;
 public class DefaultAuditPropertySetter : IAuditPropertySetter
 {
     private readonly ICurrentUser _currentUser;
-    private readonly IClock _clock;
+    private readonly IFakeClock _fakeClock;
 
-    public DefaultAuditPropertySetter(ICurrentUser currentUser,IClock clock)
+    public DefaultAuditPropertySetter(ICurrentUser currentUser,IFakeClock fakeClock)
     {
         _currentUser = currentUser;
-        _clock = clock;
+        _fakeClock = fakeClock;
     }
     public void SetCreationProperties(object targetObject)
     {
@@ -20,7 +20,7 @@ public class DefaultAuditPropertySetter : IAuditPropertySetter
         {
             if (objectWithCreationTime.CreationTime == default)
             {
-                ReflectionHelper.TrySetProperty(objectWithCreationTime, x=>x.CreationTime, () => _clock.Now);
+                ReflectionHelper.TrySetProperty(objectWithCreationTime, x=>x.CreationTime, () => _fakeClock.Now);
             }
         }
         
@@ -37,7 +37,7 @@ public class DefaultAuditPropertySetter : IAuditPropertySetter
     {
         if (targetObject is IHasModificationTime { LastModificationTime: { } } objectWithModificationTime)
         {
-            ReflectionHelper.TrySetProperty(objectWithModificationTime, x=>x.LastModificationTime, () => _clock.Now);
+            ReflectionHelper.TrySetProperty(objectWithModificationTime, x=>x.LastModificationTime, () => _fakeClock.Now);
         }
         
         if (targetObject is IHasModifier<Guid> objectWithGuidModifier)
