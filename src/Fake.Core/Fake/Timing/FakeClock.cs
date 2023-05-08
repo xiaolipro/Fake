@@ -1,4 +1,3 @@
-using Fake.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace Fake.Timing;

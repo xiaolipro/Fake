@@ -10,7 +10,7 @@ public abstract class RepositoryBase<TEntity> : IRepository<TEntity>
     where TEntity : class, IAggregateRoot
 {
     // ReSharper disable once UnusedAutoPropertyAccessor.Global
-    public IFakeServiceProvider ServiceProvider { get; set; } // 属性注入
+    public ILazyServiceProvider ServiceProvider { get; set; } // 属性注入
 
     public ICancellationTokenProvider CancellationTokenProvider =>
         ServiceProvider.GetRequiredLazyService<ICancellationTokenProvider>();
