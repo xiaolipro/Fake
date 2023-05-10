@@ -3,7 +3,9 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Fake.DependencyInjection;
 using Fake.Json;
-using Fake.Json.Converters;
+using Fake.Json.SystemTextJson;
+using Fake.Json.SystemTextJson.Converters;
+using Fake.Json.SystemTextJson.Modifiers;
 using Fake.Modularity;
 using Fake.Threading;
 using Fake.Timing;
@@ -22,11 +24,17 @@ public class FakeCoreModule : FakeModule
 
         context.Services.AddTransient<ILazyServiceProvider, LazyServiceProvider>();
 
-        // Json序列化
+        // SystemTextJson序列化
         context.Services.AddTransient<IFakeJsonSerializer, FakeSystemTextJsonSerializer>();
         context.Services.AddTransient<FakeDateTimeConverter>();
         context.Services.AddTransient<FakeBooleanConverter>();
         context.Services.AddTransient<FakeLongConverter>();
+        context.Services.AddTransient<FakeDefaultJsonTypeInfoResolver>();
+        context.Services.AddOptions<FakeSystemTextJsonModifiersOption>()
+            .Configure<IServiceProvider>((option, provider) =>
+            {
+                option.Modifiers.Add(new FakeDateTimeConverterModifier().CreateModifyAction(provider));
+            });
         context.Services.AddOptions<JsonSerializerOptions>()
             .Configure<IServiceProvider>((options, provider) =>
             {
@@ -43,10 +51,13 @@ public class FakeCoreModule : FakeModule
                 // Fake默认配置
                 options.ReadCommentHandling = JsonCommentHandling.Skip;
                 options.AllowTrailingCommas = true;
+
                 options.Converters.Add(provider.GetRequiredService<FakeDateTimeConverter>());
                 options.Converters.Add(provider.GetRequiredService<FakeLongConverter>());
                 options.Converters.Add(provider.GetRequiredService<FakeBooleanConverter>());
                 options.Converters.Add(new ObjectToInferredTypesConverter());
+
+                options.TypeInfoResolver = provider.GetRequiredService<FakeDefaultJsonTypeInfoResolver>();
             });
     }
 }

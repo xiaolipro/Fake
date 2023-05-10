@@ -2,7 +2,7 @@
 using System.Text.Json;
 using Microsoft.Extensions.Options;
 
-namespace Fake.Json;
+namespace Fake.Json.SystemTextJson;
 
 public class FakeSystemTextJsonSerializer : IFakeJsonSerializer
 {

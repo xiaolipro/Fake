@@ -4,7 +4,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.Options;
 
-namespace Fake.Json.Converters;
+namespace Fake.Json.SystemTextJson.Converters;
 
 public class FakeBooleanConverter : JsonConverter<bool>
 {

@@ -165,7 +165,7 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
 
         var idProperty = entry.Property(nameof(IEntity<Guid>.Id)).Metadata.PropertyInfo;
 
-        var attr = ReflectionHelper.GetSingleAttributeOrDefault<DatabaseGeneratedAttribute>(idProperty);
+        var attr = ReflectionHelper.GetAttributeOrDefault<DatabaseGeneratedAttribute>(idProperty);
         if (attr != null && attr.DatabaseGeneratedOption != DatabaseGeneratedOption.None) return;
 
         EntityHelper.TrySetId(entityWithGuidId, () => _guidGenerator.Value.Create(), true);
@@ -217,7 +217,7 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
         var entityType = mutableEntityType.ClrType;
         if (entityType.IsDefined(typeof(OwnedAttribute), true)) return;
 
-        if (!entityType.IsDefined(typeof(DisableDateTimeNormalizationAttribute)))
+        if (!entityType.IsDefined(typeof(DisableClockNormalizationAttribute)))
         {
             var dateTimeProperties = mutableEntityType.GetProperties()
                 .Where(p =>
@@ -225,7 +225,7 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
                     var propertyInfo = p.PropertyInfo;
                     if (propertyInfo == null) return false;
                     if (!propertyInfo.CanWrite) return false;
-                    if (ReflectionHelper.GetSingleAttributeOrDefault<DisableDateTimeNormalizationAttribute>(
+                    if (ReflectionHelper.GetAttributeOrDefault<DisableClockNormalizationAttribute>(
                             propertyInfo, includeDeclaringType: true) != null) return false;
                     return propertyInfo.PropertyType == typeof(DateTime) ||
                            propertyInfo.PropertyType == typeof(DateTime?);

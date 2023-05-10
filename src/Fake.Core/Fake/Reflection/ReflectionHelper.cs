@@ -49,10 +49,10 @@ public static class ReflectionHelper
     /// <param name="memberInfo"></param>
     /// <param name="defaultValue"></param>
     /// <param name="inherit"></param>
-    /// <param name="includeDeclaringType"></param>
+    /// <param name="includeDeclaringType">从定义类型上寻找</param>
     /// <typeparam name="TAttribute"></typeparam>
     /// <returns></returns>
-    public static TAttribute GetSingleAttributeOrDefault<TAttribute>(MemberInfo memberInfo,
+    public static TAttribute GetAttributeOrDefault<TAttribute>(MemberInfo memberInfo,
         TAttribute defaultValue = default, bool inherit = true, bool includeDeclaringType = false)
         where TAttribute : Attribute
     {

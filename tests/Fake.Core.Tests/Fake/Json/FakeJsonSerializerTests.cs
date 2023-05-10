@@ -1,10 +1,10 @@
-﻿using System.Text.Encodings.Web;
-using System.Text.Json;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Fake.Json;
 
-public class FakeJsonSerializerTests:FakeJsonTestBase
+public class FakeJsonSerializerTests : FakeJsonTestBase
 {
     private readonly IFakeJsonSerializer _jsonSerializer;
 
@@ -36,7 +36,7 @@ public class FakeJsonSerializerTests:FakeJsonTestBase
 
         json.ShouldBe("{\"id\":19749823749832759,\"name\":\"张三\",\"is18\":true}");
     }
-    
+
     [Fact]
     void 反序列化()
     {
@@ -48,13 +48,84 @@ public class FakeJsonSerializerTests:FakeJsonTestBase
         student.Is18.ShouldBe(true);
         student.Id.ShouldBe(19749823749832759);
     }
-    
+
+    [Fact]
+    void JsonIgnore序列化()
+    {
+        var student = new Student
+        {
+            Id = 19749823749832759,
+            Name = "张三",
+            Is18 = true,
+            IgnoreMember = "IgnoreMember"
+        };
+
+        var json = _jsonSerializer.Serialize(student);
+
+        json.ShouldBe("{\"id\":19749823749832759,\"name\":\"张三\",\"is18\":true}");
+    }
+
+    [Fact]
+    void JsonIgnore反序列化()
+    {
+        var json = "{\"id\":19749823749832759,\"name\":\"张三\",\"is18\":true,\"ignoreMember\":\"IgnoreMember\"}";
+
+        var student = _jsonSerializer.Deserialize<Student>(json);
+
+        student.Name.ShouldBe("张三");
+        student.Is18.ShouldBe(true);
+        student.Id.ShouldBe(19749823749832759);
+        student.IgnoreMember.ShouldBeNull();
+    }
+
+    [Fact]
+    void JsonPropertyName序列化()
+    {
+        var student = new NewStudent
+        {
+            Id = 19749823749832759,
+            Name = "张三",
+            Is18 = true,
+            IgnoreMember = "IgnoreMember",
+            Sex = "男"
+        };
+
+        var json = _jsonSerializer.Serialize(student);
+
+        json.ShouldNotBe("{\"id\":19749823749832759,\"name\":\"张三\",\"is18\":true,\"gender\":\"男\"}");
+        json.ShouldBe("{\"gender\":\"男\",\"id\":19749823749832759,\"name\":\"张三\",\"is18\":true}");
+    }
+
+    [Fact]
+    void JsonPropertyName反序列化()
+    {
+        var json = "{\"id\":19749823749832759,\"name\":\"张三\",\"is18\":true,\"ignoreMember\":\"IgnoreMember\",\"gender\":\"男\"}";
+
+        var student = _jsonSerializer.Deserialize<NewStudent>(json);
+
+        student.Name.ShouldBe("张三");
+        student.Is18.ShouldBe(true);
+        student.Id.ShouldBe(19749823749832759);
+        student.IgnoreMember.ShouldBeNull();
+        student.Sex.ShouldBe("男");
+    }
+
     class Student
     {
         public long? Id { get; set; }
-        
+
         public string Name { get; set; }
 
         public bool Is18 { get; set; }
+
+        [JsonIgnore] 
+        public string IgnoreMember { get; set; }
+    }
+
+
+    class NewStudent:Student
+    {
+        [JsonPropertyName("gender")] 
+        public string Sex { get; set; }
     }
 }

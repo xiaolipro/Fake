@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 using Fake.Timing;
 using Microsoft.Extensions.Options;
 
-namespace Fake.Json.Converters;
+namespace Fake.Json.SystemTextJson.Converters;
 
 public class FakeDateTimeConverter : JsonConverter<DateTime>
 {

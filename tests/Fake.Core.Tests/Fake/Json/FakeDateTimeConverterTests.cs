@@ -16,7 +16,7 @@ public class FakeDateTimeConverterTests:FakeJsonTestBase
         services.Configure<FakeJsonSerializerOptions>(options =>
         {
             options.InputDateTimeFormats.Add("yyyy-MM-dd HH:mm:ss");
-            options.OutputDateTimeFormat = "yyyy-MM-dd HH:mm:ss";
+            options.OutputDateTimeFormat = "yyyy-MM-dd HH:mm";
         });
     }
     
@@ -30,7 +30,7 @@ public class FakeDateTimeConverterTests:FakeJsonTestBase
 
         var json = _jsonSerializer.Serialize(datetime);
 
-        json.ShouldBe("{\"value\":\"2021-01-01 01:01:01\"}");
+        json.ShouldBe("{\"value\":\"2021-01-01 01:01\"}");
     }
     
     
@@ -51,7 +51,7 @@ public class FakeDateTimeConverterTests:FakeJsonTestBase
     }
     
     [Fact]
-    void 可空datetime序列化()
+    void 可空datetime反序列化()
     {
         var json = "{\"value\":\"2021-01-01 01:01:01\"}";
 
@@ -73,7 +73,7 @@ public class FakeDateTimeConverterTests:FakeJsonTestBase
     }
     
     [Fact]
-    void 可空datetime反序列化()
+    void 可空datetime序列化()
     {
         var datetime = new NullableDatetimeClass
         {
@@ -82,7 +82,7 @@ public class FakeDateTimeConverterTests:FakeJsonTestBase
 
         var json = _jsonSerializer.Serialize(datetime);
 
-        json.ShouldBe("{\"value\":\"2021-01-01 01:01:01\"}");
+        json.ShouldBe("{\"value\":\"2021-01-01 01:01\"}");
         
         datetime = new NullableDatetimeClass
         {
@@ -91,7 +91,7 @@ public class FakeDateTimeConverterTests:FakeJsonTestBase
 
         json = _jsonSerializer.Serialize(datetime);
 
-        json.ShouldBe("{\"value\":\"2021-01-01 01:01:01\"}");
+        json.ShouldBe("{\"value\":\"2021-01-01 01:01\"}");
         
         datetime = new NullableDatetimeClass
         {
