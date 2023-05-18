@@ -1,11 +1,4 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=4bcd433d_002Dd63b_002D4370_002Db4fd_002Dfb7b51900ad9/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="SortByDependencies" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;Not&gt;&#xD;
-    &lt;And&gt;&#xD;
-      &lt;TestAncestor&gt;&#xD;
-        &lt;TestId&gt;xUnit::F2BC0BDA-3EA2-42EA-A900-2A381EB650B8::net7.0::FakeStringLocalizerFactory_Tests&lt;/TestId&gt;&#xD;
-      &lt;/TestAncestor&gt;&#xD;
-      &lt;Project Location="E:\repo\fake\tests\Fake.Localization.Tests" Presentation="&amp;lt;tests&amp;gt;\&amp;lt;Fake.Localization.Tests&amp;gt;" /&gt;&#xD;
-    &lt;/And&gt;&#xD;
-  &lt;/Not&gt;&#xD;
+  &lt;Project Location="E:\repo\fake" Presentation="&amp;lt;tests&amp;gt;" /&gt;&#xD;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

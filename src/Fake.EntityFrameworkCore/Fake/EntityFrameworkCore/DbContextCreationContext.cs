@@ -41,8 +41,3 @@ public class DbContextCreationContext
         return new DbContextCreationContext(connectionString);
     }
 }
-
-public class FakeDbContextOptions
-{
-    public string ConnectionString { get; set; }
-}

@@ -66,6 +66,10 @@ public class FakeApplication : IFakeApplication
     }
 
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <exception cref="FakeInitializationException"></exception>
     public void ConfigureServices()
     {
         if (_configuredServices)

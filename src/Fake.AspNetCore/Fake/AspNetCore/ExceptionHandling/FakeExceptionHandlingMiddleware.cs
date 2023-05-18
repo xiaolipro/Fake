@@ -55,6 +55,15 @@ public class FakeExceptionHandlingMiddleware : IMiddleware
                 await HandleAndWrapException(context, ex);
             }
         }
+
+        try
+        {
+
+        }
+        finally
+        {
+            
+        }
     }
 
     private async Task HandleAndWrapException(HttpContext httpContext, Exception exception)

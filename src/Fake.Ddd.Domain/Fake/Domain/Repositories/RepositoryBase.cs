@@ -10,12 +10,12 @@ public abstract class RepositoryBase<TEntity> : IRepository<TEntity>
     where TEntity : class, IAggregateRoot
 {
     // ReSharper disable once UnusedAutoPropertyAccessor.Global
-    public ILazyServiceProvider ServiceProvider { get; set; } // 属性注入
+    public ILazyServiceProvider LazyServiceProvider { get; set; } // 属性注入
 
     public ICancellationTokenProvider CancellationTokenProvider =>
-        ServiceProvider.GetRequiredLazyService<ICancellationTokenProvider>();
+        LazyServiceProvider.GetRequiredLazyService<ICancellationTokenProvider>();
 
-    public IUnitOfWorkManager UnitOfWorkManager => ServiceProvider.GetRequiredLazyService<IUnitOfWorkManager>();
+    public IUnitOfWorkManager UnitOfWorkManager => LazyServiceProvider.GetRequiredLazyService<IUnitOfWorkManager>();
 
     protected virtual CancellationToken GetCancellationToken(CancellationToken preferredValue = default)
     {

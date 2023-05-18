@@ -15,7 +15,7 @@ public class EfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntity>, IE
     where TEntity : class, IAggregateRoot
 {
     private IDbContextProvider<TDbContext> DbContextProvider =>
-        ServiceProvider.GetRequiredLazyService<IDbContextProvider<TDbContext>>();
+        LazyServiceProvider.GetRequiredLazyService<IDbContextProvider<TDbContext>>();
 
     public Task<TDbContext> GetDbContextAsync(CancellationToken cancellationToken = default)
     {

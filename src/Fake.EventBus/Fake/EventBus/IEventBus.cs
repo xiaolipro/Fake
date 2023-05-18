@@ -5,8 +5,14 @@ namespace Fake.EventBus;
 /// <summary>
 /// 事件总线--发布订阅模式
 /// </summary>
-public interface IEventBus : IEventPublisher
+public interface IEventBus
 {
+    /// <summary>
+    /// 发布事件
+    /// </summary>
+    /// <param name="event">事件</param>
+    void Publish(IEvent @event);
+    
     /// <summary>
     /// 订阅事件
     /// </summary>
