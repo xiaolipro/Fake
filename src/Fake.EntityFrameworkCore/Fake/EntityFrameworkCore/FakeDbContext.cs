@@ -13,10 +13,15 @@ using Fake.Timing;
 using Fake.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Diagnostics.Internal;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Fake.EntityFrameworkCore;
+
+public interface IReadOnly
+{
+}
 
 public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : DbContext
 {
@@ -38,6 +43,16 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
             new Lazy<IAuditPropertySetter>(serviceProvider.GetRequiredService<IAuditPropertySetter>());
     }
 
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        base.OnConfiguring(optionsBuilder);
+
+        if (this is IReadOnly)
+        {
+            optionsBuilder.AddInterceptors(new EfCoreNoRootDbCommandInterceptor());
+        }
+    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -49,7 +64,7 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
             ConfigureBasePropertiesMethodInfo
                 .MakeGenericMethod(entityType.ClrType)
                 .Invoke(this, new object[] { modelBuilder, entityType });
-            
+
             ConfigureValueConverter(modelBuilder, entityType);
         }
     }
@@ -91,19 +106,24 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
         {
             case EntityState.Detached: //游离状态：上下文未跟踪该实体
                 break;
+
             case EntityState.Unchanged: //未变更状态：该实体正在由上下文跟踪并存在于数据库中，其属性值与数据库中的值没有变化。
                 break;
+
             case EntityState.Deleted: //删除状态：该实体正在由上下文跟踪并存在于数据库中，它已标记为从数据库中删除
                 SoftDelete(entry);
                 break;
+
             case EntityState.Modified: //修改状态：该实体正在由上下文跟踪并存在于数据库中，其部分或全部属性值已被修改
                 SetModifier(entry);
                 break;
+
             case EntityState.Added: //新增状态：上下文正在跟踪实体，但数据库中尚不存在该实体。
                 CheckAndSetId(entry);
                 SetVersionNum(entry);
                 SetCreator(entry);
                 break;
+
             default:
                 throw new ArgumentOutOfRangeException();
         }

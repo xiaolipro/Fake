@@ -4,7 +4,7 @@ using Domain.Aggregates.OrderAggregate;
 using Fake.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-public class OrderingContext: FakeDbContext<OrderingContext>
+public class OrderingContext : FakeDbContext<OrderingContext>, IReadOnly
 {
     public const string DefaultSchema = "ordering";
     public DbSet<Order> Orders { get; set; }
@@ -13,7 +13,7 @@ public class OrderingContext: FakeDbContext<OrderingContext>
     public OrderingContext(DbContextOptions<OrderingContext> options, IServiceProvider serviceProvider) : base(options, serviceProvider)
     {
     }
-    
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
