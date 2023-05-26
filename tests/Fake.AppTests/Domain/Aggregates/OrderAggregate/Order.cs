@@ -17,8 +17,8 @@ public class Order : FullAuditedAggregate<Guid, Guid>
     // Address is a Value Object pattern example persisted as EF Core 2.0 owned entity
     public Address Address { get; private set; }
 
-    public int? GetBuyerId => _buyerId;
-    private int? _buyerId;
+    public Guid? GetBuyerId => _buyerId;
+    private Guid? _buyerId;
 
     public OrderStatus OrderStatus { get; private set; }
     private int _orderStatusId;
@@ -37,7 +37,7 @@ public class Order : FullAuditedAggregate<Guid, Guid>
     private readonly List<OrderItem> _orderItems;
     public IReadOnlyCollection<OrderItem> OrderItems => _orderItems;
 
-    private int? _paymentMethodId;
+    private Guid? _paymentMethodId;
 
     public static Order NewDraft()
     {
@@ -53,7 +53,7 @@ public class Order : FullAuditedAggregate<Guid, Guid>
     }
 
     public Order(string userId, string userName, Address address, int cardTypeId, string cardNumber, string cardSecurityNumber,
-            string cardHolderName, DateTime cardExpiration, int? buyerId = null, int? paymentMethodId = null) : this()
+            string cardHolderName, DateTime cardExpiration, Guid? buyerId = null, Guid? paymentMethodId = null) : this()
     {
         _buyerId = buyerId;
         _paymentMethodId = paymentMethodId;
@@ -96,12 +96,12 @@ public class Order : FullAuditedAggregate<Guid, Guid>
         }
     }
 
-    public void SetPaymentId(int id)
+    public void SetPaymentId(Guid id)
     {
         _paymentMethodId = id;
     }
 
-    public void SetBuyerId(int id)
+    public void SetBuyerId(Guid id)
     {
         _buyerId = id;
     }

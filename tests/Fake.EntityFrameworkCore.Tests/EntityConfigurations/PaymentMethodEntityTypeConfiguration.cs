@@ -15,7 +15,7 @@ namespace AppTests.EntityConfigurations
 
             paymentConfiguration.Ignore(b => b.DomainEvents);
 
-            paymentConfiguration.Property<int>("BuyerId")
+            paymentConfiguration.Property<Guid>("BuyerId")
                 .IsRequired();
 
             paymentConfiguration

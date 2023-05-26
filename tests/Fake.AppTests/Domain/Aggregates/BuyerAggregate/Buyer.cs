@@ -6,7 +6,7 @@ using Fake.Domain.Entities;
 
 namespace Domain.Aggregates.BuyerAggregate;
 
-public class Buyer: AggregateRoot<int>
+public class Buyer: AggregateRoot<Guid>
 {
     public string IdentityGuid { get; private set; }
 

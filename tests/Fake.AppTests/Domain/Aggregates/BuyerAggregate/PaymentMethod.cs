@@ -3,7 +3,7 @@ using Fake;
 using Fake.Domain.Entities;
 
 namespace Domain.Aggregates.BuyerAggregate;
-public class PaymentMethod : Entity<int>
+public class PaymentMethod : Entity<Guid>
 {
     private string _alias;
     private string _cardNumber;

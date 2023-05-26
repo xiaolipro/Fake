@@ -38,6 +38,9 @@ public class AppTestDataBuilder
 
         order.AddOrderItem(1, "橘子", 9.6m, 9, null);
         order.SetId(OrderId);
+        order.SetBuyerId(TestUser);
+        order.SetPaymentId(Guid.NewGuid());
+        order.SetPaidStatus();
         await _orderRepository.InsertAsync(order);
     }
 }
