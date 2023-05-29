@@ -45,3 +45,6 @@ $ dotnet restore
 - 服务端掉线，自动踢出可用队列
 - 服务不可达/grpc内部异常，自动重试机制
 - 连接持活机制，服务队列缓存机制等
+
+### 鸣谢
+Jetbraints https://jb.gg/OpenSourceSupport.
