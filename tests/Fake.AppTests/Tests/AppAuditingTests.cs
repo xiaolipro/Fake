@@ -49,7 +49,7 @@ public abstract class AppAuditingTests<TStartupModule> : AppTestBase<TStartupMod
         var cardSecurityNumber = "123";
         var cardHolderName = "FakeName";
         var cardExpiration = DateTime.Now.AddYears(1);
-        var fakeOrder = new Order(currentUserId, "fakeName", new Address(street, city, state, country, zipcode),
+        var fakeOrder = new Order(Guid.Parse(currentUserId), "fakeName", new Address(street, city, state, country, zipcode),
             cardTypeId, cardNumber, cardSecurityNumber, cardHolderName, cardExpiration);
 
         Assert.Equal(1, fakeOrder.DomainEvents.Count);

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Domain.Aggregates.BuyerAggregate;
 using Fake.Domain.Repositories;
 
@@ -10,7 +11,7 @@ public interface IBuyerRepository : IRepository<Buyer>
 {
     Buyer Add(Buyer buyer);
     Buyer Update(Buyer buyer);
-    Task<Buyer> FindAsync(string buyerIdentityGuid);
+    Task<Buyer> FindAsync(Guid buyerIdentityGuid);
     Task<Buyer> FindByIdAsync(string id);
 }
 

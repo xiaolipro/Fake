@@ -22,7 +22,7 @@ public class EfCoreNonRootRepositoryTests: AppTestBase<FakeEntityFrameworkCoreTe
     [Fact]
     void GetOrdersFromUserTest()
     {
-        var orders = OrderQueryRepository.GetOrdersFromUserAsync(AppTestDataBuilder.TestUser).Result;
+        var orders = OrderQueryRepository.GetOrdersFromUserAsync(AppTestDataBuilder.UserId).Result;
         orders.Count().ShouldBeGreaterThan(0);
         orders.First().ordernumber.ShouldBe(1);
         //orders.First().date.ShouldBe(Clock.Now);

@@ -8,7 +8,7 @@ namespace Domain.Aggregates.BuyerAggregate;
 
 public class Buyer: AggregateRoot<Guid>
 {
-    public string IdentityGuid { get; private set; }
+    public Guid IdentityGuid { get; private set; }
 
     public string Name { get; private set; }
 
@@ -22,9 +22,9 @@ public class Buyer: AggregateRoot<Guid>
         _paymentMethods = new List<PaymentMethod>();
     }
 
-    public Buyer(string identity, string name) : this()
+    public Buyer(Guid identity, string name) : this()
     {
-        IdentityGuid = !string.IsNullOrWhiteSpace(identity) ? identity : throw new ArgumentNullException(nameof(identity));
+        IdentityGuid = identity;
         Name = !string.IsNullOrWhiteSpace(name) ? name : throw new ArgumentNullException(nameof(name));
     }
 

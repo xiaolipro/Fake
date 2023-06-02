@@ -52,7 +52,7 @@ public class Order : FullAuditedAggregate<Guid, Guid>
         _isDraft = false;
     }
 
-    public Order(string userId, string userName, Address address, int cardTypeId, string cardNumber, string cardSecurityNumber,
+    public Order(Guid userId, string userName, Address address, int cardTypeId, string cardNumber, string cardSecurityNumber,
             string cardHolderName, DateTime cardExpiration, Guid? buyerId = null, Guid? paymentMethodId = null) : this()
     {
         _buyerId = buyerId;
@@ -177,7 +177,7 @@ public class Order : FullAuditedAggregate<Guid, Guid>
         }
     }
 
-    private void AddOrderStartedDomainEvent(string userId, string userName, int cardTypeId, string cardNumber,
+    private void AddOrderStartedDomainEvent(Guid userId, string userName, int cardTypeId, string cardNumber,
             string cardSecurityNumber, string cardHolderName, DateTime cardExpiration)
     {
         var orderStartedDomainEvent = new OrderStartedDomainEvent(this, userId, userName, cardTypeId,

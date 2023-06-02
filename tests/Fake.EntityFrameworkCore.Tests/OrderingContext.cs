@@ -2,6 +2,7 @@
 using Domain.Aggregates.BuyerAggregate;
 using Domain.Aggregates.OrderAggregate;
 using Fake.EntityFrameworkCore;
+using Fake.EventBus;
 using Microsoft.EntityFrameworkCore;
 
 public class OrderingContext: FakeDbContext<OrderingContext>
@@ -10,8 +11,9 @@ public class OrderingContext: FakeDbContext<OrderingContext>
     public DbSet<Order> Orders { get; set; }
     public DbSet<Buyer> Buyers { get; set; }
 
-    public OrderingContext(DbContextOptions<OrderingContext> options, IServiceProvider serviceProvider) : base(options, serviceProvider)
+    public OrderingContext(DbContextOptions<OrderingContext> options) : base(options)
     {
+        System.Diagnostics.Debug.WriteLine("OrderingContext::ctor ->" + base.GetHashCode());
     }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)

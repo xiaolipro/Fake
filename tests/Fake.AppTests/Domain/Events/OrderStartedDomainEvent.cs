@@ -9,7 +9,7 @@ namespace Domain.Events
     /// </summary>
     public class OrderStartedDomainEvent : DomainEvent
     {
-        public string UserId { get; }
+        public Guid UserId { get; }
         public string UserName { get; }
         public int CardTypeId { get; }
         public string CardNumber { get; }
@@ -18,7 +18,7 @@ namespace Domain.Events
         public DateTime CardExpiration { get; }
         public Order Order { get; }
 
-        public OrderStartedDomainEvent(Order order, string userId, string userName,
+        public OrderStartedDomainEvent(Order order, Guid userId, string userName,
                                        int cardTypeId, string cardNumber, 
                                        string cardSecurityNumber, string cardHolderName, 
                                        DateTime cardExpiration)

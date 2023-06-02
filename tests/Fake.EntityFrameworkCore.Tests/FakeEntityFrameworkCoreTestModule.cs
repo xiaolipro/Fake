@@ -1,4 +1,5 @@
-﻿using Domain.Aggregates.OrderAggregate;
+﻿using Domain.Aggregates.BuyerAggregate;
+using Domain.Aggregates.OrderAggregate;
 using Fake.Domain.Repositories;
 using Fake.Domain.Repositories.EntityFrameWorkCore;
 using Fake.EntityFrameworkCore;
@@ -16,6 +17,8 @@ public class FakeEntityFrameworkCoreTestModule : FakeModule
     {
         context.Services.AddTransient(typeof(IRepository<Order>),
             typeof(EfCoreRepository<OrderingContext, Order>));
+        context.Services.AddTransient(typeof(IRepository<Buyer>),
+            typeof(EfCoreRepository<OrderingContext, Buyer>));
         
         context.Services.AddDbContextFactory<OrderingContext>(builder =>
         {

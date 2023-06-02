@@ -1,7 +1,7 @@
 using System.Security.Cryptography;
 using Microsoft.Extensions.Options;
 
-namespace Fake.Domain.Entities.IdGenerators;
+namespace Fake.Domain.Entities.IDGenerators;
 
 /// <summary>
 /// 有序guid生成器
@@ -17,7 +17,7 @@ public class SequentialGuidGenerator:IGuidGenerator
         _options = options.Value;
     }
     
-    public Guid Create()
+    public Guid Generate()
     {
         // 1个Guid占16个字节
         byte[] guidBytes = new byte[16];

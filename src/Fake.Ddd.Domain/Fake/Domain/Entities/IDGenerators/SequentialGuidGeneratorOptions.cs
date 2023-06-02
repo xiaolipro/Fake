@@ -1,4 +1,4 @@
-namespace Fake.Domain.Entities.IdGenerators;
+namespace Fake.Domain.Entities.IDGenerators;
 
 public class SequentialGuidGeneratorOptions
 {

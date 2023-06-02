@@ -1,6 +1,6 @@
 ﻿using Fake.Auditing;
 using Fake.Domain.Entities.Auditing;
-using Fake.Domain.Entities.IdGenerators;
+using Fake.Domain.Entities.IDGenerators;
 using Fake.EventBus;
 using Fake.Modularity;
 using Microsoft.Extensions.DependencyInjection;

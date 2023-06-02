@@ -21,7 +21,7 @@ public class HasDomainEvent : IHasDomainEvent
         _domainEvents?.Remove(domainEvent);
     }
 
-    protected void ClearDomainEvents()
+    public void ClearDomainEvents()
     {
         _domainEvents?.Clear();
     }

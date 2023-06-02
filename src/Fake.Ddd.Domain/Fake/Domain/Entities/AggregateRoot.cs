@@ -1,6 +1,6 @@
 ﻿
 using Fake.Domain.Entities.Auditing;
-using Fake.Domain.Entities.IdGenerators;
+using Fake.Domain.Entities.IDGenerators;
 
 namespace Fake.Domain.Entities;
 
@@ -12,7 +12,7 @@ public abstract class AggregateRoot : Entity, IAggregateRoot,IHasVersionNum
 
     protected AggregateRoot()
     {
-        VersionNum = SimpleGuidGenerator.Instance.Create().ToString("N");
+        VersionNum = SimpleGuidGenerator.Instance.Generate().ToString("N");
     }
 }
 

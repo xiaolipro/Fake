@@ -1,9 +1,9 @@
-namespace Fake.Domain.Entities.IdGenerators;
+namespace Fake.Domain.Entities.IDGenerators;
 
 public class SimpleGuidGenerator:IGuidGenerator
 {
     public static SimpleGuidGenerator Instance { get; } = new SimpleGuidGenerator();
-    public Guid Create()
+    public Guid Generate()
     {
         return Guid.NewGuid();
     }

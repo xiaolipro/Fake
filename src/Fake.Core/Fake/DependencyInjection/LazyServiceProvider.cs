@@ -2,6 +2,9 @@
 
 namespace Fake.DependencyInjection;
 
+/// <summary>
+/// 高效的Lazy服务供应商
+/// </summary>
 public class LazyServiceProvider : ILazyServiceProvider
 {
     protected IServiceProvider ServiceProvider { get; }

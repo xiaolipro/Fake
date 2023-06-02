@@ -3,11 +3,16 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
+using Fake.Data;
+using Fake.DependencyInjection;
 using Fake.Domain.Entities;
 using Fake.Domain.Entities.Auditing;
-using Fake.Domain.Entities.IdGenerators;
+using Fake.Domain.Entities.IDGenerators;
 using Fake.EntityFrameworkCore.Modeling;
 using Fake.EntityFrameworkCore.ValueConverters;
+using Fake.EventBus;
 using Fake.Reflection;
 using Fake.Timing;
 using Fake.UnitOfWork;
@@ -20,9 +25,8 @@ namespace Fake.EntityFrameworkCore;
 
 public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : DbContext
 {
-    private readonly Lazy<IFakeClock> _clock;
-    private readonly Lazy<IGuidGenerator> _guidGenerator;
-    private readonly Lazy<IAuditPropertySetter> _auditPropertySetter;
+    public ILazyServiceProvider ServiceProvider { get; set; }
+
 
     private static readonly MethodInfo ConfigureBasePropertiesMethodInfo = typeof(FakeDbContext<TDbContext>)
         .GetMethod(
@@ -30,13 +34,15 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
             BindingFlags.Instance | BindingFlags.NonPublic
         );
 
-    protected FakeDbContext(DbContextOptions<TDbContext> options, IServiceProvider serviceProvider) : base(options)
+    protected FakeDbContext(DbContextOptions<TDbContext> options) : base(options)
     {
-        _clock = new Lazy<IFakeClock>(serviceProvider.GetRequiredService<IFakeClock>());
-        _guidGenerator = new Lazy<IGuidGenerator>(serviceProvider.GetRequiredService<IGuidGenerator>());
-        _auditPropertySetter =
-            new Lazy<IAuditPropertySetter>(serviceProvider.GetRequiredService<IAuditPropertySetter>());
     }
+
+    private IFakeClock Clock => ServiceProvider.GetRequiredLazyService<IFakeClock>();
+    private IGuidGenerator GuidGenerator => ServiceProvider.GetRequiredLazyService<IGuidGenerator>();
+    private IEventPublisher EventPublisher => ServiceProvider.GetRequiredLazyService<IEventPublisher>();
+    private IAuditPropertySetter AuditPropertySetter => ServiceProvider.GetRequiredLazyService<IAuditPropertySetter>();
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -49,8 +55,38 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
             ConfigureBasePropertiesMethodInfo
                 .MakeGenericMethod(entityType.ClrType)
                 .Invoke(this, new object[] { modelBuilder, entityType });
-            
+
             ConfigureValueConverter(modelBuilder, entityType);
+        }
+    }
+
+    public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess,
+        CancellationToken cancellationToken = new CancellationToken())
+    {
+        try
+        {
+            // 发布领域事件
+            var domainEntities = base.ChangeTracker.Entries<Entity>()
+                .Where(x => x.Entity.DomainEvents != null && x.Entity.DomainEvents.Any())
+                .ToList();
+
+            var domainEvents = domainEntities
+                .SelectMany(x => x.Entity.DomainEvents)
+                .ToList();
+
+            domainEntities.ForEach(entity => entity.Entity.ClearDomainEvents());
+
+            foreach (var domainEvent in domainEvents) EventPublisher.Publish(domainEvent);
+
+            return await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+        }
+        catch (DbUpdateConcurrencyException ex)
+        {
+            throw new FakeDbConcurrencyException(ex.Message, ex);
+        }
+        finally
+        {
+            ChangeTracker.AutoDetectChangesEnabled = true;
         }
     }
 
@@ -120,7 +156,7 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
 
             ReflectionHelper.TrySetProperty(entityWithSoftDelete, x => x.IsDeleted, () => true);
 
-            _auditPropertySetter.Value.SetModificationProperties(entry.Entity);
+            AuditPropertySetter.SetModificationProperties(entry.Entity);
         }
     }
 
@@ -129,14 +165,14 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
         // 只要有一个属性被修改了，且值不由数据库生成
         if (entry.Properties.Any(p => p.IsModified && p.Metadata.ValueGenerated == ValueGenerated.Never))
         {
-            _auditPropertySetter.Value.SetModificationProperties(entry.Entity);
+            AuditPropertySetter.SetModificationProperties(entry.Entity);
         }
     }
 
     protected virtual void SetCreator(EntityEntry entry)
     {
-        _auditPropertySetter.Value.SetCreationProperties(entry.Entity);
-        _auditPropertySetter.Value.SetModificationProperties(entry.Entity);
+        AuditPropertySetter.SetCreationProperties(entry.Entity);
+        AuditPropertySetter.SetModificationProperties(entry.Entity);
     }
 
     protected virtual void SetVersionNum(EntityEntry entry)
@@ -145,7 +181,7 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
         {
             if (entityWithVersionNum.VersionNum != default) return;
 
-            entityWithVersionNum.VersionNum = SimpleGuidGenerator.Instance.Create().ToString("N");
+            entityWithVersionNum.VersionNum = SimpleGuidGenerator.Instance.Generate().ToString("N");
         }
     }
 
@@ -168,7 +204,7 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
         var attr = ReflectionHelper.GetAttributeOrDefault<DatabaseGeneratedAttribute>(idProperty);
         if (attr != null && attr.DatabaseGeneratedOption != DatabaseGeneratedOption.None) return;
 
-        EntityHelper.TrySetId(entityWithGuidId, () => _guidGenerator.Value.Create(), true);
+        EntityHelper.TrySetId(entityWithGuidId, () => GuidGenerator.Generate(), true);
     }
 
     protected virtual void TrySetDatabaseProvider(ModelBuilder modelBuilder)
@@ -235,8 +271,8 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
             {
                 modelBuilder.Entity(entityType).Property(property.Name)
                     .HasConversion(property.ClrType == typeof(DateTime)
-                        ? new FakeDateTimeValueConverter(_clock.Value)
-                        : new FakeNullableDateTimeValueConverter(_clock.Value));
+                        ? new FakeDateTimeValueConverter(Clock)
+                        : new FakeNullableDateTimeValueConverter(Clock));
             }
         }
     }
