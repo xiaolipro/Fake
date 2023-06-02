@@ -1,11 +1,14 @@
-﻿using Domain.Aggregates.OrderAggregate;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Domain.Aggregates.OrderAggregate;
 using Domain.Events;
-using Fake.EventBus;
+using Fake.EventBus.Events;
 using Microsoft.Extensions.Logging;
 
-namespace AppTests.DomainEventHandlers;
+namespace Application.DomainEventHandlers.BuyerAndPaymentMethodVerifiedEvent;
 
-public class UpdateOrderWhenBuyerAndPaymentMethodVerifiedDomainEventHandler:IEventHandle<BuyerAndPaymentMethodVerifiedDomainEvent>
+public class UpdateOrderWhenBuyerAndPaymentMethodVerifiedDomainEventHandler:IEventHandler<BuyerAndPaymentMethodVerifiedDomainEvent>
 {
     private readonly IOrderRepository _orderRepository;
     private readonly ILogger<UpdateOrderWhenBuyerAndPaymentMethodVerifiedDomainEventHandler> _logger;

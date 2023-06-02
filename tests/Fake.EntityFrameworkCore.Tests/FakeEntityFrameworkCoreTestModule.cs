@@ -8,6 +8,7 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Repositories;
 
 [DependsOn(typeof(FakeAppTestModule))]
 [DependsOn(typeof(FakeEntityFrameworkCoreModule))]
@@ -19,7 +20,8 @@ public class FakeEntityFrameworkCoreTestModule : FakeModule
             typeof(EfCoreRepository<OrderingContext, Order>));
         context.Services.AddTransient(typeof(IRepository<Buyer>),
             typeof(EfCoreRepository<OrderingContext, Buyer>));
-        
+        context.Services.AddTransient(typeof(IOrderRepository),
+            typeof(OrderRepository));
         context.Services.AddDbContextFactory<OrderingContext>(builder =>
         {
             //使用sqlite内存模式要开open

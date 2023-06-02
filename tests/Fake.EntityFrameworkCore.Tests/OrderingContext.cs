@@ -2,7 +2,6 @@
 using Domain.Aggregates.BuyerAggregate;
 using Domain.Aggregates.OrderAggregate;
 using Fake.EntityFrameworkCore;
-using Fake.EventBus;
 using Microsoft.EntityFrameworkCore;
 
 public class OrderingContext: FakeDbContext<OrderingContext>

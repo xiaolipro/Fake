@@ -1,4 +1,5 @@
-﻿using Application.DomainEventHandlers.OrderStartedDomainEventHandlers;
+﻿using Application.DomainEventHandlers.BuyerAndPaymentMethodVerifiedEvent;
+using Application.DomainEventHandlers.OrderStartedDomainEventHandlers;
 using Domain.Events;
 using Fake.Autofac;
 using Fake.Ddd.Domain;
@@ -15,6 +16,9 @@ public class FakeAppTestModule : FakeModule
     {
         context.Services.AddSingleton(typeof(IEventHandler<OrderStartedDomainEvent>),
             typeof(ValidateOrAddBuyerAggregateWhenOrderStartedDomainEventHandler));
+
+        context.Services.AddSingleton(typeof(IEventHandler<BuyerAndPaymentMethodVerifiedDomainEvent>),
+            typeof(UpdateOrderWhenBuyerAndPaymentMethodVerifiedDomainEventHandler));
 
         context.Services.AddTransient<AppTestDataBuilder>();
     }

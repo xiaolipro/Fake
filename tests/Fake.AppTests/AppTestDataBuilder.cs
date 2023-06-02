@@ -11,7 +11,6 @@ public class AppTestDataBuilder
 
     public static Guid UserId = new("1fcf46b2-28c3-48d0-8bac-fa53268a2775");
     public static Guid OrderId = new("4d734a0e-3e6b-4bad-bb43-ef8cf1b09633");
-    public static Guid PaymentMethodId = new("5d734a0e-3e6b-4bad-bb43-ef8cf1b09633");
     
 
     public AppTestDataBuilder(IRepository<Order> orderRepository, IRepository<Buyer> buyerRepository)
@@ -52,8 +51,6 @@ public class AppTestDataBuilder
 
         order.AddOrderItem(1, "橘子", 9.6m, 9, null);
         order.SetId(OrderId);
-        order.SetBuyerId(UserId);
-        order.SetPaymentId(PaymentMethodId);
         order.SetPaidStatus();
         await _orderRepository.InsertAsync(order);
     }
