@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Fake.EventBus.Events;
 using JetBrains.Annotations;
 
 namespace Fake.UnitOfWork;
@@ -8,6 +10,8 @@ namespace Fake.UnitOfWork;
 public interface IUnitOfWork : IDatabaseApiContainer, ITransactionApiContainer, IDisposable
 {
     public Guid Id { get; }
+    
+    List<IEvent> Events { get; }
     
     UnitOfWorkContext Context { get; }
     

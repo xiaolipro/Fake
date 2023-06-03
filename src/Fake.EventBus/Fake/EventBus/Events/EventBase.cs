@@ -4,14 +4,10 @@ namespace Fake.EventBus.Events;
 
 public abstract class EventBase:IEvent
 {
-    /// <summary>
-    /// 唯一标识
-    /// </summary>
     public Guid Id { get; }
 
-    /// <summary>
-    /// 创建时间
-    /// </summary>
+    public int Order { get; set; }
+    
     public DateTime CreationTime { get; }
         
     public EventBase()

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Domain.Aggregates.BuyerAggregate;
 using Domain.Events;
 using Fake;
 using Fake.Domain.Entities.Auditing;
@@ -52,7 +53,7 @@ public class Order : FullAuditedAggregate<Guid, Guid>
         _isDraft = false;
     }
 
-    public Order(Guid userId, string userName, Address address, int cardTypeId, string cardNumber, string cardSecurityNumber,
+    public Order(Guid userId, string userName, Address address, CardType cardType, string cardNumber, string cardSecurityNumber,
             string cardHolderName, DateTime cardExpiration, Guid? buyerId = null, Guid? paymentMethodId = null) : this()
     {
         _buyerId = buyerId;
@@ -63,8 +64,11 @@ public class Order : FullAuditedAggregate<Guid, Guid>
 
         // Add the OrderStarterDomainEvent to the domain events collection 
         // to be raised/dispatched when comitting changes into the Database [ After DbContext.SaveChanges() ]
-        AddOrderStartedDomainEvent(userId, userName, cardTypeId, cardNumber,
-                                    cardSecurityNumber, cardHolderName, cardExpiration);
+        var orderStartedDomainEvent = new OrderStartedDomainEvent(this, userId, userName, cardType,
+            cardNumber, cardSecurityNumber,
+            cardHolderName, cardExpiration);
+
+        this.AddDomainEvent(orderStartedDomainEvent);
     }
 
     // DDD Patterns comment
@@ -175,16 +179,6 @@ public class Order : FullAuditedAggregate<Guid, Guid>
             var itemsStockRejectedDescription = string.Join(", ", itemsStockRejectedProductNames);
             _description = $"The product items don't have stock: ({itemsStockRejectedDescription}).";
         }
-    }
-
-    private void AddOrderStartedDomainEvent(Guid userId, string userName, int cardTypeId, string cardNumber,
-            string cardSecurityNumber, string cardHolderName, DateTime cardExpiration)
-    {
-        var orderStartedDomainEvent = new OrderStartedDomainEvent(this, userId, userName, cardTypeId,
-                                                                    cardNumber, cardSecurityNumber,
-                                                                    cardHolderName, cardExpiration);
-
-        this.AddDomainEvent(orderStartedDomainEvent);
     }
 
     private void StatusChangeException(OrderStatus orderStatusToChange)

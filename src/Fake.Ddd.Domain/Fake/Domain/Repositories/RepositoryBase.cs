@@ -16,6 +16,7 @@ public abstract class RepositoryBase<TEntity> : IRepository<TEntity>
         LazyServiceProvider.GetRequiredLazyService<ICancellationTokenProvider>();
 
     public IUnitOfWorkManager UnitOfWorkManager => LazyServiceProvider.GetRequiredLazyService<IUnitOfWorkManager>();
+    public IUnitOfWork UnitOfWork => UnitOfWorkManager.Current;
 
     protected virtual CancellationToken GetCancellationToken(CancellationToken preferredValue = default)
     {
@@ -24,8 +25,8 @@ public abstract class RepositoryBase<TEntity> : IRepository<TEntity>
 
     protected virtual Task SaveChangesAsync(CancellationToken cancellationToken)
     {
-        return UnitOfWorkManager.Current != null
-            ? UnitOfWorkManager.Current.SaveChangesAsync(cancellationToken)
+        return UnitOfWork != null
+            ? UnitOfWork.SaveChangesAsync(cancellationToken)
             : Task.CompletedTask;
     }
 
@@ -102,4 +103,5 @@ public abstract class RepositoryBase<TEntity> : IRepository<TEntity>
 
     public abstract Task DeleteAsync(Expression<Func<TEntity, bool>> predicate, bool autoSave = false,
         CancellationToken cancellationToken = default);
+
 }

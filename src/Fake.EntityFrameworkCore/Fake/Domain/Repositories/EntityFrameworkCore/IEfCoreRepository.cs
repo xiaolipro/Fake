@@ -5,8 +5,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Fake.Domain.Repositories.EntityFrameWorkCore;
 
-public interface IEfCoreRepository<TDbContext, TEntity> : IEfCoreNoRootRepository<TDbContext>, IRepository<TEntity>
+public interface IEfCoreRepository<TDbContext, TEntity> : INoRootRepository, IRepository<TEntity>
     where TEntity : class, IAggregateRoot
 {
+    Task<TDbContext> GetDbContextAsync(CancellationToken cancellationToken = default);
+
     Task<DbSet<TEntity>> GetDbSetAsync(CancellationToken cancellationToken = default);
 }

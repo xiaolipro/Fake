@@ -16,7 +16,7 @@ namespace AppTests.EntityConfigurations
             orderItemConfiguration.Ignore(b => b.DomainEvents);
 
 
-            orderItemConfiguration.Property<int>("OrderId")
+            orderItemConfiguration.Property<Guid>("OrderId")
                 .IsRequired();
 
             orderItemConfiguration

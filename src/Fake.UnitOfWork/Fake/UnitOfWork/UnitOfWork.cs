@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Fake.EventBus;
+using Fake.EventBus.Events;
 using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -13,6 +16,7 @@ namespace Fake.UnitOfWork;
 public class UnitOfWork : IUnitOfWork
 {
     public Guid Id { get; }
+    public List<IEvent> Events { get; }
     public IServiceProvider ServiceProvider { get; }
     public UnitOfWorkContext Context { get; private set; }
 
@@ -29,16 +33,18 @@ public class UnitOfWork : IUnitOfWork
     private readonly Dictionary<string, ITransactionApi> _transactionApiDic;
 
     private readonly ILogger<UnitOfWork> _logger;
+    private readonly IEventPublisher _eventPublisher;
     private readonly FakeUnitOfWorkOptions _options;
 
     private Exception _exception;
     private bool _isCompleting, _isRollBacked;
 
     public UnitOfWork(IServiceProvider serviceProvider, ILogger<UnitOfWork> logger,
-        IOptions<FakeUnitOfWorkOptions> options)
+        IOptions<FakeUnitOfWorkOptions> options, IEventPublisher eventPublisher)
     {
         ServiceProvider = serviceProvider;
         _logger = logger;
+        _eventPublisher = eventPublisher;
         _options = options.Value;
 
         Id = Guid.NewGuid();
@@ -47,6 +53,8 @@ public class UnitOfWork : IUnitOfWork
 
         _databaseApiDic = new Dictionary<string, IDatabaseApi>();
         _transactionApiDic = new Dictionary<string, ITransactionApi>();
+
+        Events = new List<IEvent>();
     }
 
     /// <summary>
@@ -61,19 +69,15 @@ public class UnitOfWork : IUnitOfWork
             throw new FakeException($"{this}工作单元上下文已经被初始化过了!");
         }
 
-        var context = new UnitOfWorkContext();
-        if (attribute != null)
+        var context = new UnitOfWorkContext
         {
-            context.IsolationLevel = attribute.IsolationLevel;
-            context.Timeout = attribute.Timeout;
-        }
-
-        // 优先使用UnitOfWorkAttribute的配置，然后才是全局默认配置
-        context.IsolationLevel ??= _options.IsolationLevel;
-        context.Timeout ??= _options.Timeout;
-        context.IsTransactional = attribute?.IsTransactional ?? _options.CalculateIsTransactional(
-            autoValue: ServiceProvider.GetRequiredService<IUnitOfWorkTransactionalProvider>().IsTransactional
-        );
+            // 优先使用UnitOfWorkAttribute的配置，然后才是全局默认配置
+            IsolationLevel = attribute?.IsolationLevel ?? _options.IsolationLevel,
+            Timeout = attribute?.Timeout ?? _options.Timeout,
+            IsTransactional = attribute?.IsTransactional ?? _options.CalculateIsTransactional(
+                autoValue: ServiceProvider.GetRequiredService<IUnitOfWorkTransactionalProvider>().IsTransactional
+            )
+        };
 
         Context = context;
     }
@@ -145,16 +149,15 @@ public class UnitOfWork : IUnitOfWork
             throw new FakeException($"{nameof(CompleteAsync)}方法已被调用过了");
         }
 
-        _isCompleting = true;
 
         try
         {
+            _isCompleting = true;
             await SaveChangesAsync(cancellationToken);
+            
+            DispatchEvents();
 
-            foreach (var transaction in GetAllActiveTransactionApis())
-            {
-                await transaction.CommitAsync(cancellationToken);
-            }
+            await CommitTransactionsAsync(cancellationToken);
 
             IsCompleted = true;
             await HandleCompletedTasksAsync();
@@ -163,6 +166,27 @@ public class UnitOfWork : IUnitOfWork
         {
             _exception = ex;
             throw;
+        }
+    }
+
+    public void DispatchEvents()
+    {
+        if (Events.Any())
+        {
+            var toBePublished = Events.OrderBy(e => e.Order).ToArray();
+            Events.Clear();
+            foreach (var @event in toBePublished)
+            {
+                _eventPublisher.Publish(@event);
+            }
+        }
+    }
+
+    private async Task CommitTransactionsAsync(CancellationToken cancellationToken)
+    {
+        foreach (var transaction in GetAllActiveTransactionApis())
+        {
+            await transaction.CommitAsync(cancellationToken);
         }
     }
 

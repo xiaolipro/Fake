@@ -9,38 +9,25 @@ public class UnitOfWorkAttribute : Attribute
     /// <summary>
     /// 是否具有事务性
     /// </summary>
-    public bool? IsTransactional { get; set; }
+    public bool IsTransactional { get; set; }
 
     /// <summary>
     /// 事务级别
     /// </summary>
-    public IsolationLevel? IsolationLevel { get; set; }
+    public IsolationLevel IsolationLevel { get; set; }
 
     /// <summary>
     /// 超时时间
     /// </summary>
-    public int? Timeout { get; set; }
+    public int Timeout { get; set; }
     
-    public UnitOfWorkAttribute()
-    {
-
-    }
-
-    public UnitOfWorkAttribute(bool isTransactional)
-    {
-        IsTransactional = isTransactional;
-    }
-
-    public UnitOfWorkAttribute(bool isTransactional, IsolationLevel isolationLevel)
-    {
-        IsTransactional = isTransactional;
-        IsolationLevel = isolationLevel;
-    }
-
-    public UnitOfWorkAttribute(bool isTransactional, IsolationLevel isolationLevel, int timeout)
-    {
-        IsTransactional = isTransactional;
-        IsolationLevel = isolationLevel;
-        Timeout = timeout;
-    }
+    /// <summary>
+    /// 禁用工作单元
+    /// </summary>
+    public bool IsDisabled { get; set; }
+    
+    /// <summary>
+    /// 启用新的工作单元
+    /// </summary>
+    public bool RequiresNew { get; set; }
 }

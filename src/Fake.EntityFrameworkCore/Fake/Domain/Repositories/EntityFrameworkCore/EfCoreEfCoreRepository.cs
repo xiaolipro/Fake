@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Fake.Domain.Repositories.EntityFrameWorkCore;
 
-public class EfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntity>, IEfCoreRepository<TDbContext, TEntity>
-    where TDbContext : DbContext
+public class EfCoreEfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntity>, IEfCoreRepository<TDbContext, TEntity>
+    where TDbContext : FakeDbContext<TDbContext>
     where TEntity : class, IAggregateRoot
 {
     private IDbContextProvider<TDbContext> DbContextProvider =>
@@ -141,7 +141,7 @@ public class EfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntity>, IE
          * EFCore的AddAsync与Add区别
          * https://stackoverflow.com/questions/47135262/addasync-vs-add-in-ef-core
          */
-        var entry = await dbContext.AddAsync(entity, GetCancellationToken(cancellationToken));
+        var entry = dbContext.Add(entity);
 
         if (autoSave)
         {

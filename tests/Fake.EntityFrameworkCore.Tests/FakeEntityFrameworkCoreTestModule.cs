@@ -1,8 +1,10 @@
 ﻿using Domain.Aggregates.BuyerAggregate;
 using Domain.Aggregates.OrderAggregate;
+using Fake.Domain;
 using Fake.Domain.Repositories;
 using Fake.Domain.Repositories.EntityFrameWorkCore;
 using Fake.EntityFrameworkCore;
+using Fake.Helpers;
 using Fake.Modularity;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
@@ -17,11 +19,13 @@ public class FakeEntityFrameworkCoreTestModule : FakeModule
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
         context.Services.AddTransient(typeof(IRepository<Order>),
-            typeof(EfCoreRepository<OrderingContext, Order>));
+            typeof(EfCoreEfCoreRepository<OrderingContext, Order>));
         context.Services.AddTransient(typeof(IRepository<Buyer>),
-            typeof(EfCoreRepository<OrderingContext, Buyer>));
+            typeof(EfCoreEfCoreRepository<OrderingContext, Buyer>));
         context.Services.AddTransient(typeof(IOrderRepository),
-            typeof(OrderRepository));
+            typeof(OrderEfCoreEfCoreRepository));
+        context.Services.AddTransient(typeof(IBuyerRepository),
+            typeof(BuyerEfCoreEfCoreRepository));
         context.Services.AddDbContextFactory<OrderingContext>(builder =>
         {
             //使用sqlite内存模式要开open
@@ -40,11 +44,26 @@ public class FakeEntityFrameworkCoreTestModule : FakeModule
             /*builder.UseSqlite("FileName=./fake.db");*/
         });
     }
+    
+    
 
     public override void PreConfigureApplication(ApplicationConfigureContext context)
     {
         var ctx = context.ServiceProvider.GetRequiredService<OrderingContext>();
 
         ctx.Database.EnsureCreated();
+
+        AsyncHelper.RunSync(() => SeedAsync(ctx));
+    }
+
+
+    private async Task SeedAsync(OrderingContext context)
+    {
+        var cardTypes = Enumeration.GetAll<CardType>();
+        context.CardTypes.AddRange(cardTypes);
+
+        var orderStatus = Enumeration.GetAll<OrderStatus>();
+        context.OrderStatus.AddRange(orderStatus);
+        await context.SaveChangesAsync();
     }
 }

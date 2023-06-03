@@ -12,12 +12,12 @@ public class UnitOfWorkContext:ICloneable<UnitOfWorkContext>
     /// <summary>
     /// 事务级别
     /// </summary>
-    public IsolationLevel? IsolationLevel { get; set; }
+    public IsolationLevel IsolationLevel { get; set; }
 
     /// <summary>
     /// 超时时间
     /// </summary>
-    public int? Timeout { get; set; }
+    public int Timeout { get; set; }
     
 
     public UnitOfWorkContext Clone()

@@ -5,7 +5,7 @@ using Fake.Domain.Repositories;
 
 namespace Domain.Aggregates.QueriesRepositories;
 
-public interface IOrderQueryRepository:IRepository
+public interface IOrderQueryRepository:INoRootRepository
 {
     Task<IEnumerable<OrderSummary>> GetOrdersFromUserAsync(Guid userId);
 }

@@ -18,7 +18,7 @@ namespace Fake.UnitOfWork.EntityFrameWorkCore;
 /// </summary>
 /// <typeparam name="TDbContext"></typeparam>
 public class UnitOfWorkDbContextProvider<TDbContext> : IDbContextProvider<TDbContext>
-    where TDbContext : DbContext
+    where TDbContext : FakeDbContext<TDbContext>
 {
     public ILogger<UnitOfWorkDbContextProvider<TDbContext>> Logger { get; set; }
 
@@ -55,12 +55,12 @@ public class UnitOfWorkDbContextProvider<TDbContext> : IDbContextProvider<TDbCon
         if (databaseApi == null)
         {
             var dbContext = await CreateDbContextAsync(unitOfWork, connectionString, cancellationToken);
-            databaseApi = new EfCoreDatabaseApi(dbContext);
+            databaseApi = new EfCoreDatabaseApi<TDbContext>(dbContext);
 
             unitOfWork.AddDatabaseApi(dbContextKey, databaseApi);
         }
 
-        return (TDbContext)((EfCoreDatabaseApi)databaseApi).DbContext;
+        return ((EfCoreDatabaseApi<TDbContext>)databaseApi).DbContext;
     }
 
 
@@ -74,11 +74,7 @@ public class UnitOfWorkDbContextProvider<TDbContext> : IDbContextProvider<TDbCon
                 ? await CreateDbContextWithTransactionAsync(unitOfWork, cancellationToken)
                 : unitOfWork.ServiceProvider.GetRequiredService<TDbContext>();
 
-            if (dbContext is FakeDbContext<TDbContext> fakeDbContext)
-            {
-                fakeDbContext.Initialize(unitOfWork);
-            }
-
+            dbContext.Initialize(unitOfWork);
             return dbContext;
         }
     }
@@ -99,9 +95,10 @@ public class UnitOfWorkDbContextProvider<TDbContext> : IDbContextProvider<TDbCon
             {
                 var token = GetCancellationToken(cancellationToken);
                 // 开启数据库事务
-                var dbTransaction = unitOfWork.Context.IsolationLevel.HasValue
-                    ? await dbContext.Database.BeginTransactionAsync(unitOfWork.Context.IsolationLevel.Value, token)
-                    : await dbContext.Database.BeginTransactionAsync(token);
+                var dbTransaction = await dbContext.Database.BeginTransactionAsync(
+                    unitOfWork.Context.IsolationLevel,
+                    token
+                );
 
                 unitOfWork.AddTransactionApi(
                     transactionApiKey,
@@ -146,17 +143,10 @@ public class UnitOfWorkDbContextProvider<TDbContext> : IDbContextProvider<TDbCon
                         /* 用户没有使用已存在的连接，我们将启动一个新的事务
                          * EfCoreTransactionApi将检查连接字符串匹配并通过DbContext实例提交/回滚
                          * */
-                        if (unitOfWork.Context.IsolationLevel.HasValue)
-                        {
-                            await dbContext.Database.BeginTransactionAsync(
-                                unitOfWork.Context.IsolationLevel.Value,
-                                token
-                            );
-                        }
-                        else
-                        {
-                            await dbContext.Database.BeginTransactionAsync(token);
-                        }
+                        await dbContext.Database.BeginTransactionAsync(
+                            unitOfWork.Context.IsolationLevel,
+                            token
+                        );
                     }
                     catch (Exception e) when (e is InvalidOperationException || e is NotSupportedException)
                     {

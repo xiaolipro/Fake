@@ -11,13 +11,13 @@ public class PaymentMethod : Entity<Guid>
     private string _cardHolderName;
     private DateTime _expiration;
 
-    private int _cardTypeId;
+    private CardType _cardType;
     public CardType CardType { get; private set; }
 
 
     protected PaymentMethod() { }
 
-    public PaymentMethod(int cardTypeId, string alias, string cardNumber, string securityNumber, string cardHolderName, DateTime expiration)
+    public PaymentMethod(CardType cardType, string alias, string cardNumber, string securityNumber, string cardHolderName, DateTime expiration)
     {
 
         _cardNumber = !string.IsNullOrWhiteSpace(cardNumber) ? cardNumber : throw new BusinessException(nameof(cardNumber));
@@ -31,12 +31,12 @@ public class PaymentMethod : Entity<Guid>
 
         _alias = alias;
         _expiration = expiration;
-        _cardTypeId = cardTypeId;
+        _cardType = cardType;
     }
 
-    public bool IsEqualTo(int cardTypeId, string cardNumber, DateTime expiration)
+    public bool IsEqualTo(CardType cardType, string cardNumber, DateTime expiration)
     {
-        return _cardTypeId == cardTypeId
+        return _cardType == cardType
             && _cardNumber == cardNumber
             && _expiration == expiration;
     }

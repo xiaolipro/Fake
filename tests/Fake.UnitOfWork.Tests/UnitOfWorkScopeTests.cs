@@ -29,7 +29,10 @@ public class UnitOfWorkScopeTests : FakeIntegrationTest<FakeUnitOfWorkModule>
                 _unitOfWorkManager.Current.ShouldNotBeNull();
                 _unitOfWorkManager.Current.Id.ShouldBe(uow1.Id);
 
-                using (var uow3 = _unitOfWorkManager.Begin(requiredNew:true))
+                using (var uow3 = _unitOfWorkManager.Begin(new UnitOfWorkAttribute()
+                       {
+                           RequiresNew = true
+                       }))
                 {
                     _unitOfWorkManager.Current.ShouldNotBeNull();
                     _unitOfWorkManager.Current.Id.ShouldNotBe(uow1.Id);

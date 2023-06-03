@@ -1,5 +1,5 @@
 ﻿using Application.DomainEventHandlers.BuyerAndPaymentMethodVerifiedEvent;
-using Application.DomainEventHandlers.OrderStartedDomainEventHandlers;
+using Application.DomainEventHandlers.OrderStartedEvent;
 using Domain.Events;
 using Fake.Autofac;
 using Fake.Ddd.Domain;

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Fake.EntityFrameworkCore;
 
-public interface IDbContextProvider<TDbContext> where TDbContext : DbContext
+public interface IDbContextProvider<TDbContext> where TDbContext : FakeDbContext<TDbContext>
 {
     Task<TDbContext> GetDbContextAsync(CancellationToken cancellationToken = default);
 }

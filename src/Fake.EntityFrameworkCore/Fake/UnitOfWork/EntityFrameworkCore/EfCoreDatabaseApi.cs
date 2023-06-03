@@ -1,15 +1,17 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using Fake.EntityFrameworkCore;
 using Fake.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 
 namespace Fake.UnitOfWork.EntityFrameWorkCore;
 
-public class EfCoreDatabaseApi: IDatabaseApi, ISupportSaveChanges
+public class EfCoreDatabaseApi<TDbContext>: IDatabaseApi, ISupportSaveChanges
+    where TDbContext:FakeDbContext<TDbContext>
 {
-    public DbContext DbContext { get; }
+    public TDbContext DbContext { get; }
 
-    public EfCoreDatabaseApi(DbContext dbContext)
+    public EfCoreDatabaseApi(TDbContext dbContext)
     {
         DbContext = dbContext;
     }

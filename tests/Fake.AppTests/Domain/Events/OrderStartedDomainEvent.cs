@@ -1,4 +1,5 @@
 ﻿using System;
+using Domain.Aggregates.BuyerAggregate;
 using Domain.Aggregates.OrderAggregate;
 using Fake.Domain.Entities.Events;
 
@@ -11,7 +12,7 @@ namespace Domain.Events
     {
         public Guid UserId { get; }
         public string UserName { get; }
-        public int CardTypeId { get; }
+        public CardType CardType { get; }
         public string CardNumber { get; }
         public string CardSecurityNumber { get; }
         public string CardHolderName { get; }
@@ -19,14 +20,14 @@ namespace Domain.Events
         public Order Order { get; }
 
         public OrderStartedDomainEvent(Order order, Guid userId, string userName,
-                                       int cardTypeId, string cardNumber, 
+                                       CardType cardType, string cardNumber, 
                                        string cardSecurityNumber, string cardHolderName, 
                                        DateTime cardExpiration)
         {
             Order = order;
             UserId = userId;
             UserName = userName;
-            CardTypeId = cardTypeId;
+            CardType = cardType;
             CardNumber = cardNumber;
             CardSecurityNumber = cardSecurityNumber;
             CardHolderName = cardHolderName;

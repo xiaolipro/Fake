@@ -9,6 +9,9 @@ public class OrderingContext: FakeDbContext<OrderingContext>
     public const string DefaultSchema = "ordering";
     public DbSet<Order> Orders { get; set; }
     public DbSet<Buyer> Buyers { get; set; }
+    
+    public DbSet<CardType> CardTypes { get; set; }
+    public DbSet<OrderStatus> OrderStatus { get; set; }
 
     public OrderingContext(DbContextOptions<OrderingContext> options) : base(options)
     {

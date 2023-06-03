@@ -16,10 +16,11 @@ public class UnitOfWorkManager : IUnitOfWorkManager
         _serviceProvider = serviceProvider;
     }
 
-    public IUnitOfWork Begin(UnitOfWorkAttribute attribute, bool requiredNew = false)
+    public IUnitOfWork Begin(UnitOfWorkAttribute attribute)
     {
         var currentUow = Current;
-        if (currentUow != null && !requiredNew)
+        var requiresNew = attribute?.RequiresNew ?? false;
+        if (currentUow != null && !requiresNew)
         {
             return new ChildUnitOfWork(currentUow);
         }

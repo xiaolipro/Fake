@@ -16,17 +16,16 @@ using Fake.EventBus;
 using Fake.Reflection;
 using Fake.Timing;
 using Fake.UnitOfWork;
+using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Fake.EntityFrameworkCore;
 
 public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : DbContext
 {
-    public ILazyServiceProvider ServiceProvider { get; set; }
-
+    public ILazyServiceProvider ServiceProvider { get; [UsedImplicitly] set; }
 
     private static readonly MethodInfo ConfigureBasePropertiesMethodInfo = typeof(FakeDbContext<TDbContext>)
         .GetMethod(
@@ -40,7 +39,7 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
 
     private IFakeClock Clock => ServiceProvider.GetRequiredLazyService<IFakeClock>();
     private IGuidGenerator GuidGenerator => ServiceProvider.GetRequiredLazyService<IGuidGenerator>();
-    private IEventPublisher EventPublisher => ServiceProvider.GetRequiredLazyService<IEventPublisher>();
+    private IUnitOfWorkManager UnitOfWorkManager => ServiceProvider.GetRequiredLazyService<IUnitOfWorkManager>();
     private IAuditPropertySetter AuditPropertySetter => ServiceProvider.GetRequiredLazyService<IAuditPropertySetter>();
 
 
@@ -60,12 +59,11 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
         }
     }
 
-    public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess,
-        CancellationToken cancellationToken = new CancellationToken())
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         try
         {
-            // 发布领域事件
+            // 添加领域事件
             var domainEntities = base.ChangeTracker.Entries<Entity>()
                 .Where(x => x.Entity.DomainEvents != null && x.Entity.DomainEvents.Any())
                 .ToList();
@@ -76,9 +74,12 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
 
             domainEntities.ForEach(entity => entity.Entity.ClearDomainEvents());
 
-            foreach (var domainEvent in domainEvents) EventPublisher.Publish(domainEvent);
+            foreach (var @event in domainEvents)
+            {
+                UnitOfWorkManager.Current?.Events.Add(@event);
+            }
 
-            return await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+            return await base.SaveChangesAsync(cancellationToken);
         }
         catch (DbUpdateConcurrencyException ex)
         {
@@ -93,11 +94,11 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
     public void Initialize(IUnitOfWork unitOfWork)
     {
         // 设置超时时间
-        if (unitOfWork.Context.Timeout.HasValue && Database.IsRelational())
+        if (Database.IsRelational())
         {
             if (!Database.GetCommandTimeout().HasValue)
             {
-                Database.SetCommandTimeout(TimeSpan.FromMilliseconds(unitOfWork.Context.Timeout.Value));
+                Database.SetCommandTimeout(TimeSpan.FromMilliseconds(unitOfWork.Context.Timeout));
             }
         }
 

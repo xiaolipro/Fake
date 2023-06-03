@@ -11,7 +11,7 @@ public class AppTestDataBuilder
 
     public static Guid UserId = new("1fcf46b2-28c3-48d0-8bac-fa53268a2775");
     public static Guid OrderId = new("4d734a0e-3e6b-4bad-bb43-ef8cf1b09633");
-    
+
 
     public AppTestDataBuilder(IRepository<Order> orderRepository, IRepository<Buyer> buyerRepository)
     {
@@ -21,14 +21,14 @@ public class AppTestDataBuilder
 
     public async Task BuildAsync()
     {
-        await AddPaymentMethod();
         await AddOrder();
+        //await AddBuyer();
     }
 
-    private async Task AddPaymentMethod()
+    private async Task AddBuyer()
     {
         var buyer = new Buyer(UserId, "fake");
-        buyer.AddPaymentMethod(1, "fakeAlias", "fakeCardNumber",
+        buyer.AddPaymentMethod(CardType.Visa, "fakeAlias", "fakeCardNumber",
             "fakeSecurityNumber", "fakeCardHolderName",
             DateTime.Now.AddYears(1), OrderId);
         await _buyerRepository.InsertAsync(buyer);
@@ -41,13 +41,14 @@ public class AppTestDataBuilder
         var state = "fakeState";
         var country = "fakeCountry";
         var zipcode = "FakeZipCode";
-        var cardTypeId = 5;
+        var cardType = CardType.Amex;
         var cardNumber = "12";
         var cardSecurityNumber = "123";
         var cardHolderName = "FakeName";
         var cardExpiration = DateTime.Now.AddYears(1);
-        var order = new Order(UserId, "fakeName", new Address(street, city, state, country, zipcode),
-            cardTypeId, cardNumber, cardSecurityNumber, cardHolderName, cardExpiration);
+        var address = new Address(street, city, state, country, zipcode);
+        var order = new Order(UserId, "fakeName", address,
+            cardType, cardNumber, cardSecurityNumber, cardHolderName, cardExpiration);
 
         order.AddOrderItem(1, "橘子", 9.6m, 9, null);
         order.SetId(OrderId);

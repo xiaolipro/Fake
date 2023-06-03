@@ -9,6 +9,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Fake.Core\Fake.Core.csproj" />
+      <ProjectReference Include="..\Fake.EventBus\Fake.EventBus.csproj" />
     </ItemGroup>
 
 </Project>

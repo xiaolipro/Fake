@@ -29,11 +29,11 @@ public class Buyer: AggregateRoot<Guid>
     }
 
     public PaymentMethod AddPaymentMethod(
-        int cardTypeId, string alias, string cardNumber,
+        CardType cardType, string alias, string cardNumber,
         string securityNumber, string cardHolderName, DateTime expiration, Guid orderId)
     {
         var existingPayment = _paymentMethods
-            .SingleOrDefault(p => p.IsEqualTo(cardTypeId, cardNumber, expiration));
+            .SingleOrDefault(p => p.IsEqualTo(cardType, cardNumber, expiration));
 
         if (existingPayment != null)
         {
@@ -42,7 +42,7 @@ public class Buyer: AggregateRoot<Guid>
             return existingPayment;
         }
 
-        var payment = new PaymentMethod(cardTypeId, alias, cardNumber, securityNumber, cardHolderName, expiration);
+        var payment = new PaymentMethod(cardType, alias, cardNumber, securityNumber, cardHolderName, expiration);
 
         _paymentMethods.Add(payment);
 

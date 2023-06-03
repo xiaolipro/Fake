@@ -37,7 +37,7 @@ public class UnitOfWorkHelper:IUnitOfWorkHelper
         ThrowHelper.ThrowIfNull(methodInfo, nameof(methodInfo));
 
         unitOfWorkAttribute = GetUnitOfWorkAttributeOrNull(methodInfo);
-        if (unitOfWorkAttribute is not null) return true;
+        if (unitOfWorkAttribute is not null) return !unitOfWorkAttribute.IsDisabled;
 
         return methodInfo.DeclaringType.GetTypeInfo().IsAssignableTo<IUnitOfWorkEnabled>();
     }

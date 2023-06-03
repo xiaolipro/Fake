@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Domain.Aggregates.BuyerAggregate;
 using Domain.Aggregates.OrderAggregate;
 using Fake.Domain.Repositories;
 using Fake.Identity.Users;
@@ -44,13 +45,13 @@ public abstract class AppAuditingTests<TStartupModule> : AppTestBase<TStartupMod
         var state = "fakeState";
         var country = "fakeCountry";
         var zipcode = "FakeZipCode";
-        var cardTypeId = 5;
+        var cardType = CardType.Amex;
         var cardNumber = "12";
         var cardSecurityNumber = "123";
         var cardHolderName = "FakeName";
         var cardExpiration = DateTime.Now.AddYears(1);
         var fakeOrder = new Order(Guid.Parse(currentUserId), "fakeName", new Address(street, city, state, country, zipcode),
-            cardTypeId, cardNumber, cardSecurityNumber, cardHolderName, cardExpiration);
+            cardType, cardNumber, cardSecurityNumber, cardHolderName, cardExpiration);
 
         Assert.Equal(1, fakeOrder.DomainEvents.Count);
 

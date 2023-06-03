@@ -6,7 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Fake.Domain.Repositories.EntityFrameWorkCore;
 
-public class EfCoreNoRootRepository<TDbContext> : IEfCoreNoRootRepository<TDbContext> where TDbContext : DbContext
+public class EfCoreNoRootRepository<TDbContext> : INoRootRepository
+    where TDbContext : FakeDbContext<TDbContext>
 {
     // ReSharper disable once UnusedAutoPropertyAccessor.Global
     public ILazyServiceProvider LazyServiceProvider { get; set; } // 属性注入
