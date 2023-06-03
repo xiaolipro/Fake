@@ -2,13 +2,10 @@
 using System.Data;
 using System.Reflection;
 using Fake.DynamicProxy;
-using Fake.EventBus;
 using Fake.Modularity;
 using Fake.UnitOfWork;
 using Microsoft.Extensions.DependencyInjection;
 
-
-[DependsOn(typeof(FakeEventBusModule))]
 public class FakeUnitOfWorkModule:FakeModule
 {
     public override void PreConfigureServices(ServiceConfigurationContext context)

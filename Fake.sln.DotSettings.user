@@ -4,7 +4,12 @@
     &lt;TestId&gt;xUnit::9D7D6527-1E06-4457-8D8A-D7A6A91F2C7A::net7.0::AppTests.EfCoreNonRootRepositoryTests.GetOrdersFromUserTest&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=257e3e3f_002D247b_002D4858_002Dbcf3_002D12aec3ad5ecb/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="GetOrdersFromUserTest #4" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=257e3e3f_002D247b_002D4858_002Dbcf3_002D12aec3ad5ecb/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="GetOrdersFromUserTest #4" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;xUnit::9D7D6527-1E06-4457-8D8A-D7A6A91F2C7A::net7.0::AppTests.EfCoreNonRootRepositoryTests.GetOrdersFromUserTest&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=2d6a26d2_002D7a33_002D445c_002D941a_002De4ba5ebb2423/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="GetOrdersFromUserTest #7" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;TestAncestor&gt;&#xD;
     &lt;TestId&gt;xUnit::9D7D6527-1E06-4457-8D8A-D7A6A91F2C7A::net7.0::AppTests.EfCoreNonRootRepositoryTests.GetOrdersFromUserTest&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
@@ -20,6 +25,16 @@
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=4bcd433d_002Dd63b_002D4370_002Db4fd_002Dfb7b51900ad9/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="SortByDependencies" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;xUnit::9D7D6527-1E06-4457-8D8A-D7A6A91F2C7A::net7.0::AppTests.EfCoreNonRootRepositoryTests.GetOrdersFromUserTest&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=62c6ee52_002Ddbdb_002D4140_002Db417_002Da0f3dd39322f/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="GetOrdersFromUserTest #6" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;xUnit::9D7D6527-1E06-4457-8D8A-D7A6A91F2C7A::net7.0::AppTests.EfCoreNonRootRepositoryTests.GetOrdersFromUserTest&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=80630e6a_002De3ed_002D45f6_002Da6e1_002D286f7e443616/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="GetOrdersFromUserTest #5" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;TestAncestor&gt;&#xD;
     &lt;TestId&gt;xUnit::9D7D6527-1E06-4457-8D8A-D7A6A91F2C7A::net7.0::AppTests.EfCoreNonRootRepositoryTests.GetOrdersFromUserTest&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;

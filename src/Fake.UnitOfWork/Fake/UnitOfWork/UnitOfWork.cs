@@ -1,11 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Fake.EventBus;
-using Fake.EventBus.Events;
 using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -16,7 +13,6 @@ namespace Fake.UnitOfWork;
 public class UnitOfWork : IUnitOfWork
 {
     public Guid Id { get; }
-    public List<IEvent> Events { get; }
     public IServiceProvider ServiceProvider { get; }
     public UnitOfWorkContext Context { get; private set; }
 
@@ -33,18 +29,16 @@ public class UnitOfWork : IUnitOfWork
     private readonly Dictionary<string, ITransactionApi> _transactionApiDic;
 
     private readonly ILogger<UnitOfWork> _logger;
-    private readonly IEventPublisher _eventPublisher;
     private readonly FakeUnitOfWorkOptions _options;
 
     private Exception _exception;
     private bool _isCompleting, _isRollBacked;
 
     public UnitOfWork(IServiceProvider serviceProvider, ILogger<UnitOfWork> logger,
-        IOptions<FakeUnitOfWorkOptions> options, IEventPublisher eventPublisher)
+        IOptions<FakeUnitOfWorkOptions> options)
     {
         ServiceProvider = serviceProvider;
         _logger = logger;
-        _eventPublisher = eventPublisher;
         _options = options.Value;
 
         Id = Guid.NewGuid();
@@ -53,8 +47,6 @@ public class UnitOfWork : IUnitOfWork
 
         _databaseApiDic = new Dictionary<string, IDatabaseApi>();
         _transactionApiDic = new Dictionary<string, ITransactionApi>();
-
-        Events = new List<IEvent>();
     }
 
     /// <summary>
@@ -154,8 +146,6 @@ public class UnitOfWork : IUnitOfWork
         {
             _isCompleting = true;
             await SaveChangesAsync(cancellationToken);
-            
-            DispatchEvents();
 
             await CommitTransactionsAsync(cancellationToken);
 
@@ -168,20 +158,7 @@ public class UnitOfWork : IUnitOfWork
             throw;
         }
     }
-
-    public void DispatchEvents()
-    {
-        if (Events.Any())
-        {
-            var toBePublished = Events.OrderBy(e => e.Order).ToArray();
-            Events.Clear();
-            foreach (var @event in toBePublished)
-            {
-                _eventPublisher.Publish(@event);
-            }
-        }
-    }
-
+    
     private async Task CommitTransactionsAsync(CancellationToken cancellationToken)
     {
         foreach (var transaction in GetAllActiveTransactionApis())

@@ -1,8 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Fake.EventBus.Events;
 using JetBrains.Annotations;
 
 namespace Fake.UnitOfWork;
@@ -11,7 +9,6 @@ public class ChildUnitOfWork : IUnitOfWork
 {
     public IServiceProvider ServiceProvider => _parent.ServiceProvider;
     public Guid Id => _parent.Id;
-    public List<IEvent> Events => _parent.Events;
     public UnitOfWorkContext Context => _parent.Context;
     public bool IsDisposed => _parent.IsDisposed;
     public bool IsCompleted => _parent.IsCompleted;

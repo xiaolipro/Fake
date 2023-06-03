@@ -43,8 +43,8 @@ public class ValidateOrAddBuyerAggregateWhenOrderStartedDomainEventHandler : IEv
             orderStartedEvent.Order.Id);
 
         var buyerUpdated = buyerOriginallyExisted
-            ? _buyerRepository.UpdateAsync(buyer, cancellationToken: cancellationToken)
-            : _buyerRepository.InsertAsync(buyer, cancellationToken: cancellationToken);
+            ? await _buyerRepository.UpdateAsync(buyer, true, cancellationToken: cancellationToken)
+            : await _buyerRepository.AddAsync(buyer,true, cancellationToken: cancellationToken);
 
         await _buyerRepository.UnitOfWork.CompleteAsync(cancellationToken);
         _logger.LogTrace("Buyer {BuyerId} and related payment method were validated or updated for orderId: {OrderId}.",

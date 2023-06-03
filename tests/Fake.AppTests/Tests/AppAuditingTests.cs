@@ -55,7 +55,7 @@ public abstract class AppAuditingTests<TStartupModule> : AppTestBase<TStartupMod
 
         Assert.Equal(1, fakeOrder.DomainEvents.Count);
 
-        var order = await _orderRepository.InsertAsync(fakeOrder);
+        var order = await _orderRepository.AddAsync(fakeOrder);
 
         order = await _orderRepository.FirstOrDefaultAsync(x => x.Id == order.Id);
 

@@ -1,6 +1,4 @@
-﻿using System;
-using Fake.EventBus.Events;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 
 namespace Fake.UnitOfWork;
 

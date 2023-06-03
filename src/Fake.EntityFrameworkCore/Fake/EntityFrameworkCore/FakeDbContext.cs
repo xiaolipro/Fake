@@ -39,7 +39,7 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
 
     private IFakeClock Clock => ServiceProvider.GetRequiredLazyService<IFakeClock>();
     private IGuidGenerator GuidGenerator => ServiceProvider.GetRequiredLazyService<IGuidGenerator>();
-    private IUnitOfWorkManager UnitOfWorkManager => ServiceProvider.GetRequiredLazyService<IUnitOfWorkManager>();
+    private IEventPublisher EventPublisher => ServiceProvider.GetRequiredLazyService<IEventPublisher>();
     private IAuditPropertySetter AuditPropertySetter => ServiceProvider.GetRequiredLazyService<IAuditPropertySetter>();
 
 
@@ -74,10 +74,7 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
 
             domainEntities.ForEach(entity => entity.Entity.ClearDomainEvents());
 
-            foreach (var @event in domainEvents)
-            {
-                UnitOfWorkManager.Current?.Events.Add(@event);
-            }
+            domainEvents.ForEach(@event => EventPublisher.Publish(@event));
 
             return await base.SaveChangesAsync(cancellationToken);
         }
@@ -87,7 +84,7 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
         }
         finally
         {
-            ChangeTracker.AutoDetectChangesEnabled = true;
+            //ChangeTracker.AutoDetectChangesEnabled = true;
         }
     }
 

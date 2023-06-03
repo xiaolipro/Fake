@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Fake.DependencyInjection;
 using Fake.EntityFrameworkCore;
+using Fake.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 
 namespace Fake.Domain.Repositories.EntityFrameWorkCore;
@@ -14,6 +15,9 @@ public class EfCoreNoRootRepository<TDbContext> : INoRootRepository
 
     private IDbContextProvider<TDbContext> DbContextProvider =>
         LazyServiceProvider.GetRequiredLazyService<IDbContextProvider<TDbContext>>();
+    
+    public IUnitOfWorkManager UnitOfWorkManager => LazyServiceProvider.GetRequiredLazyService<IUnitOfWorkManager>();
+    public IUnitOfWork UnitOfWork => UnitOfWorkManager.Current;
 
     public async Task<TDbContext> GetDbContextAsync(CancellationToken cancellationToken = default)
     {

@@ -130,7 +130,7 @@ public class EfCoreEfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntit
         return await query.AnyAsync(cancellationToken);
     }
 
-    public override async Task<TEntity> InsertAsync(
+    public override async Task<TEntity> AddAsync(
         TEntity entity, 
         bool autoSave = false,
         CancellationToken cancellationToken = default)

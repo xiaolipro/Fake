@@ -9,7 +9,7 @@ namespace Fake.Domain.Repositories;
 /// 仓储，专注于聚合的持久化
 /// tips：仓储中的每一个行为都是最小执行单元
 /// </summary>
-public interface IRepository : IUnitOfWorkEnabled
+public interface IRepository: IUnitOfWorkEnabled
 {
     IUnitOfWork UnitOfWork { get; }
 }
@@ -52,7 +52,7 @@ public interface IRepository<TEntity> : IRepository where TEntity : class, IAggr
         CancellationToken cancellationToken = default);
 
     [NotNull]
-    Task<TEntity> InsertAsync([NotNull] TEntity entity, bool autoSave = false,
+    Task<TEntity> AddAsync([NotNull] TEntity entity, bool autoSave = false,
         CancellationToken cancellationToken = default);
 
     Task InsertRangeAsync([NotNull] IEnumerable<TEntity> entities, bool autoSave = false,
