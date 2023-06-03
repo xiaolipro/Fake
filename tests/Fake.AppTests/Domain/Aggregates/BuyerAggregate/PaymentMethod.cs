@@ -11,7 +11,7 @@ public class PaymentMethod : Entity<Guid>
     private string _cardHolderName;
     private DateTime _expiration;
 
-    private CardType _cardType;
+    private int _cardTypeId;
     public CardType CardType { get; private set; }
 
 
@@ -31,12 +31,12 @@ public class PaymentMethod : Entity<Guid>
 
         _alias = alias;
         _expiration = expiration;
-        _cardType = cardType;
+        _cardTypeId = cardType.Id;
     }
 
     public bool IsEqualTo(CardType cardType, string cardNumber, DateTime expiration)
     {
-        return _cardType == cardType
+        return _cardTypeId == cardType.Id
             && _cardNumber == cardNumber
             && _expiration == expiration;
     }

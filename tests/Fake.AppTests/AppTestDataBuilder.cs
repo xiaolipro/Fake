@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Domain.Aggregates.BuyerAggregate;
 using Domain.Aggregates.OrderAggregate;
 using Fake.Domain.Repositories;
-using Fake.UnitOfWork;
 
 public class AppTestDataBuilder
 {
@@ -52,6 +51,7 @@ public class AppTestDataBuilder
             cardType, cardNumber, cardSecurityNumber, cardHolderName, cardExpiration);
 
         order.AddOrderItem(1, "橘子", 9.6m, 9, null);
+        order.AddOrderItem(2, "菠萝", 3.6m, 8, null, 3);
         order.SetId(OrderId);
         order.SetPaidStatus();
         await _orderRepository.AddAsync(order);

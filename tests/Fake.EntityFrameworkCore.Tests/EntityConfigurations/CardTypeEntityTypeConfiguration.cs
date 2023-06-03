@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace AppTests.EntityConfigurations
+namespace EntityConfigurations
 {
     class CardTypeEntityTypeConfiguration
         : IEntityTypeConfiguration<CardType>

@@ -18,7 +18,6 @@ public class Buyer: AggregateRoot<Guid>
 
     protected Buyer()
     {
-
         _paymentMethods = new List<PaymentMethod>();
     }
 

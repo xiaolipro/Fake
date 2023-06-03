@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Domain.Aggregates.BuyerAggregate;
@@ -46,7 +47,6 @@ public class ValidateOrAddBuyerAggregateWhenOrderStartedDomainEventHandler : IEv
             ? await _buyerRepository.UpdateAsync(buyer, true, cancellationToken: cancellationToken)
             : await _buyerRepository.AddAsync(buyer,true, cancellationToken: cancellationToken);
 
-        await _buyerRepository.UnitOfWork.CompleteAsync(cancellationToken);
         _logger.LogTrace("Buyer {BuyerId} and related payment method were validated or updated for orderId: {OrderId}.",
             buyerUpdated.Id, orderStartedEvent.Order.Id);
     }

@@ -36,7 +36,40 @@ public static class FakeEfCoreSqlExtensions
             foreach (PropertyInfo p in propertyInfos)
             {
                 if (dt.Columns.IndexOf(p.Name) != -1 && row[p.Name] != DBNull.Value)
-                    p.SetValue(t, row[p.Name], null);
+                {
+                    object value = row[p.Name];
+                    Type targetType = p.PropertyType;
+    
+                    if (targetType.IsGenericType && targetType.GetGenericTypeDefinition() == typeof(Nullable<>))
+                    {
+                        targetType = Nullable.GetUnderlyingType(targetType);
+                    }
+    
+                    if (value.GetType() != targetType)
+                    {
+                        try
+                        {
+                            // 特殊处理 Guid 类型，尝试将字符串转换为 GUID
+                            if (targetType == typeof(Guid) && value is string strValue)
+                            {
+                                if (!Guid.TryParse(strValue, out Guid guidValue))
+                                {
+                                    guidValue = Guid.Empty;
+                                }
+                                value = guidValue;
+                            }
+                            else
+                            {
+                                // 使用 Convert.ChangeType 进行类型转换
+                                value = Convert.ChangeType(value, targetType);
+                            }
+                        }
+                        catch {}
+                    }
+
+                    p.SetValue(t, value, null);
+                }
+
             }
 
             ts[i] = t;
@@ -53,7 +86,6 @@ public static class FakeEfCoreSqlExtensions
         DataTable dt = new DataTable();
         dt.Load(reader);
         reader.Close();
-        conn.Close();
         return dt;
     }
 

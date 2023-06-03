@@ -84,7 +84,7 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
         }
         finally
         {
-            //ChangeTracker.AutoDetectChangesEnabled = true;
+            ChangeTracker.AutoDetectChangesEnabled = true;
         }
     }
 

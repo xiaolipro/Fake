@@ -1,6 +1,7 @@
 ﻿using AppTests.EntityConfigurations;
 using Domain.Aggregates.BuyerAggregate;
 using Domain.Aggregates.OrderAggregate;
+using EntityConfigurations;
 using Fake.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 

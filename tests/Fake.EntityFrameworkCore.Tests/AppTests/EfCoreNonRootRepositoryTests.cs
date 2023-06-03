@@ -1,4 +1,5 @@
-﻿using Domain.Aggregates.QueriesRepositories;
+﻿using Domain.Aggregates.OrderAggregate;
+using Domain.Aggregates.QueriesRepositories;
 using Microsoft.Extensions.DependencyInjection;
 using Repositories;
 using Shouldly;
@@ -20,13 +21,12 @@ public class EfCoreNonRootRepositoryTests: AppTestBase<FakeEntityFrameworkCoreTe
     }
 
     [Fact]
-    void GetOrdersFromUserTest()
+    async Task GetOrdersFromUserTest()
     {
-        var orders = OrderQueryRepository.GetOrdersFromUserAsync(AppTestDataBuilder.UserId).Result;
-        orders.Count().ShouldBeGreaterThan(0);
-        orders.First().ordernumber.ShouldBe(1);
+        var orders = await OrderQueryRepository.GetOrderSummaryAsync(AppTestDataBuilder.OrderId);
+        orders.Count.ShouldBe(1);
         //orders.First().date.ShouldBe(Clock.Now);
-        orders.First().status.ShouldBe("已完成");
-        orders.First().total.ShouldBe(100);
+        orders[0].status.ShouldBe(OrderStatus.Submitted);
+        orders[0].total.ShouldBe(13.2);
     }
 }

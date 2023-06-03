@@ -1,4 +1,9 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=0c7e3675_002De4ea_002D40c2_002D8956_002D87e90d6524cb/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="GetOrdersFromUserTest #10" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;xUnit::9D7D6527-1E06-4457-8D8A-D7A6A91F2C7A::net7.0::AppTests.EfCoreNonRootRepositoryTests.GetOrdersFromUserTest&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=1dab5742_002D602d_002D4e13_002D947f_002Dd3679b19633b/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="GetOrdersFromUserTest" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;TestAncestor&gt;&#xD;
     &lt;TestId&gt;xUnit::9D7D6527-1E06-4457-8D8A-D7A6A91F2C7A::net7.0::AppTests.EfCoreNonRootRepositoryTests.GetOrdersFromUserTest&lt;/TestId&gt;&#xD;
@@ -9,12 +14,17 @@
     &lt;TestId&gt;xUnit::9D7D6527-1E06-4457-8D8A-D7A6A91F2C7A::net7.0::AppTests.EfCoreNonRootRepositoryTests.GetOrdersFromUserTest&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=2d6a26d2_002D7a33_002D445c_002D941a_002De4ba5ebb2423/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="GetOrdersFromUserTest #7" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=2d6a26d2_002D7a33_002D445c_002D941a_002De4ba5ebb2423/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="GetOrdersFromUserTest #7" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;TestAncestor&gt;&#xD;
     &lt;TestId&gt;xUnit::9D7D6527-1E06-4457-8D8A-D7A6A91F2C7A::net7.0::AppTests.EfCoreNonRootRepositoryTests.GetOrdersFromUserTest&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=3deb0160_002D1501_002D4d46_002Dbe03_002Dce648378bbff/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="GetOrdersFromUserTest #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;xUnit::9D7D6527-1E06-4457-8D8A-D7A6A91F2C7A::net7.0::AppTests.EfCoreNonRootRepositoryTests.GetOrdersFromUserTest&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=469eccb0_002D277d_002D4569_002Da69e_002Dbe6adc380586/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="GetOrdersFromUserTest #8" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;TestAncestor&gt;&#xD;
     &lt;TestId&gt;xUnit::9D7D6527-1E06-4457-8D8A-D7A6A91F2C7A::net7.0::AppTests.EfCoreNonRootRepositoryTests.GetOrdersFromUserTest&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
@@ -25,6 +35,11 @@
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=4bcd433d_002Dd63b_002D4370_002Db4fd_002Dfb7b51900ad9/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="SortByDependencies" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;xUnit::9D7D6527-1E06-4457-8D8A-D7A6A91F2C7A::net7.0::AppTests.EfCoreNonRootRepositoryTests.GetOrdersFromUserTest&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=5cfca6a7_002Dafde_002D40ea_002D89d8_002D16cd311b442b/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="GetOrdersFromUserTest #9" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;TestAncestor&gt;&#xD;
     &lt;TestId&gt;xUnit::9D7D6527-1E06-4457-8D8A-D7A6A91F2C7A::net7.0::AppTests.EfCoreNonRootRepositoryTests.GetOrdersFromUserTest&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
