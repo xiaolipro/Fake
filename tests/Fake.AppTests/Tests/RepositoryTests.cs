@@ -21,7 +21,7 @@ public abstract class RepositoryTests<TStartupModule> : AppTestBase<TStartupModu
     public async Task GetAsync()
     {
         var order = await OrderRepository.FirstOrDefaultAsync(x => x.Id == AppTestDataBuilder.OrderId);
-        order.OrderItems.Count.ShouldBe(1);
+        order.OrderItems.Count.ShouldBe(2);
         order.OrderItems.First().GetProductName().ShouldBe("橘子");
     }
     

@@ -15,6 +15,6 @@ public class OrderSummary
 {
     public Guid ordernumber { get; set; }
     public DateTime date { get; set; }
-    public OrderStatus status { get; set; }
+    public string status { get; set; }
     public double total { get; set; }
 }

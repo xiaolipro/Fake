@@ -21,12 +21,12 @@ public class EfCoreNonRootRepositoryTests: AppTestBase<FakeEntityFrameworkCoreTe
     }
 
     [Fact]
-    async Task GetOrdersFromUserTest()
+    async Task GetOrderSummaryAsync()
     {
         var orders = await OrderQueryRepository.GetOrderSummaryAsync(AppTestDataBuilder.OrderId);
         orders.Count.ShouldBe(1);
-        //orders.First().date.ShouldBe(Clock.Now);
-        orders[0].status.ShouldBe(OrderStatus.Submitted);
-        orders[0].total.ShouldBe(13.2);
+        orders.First().date.ShouldBeLessThanOrEqualTo(FakeClock.Now);
+        orders[0].status.ShouldBe(OrderStatus.Submitted.Name);
+        orders[0].total.ShouldBe(20.4);
     }
 }

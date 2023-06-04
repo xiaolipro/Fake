@@ -7,9 +7,9 @@ namespace Fake.Testing;
 public abstract class FakeIntegrationTest<TStartupModule> : FakeTestWithServiceProvider, IDisposable
     where TStartupModule : IFakeModule
 {
-    protected IFakeApplication Application { get; set; }
+    protected IFakeApplication Application { get; }
     
-    protected IServiceProvider RootServiceProvider { get; set; }
+    protected IServiceProvider RootServiceProvider { get; }
     
     protected IServiceScope TestServiceScope { get; }
 

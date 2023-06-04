@@ -10,15 +10,14 @@ namespace Domain.Aggregates.OrderAggregate;
 
 public class Order : FullAuditedAggregate<Guid, Guid>
 {
-    // DDD Patterns comment
-    // Using private fields, allowed since EF Core 1.1, is a much better encapsulation
-    // aligned with DDD Aggregates and Domain Entities (Instead of properties and property collections)
-    private DateTime _orderDate;
-
     // Address is a Value Object pattern example persisted as EF Core 2.0 owned entity
     public Address Address { get; private set; }
 
     public Guid? GetBuyerId => _buyerId;
+    
+    // DDD Patterns comment
+    // Using private fields, allowed since EF Core 1.1, is a much better encapsulation
+    // aligned with DDD Aggregates and Domain Entities (Instead of properties and property collections)
     private Guid? _buyerId;
 
     public OrderStatus OrderStatus { get; private set; }
@@ -59,7 +58,6 @@ public class Order : FullAuditedAggregate<Guid, Guid>
         _buyerId = buyerId;
         _paymentMethodId = paymentMethodId;
         _orderStatusId = OrderStatus.Submitted.Id;
-        _orderDate = DateTime.UtcNow;
         Address = address;
 
         // Add the OrderStarterDomainEvent to the domain events collection 

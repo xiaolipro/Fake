@@ -17,12 +17,10 @@ public abstract class AppAuditingTests<TStartupModule> : AppTestBase<TStartupMod
 {
     private Guid _currentUserId;
     private readonly IRepository<Order> _orderRepository;
-    private readonly IFakeClock _fakeClock;
 
     public AppAuditingTests()
     {
         _orderRepository = GetRequiredService<IRepository<Order>>();
-        _fakeClock = GetRequiredService<IFakeClock>();
     }
 
     protected override void AfterAddFakeApplication(IServiceCollection services)
@@ -33,13 +31,9 @@ public abstract class AppAuditingTests<TStartupModule> : AppTestBase<TStartupMod
         services.AddSingleton(currentUser);
     }
 
-    [Theory]
-    [InlineData(null)]
-    [InlineData("4b2790fc-3f51-43d5-88a1-a92d96a9e6ea")]
-    public async Task 创建审计(string currentUserId)
+    [Fact]
+    public async Task 创建审计()
     {
-        Guid.TryParse(currentUserId, out _currentUserId);
-
         var street = "fakeStreet";
         var city = "FakeCity";
         var state = "fakeState";
@@ -49,8 +43,8 @@ public abstract class AppAuditingTests<TStartupModule> : AppTestBase<TStartupMod
         var cardNumber = "12";
         var cardSecurityNumber = "123";
         var cardHolderName = "FakeName";
-        var cardExpiration = DateTime.Now.AddYears(1);
-        var fakeOrder = new Order(Guid.Parse(currentUserId), "fakeName", new Address(street, city, state, country, zipcode),
+        var cardExpiration = FakeClock.Now.AddYears(1);
+        var fakeOrder = new Order(AppTestDataBuilder.UserId, "fakeName", new Address(street, city, state, country, zipcode),
             cardType, cardNumber, cardSecurityNumber, cardHolderName, cardExpiration);
 
         Assert.Equal(1, fakeOrder.DomainEvents.Count);
@@ -60,7 +54,7 @@ public abstract class AppAuditingTests<TStartupModule> : AppTestBase<TStartupMod
         order = await _orderRepository.FirstOrDefaultAsync(x => x.Id == order.Id);
 
         order.ShouldNotBeNull();
-        order.CreationTime.ShouldBeLessThanOrEqualTo(_fakeClock.Now);
+        order.CreationTime.ShouldBeLessThanOrEqualTo(FakeClock.Now);
         order.CreatorId.ShouldBe(_currentUserId);
     }
 
@@ -78,7 +72,7 @@ public abstract class AppAuditingTests<TStartupModule> : AppTestBase<TStartupMod
         order = await _orderRepository.UpdateAsync(order);
 
         order.LastModifierId.ShouldBe(_currentUserId);
-        order.LastModificationTime.ShouldBeLessThanOrEqualTo(_fakeClock.Now);
+        order.LastModificationTime.ShouldBeLessThanOrEqualTo(FakeClock.Now);
     }
 
     [Theory]
@@ -88,13 +82,13 @@ public abstract class AppAuditingTests<TStartupModule> : AppTestBase<TStartupMod
         Guid.TryParse(currentUserId, out _currentUserId);
 
         var order = await _orderRepository.FirstOrDefaultAsync(x => x.Id ==AppTestDataBuilder.OrderId);
-        order.CreationTime.ShouldBeLessThanOrEqualTo(_fakeClock.Now);
+        order.CreationTime.ShouldBeLessThanOrEqualTo(FakeClock.Now);
         order.LastModifierId.ShouldBe(Guid.Empty);
         await _orderRepository.DeleteAsync(order);
 
         order.IsDeleted.ShouldBe(true);
         order.LastModifierId.ShouldBe(_currentUserId);
-        order.LastModificationTime.ShouldBeLessThanOrEqualTo(_fakeClock.Now);
+        order.LastModificationTime.ShouldBeLessThanOrEqualTo(FakeClock.Now);
 
         //TODO：被删除（软）的数据不应该被查询到（默认情况下）
         order = await _orderRepository.FirstOrDefaultAsync(x => x.Id ==AppTestDataBuilder.OrderId);

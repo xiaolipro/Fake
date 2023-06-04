@@ -44,7 +44,7 @@ public static class FakeEntityTypeBuilderExtensions
             builder.Property(nameof(IHasCreator<TUserId>.CreatorId))
                 .HasColumnName(nameof(IHasCreator<TUserId>.CreatorId))
                 .IsRequired();
-
+            
             builder.Property(nameof(IHasCreationTime.CreationTime))
                 .HasColumnName(nameof(IHasCreationTime.CreationTime))
                 .IsRequired();
@@ -77,8 +77,9 @@ public static class FakeEntityTypeBuilderExtensions
                 .IsRequired()
                 .HasDefaultValue(false)
                 .HasColumnName(nameof(ISoftDelete.IsDeleted));
+            
+            builder.Ignore(nameof(ISoftDelete.HardDeleted));
         }
-
         return builder;
     }
 }

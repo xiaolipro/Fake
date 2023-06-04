@@ -37,7 +37,7 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
     {
     }
 
-    private IFakeClock Clock => ServiceProvider.GetRequiredLazyService<IFakeClock>();
+    private IFakeClock FakeClock => ServiceProvider.GetRequiredLazyService<IFakeClock>();
     private IGuidGenerator GuidGenerator => ServiceProvider.GetRequiredLazyService<IGuidGenerator>();
     private IEventPublisher EventPublisher => ServiceProvider.GetRequiredLazyService<IEventPublisher>();
     private IAuditPropertySetter AuditPropertySetter => ServiceProvider.GetRequiredLazyService<IAuditPropertySetter>();
@@ -269,8 +269,8 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
             {
                 modelBuilder.Entity(entityType).Property(property.Name)
                     .HasConversion(property.ClrType == typeof(DateTime)
-                        ? new FakeDateTimeValueConverter(Clock)
-                        : new FakeNullableDateTimeValueConverter(Clock));
+                        ? new FakeDateTimeValueConverter(FakeClock)
+                        : new FakeNullableDateTimeValueConverter(FakeClock));
             }
         }
     }

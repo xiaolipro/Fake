@@ -29,14 +29,7 @@ namespace AppTests.EntityConfigurations
                 .IsRequired(false);
 
             orderConfiguration
-                .Property<DateTime>("_orderDate")
-                .UsePropertyAccessMode(PropertyAccessMode.Field)
-                .HasColumnName("OrderDate")
-                .IsRequired();
-
-            orderConfiguration
                 .Property<int>("_orderStatusId")
-                // .HasField("_orderStatusId")
                 .UsePropertyAccessMode(PropertyAccessMode.Field)
                 .HasColumnName("OrderStatusId")
                 .IsRequired();
