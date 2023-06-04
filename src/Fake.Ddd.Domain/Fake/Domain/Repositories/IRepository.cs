@@ -11,7 +11,6 @@ namespace Fake.Domain.Repositories;
 /// </summary>
 public interface IRepository: IUnitOfWorkEnabled
 {
-    IUnitOfWork UnitOfWork { get; }
 }
 
 /// <summary>

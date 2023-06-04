@@ -29,6 +29,9 @@ public class UnitOfWorkInterceptor : IFakeInterceptor
 
         using var unitOfWork = unitOfWorkManager.Begin(unitOfWorkAttribute);
         await invocation.ProcessAsync();
-        await unitOfWork.CompleteAsync();
+        if (unitOfWorkAttribute is not { ReadOnly: true })
+        {
+            await unitOfWork.CompleteAsync();
+        }
     }
 }

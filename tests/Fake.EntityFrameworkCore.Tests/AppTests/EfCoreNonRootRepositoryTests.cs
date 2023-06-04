@@ -1,5 +1,6 @@
 ﻿using Domain.Aggregates.OrderAggregate;
 using Domain.Aggregates.QueriesRepositories;
+using Fake.UnitOfWork;
 using Microsoft.Extensions.DependencyInjection;
 using Repositories;
 using Shouldly;
@@ -21,6 +22,7 @@ public class EfCoreNonRootRepositoryTests: AppTestBase<FakeEntityFrameworkCoreTe
     }
 
     [Fact]
+    [UnitOfWork]
     async Task GetOrderSummaryAsync()
     {
         var orders = await OrderQueryRepository.GetOrderSummaryAsync(AppTestDataBuilder.OrderId);
@@ -28,5 +30,10 @@ public class EfCoreNonRootRepositoryTests: AppTestBase<FakeEntityFrameworkCoreTe
         orders.First().date.ShouldBeLessThanOrEqualTo(FakeClock.Now);
         orders[0].status.ShouldBe(OrderStatus.Submitted.Name);
         orders[0].total.ShouldBe(20.4);
+        
+        var order = AppTestDataBuilder.BuildOrder();
+        order.SetId(Guid.NewGuid());
+        await OrderQueryRepository.AddAsync(order);
+        await OrderQueryRepository.AddAsync(order);
     }
 }

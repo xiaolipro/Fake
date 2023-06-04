@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Fake.Domain.Repositories.EntityFrameWorkCore;
 
+[UnitOfWork(ReadOnly = true)]
 public class EfCoreNoRootRepository<TDbContext> : INoRootRepository
     where TDbContext : FakeDbContext<TDbContext>
 {
@@ -15,15 +16,11 @@ public class EfCoreNoRootRepository<TDbContext> : INoRootRepository
 
     private IDbContextProvider<TDbContext> DbContextProvider =>
         LazyServiceProvider.GetRequiredLazyService<IDbContextProvider<TDbContext>>();
-    
-    public IUnitOfWorkManager UnitOfWorkManager => LazyServiceProvider.GetRequiredLazyService<IUnitOfWorkManager>();
-    public IUnitOfWork UnitOfWork => UnitOfWorkManager.Current;
 
     public async Task<TDbContext> GetDbContextAsync(CancellationToken cancellationToken = default)
     {
         var context = await DbContextProvider.GetDbContextAsync(cancellationToken);
         context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-        //context.SavedChanges += (_, _) => throw new FakeException("请不要在无根仓储中执行查询以外的操作！");
 
         return context;
     }

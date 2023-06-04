@@ -6,9 +6,11 @@ using Fake.Domain.Repositories;
 
 namespace Domain.Aggregates.QueriesRepositories;
 
-public interface IOrderQueryRepository:INoRootRepository
+public interface IOrderQueryRepository : INoRootRepository
 {
     Task<List<OrderSummary>> GetOrderSummaryAsync(Guid userId);
+    
+    Task<Order> AddAsync(Order order);
 }
 
 public class OrderSummary

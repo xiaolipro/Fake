@@ -36,17 +36,19 @@ public class UnitOfWorkHelper:IUnitOfWorkHelper
     {
         ThrowHelper.ThrowIfNull(methodInfo, nameof(methodInfo));
 
+        // 继承体系
         unitOfWorkAttribute = GetUnitOfWorkAttributeOrNull(methodInfo);
-        if (unitOfWorkAttribute is not null) return !unitOfWorkAttribute.IsDisabled;
+        if (unitOfWorkAttribute is not null) return true;
 
+        // 层次体系
         return methodInfo.DeclaringType.GetTypeInfo().IsAssignableTo<IUnitOfWorkEnabled>();
     }
 
     public UnitOfWorkAttribute GetUnitOfWorkAttributeOrNull(MethodInfo methodInfo)
     {
         // 先从方法上找
-        var attr = methodInfo.GetCustomAttribute<UnitOfWorkAttribute>();
+        var attr = methodInfo.GetCustomAttribute<UnitOfWorkAttribute>(true);
         // 再从类上找
-        return attr ?? methodInfo.DeclaringType.GetTypeInfo().GetCustomAttribute<UnitOfWorkAttribute>();
+        return attr ?? methodInfo.DeclaringType.GetTypeInfo().GetCustomAttribute<UnitOfWorkAttribute>(true);
     }
 }

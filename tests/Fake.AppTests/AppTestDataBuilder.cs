@@ -21,7 +21,8 @@ public class AppTestDataBuilder
 
     public async Task BuildAsync()
     {
-        await AddOrder();
+        var order = BuildOrder();
+        await _orderRepository.AddAsync(order);
         //await AddBuyer();
     }
 
@@ -34,7 +35,7 @@ public class AppTestDataBuilder
         await _buyerRepository.AddAsync(buyer);
     }
     
-    private async Task AddOrder()
+    public static Order BuildOrder()
     {
         var street = "fakeStreet";
         var city = "FakeCity";
@@ -54,6 +55,6 @@ public class AppTestDataBuilder
         order.AddOrderItem(2, "菠萝", 3.6m, 8, null, 3);
         order.SetId(OrderId);
         order.SetPaidStatus();
-        await _orderRepository.AddAsync(order);
+        return order;
     }
 }

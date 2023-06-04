@@ -10,6 +10,7 @@ namespace Fake.Ddd.Domain;
 
 [DependsOn(typeof(FakeAuditingModule))]
 [DependsOn(typeof(FakeEventBusModule))]
+[DependsOn(typeof(FakeUnitOfWorkModule))]
 public class FakeDddDomainModule : FakeModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)

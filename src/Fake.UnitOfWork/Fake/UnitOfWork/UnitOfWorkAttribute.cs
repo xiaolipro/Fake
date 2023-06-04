@@ -22,9 +22,9 @@ public class UnitOfWorkAttribute : Attribute
     public int Timeout { get; set; }
     
     /// <summary>
-    /// 禁用工作单元
+    /// 只读
     /// </summary>
-    public bool IsDisabled { get; set; }
+    public bool ReadOnly { get; set; }
     
     /// <summary>
     /// 启用新的工作单元
