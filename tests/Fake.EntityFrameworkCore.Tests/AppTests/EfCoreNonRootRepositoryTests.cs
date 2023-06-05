@@ -22,7 +22,6 @@ public class EfCoreNonRootRepositoryTests: AppTestBase<FakeEntityFrameworkCoreTe
     }
 
     [Fact]
-    [UnitOfWork]
     async Task GetOrderSummaryAsync()
     {
         var orders = await OrderQueryRepository.GetOrderSummaryAsync(AppTestDataBuilder.OrderId);
