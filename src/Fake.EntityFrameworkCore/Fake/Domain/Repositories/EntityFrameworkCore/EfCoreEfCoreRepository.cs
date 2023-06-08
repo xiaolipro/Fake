@@ -10,7 +10,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Fake.Domain.Repositories.EntityFrameWorkCore;
 
-public class EfCoreEfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntity>, IEfCoreRepository<TDbContext, TEntity>
+public class EfCoreEfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntity>,
+    IEfCoreRepository<TDbContext, TEntity>
     where TDbContext : FakeDbContext<TDbContext>
     where TEntity : class, IAggregateRoot
 {
@@ -34,11 +35,12 @@ public class EfCoreEfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntit
     {
         cancellationToken = GetCancellationToken(cancellationToken);
 
-        var query = (await GetDbSetAsync(cancellationToken)).AsQueryable();
+        var dbSet = (await GetDbContextAsync(cancellationToken)).Set<TEntity>();
 
+        var query = dbSet.AsQueryable();
         if (isInclude)
         {
-            var entityType = (await GetDbContextAsync(cancellationToken)).Model.FindEntityType(typeof(TEntity));
+            var entityType = dbSet.EntityType.Model.FindEntityType(typeof(TEntity));
 
             if (entityType != null)
             {
@@ -71,13 +73,13 @@ public class EfCoreEfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntit
         {
             return await query.FirstOrDefaultAsync(cancellationToken);
         }
-        
+
         return await query.FirstOrDefaultAsync(predicate, cancellationToken);
     }
 
     public override async Task<List<TEntity>> GetListAsync(
         Expression<Func<TEntity, bool>> predicate = null,
-        Dictionary<string, bool> sorting = null, 
+        Dictionary<string, bool> sorting = null,
         bool isInclude = true,
         CancellationToken cancellationToken = default)
     {
@@ -131,7 +133,7 @@ public class EfCoreEfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntit
     }
 
     public override async Task<TEntity> AddAsync(
-        TEntity entity, 
+        TEntity entity,
         bool autoSave = false,
         CancellationToken cancellationToken = default)
     {
@@ -152,7 +154,7 @@ public class EfCoreEfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntit
     }
 
     public override async Task InsertRangeAsync(
-        IEnumerable<TEntity> entities, 
+        IEnumerable<TEntity> entities,
         bool autoSave = false,
         CancellationToken cancellationToken = default)
     {
@@ -202,7 +204,7 @@ public class EfCoreEfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntit
     }
 
     public override async Task DeleteAsync(
-        TEntity entity, 
+        TEntity entity,
         bool autoSave = false,
         CancellationToken cancellationToken = default)
     {
@@ -217,7 +219,7 @@ public class EfCoreEfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntit
     }
 
     public override async Task DeleteRangeAsync(
-        IEnumerable<TEntity> entities, 
+        IEnumerable<TEntity> entities,
         bool autoSave = false,
         CancellationToken cancellationToken = default)
     {
@@ -234,7 +236,7 @@ public class EfCoreEfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntit
     }
 
     public override async Task DeleteAsync(
-        Expression<Func<TEntity, bool>> predicate, 
+        Expression<Func<TEntity, bool>> predicate,
         bool autoSave = false,
         CancellationToken cancellationToken = default)
     {
