@@ -48,4 +48,4 @@ $ dotnet restore
 - 连接持活机制，服务队列缓存机制等
 
 ### 鸣谢
-Jetbraints https://jb.gg/OpenSourceSupport.
+JetBrains https://jb.gg/OpenSourceSupport.
