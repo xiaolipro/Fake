@@ -16,7 +16,7 @@ $ dotnet restore
 - mutil-framework compatibility
 - unit test，functional test，benchmark test and more
 - simple demo，useage doc
-- bug issue and idel
+- bug issue and idel...
 
 ### 🐌基础能力
 - [x] 模块化
