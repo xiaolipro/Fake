@@ -13,7 +13,7 @@ on:
         - uses: actions/checkout@v3
           with:
             fetch-depth: 0
-        - name: Qodana Scan
+        - name: "Qodana Scan"
           uses: JetBrains/qodana-action@main
           env:
-            qodana-token: ${{ secrets.QODANA_TOKEN }}
+            qodana-token: ${{secrets.QODANA_TOKEN}}
