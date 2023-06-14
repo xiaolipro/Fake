@@ -30,8 +30,12 @@ job("Qodana") {
       codeReviewOpened{}
    }
    container("jetbrains/qodana-dotnet") {
+      env["QODANA_TOKEN"] = Secrets("qodana-token")
       shellScript {
-          content = """qodana"""
+         content = """
+            qodana \
+            --fail-threshold 10000 \
+            """.trimIndent()
       }
    }
 }
