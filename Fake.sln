@@ -1,88 +1,94 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33801.468
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{AC56DAD8-C5AB-4E41-A280-1BCC08A2BE60}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fake.Core", "src\Fake.Core\Fake.Core.csproj", "{50A2B676-5383-4A7A-A6F4-852D7D5C5342}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fake.Core", "src\Fake.Core\Fake.Core.csproj", "{50A2B676-5383-4A7A-A6F4-852D7D5C5342}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "benchmarks", "benchmarks", "{F2F8BC8B-5122-4D63-9D90-2FDF5C6E7F7A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fake.Core.Benchmarks", "benchmarks\Fake.Core.Benchmarks\Fake.Core.Benchmarks.csproj", "{D71E1E01-64CE-490E-B5B6-0BA432B805C7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fake.Core.Benchmarks", "benchmarks\Fake.Core.Benchmarks\Fake.Core.Benchmarks.csproj", "{D71E1E01-64CE-490E-B5B6-0BA432B805C7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{310D0E30-AC20-44C8-B0A2-155C880ED934}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fake.Core.Tests", "tests\Fake.Core.Tests\Fake.Core.Tests.csproj", "{930E63CA-E2F0-4465-9732-0B58499E6D2F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fake.Core.Tests", "tests\Fake.Core.Tests\Fake.Core.Tests.csproj", "{930E63CA-E2F0-4465-9732-0B58499E6D2F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AFakeTestEntry", "tests\AFakeTestEntry\AFakeTestEntry.csproj", "{A93D4EAE-90BE-4C9B-9970-5C1C8E1B994D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AFakeTestEntry", "tests\AFakeTestEntry\AFakeTestEntry.csproj", "{A93D4EAE-90BE-4C9B-9970-5C1C8E1B994D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fake.Auditing", "src\Fake.Auditing\Fake.Auditing.csproj", "{B37055D3-4031-4FF1-9668-926D0431BCCE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fake.Auditing", "src\Fake.Auditing\Fake.Auditing.csproj", "{B37055D3-4031-4FF1-9668-926D0431BCCE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "solution items", "solution items", "{39FED9F7-23E6-43A4-B478-B914A2E805D0}"
 	ProjectSection(SolutionItems) = preProject
-		NuGet.Config = NuGet.Config
 		.gitignore = .gitignore
-		README.md = README.md
 		common.props = common.props
 		common.test.props = common.test.props
 		common.toolkit.props = common.toolkit.props
 		configureawait.props = configureawait.props
 		Directory.Build.props = Directory.Build.props
 		Fake.sln.DotSettings = Fake.sln.DotSettings
-		.github\workflows\code_quality.yml = .github\workflows\code_quality.yml
+		NuGet.Config = NuGet.Config
+		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fake.AspNetCore", "src\Fake.AspNetCore\Fake.AspNetCore.csproj", "{57E821A6-AE7A-40E4-9C32-23A26E90102E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fake.AspNetCore", "src\Fake.AspNetCore\Fake.AspNetCore.csproj", "{57E821A6-AE7A-40E4-9C32-23A26E90102E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "toolkit", "toolkit", "{A2A27924-EED0-4A13-B7F2-949F11F9F9B6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Faker.ReplaceFileName", "toolkit\Faker.ReplaceFileName\Faker.ReplaceFileName.csproj", "{26293D9D-5A8A-4438-8446-192C9A1E3727}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Faker.ReplaceFileName", "toolkit\Faker.ReplaceFileName\Faker.ReplaceFileName.csproj", "{26293D9D-5A8A-4438-8446-192C9A1E3727}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fake.Castle", "src\Fake.Castle\Fake.Castle.csproj", "{E2CA82E6-F762-4208-8ABC-CF464404FED2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fake.Castle", "src\Fake.Castle\Fake.Castle.csproj", "{E2CA82E6-F762-4208-8ABC-CF464404FED2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fake.Auditing.Tests", "tests\Fake.Auditing.Tests\Fake.Auditing.Tests.csproj", "{18CD3533-6778-46E1-B175-448D15543F8C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fake.Auditing.Tests", "tests\Fake.Auditing.Tests\Fake.Auditing.Tests.csproj", "{18CD3533-6778-46E1-B175-448D15543F8C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fake.Testing", "src\Fake.Testing\Fake.Testing.csproj", "{CF5FE6C5-FE2C-4824-9AEC-E4E48D6D5E62}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fake.Testing", "src\Fake.Testing\Fake.Testing.csproj", "{CF5FE6C5-FE2C-4824-9AEC-E4E48D6D5E62}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fake.Autofac", "src\Fake.Autofac\Fake.Autofac.csproj", "{849F760C-2A52-4D51-9107-976FBC5DA0DE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fake.Autofac", "src\Fake.Autofac\Fake.Autofac.csproj", "{849F760C-2A52-4D51-9107-976FBC5DA0DE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "simple", "simple", "{195205BB-D2B1-4638-B3F9-CDC15AFDD9A5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleConsoleDemo", "simple\SimpleConsoleDemo\SimpleConsoleDemo.csproj", "{4389A0C4-1714-4763-B4CE-94D38C23B6B5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleConsoleDemo", "simple\SimpleConsoleDemo\SimpleConsoleDemo.csproj", "{4389A0C4-1714-4763-B4CE-94D38C23B6B5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fake.UnitOfWork", "src\Fake.UnitOfWork\Fake.UnitOfWork.csproj", "{F2F8DDE9-F6B2-4415-9306-607F7CE45588}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fake.UnitOfWork", "src\Fake.UnitOfWork\Fake.UnitOfWork.csproj", "{F2F8DDE9-F6B2-4415-9306-607F7CE45588}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fake.Identity", "src\Fake.Identity\Fake.Identity.csproj", "{94E5CFBE-436F-4639-B103-31C607EAF441}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fake.Identity", "src\Fake.Identity\Fake.Identity.csproj", "{94E5CFBE-436F-4639-B103-31C607EAF441}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fake.EntityFrameworkCore", "src\Fake.EntityFrameworkCore\Fake.EntityFrameworkCore.csproj", "{507825BD-B352-4646-85EA-A893CF3221CF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fake.EntityFrameworkCore", "src\Fake.EntityFrameworkCore\Fake.EntityFrameworkCore.csproj", "{507825BD-B352-4646-85EA-A893CF3221CF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fake.Autofac.Tests", "tests\Fake.Autofac.Tests\Fake.Autofac.Tests.csproj", "{9B22DE9A-C927-4B69-B349-D46E1EEBA0BF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fake.Autofac.Tests", "tests\Fake.Autofac.Tests\Fake.Autofac.Tests.csproj", "{9B22DE9A-C927-4B69-B349-D46E1EEBA0BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fake.AspNetCore.Tests", "tests\Fake.AspNetCore.Tests\Fake.AspNetCore.Tests.csproj", "{EE3DA6E0-BD1D-422C-8871-B5423E14D9B1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fake.AspNetCore.Tests", "tests\Fake.AspNetCore.Tests\Fake.AspNetCore.Tests.csproj", "{EE3DA6E0-BD1D-422C-8871-B5423E14D9B1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fake.UnitOfWork.Tests", "tests\Fake.UnitOfWork.Tests\Fake.UnitOfWork.Tests.csproj", "{AFEF33F5-295F-463C-A083-CDEDFA72A252}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fake.UnitOfWork.Tests", "tests\Fake.UnitOfWork.Tests\Fake.UnitOfWork.Tests.csproj", "{AFEF33F5-295F-463C-A083-CDEDFA72A252}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fake.VirtualFileSystem", "src\Fake.VirtualFileSystem\Fake.VirtualFileSystem.csproj", "{A51FA6B0-9E13-4A45-A46F-0BCB667DC995}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fake.VirtualFileSystem", "src\Fake.VirtualFileSystem\Fake.VirtualFileSystem.csproj", "{A51FA6B0-9E13-4A45-A46F-0BCB667DC995}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fake.Localization", "src\Fake.Localization\Fake.Localization.csproj", "{983705E4-101F-4EDA-9B09-9FEF16257CE9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fake.Localization", "src\Fake.Localization\Fake.Localization.csproj", "{983705E4-101F-4EDA-9B09-9FEF16257CE9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fake.Localization.Tests", "tests\Fake.Localization.Tests\Fake.Localization.Tests.csproj", "{F2BC0BDA-3EA2-42EA-A900-2A381EB650B8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fake.Localization.Tests", "tests\Fake.Localization.Tests\Fake.Localization.Tests.csproj", "{F2BC0BDA-3EA2-42EA-A900-2A381EB650B8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fake.VirtualFileSytem.Tests", "tests\Fake.VirtualFileSytem.Tests\Fake.VirtualFileSytem.Tests.csproj", "{EDEB6423-64ED-462A-BFAB-270EE436944D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fake.VirtualFileSytem.Tests", "tests\Fake.VirtualFileSytem.Tests\Fake.VirtualFileSytem.Tests.csproj", "{EDEB6423-64ED-462A-BFAB-270EE436944D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fake.EntityFrameworkCore.Tests", "tests\Fake.EntityFrameworkCore.Tests\Fake.EntityFrameworkCore.Tests.csproj", "{9D7D6527-1E06-4457-8D8A-D7A6A91F2C7A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fake.EntityFrameworkCore.Tests", "tests\Fake.EntityFrameworkCore.Tests\Fake.EntityFrameworkCore.Tests.csproj", "{9D7D6527-1E06-4457-8D8A-D7A6A91F2C7A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fake.AppTests", "tests\Fake.AppTests\Fake.AppTests.csproj", "{31864311-83DA-4F7D-9DC1-3D8C1E667BAD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fake.AppTests", "tests\Fake.AppTests\Fake.AppTests.csproj", "{31864311-83DA-4F7D-9DC1-3D8C1E667BAD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fake.Ddd.Domain", "src\Fake.Ddd.Domain\Fake.Ddd.Domain.csproj", "{67A25A30-9D91-4D51-9B79-AD1BE08BDEB9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fake.Ddd.Domain", "src\Fake.Ddd.Domain\Fake.Ddd.Domain.csproj", "{67A25A30-9D91-4D51-9B79-AD1BE08BDEB9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fake.EventBus", "src\Fake.EventBus\Fake.EventBus.csproj", "{AFA214FC-3902-40D6-95E5-DD8516C61926}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fake.EventBus", "src\Fake.EventBus\Fake.EventBus.csproj", "{AFA214FC-3902-40D6-95E5-DD8516C61926}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fake.EventBus.RabbitMQ", "src\Fake.EventBus.RabbitMQ\Fake.EventBus.RabbitMQ.csproj", "{9003CD4C-3B5C-4BF7-83C3-37C078209476}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fake.EventBus.RabbitMQ", "src\Fake.EventBus.RabbitMQ\Fake.EventBus.RabbitMQ.csproj", "{9003CD4C-3B5C-4BF7-83C3-37C078209476}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fake.RabbitMQ", "src\Fake.RabbitMQ\Fake.RabbitMQ.csproj", "{9C12BDF1-4745-4B3F-9979-B61CCAB93E9D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fake.RabbitMQ", "src\Fake.RabbitMQ\Fake.RabbitMQ.csproj", "{9C12BDF1-4745-4B3F-9979-B61CCAB93E9D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fake.EntityFrameworkCore.IntegrationEventLog", "src\Fake.EntityFrameworkCore.IntegrationEventLog\Fake.EntityFrameworkCore.IntegrationEventLog.csproj", "{8A110FDF-BF6A-4C78-A1DF-326E7CABC7D4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fake.EntityFrameworkCore.IntegrationEventLog", "src\Fake.EntityFrameworkCore.IntegrationEventLog\Fake.EntityFrameworkCore.IntegrationEventLog.csproj", "{8A110FDF-BF6A-4C78-A1DF-326E7CABC7D4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fake.EventBus.Tests", "tests\Fake.EventBus.Tests\Fake.EventBus.Tests.csproj", "{3087C7AA-17B7-4187-8AB4-7ADB1038C0D8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fake.EventBus.Tests", "tests\Fake.EventBus.Tests\Fake.EventBus.Tests.csproj", "{3087C7AA-17B7-4187-8AB4-7ADB1038C0D8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fake.Http", "src\Fake.Http\Fake.Http.csproj", "{031AF78C-2B35-46AB-9176-088124FAEB31}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fake.Http.Tests", "tests\Fake.Http.Tests\Fake.Http.Tests.csproj", "{6920699B-0077-4998-ABBD-987696ECDE7E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -210,6 +216,17 @@ Global
 		{3087C7AA-17B7-4187-8AB4-7ADB1038C0D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3087C7AA-17B7-4187-8AB4-7ADB1038C0D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3087C7AA-17B7-4187-8AB4-7ADB1038C0D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{031AF78C-2B35-46AB-9176-088124FAEB31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{031AF78C-2B35-46AB-9176-088124FAEB31}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{031AF78C-2B35-46AB-9176-088124FAEB31}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{031AF78C-2B35-46AB-9176-088124FAEB31}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6920699B-0077-4998-ABBD-987696ECDE7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6920699B-0077-4998-ABBD-987696ECDE7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6920699B-0077-4998-ABBD-987696ECDE7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6920699B-0077-4998-ABBD-987696ECDE7E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{50A2B676-5383-4A7A-A6F4-852D7D5C5342} = {AC56DAD8-C5AB-4E41-A280-1BCC08A2BE60}
@@ -242,5 +259,7 @@ Global
 		{9C12BDF1-4745-4B3F-9979-B61CCAB93E9D} = {AC56DAD8-C5AB-4E41-A280-1BCC08A2BE60}
 		{8A110FDF-BF6A-4C78-A1DF-326E7CABC7D4} = {AC56DAD8-C5AB-4E41-A280-1BCC08A2BE60}
 		{3087C7AA-17B7-4187-8AB4-7ADB1038C0D8} = {310D0E30-AC20-44C8-B0A2-155C880ED934}
+		{031AF78C-2B35-46AB-9176-088124FAEB31} = {AC56DAD8-C5AB-4E41-A280-1BCC08A2BE60}
+		{6920699B-0077-4998-ABBD-987696ECDE7E} = {310D0E30-AC20-44C8-B0A2-155C880ED934}
 	EndGlobalSection
 EndGlobal
