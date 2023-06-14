@@ -29,7 +29,7 @@ public abstract class AppAuditingTests<TStartupModule> : AppTestBase<TStartupMod
         currentUser.UserId.Returns(_ => _currentUserId.ToString());
 
         services.AddSingleton(currentUser);
-    }
+    } 
 
     [Fact]
     public async Task 创建审计()

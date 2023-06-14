@@ -27,6 +27,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "solution items", "solution 
 		configureawait.props = configureawait.props
 		Directory.Build.props = Directory.Build.props
 		Fake.sln.DotSettings = Fake.sln.DotSettings
+		.github\workflows\code_quality.yml = .github\workflows\code_quality.yml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fake.AspNetCore", "src\Fake.AspNetCore\Fake.AspNetCore.csproj", "{57E821A6-AE7A-40E4-9C32-23A26E90102E}"

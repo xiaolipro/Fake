@@ -16,7 +16,13 @@ public class SequentialGuidGenerator:IGuidGenerator
     {
         _options = options.Value;
     }
+
     
+    /// <summary>
+    /// 生成有序guid
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
     public Guid Generate()
     {
         // 1个Guid占16个字节
