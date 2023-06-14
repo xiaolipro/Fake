@@ -9,7 +9,7 @@ job("Hello World!") {
 }
 
 job("Qodana") {
-    container("jetbrains/qodana-<linter>") {
+    container("jetbrains/qodana-dotnet") {
         shellScript {
             content = """
                qodana \
