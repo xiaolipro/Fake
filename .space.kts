@@ -9,13 +9,29 @@ job("Hello World!") {
 }
 
 job("Qodana") {
-    container("jetbrains/qodana-dotnet") {
-        shellScript {
-            content = """
-               qodana \
-               --fail-threshold <number> \
-               --profile-name <profile-name>
-               """.trimIndent()
-        }
-    }
+   startOn {
+      gitPush {
+         anyBranchMatching  {
+            // add 'master'
+            +"master"
+            // add all branches containing 'feature'
+            +"*feature*"
+            // exclude 'test-feature'
+            -"test-feature"
+         }
+         // run only if there's a release tag
+         // e.g., release/v1.0.0
+         anyTagMatching {
+             +"release/*"
+             // but exclude beta releases
+             -"release/*-beta"
+         }
+      }
+      codeReviewOpened{}
+   }
+   container("jetbrains/qodana-dotnet") {
+      shellScript {
+          content = """qodana"""
+      }
+   }
 }
