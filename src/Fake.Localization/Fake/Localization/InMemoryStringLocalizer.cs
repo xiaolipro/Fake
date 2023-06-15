@@ -88,7 +88,7 @@ public class InMemoryStringLocalizer : IFakeStringLocalizer
             {
                 using (CultureHelper.UseCulture(cultureName))
                 {
-                    var strings = localizer.GetAllStrings(includeParentCultures, true);
+                    var strings = FakeStringLocalizerExtensions.GetAllStrings(localizer, includeParentCultures);
 
                     foreach (var localizedString in strings)
                     {

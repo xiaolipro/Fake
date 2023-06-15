@@ -7,6 +7,6 @@ public interface IHasCreator<out TUserId>
     /// <summary>
     /// 创建者Id
     /// </summary>
-    [NotNull]
+    [CanBeNull]
     TUserId CreatorId { get; }
 }

@@ -2,7 +2,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text.Json;
-using Fake.EventBus;
 using Fake.EventBus.Events;
 
 namespace Fake.EntityFrameworkCore.IntegrationEventLog;

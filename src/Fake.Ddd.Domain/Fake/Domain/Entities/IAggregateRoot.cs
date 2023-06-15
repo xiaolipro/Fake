@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Fake.Domain.Entities;
+﻿namespace Fake.Domain.Entities;
 
 /*
  * 聚合包装一组高度相关的对象，作为一个数据修改的单元。

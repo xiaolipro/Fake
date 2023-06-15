@@ -231,11 +231,11 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
 
         if (!typeof(TEntity).IsAssignableTo(typeof(IEntity))) return;
 
-        // TODO: 这里被迫选用一个类型事实上UserId类型是可以自定义的
+        // TODO: 这里被迫选用一个用户类型事实上UserId类型是可以自定义的
         modelBuilder.Entity<TEntity>()
             .TryConfigureCreator<Guid>()
             .TryConfigureModifier<Guid>()
-            .TryConfigureSoftDelete<Guid>()
+            .TryConfigureSoftDelete()
             .TryConfigureExtraProperties()
             .TryConfigureVersionNum();
 

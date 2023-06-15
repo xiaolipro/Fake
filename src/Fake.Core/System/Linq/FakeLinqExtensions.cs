@@ -10,12 +10,12 @@ public static class FakeLinqExtensions
         Dictionary<string, bool> fields)
         where TEntity : class
     {
-        int num = 0;
-        foreach (KeyValuePair<string, bool> field in fields)
+        var num = 0;
+        foreach (var field in fields)
         {
             query = num != 0
                 ? query.ThenBy(field.Key, field.Value)
-                : query.OrderBy<TEntity>(field.Key, field.Value);
+                : query.OrderBy(field.Key, field.Value);
             ++num;
         }
 
@@ -76,14 +76,14 @@ public static class FakeLinqExtensions
 
 
     private static PropertyInfo GetPropertyInfo(Type entityType, string field) => entityType.GetProperties()
-        .FirstOrDefault<PropertyInfo>((Func<PropertyInfo, bool>)(p =>
-            p.Name.Equals(field, StringComparison.OrdinalIgnoreCase)));
+        .FirstOrDefault(p =>
+            p.Name.Equals(field, StringComparison.OrdinalIgnoreCase));
 
     private static LambdaExpression GetOrderExpression(
         Type entityType,
         PropertyInfo propertyInfo)
     {
-        ParameterExpression parameterExpression = Expression.Parameter(entityType);
+        var parameterExpression = Expression.Parameter(entityType);
         return Expression.Lambda(Expression.PropertyOrField(parameterExpression, propertyInfo.Name),
             parameterExpression);
     }

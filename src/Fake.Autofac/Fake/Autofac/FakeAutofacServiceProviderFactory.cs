@@ -8,7 +8,6 @@ namespace Fake.Autofac;
 public class FakeAutofacServiceProviderFactory: IServiceProviderFactory<ContainerBuilder>
 {
     private readonly ContainerBuilder _builder;
-    private IServiceCollection _services;
 
     public FakeAutofacServiceProviderFactory(ContainerBuilder builder)
     {
@@ -17,8 +16,6 @@ public class FakeAutofacServiceProviderFactory: IServiceProviderFactory<Containe
     
     public ContainerBuilder CreateBuilder(IServiceCollection services)
     {
-        _services = services;
-
         _builder.Populate(services);
 
         return _builder;

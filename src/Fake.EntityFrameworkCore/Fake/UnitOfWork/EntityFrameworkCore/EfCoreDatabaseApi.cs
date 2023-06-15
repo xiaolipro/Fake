@@ -1,8 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Fake.EntityFrameworkCore;
-using Fake.UnitOfWork;
-using Microsoft.EntityFrameworkCore;
 
 namespace Fake.UnitOfWork.EntityFrameWorkCore;
 

@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using Fake.Extensions;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Fake.DependencyInjection;

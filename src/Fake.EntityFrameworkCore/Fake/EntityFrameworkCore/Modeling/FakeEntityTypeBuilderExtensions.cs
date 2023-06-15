@@ -69,7 +69,7 @@ public static class FakeEntityTypeBuilderExtensions
         return builder;
     }
 
-    public static EntityTypeBuilder TryConfigureSoftDelete<TUserId>(this EntityTypeBuilder builder)
+    public static EntityTypeBuilder TryConfigureSoftDelete(this EntityTypeBuilder builder)
     {
         if (builder.Metadata.ClrType.IsAssignableTo<ISoftDelete>())
         {

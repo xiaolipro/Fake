@@ -1,5 +1,3 @@
-using System.Reflection;
-
 namespace Microsoft.Extensions.Configuration;
 
 public class FakeConfigurationBuilderOptions

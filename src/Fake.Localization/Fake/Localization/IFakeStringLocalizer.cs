@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Microsoft.Extensions.Localization;
+﻿using Microsoft.Extensions.Localization;
 
 namespace Fake.Localization;
 

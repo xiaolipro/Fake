@@ -35,14 +35,14 @@ public class DefaultAuditPropertySetter : IAuditPropertySetter
 
     public void SetModificationProperties(object targetObject)
     {
-        if (targetObject is IHasModificationTime { LastModificationTime: { } } objectWithModificationTime)
+        if (targetObject is IHasModificationTime objectWithModificationTime)
         {
             ReflectionHelper.TrySetProperty(objectWithModificationTime, x=>x.LastModificationTime, () => _fakeClock.Now);
         }
         
         if (targetObject is IHasModifier<Guid> objectWithGuidModifier)
         {
-            if (Guid.TryParse(_currentUser.UserId, out var userIdAsGuid))
+            if (objectWithGuidModifier.LastModifierId == default && Guid.TryParse(_currentUser.UserId, out var userIdAsGuid))
             {
                 ReflectionHelper.TrySetProperty(objectWithGuidModifier, x => x.LastModifierId, () => userIdAsGuid);
             }

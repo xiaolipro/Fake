@@ -1,18 +1,17 @@
 #nullable enable
-using JetBrains.Annotations;
-
 namespace Fake.Domain.Entities.Auditing;
 
 /// <summary>
 /// 完全审计实体
 /// </summary>
+/// <typeparam name="TKey">id类型</typeparam>
 /// <typeparam name="TUserId">用户id类型</typeparam>
-public class FullAuditedEntity<TUserId> : IFullAuditedEntity<TUserId>
+public class FullAuditedEntity<TKey, TUserId> : Entity<TKey>, IFullAuditedEntity<TUserId>
 {
-    public TUserId CreatorId { get; set; }
+    public TUserId? CreatorId { get; set; }
     public DateTime CreationTime { get; set; }
-    public TUserId LastModifierId { get; set; }
-    public DateTime LastModificationTime { get; set; }
+    public TUserId? LastModifierId { get; set; }
+    public DateTime? LastModificationTime { get; set; }
     public bool IsDeleted { get; set; }
     public bool HardDeleted { get; set; }
 }

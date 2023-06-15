@@ -88,7 +88,7 @@ public abstract class AbstractVirtualFileLocalizationResourceContributor : ILoca
 
     private Dictionary<string, ILocalizedStringContainer> CreateLocalizedStringContainers()
     {
-        var _localizedStringContainers = new Dictionary<string, ILocalizedStringContainer>();
+        var localizedStringContainers = new Dictionary<string, ILocalizedStringContainer>();
 
         foreach (var file in _virtualFileProvider.GetDirectoryContents(_virtualPath))
         {
@@ -104,14 +104,14 @@ public abstract class AbstractVirtualFileLocalizationResourceContributor : ILoca
                 container = CreateLocalizedStringContainer(fileContent, path);
             }
 
-            if (_localizedStringContainers.ContainsKey(container.CultureName))
+            if (localizedStringContainers.ContainsKey(container.CultureName))
             {
                 throw new FakeException($"已经存在Culture为：{container.CultureName}的本地化文件 {container.Path}");
             }
-            _localizedStringContainers[container.CultureName] = container;
+            localizedStringContainers[container.CultureName] = container;
         }
 
-        return _localizedStringContainers;
+        return localizedStringContainers;
     }
 
     /// <summary>

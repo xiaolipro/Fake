@@ -26,7 +26,7 @@ public class FakeEmbeddedFileInfo: IFileInfo
             if (_length.HasValue) return _length.Value;
 
             using var stream = _assembly.GetManifestResourceStream(_resourcePath);
-            return stream.Length;
+            return stream?.Length?? 0;
         }
     }
 
