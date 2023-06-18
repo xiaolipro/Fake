@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization.Metadata;
 using Fake.Json.SystemTextJson.Converters;
-using Fake.Reflection;
+using Fake.Helpers;
 using Fake.Timing;
 
 namespace Fake.Json.SystemTextJson.Modifiers;

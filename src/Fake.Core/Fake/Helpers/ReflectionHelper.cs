@@ -2,7 +2,7 @@
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace Fake.Reflection;
+namespace Fake.Helpers;
 
 public static class ReflectionHelper
 {

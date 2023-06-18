@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Fake.Localization.Contributors;
-using Fake.Reflection;
+using Fake.Helpers;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
