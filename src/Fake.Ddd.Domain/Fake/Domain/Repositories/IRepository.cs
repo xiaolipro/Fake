@@ -1,6 +1,5 @@
 ﻿using System.Linq.Expressions;
 using Fake.Domain.Entities;
-using Fake.UnitOfWork;
 using JetBrains.Annotations;
 
 namespace Fake.Domain.Repositories;

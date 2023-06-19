@@ -2,7 +2,6 @@ using System.Linq.Expressions;
 using Fake.DependencyInjection;
 using Fake.Domain.Entities;
 using Fake.Threading;
-using Fake.UnitOfWork;
 
 namespace Fake.Domain.Repositories;
 

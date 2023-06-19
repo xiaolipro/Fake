@@ -22,11 +22,6 @@ public class UnitOfWorkAttribute : Attribute
     public int Timeout { get; set; }
     
     /// <summary>
-    /// 只读
-    /// </summary>
-    public bool ReadOnly { get; set; }
-    
-    /// <summary>
     /// 启用新的工作单元
     /// </summary>
     public bool RequiresNew { get; set; }

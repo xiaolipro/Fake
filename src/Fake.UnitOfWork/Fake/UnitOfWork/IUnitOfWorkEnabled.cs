@@ -4,3 +4,8 @@ public interface IUnitOfWorkEnabled
 {
     
 }
+
+public interface IReadOnlyUnitOfWorkEnabled
+{
+    
+}

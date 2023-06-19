@@ -13,6 +13,9 @@ public class EfCoreDatabaseApi<TDbContext>: IDatabaseApi, ISupportSaveChanges
     {
         DbContext = dbContext;
     }
+
+    public bool HasChanges => DbContext.ChangeTracker.HasChanges();
+
     public Task SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         return DbContext.SaveChangesAsync(cancellationToken);

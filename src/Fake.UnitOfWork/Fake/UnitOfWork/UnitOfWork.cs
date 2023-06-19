@@ -15,9 +15,7 @@ public class UnitOfWork : IUnitOfWork
     public Guid Id { get; }
     public IServiceProvider ServiceProvider { get; }
     public UnitOfWorkContext Context { get; private set; }
-
     public bool IsDisposed { get; private set; }
-
     public bool IsCompleted { get; private set; }
     public IUnitOfWork Outer { get; private set; }
 
@@ -97,6 +95,30 @@ public class UnitOfWork : IUnitOfWork
                 }
             }
         }
+    }
+    
+    public bool HasHasChanges()
+    {
+        foreach (var databaseApi in GetAllActiveDatabaseApis())
+        {
+            if (databaseApi is ISupportSaveChanges supportSaveChanges)
+            {
+                try
+                {
+                    if (supportSaveChanges.HasChanges)
+                    {
+                        return true;
+                    }
+                }
+                catch (Exception e)
+                {
+                    _logger.LogException(e);
+                    throw;
+                }
+            }
+        }
+
+        return false;
     }
 
     public virtual async Task RollbackAsync(CancellationToken cancellationToken = default)
