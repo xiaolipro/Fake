@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Fake.EventBus.Events;
 using Fake.EventBus.Wrappers;
-using Fake.Reflection;
+using Fake.Helpers;
 using JetBrains.Annotations;
 
 namespace Fake.EventBus;

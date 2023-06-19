@@ -1,5 +1,5 @@
 ﻿using Fake.Domain.Entities.IDGenerators;
-using Fake.Reflection;
+using Fake.Helpers;
 
 namespace Fake.Domain.Entities;
 
