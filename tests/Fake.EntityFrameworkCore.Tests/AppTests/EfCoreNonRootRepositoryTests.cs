@@ -35,7 +35,7 @@ public class EfCoreNonRootRepositoryTests: AppTestBase<FakeEntityFrameworkCoreTe
     }
 
     [Fact]
-    async Task 无根仓储中写入会抛出()
+    async Task 无根仓储中写入会抛出异常()
     {
         var cnt = await _orderRepository.GetCountAsync();
         cnt.ShouldBe(1);
@@ -50,4 +50,17 @@ public class EfCoreNonRootRepositoryTests: AppTestBase<FakeEntityFrameworkCoreTe
             cnt.ShouldBe(2);
         });
     }
+    
+    
+    [Fact]
+        async Task 无根仓储中用SQL写入不会抛出异常()
+        {
+            var cnt = await _orderRepository.GetCountAsync();
+            cnt.ShouldBe(1);
+            
+            var order = AppTestDataBuilder.BuildOrder();
+            order.SetId(Guid.NewGuid());
+            await _orderQueryRepository.AddBySqlAsync(order);
+
+        }
 }

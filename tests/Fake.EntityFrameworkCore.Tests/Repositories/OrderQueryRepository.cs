@@ -31,4 +31,17 @@ public class OrderQueryRepository : EfCoreNoRootRepository<OrderingContext>, IOr
         var entry = context.Orders.Add(order);
         return entry.Entity;
     }
+
+    public async Task AddBySqlAsync(Order order)
+    {
+        var context = await GetDbContextAsync();
+        
+        await context.Database.ExecuteSqlAsync(@$"CREATE TABLE students (
+                                    id INT PRIMARY KEY,
+                                    name VARCHAR(50),
+                                    age INT,
+                                    gender VARCHAR(10),
+                                    grade VARCHAR(10)
+                                   )");
+    }
 }
