@@ -44,7 +44,7 @@ public static class ReflectionHelper
     }
 
     /// <summary>
-    /// 获取给定成员指定特性，如果没有则返回<see cref="defaultValue"/>
+    /// 获取给定成员指定特性，如果没有则返回defaultValue
     /// </summary>
     /// <param name="memberInfo"></param>
     /// <param name="defaultValue"></param>

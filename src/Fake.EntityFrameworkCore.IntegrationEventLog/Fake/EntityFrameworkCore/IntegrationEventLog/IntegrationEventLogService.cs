@@ -42,13 +42,13 @@ public class IntegrationEventLogService : IIntegrationEventLogService
         return new List<IntegrationEventLogEntry>();
     }
 
-    public Task SaveEventAsync(IEvent @event, IDbContextTransaction transaction)
+    public Task SaveEventAsync(IEvent @event, IDbContextTransaction transaction = null)
     {
-        if (transaction == null) throw new ArgumentNullException(nameof(transaction));
+        //if (transaction == null) throw new ArgumentNullException(nameof(transaction));
 
-        var eventLogEntry = new IntegrationEventLogEntry(@event, transaction.TransactionId);
+        var eventLogEntry = new IntegrationEventLogEntry(@event, transaction?.TransactionId?? default);
 
-        _integrationEventLogContext.Database.UseTransaction(transaction.GetDbTransaction());
+        _integrationEventLogContext.Database.UseTransaction(transaction?.GetDbTransaction());
         _integrationEventLogContext.IntegrationEventLogs.Add(eventLogEntry);
 
         return _integrationEventLogContext.SaveChangesAsync();

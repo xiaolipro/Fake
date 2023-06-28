@@ -5,7 +5,7 @@ namespace System;
 public static class FakeObjectExtensions
 {
     /// <summary>
-    /// <see cref="item"/>是否在给定<see cref="list"/>中
+    /// item是否在给定list中
     /// </summary>
     /// <param name="item"></param>
     /// <param name="list"></param>
@@ -17,7 +17,7 @@ public static class FakeObjectExtensions
 
 
     /// <summary>
-    /// 将<see cref="obj"/>弱转为给定类型<see cref="T"/>，等价于obj as T
+    /// 将obj弱转为给定类型T，等价于obj as T
     /// </summary>
     /// <param name="obj"></param>
     /// <typeparam name="T"></typeparam>
