@@ -7,4 +7,9 @@ public class SimpleGuidGenerator:IGuidGenerator
     {
         return Guid.NewGuid();
     }
+    
+    public string GenerateAsString(string format = "N")
+    {
+        return Guid.NewGuid().ToString(format);
+    }
 }

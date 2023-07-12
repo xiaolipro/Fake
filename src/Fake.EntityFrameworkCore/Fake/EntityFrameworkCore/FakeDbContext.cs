@@ -89,6 +89,23 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
         }
     }
 
+    protected virtual Task BeforeSaveChangesAsync()
+    {
+        foreach (var entry in ChangeTracker.Entries())
+        {
+            if (entry.State.IsIn(EntityState.Modified, EntityState.Deleted))
+            {
+                if (entry.Entity is IHasVersionNum entity)
+                {
+                    Entry(entity).Property(x => x.VersionNum).OriginalValue = entity.VersionNum;
+                    entity.VersionNum = SimpleGuidGenerator.Instance.GenerateAsString();
+                }
+            }
+        }
+        
+        return Task.CompletedTask;
+    }
+
     public void Initialize(IUnitOfWork unitOfWork)
     {
         // 设置超时时间
