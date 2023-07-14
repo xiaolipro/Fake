@@ -63,6 +63,8 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
     {
         try
         {
+            await BeforeSaveChangesAsync();
+            
             // 添加领域事件
             var domainEntities = base.ChangeTracker.Entries<Entity>()
                 .Where(x => x.Entity.DomainEvents != null && x.Entity.DomainEvents.Any())
@@ -93,10 +95,12 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
     {
         foreach (var entry in ChangeTracker.Entries())
         {
+            // Deleted状态可能是软删，也走的更新，同受版本约束
             if (entry.State.IsIn(EntityState.Modified, EntityState.Deleted))
             {
                 if (entry.Entity is IHasVersionNum entity)
                 {
+                    // 保存更改时，将原始值与当前值比较，以确认是否需要更新
                     Entry(entity).Property(x => x.VersionNum).OriginalValue = entity.VersionNum;
                     entity.VersionNum = SimpleGuidGenerator.Instance.GenerateAsString();
                 }
