@@ -12,17 +12,17 @@ public abstract class AggregateRoot : Entity, IAggregateRoot,IHasVersionNum
 
     protected AggregateRoot()
     {
-        VersionNum = SimpleGuidGenerator.Instance.Generate().ToString("N");
+        VersionNum = SimpleGuidGenerator.Instance.GenerateAsString();
     }
 }
 
 [Serializable]
-public abstract class AggregateRoot<TKey> : Entity<TKey>, IAggregateRoot<TKey>
+public abstract class AggregateRoot<TKey> : Entity<TKey>, IAggregateRoot<TKey>,IHasVersionNum
 {
-    public Guid Version { get; set; }
+    public string VersionNum { get; set; }
 
     protected AggregateRoot()
     {
-        Version = Guid.NewGuid();
+        VersionNum = SimpleGuidGenerator.Instance.GenerateAsString();
     }
 }

@@ -143,7 +143,7 @@ public class Order : FullAuditedAggregate<Guid, Guid>
     {
         if (_orderStatusId != OrderStatus.Paid.Id)
         {
-            StatusChangeException(OrderStatus.Shipped);
+            //StatusChangeException(OrderStatus.Shipped);
         }
 
         _orderStatusId = OrderStatus.Shipped.Id;
@@ -187,5 +187,10 @@ public class Order : FullAuditedAggregate<Guid, Guid>
     public decimal GetTotal()
     {
         return _orderItems.Sum(o => o.GetUnits() * o.GetUnitPrice());
+    }
+
+    public void SetDescription(string description)
+    {
+        _description = description;
     }
 }

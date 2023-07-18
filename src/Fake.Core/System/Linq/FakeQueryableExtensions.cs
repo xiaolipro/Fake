@@ -1,11 +1,29 @@
 ﻿using System.Linq.Expressions;
 using System.Reflection;
+using Fake;
 
 namespace System.Linq;
 
-public static class FakeLinqExtensions
+public static class FakeQueryableExtensions
 {
-    public static IQueryable<TEntity> OrderBy<TEntity>(
+    /// <summary>
+    /// 如果<paramref name="condition"/> is true，按照<paramref name="predicate"/>过滤 <see cref="IQueryable{T}"/>
+    /// </summary>
+    /// <param name="query">被过滤的query</param>
+    /// <param name="condition">过滤条件</param>
+    /// <param name="predicate">过滤表达式</param>
+    /// <returns>过滤后的结果</returns>
+    public static TQueryable WhereIf<T, TQueryable>([NotNull] this TQueryable query, bool condition, Expression<Func<T, bool>> predicate)
+        where TQueryable : IQueryable<T>
+    {
+        ThrowHelper.ThrowIfNull(query, nameof(query));
+
+        return condition
+            ? (TQueryable)query.Where(predicate)
+            : query;
+    }
+    
+     public static IQueryable<TEntity> OrderBy<TEntity>(
         this IQueryable<TEntity> query,
         Dictionary<string, bool> fields)
         where TEntity : class
@@ -73,8 +91,7 @@ public static class FakeLinqExtensions
                     orderExpression
                 });
     }
-
-
+    
     private static PropertyInfo GetPropertyInfo(Type entityType, string field) => entityType.GetProperties()
         .FirstOrDefault(p =>
             p.Name.Equals(field, StringComparison.OrdinalIgnoreCase));

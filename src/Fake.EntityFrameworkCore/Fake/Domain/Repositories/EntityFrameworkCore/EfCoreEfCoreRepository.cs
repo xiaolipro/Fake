@@ -29,7 +29,6 @@ public class EfCoreEfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntit
     }
 
     public override async Task<IQueryable<TEntity>> GetQueryableAsync(
-        Expression<Func<TEntity, bool>> predicate = null,
         bool isInclude = true,
         CancellationToken cancellationToken = default)
     {
@@ -52,11 +51,6 @@ public class EfCoreEfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntit
             }
         }
 
-        if (predicate != null)
-        {
-            query = query.Where(predicate);
-        }
-
         return query;
     }
 
@@ -67,14 +61,9 @@ public class EfCoreEfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntit
     {
         cancellationToken = GetCancellationToken(cancellationToken);
 
-        var query = await GetQueryableAsync(predicate, isInclude, cancellationToken);
-
-        if (predicate == null)
-        {
-            return await query.FirstOrDefaultAsync(cancellationToken);
-        }
-
-        return await query.FirstOrDefaultAsync(predicate, cancellationToken);
+        var query = await GetQueryableAsync(isInclude, cancellationToken);
+        
+        return await query.WhereIf(predicate != null, predicate).FirstOrDefaultAsync(cancellationToken);
     }
 
     public override async Task<List<TEntity>> GetListAsync(
@@ -85,10 +74,10 @@ public class EfCoreEfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntit
     {
         cancellationToken = GetCancellationToken(cancellationToken);
 
-        var query = await GetQueryableAsync(predicate, isInclude, cancellationToken);
+        var query = await GetQueryableAsync(isInclude, cancellationToken);
 
         sorting ??= new Dictionary<string, bool>();
-        return await query.OrderBy(sorting).ToListAsync(cancellationToken);
+        return await query.WhereIf(predicate != null, predicate).OrderBy(sorting).ToListAsync(cancellationToken);
     }
 
     public override async Task<List<TEntity>> GetPaginatedListAsync(
@@ -101,9 +90,10 @@ public class EfCoreEfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntit
     {
         cancellationToken = GetCancellationToken(cancellationToken);
 
-        var query = await GetQueryableAsync(predicate, isInclude, cancellationToken);
+        var query = await GetQueryableAsync(isInclude, cancellationToken);
 
         return await query
+            .WhereIf(predicate != null, predicate)
             .OrderBy(sorting)
             .Skip(((pageIndex < 1 ? 1 : pageIndex) - 1) * pageSize)
             .Take(pageSize)
@@ -116,9 +106,9 @@ public class EfCoreEfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntit
     {
         cancellationToken = GetCancellationToken(cancellationToken);
 
-        var query = await GetQueryableAsync(predicate, false, cancellationToken);
+        var query = await GetQueryableAsync(false, cancellationToken);
 
-        return await query.LongCountAsync(cancellationToken);
+        return await query.WhereIf(predicate != null, predicate).LongCountAsync(cancellationToken);
     }
 
     public override async Task<bool> AnyAsync(
@@ -127,9 +117,9 @@ public class EfCoreEfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntit
     {
         cancellationToken = GetCancellationToken(cancellationToken);
 
-        var query = await GetQueryableAsync(predicate, false, cancellationToken);
+        var query = await GetQueryableAsync(false, cancellationToken);
 
-        return await query.AnyAsync(cancellationToken);
+        return await query.WhereIf(predicate != null, predicate).AnyAsync(cancellationToken);
     }
 
     public override async Task<TEntity> AddAsync(

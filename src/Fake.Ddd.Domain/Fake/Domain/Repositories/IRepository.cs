@@ -19,7 +19,6 @@ public interface IRepository: IUnitOfWorkEnabled
 public interface IRepository<TEntity> : IRepository where TEntity : class, IAggregateRoot
 {
     Task<IQueryable<TEntity>> GetQueryableAsync(
-        Expression<Func<TEntity, bool>> predicate = null, 
         bool isInclude = true,
         CancellationToken cancellationToken = default);
 
