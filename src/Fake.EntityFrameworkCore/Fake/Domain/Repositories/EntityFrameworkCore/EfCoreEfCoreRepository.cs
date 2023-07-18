@@ -36,7 +36,7 @@ public class EfCoreEfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntit
 
         var dbSet = (await GetDbContextAsync(cancellationToken)).Set<TEntity>();
 
-        var query = dbSet.AsQueryable();
+        var query = dbSet.AsQueryable().AsNoTracking();
         if (isInclude)
         {
             var entityType = dbSet.EntityType.Model.FindEntityType(typeof(TEntity));
@@ -166,7 +166,7 @@ public class EfCoreEfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntit
         var dbContext = await GetDbContextAsync(cancellationToken);
 
         dbContext.Attach(entity);
-        var entry = dbContext.Set<TEntity>().Update(entity);
+        var entry = dbContext.Update(entity);
 
         if (autoSave)
         {
