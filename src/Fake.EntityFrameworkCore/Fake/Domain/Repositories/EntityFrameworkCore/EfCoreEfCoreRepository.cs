@@ -43,7 +43,7 @@ public class EfCoreEfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntit
 
             if (entityType != null)
             {
-                entityType.GetNavigations().Aggregate(
+                query = entityType.GetNavigations().Aggregate(
                     query,
                     (current, navigationProperty)
                         => current.Include(navigationProperty.Name)
