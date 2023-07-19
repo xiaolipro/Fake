@@ -9,6 +9,7 @@ using Fake.Modularity;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Repositories;
 
@@ -26,6 +27,7 @@ public class FakeEntityFrameworkCoreTestModule : FakeModule
             typeof(OrderEfCoreEfCoreRepository));
         context.Services.AddTransient(typeof(IBuyerRepository),
             typeof(BuyerEfCoreEfCoreRepository));
+
         context.Services.AddDbContextFactory<OrderingContext>(builder =>
         {
             //使用sqlite内存模式要开open
@@ -43,9 +45,12 @@ public class FakeEntityFrameworkCoreTestModule : FakeModule
 #endif
             /*builder.UseSqlite("FileName=./fake.db");*/
         });
+
+
+        context.Services.Replace(new ServiceDescriptor(typeof(OrderingContext), typeof(OrderingContext),
+            ServiceLifetime.Transient));
     }
-    
-    
+
 
     public override void PreConfigureApplication(ApplicationConfigureContext context)
     {

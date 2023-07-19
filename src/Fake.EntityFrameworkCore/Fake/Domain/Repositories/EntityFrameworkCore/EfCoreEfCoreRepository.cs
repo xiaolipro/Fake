@@ -34,9 +34,9 @@ public class EfCoreEfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntit
     {
         cancellationToken = GetCancellationToken(cancellationToken);
 
-        var dbSet = (await GetDbContextAsync(cancellationToken)).Set<TEntity>();
+        var dbSet = await GetDbSetAsync(cancellationToken);
 
-        var query = dbSet.AsQueryable().AsNoTracking();
+        var query = dbSet.AsQueryable();
         if (isInclude)
         {
             var entityType = dbSet.EntityType.Model.FindEntityType(typeof(TEntity));

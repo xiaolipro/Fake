@@ -171,11 +171,11 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
         {
             if (entityWithSoftDelete.HardDeleted) return;
 
-            // 重置entity状态
-            entry.Reload();
-
+            // todo: abp在这里重置entity状态，但是重置状态会重新加载数据，为什么要这么做？
+            //entry.Reload();
+            
+            // 跳转到Modified状态
             ReflectionHelper.TrySetProperty(entityWithSoftDelete, x => x.IsDeleted, () => true);
-
             AuditPropertySetter.SetModificationProperties(entry.Entity);
         }
     }
