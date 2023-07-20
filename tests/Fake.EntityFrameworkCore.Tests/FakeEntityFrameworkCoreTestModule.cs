@@ -4,6 +4,7 @@ using Fake.Domain;
 using Fake.Domain.Repositories;
 using Fake.Domain.Repositories.EntityFrameWorkCore;
 using Fake.EntityFrameworkCore;
+using Fake.EntityFrameworkCore.Interceptors;
 using Fake.Helpers;
 using Fake.Modularity;
 using Microsoft.Data.Sqlite;
@@ -30,16 +31,19 @@ public class FakeEntityFrameworkCoreTestModule : FakeModule
 
         context.Services.AddDbContextFactory<OrderingContext>(builder =>
         {
-            //使用sqlite内存模式要开open
-            var options = new SqliteConnection("Filename=:memory:");
-            options.Open();
-            builder.UseSqlite(options).UseLoggerFactory(LoggerFactory.Create(loggingBuilder =>
+            //使用sqlite内存模式要open
+            var connection = new SqliteConnection("Filename=:memory:");
+            connection.Open();
+            var loggerFactory = LoggerFactory.Create(loggingBuilder =>
             {
                 loggingBuilder
                     .AddFilter((category, level) =>
                         category == DbLoggerCategory.Database.Command.Name && level == LogLevel.Information) // 仅记录命令信息
                     .AddConsole(); // 输出到控制台
-            }));
+            });
+            builder.UseSqlite(connection)
+                .AddInterceptors(new SqlInterceptor(loggerFactory.CreateLogger<SqlInterceptor>()));
+            ;
 #if DEBUG
             builder.EnableSensitiveDataLogging();
 #endif
