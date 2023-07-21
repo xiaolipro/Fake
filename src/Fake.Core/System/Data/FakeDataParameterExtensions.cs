@@ -1,4 +1,5 @@
 using System.Globalization;
+using Fake.Data;
 
 namespace System.Data;
 
@@ -19,39 +20,17 @@ public static class FakeDataParameterExtensions
             return null;
         }
 
-        if (parameter.DbType == DbType.Binary)
+        if (value is byte[] bytes)
         {
-            byte[] array = value as byte[];
-            if (array != null && array.Length <= 512)
-            {
-                return "0x" + BitConverter.ToString(array).Replace("-", string.Empty);
-            }
-
-            return null;
+            return "0x" + BitConverter.ToString(bytes);
         }
 
-        if (parameter.DbType == DbType.Date && value is DateTime)
+        if (value is DateTime datetime)
         {
-            return ((DateTime)value).ToString("d", CultureInfo.InvariantCulture);
+            return datetime.ToString("d", CultureInfo.InvariantCulture);
         }
 
-        if (parameter.DbType == DbType.Time && value is TimeSpan)
-        {
-            return ((TimeSpan)value).ToString("hh\\:mm\\:ss");
-        }
-
-        if (value is DateTime)
-        {
-            return ((DateTime)value).ToString("s", CultureInfo.InvariantCulture);
-        }
-
-        if (value is DateTimeOffset)
-        {
-            DateTimeOffset dateTimeOffset = (DateTimeOffset)value;
-            TimeSpan offset = dateTimeOffset.Offset;
-            return dateTimeOffset.ToString("s", CultureInfo.InvariantCulture) + ((offset < TimeSpan.Zero) ? "-" : "+") +
-                   offset.ToString("hh\\:mm");
-        }
+        
 
         Type type = value.GetType();
         if (type.IsEnum)

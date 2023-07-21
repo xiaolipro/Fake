@@ -1,12 +1,13 @@
+using System.Data;
 using System.Runtime.Serialization;
 
-namespace Fake.Data;
+namespace Fake.EntityFrameworkCore.Interceptors;
 
 //
 // 摘要:
 //     Information about a DbParameter used in the sql statement profiled by SqlTiming.
 [DataContract]
-public class SqlTimingParameter
+public class CommandParameter
 {
     //
     // 摘要:
@@ -27,7 +28,7 @@ public class SqlTimingParameter
     //
     // 摘要:
     //     System.Data.DbType, e.g. "String", "Bit"
-    [DataMember(Order = 3)] public string? DbType { get; set; }
+    [DataMember(Order = 3)] public DbType DbType { get; set; }
 
     //
     // 摘要:
@@ -54,10 +55,10 @@ public class SqlTimingParameter
     //     The System.Object to compare.
     public override bool Equals(object obj)
     {
-        SqlTimingParameter sqlTimingParameter = obj as SqlTimingParameter;
-        if (sqlTimingParameter != null && string.Equals(Name, sqlTimingParameter.Name))
+        CommandParameter commandParameter = obj as CommandParameter;
+        if (commandParameter != null && string.Equals(Name, commandParameter.Name))
         {
-            return string.Equals(Value, sqlTimingParameter.Value);
+            return string.Equals(Value, commandParameter.Value);
         }
 
         return false;

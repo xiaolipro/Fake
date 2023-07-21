@@ -39,8 +39,7 @@ public class FakeEntityFrameworkCoreTestModule : FakeModule
 
 
 #if DEBUG
-            var formatter = new FakeCommandFormatter();
-            builder.AddInterceptors(new FakeDbCommandInterceptor(formatter));
+            builder.AddInterceptors(new FakeDbCommandInterceptor());
 #endif
         });
 

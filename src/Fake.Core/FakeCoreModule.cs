@@ -23,6 +23,13 @@ public class FakeCoreModule : FakeModule
         context.Services.AddTransient<ICancellationTokenProvider, NullCancellationTokenProvider>();
 
         context.Services.AddTransient<ILazyServiceProvider, LazyServiceProvider>();
+        
+        // 时间配置
+        context.Services.Configure<FakeClockOptions>(options =>
+        {
+            options.Kind = DateTimeKind.Unspecified;
+            options.DateTimeFormat = "yyyy-MM-dd HH:mm:ss";
+        });
 
         // SystemTextJson序列化
         context.Services.AddTransient<IFakeJsonSerializer, FakeSystemTextJsonSerializer>();

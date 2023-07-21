@@ -28,4 +28,9 @@ public class FakeClock : IFakeClock
             _ => DateTime.SpecifyKind(dateTime, Kind)
         };
     }
+
+    public string NormalizeAsString(DateTime datetime)
+    {
+        return Normalize(datetime).ToString(_options.DateTimeFormat);
+    }
 }

@@ -1,101 +1,72 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using Fake.Data;
+using System;
+using System.Data;
+using System.Data.Common;
+using System.Globalization;
+using System.Text;
+using Fake.Timing;
 
 namespace Fake.EntityFrameworkCore.Interceptors;
 
 public class FakeCommandFormatter : ICommandFormatter
 {
-    private static readonly Regex CommandSpacing = new(@",([^\s])", RegexOptions.Compiled);
-    private static bool _includeTypeInfo;
+    private readonly IFakeClock _clock;
 
-    /// <summary>
-    /// Whether to modify the output query by adding spaces after commas.
-    /// </summary>
-    public bool InsertSpacesAfterCommas { get; set; } = true;
-
-    /// <summary>
-    /// Creates a new <see cref="FakeCommandFormatter"/>, optionally including the parameter type info
-    /// in comments beside the replaced value
-    /// </summary>
-    /// <param name="includeTypeInfo">Whether to include a comment after the value, indicating the type, e.g. <c>/* @myParam DbType.Int32 */</c></param>
-    public FakeCommandFormatter(bool includeTypeInfo = false)
+    public FakeCommandFormatter(IFakeClock clock)
     {
-        _includeTypeInfo = includeTypeInfo;
+        _clock = clock;
     }
 
-    /// <summary>
-    /// Formats the SQL in a generic friendly format, including the parameter type information
-    /// in a comment if it was specified in the InlineFormatter constructor.
-    /// </summary>
-    /// <param name="commandText">The SQL command to format.</param>
-    /// <param name="parameters">The parameters for the SQL command.</param>
-    public string Format(string commandText, List<SqlTimingParameter> parameters)
+    public string Format(DbCommand command)
     {
-        if (parameters == null || parameters.Count == 0)
+        if (command.Parameters.Count == 0)
         {
-            return commandText;
+            return command.CommandText;
         }
 
-        if (InsertSpacesAfterCommas)
+        var formattedCommand = new StringBuilder(command.CommandText);
+        foreach (DbParameter parameter in command.Parameters)
         {
-            commandText = CommandSpacing.Replace(commandText, ", $1");
+            var parameterName = parameter.ParameterName;
+            var parameterValue = GetParameterValue(parameter);
+            var parameterValueWrapper = GetParameterValueWrapper(parameter);
+            formattedCommand.Replace(parameterName, $"{parameterValueWrapper}{parameterValue}{parameterValueWrapper}");
         }
 
-        var paramValuesByName = new Dictionary<string, string>(parameters.Count);
-        foreach (var p in parameters)
-        {
-            var trimmedName = p.Name.TrimStart('@', ':', '?').ToLower();
-            paramValuesByName[trimmedName] = GetParameterValue(p);
-        }
-
-        var regexPattern = "[@:?](?:" + string.Join("|", paramValuesByName.Keys.Select(Regex.Escape)) + ")(?![0-9a-z])";
-
-        return Regex.Replace(
-            commandText,
-            regexPattern,
-            m => paramValuesByName[m.Value.Substring(1).ToLower()],
-            RegexOptions.IgnoreCase
-        );
+        return formattedCommand.ToString();
     }
 
-    /// <summary>
-    /// Returns a string representation of the parameter's value, including the type.
-    /// </summary>
-    /// <param name="param">The timing parameter to get the value for.</param>
-    public string GetParameterValue(SqlTimingParameter param)
+    private string GetParameterValueWrapper(IDataParameter parameter)
     {
-        // TODO: ugh, figure out how to allow different db providers to specify how values are represented (e.g. bit in oracle)
-        var result = param.Value;
-        var type = param.DbType ?? string.Empty;
+        // if (parameter.Value is string or char or ) return "'";
+        // if (parameter.Value is )
+        return "'";
+    }
 
-        if (result != null)
+    public virtual string GetParameterValue(IDataParameter parameter)
+    {
+        object value = parameter.Value;
+        if (value == null || value == DBNull.Value)
         {
-            switch (type.ToLower())
-            {
-                case "string":
-                case "guid":
-                case "datetime":
-                    result = $"'{result}'";
-                    break;
-                case "boolean":
-                    result = result switch
-                    {
-                        "True" => "1",
-                        "False" => "0",
-                        _ => null,
-                    };
-                    break;
-            }
+            return null;
         }
 
-        result ??= "null";
-        if (_includeTypeInfo)
+        if (value is byte[] bytes)
         {
-            result += " /* " + param.Name + " DbType." + param.DbType + " */";
+            return "0x" + BitConverter.ToString(bytes);
         }
 
-        return result;
+        if (value is DateTime datetime)
+        {
+            return _clock.NormalizeAsString(datetime);
+        }
+
+        // todo: bool在postgresql表达是0,1
+        
+        if (value.GetType().IsEnum)
+        {
+            return Convert.ChangeType(value, Enum.GetUnderlyingType(value.GetType()))!.ToString();
+        }
+
+        return Convert.ToString(value, CultureInfo.InvariantCulture);
     }
 }
