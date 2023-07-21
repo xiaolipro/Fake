@@ -11,7 +11,6 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Logging;
 using Repositories;
 
 [DependsOn(typeof(FakeAppTestModule))]
@@ -34,20 +33,15 @@ public class FakeEntityFrameworkCoreTestModule : FakeModule
             //使用sqlite内存模式要open
             var connection = new SqliteConnection("Filename=:memory:");
             connection.Open();
-            var loggerFactory = LoggerFactory.Create(loggingBuilder =>
-            {
-                loggingBuilder
-                    .AddFilter((category, level) =>
-                        category == DbLoggerCategory.Database.Command.Name && level == LogLevel.Information) // 仅记录命令信息
-                    .AddConsole(); // 输出到控制台
-            });
-            builder.UseSqlite(connection)
-                .AddInterceptors(new SqlInterceptor(loggerFactory.CreateLogger<SqlInterceptor>()));
-            ;
+
+           
+            builder.UseSqlite(connection);
+
+
 #if DEBUG
-            builder.EnableSensitiveDataLogging();
+            var formatter = new FakeCommandFormatter();
+            builder.AddInterceptors(new FakeDbCommandInterceptor(formatter));
 #endif
-            /*builder.UseSqlite("FileName=./fake.db");*/
         });
 
 
