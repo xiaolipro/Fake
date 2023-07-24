@@ -8,12 +8,11 @@ public sealed class FakeClock : IFakeClock
 {
     private readonly FakeClockOptions _options;
 
-    private readonly AsyncLocal<Stopwatch> _stopwatches;
+    private readonly AsyncLocal<Stopwatch> _stopwatch = new AsyncLocal<Stopwatch>();
 
     public FakeClock(IOptions<FakeClockOptions> options)
     {
         _options = options.Value;
-        _stopwatches = new AsyncLocal<Stopwatch>();
     }
     
     public DateTime Now  => _options.Kind == DateTimeKind.Utc ? DateTime.UtcNow : DateTime.Now;
@@ -38,32 +37,26 @@ public sealed class FakeClock : IFakeClock
     {
         return Normalize(datetime).ToString(_options.DateTimeFormat);
     }
-
-    /// <summary>
-    /// 开始计时
-    /// </summary>
-    public void StartTimer()
+    
+    public virtual TimeSpan MeasureExecutionTime([NotNull]Action action)
     {
-        if (_stopwatches.Value == null)
-        {
-            _stopwatches.Value = Stopwatch.StartNew();
-            return;
-        }
-        
-        _stopwatches.Value.Restart();
+        _stopwatch.Value = new Stopwatch();
+        _stopwatch.Value.Start();
+        action();
+        _stopwatch.Value.Stop();
+        var elapsed = _stopwatch.Value.Elapsed;
+        _stopwatch.Value = null;
+        return elapsed;
     }
 
-    /// <summary>
-    /// 停止计时
-    /// </summary>
-    /// <returns></returns>
-    /// <exception cref="ArgumentException">找不到计时器时会抛异常</exception>
-    public TimeSpan StopTimer()
+    public async Task<TimeSpan> MeasureExecutionTimeAsync(Func<Task> task)
     {
-        if (_stopwatches.Value == null) throw new ArgumentException("找不到计时器, 是否启用了计时器");
-
-        var stopwatch = _stopwatches.Value;
-        stopwatch.Stop();
-        return stopwatch.Elapsed;
+        _stopwatch.Value = new Stopwatch();
+        _stopwatch.Value.Start();
+        await task();
+        _stopwatch.Value.Stop();
+        var elapsed = _stopwatch.Value.Elapsed;
+        _stopwatch.Value = null;
+        return elapsed;
     }
 }

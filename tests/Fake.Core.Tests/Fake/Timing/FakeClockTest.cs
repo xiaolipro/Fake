@@ -16,9 +16,22 @@ public class FakeClockTest : FakeClockTestBase
     [Fact]
     void 测试计时器()
     {
-        _fakeClock.StartTimer();
-        Task.Delay(3000).GetAwaiter().GetResult();
-        var time = _fakeClock.StopTimer();
+        var time = _fakeClock.MeasureExecutionTime(() =>
+        {
+            Thread.Sleep(3000);
+        });
+        
+        Assert.True(time.Seconds is >= 3 and < 4);
+    }
+    
+    [Fact]
+    async Task 测试异步计时器()
+    {
+        var time = await _fakeClock.MeasureExecutionTimeAsync(async () =>
+        {
+            await Task.Delay(3000);
+        });
+        
         Assert.True(time.Seconds is >= 3 and < 4);
     }
 
@@ -32,6 +45,21 @@ public class FakeClockTest : FakeClockTestBase
         for (var i = 0; i < numThreads; i++)
         {
             tasks[i] = Task.Run(测试计时器);
+        }
+
+        await Task.WhenAll(tasks);
+    }
+    
+    [Fact]
+    async Task 并发测试异步计时器()
+    {
+        // 设置要并发执行的线程数
+        int numThreads = 5;
+
+        var tasks = new Task[numThreads];
+        for (var i = 0; i < numThreads; i++)
+        {
+            tasks[i] = 测试异步计时器();
         }
 
         await Task.WhenAll(tasks);
