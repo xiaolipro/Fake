@@ -22,6 +22,7 @@ public abstract class RepositoryTests<TStartupModule> : AppTestBase<TStartupModu
     {
         var order = await OrderRepository.FirstOrDefaultAsync(x => x.Id == AppTestDataBuilder.OrderId);
         order.OrderItems.Count.ShouldBe(2);
+        // todo: 为什么第一个有时候会是菠萝？
         //order.OrderItems.First().GetProductName().ShouldBe("橘子");
     }
     
