@@ -28,7 +28,9 @@ public class Order : FullAuditedAggregate<Guid, Guid>
 
 
     // Draft orders have this set to true. Currently we don't check anywhere the draft status of an Order, but we could do it if needed
+#pragma warning disable CS0414
     private bool _isDraft;
+#pragma warning restore CS0414
 
     // DDD Patterns comment
     // Using a private collection field, better for DDD Aggregate's encapsulation
