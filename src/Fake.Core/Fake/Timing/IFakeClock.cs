@@ -27,15 +27,16 @@ public interface IFakeClock
     string NormalizeAsString(DateTime datetime);
 
     /// <summary>
-    /// 开始计时
+    /// 度量动作执行时间
     /// </summary>
-    /// <returns>返回该定时器的id</returns>
-    Guid StartTimer();
+    /// <param name="action">需要评估的动作</param>
+    /// <returns>动作所花费的时间</returns>
+    TimeSpan MeasureExecutionTime(Action action);
 
     /// <summary>
-    /// 停止计时
+    /// 度量异步任务执行时间
     /// </summary>
-    /// <param name="timerId">计时器id</param>
-    /// <returns>返回计时时间</returns>
-    TimeSpan StopTimer(Guid timerId);
+    /// <param name="task">需要评估的任务</param>
+    /// <returns>任务所花费的时间</returns>
+    Task<TimeSpan> MeasureExecutionTimeAsync(Func<Task> task);
 }

@@ -8,12 +8,11 @@ public class FakeClock : IFakeClock
 {
     private readonly FakeClockOptions _options;
 
-    private readonly ConcurrentDictionary<Guid, Stopwatch> _stopwatches;
+    private readonly AsyncLocal<Stopwatch> _stopwatch = new AsyncLocal<Stopwatch>();
 
     public FakeClock(IOptions<FakeClockOptions> options)
     {
         _options = options.Value;
-        _stopwatches = new ConcurrentDictionary<Guid, Stopwatch>();
     }
     
     public virtual DateTime Now  => _options.Kind == DateTimeKind.Utc ? DateTime.UtcNow : DateTime.Now;
@@ -38,29 +37,26 @@ public class FakeClock : IFakeClock
     {
         return Normalize(datetime).ToString(_options.DateTimeFormat);
     }
-
-    /// <summary>
-    /// 开始计时
-    /// </summary>
-    /// <returns>返回该定时器的id</returns>
-    /// <exception cref="ArgumentException">生成出相同id，会抛异常</exception>
-    public virtual Guid StartTimer()
+    
+    public virtual TimeSpan MeasureExecutionTime([NotNull]Action action)
     {
-        var timerId = Guid.NewGuid();
-        if (!_stopwatches.TryAdd(timerId, Stopwatch.StartNew())) throw new ArgumentException("无法添加计时器，已存在相同id的计时器");
-        return timerId;
+        _stopwatch.Value = new Stopwatch();
+        _stopwatch.Value.Start();
+        action();
+        _stopwatch.Value.Stop();
+        var elapsed = _stopwatch.Value.Elapsed;
+        _stopwatch.Value = null;
+        return elapsed;
     }
 
-    /// <summary>
-    /// 停止计时
-    /// </summary>
-    /// <param name="timerId">计时器id</param>
-    /// <returns></returns>
-    /// <exception cref="ArgumentException">找不到对应id的计时器时会抛异常</exception>
-    public virtual TimeSpan StopTimer(Guid timerId)
+    public async Task<TimeSpan> MeasureExecutionTimeAsync(Func<Task> task)
     {
-        if (!_stopwatches.TryRemove(timerId, out var stopwatch)) throw new ArgumentException($"找不到id为:{timerId}的计时器");
-        stopwatch.Stop();
-        return stopwatch.Elapsed;
+        _stopwatch.Value = new Stopwatch();
+        _stopwatch.Value.Start();
+        await task();
+        _stopwatch.Value.Stop();
+        var elapsed = _stopwatch.Value.Elapsed;
+        _stopwatch.Value = null;
+        return elapsed;
     }
 }
