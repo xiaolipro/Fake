@@ -29,13 +29,11 @@ public interface IFakeClock
     /// <summary>
     /// 开始计时
     /// </summary>
-    /// <returns>返回该定时器的id</returns>
-    Guid StartTimer();
+    void StartTimer();
 
     /// <summary>
     /// 停止计时
     /// </summary>
-    /// <param name="timerId">计时器id</param>
     /// <returns>返回计时时间</returns>
-    TimeSpan StopTimer(Guid timerId);
+    TimeSpan StopTimer();
 }

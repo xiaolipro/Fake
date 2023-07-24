@@ -4,22 +4,22 @@ using Microsoft.Extensions.Options;
 
 namespace Fake.Timing;
 
-public class FakeClock : IFakeClock
+public sealed class FakeClock : IFakeClock
 {
     private readonly FakeClockOptions _options;
 
-    private readonly ConcurrentDictionary<Guid, Stopwatch> _stopwatches;
+    private readonly AsyncLocal<Stopwatch> _stopwatches;
 
     public FakeClock(IOptions<FakeClockOptions> options)
     {
         _options = options.Value;
-        _stopwatches = new ConcurrentDictionary<Guid, Stopwatch>();
+        _stopwatches = new AsyncLocal<Stopwatch>();
     }
     
-    public virtual DateTime Now  => _options.Kind == DateTimeKind.Utc ? DateTime.UtcNow : DateTime.Now;
-    public virtual DateTimeKind Kind  => _options.Kind;
+    public DateTime Now  => _options.Kind == DateTimeKind.Utc ? DateTime.UtcNow : DateTime.Now;
+    public DateTimeKind Kind  => _options.Kind;
     
-    public virtual DateTime Normalize(DateTime dateTime)
+    public DateTime Normalize(DateTime dateTime)
     {
         if (Kind == DateTimeKind.Unspecified || Kind == dateTime.Kind)
         {
@@ -40,26 +40,29 @@ public class FakeClock : IFakeClock
     }
 
     /// <summary>
-    /// ¿ªÊ¼¼ÆÊ±
+    /// å¼€å§‹è®¡æ—¶
     /// </summary>
-    /// <returns>·µ»Ø¸Ã¶¨Ê±Æ÷µÄid</returns>
-    /// <exception cref="ArgumentException">Éú³É³öÏàÍ¬id£¬»áÅ×Òì³£</exception>
-    public virtual Guid StartTimer()
+    public void StartTimer()
     {
-        var timerId = Guid.NewGuid();
-        if (!_stopwatches.TryAdd(timerId, Stopwatch.StartNew())) throw new ArgumentException("ÎŞ·¨Ìí¼Ó¼ÆÊ±Æ÷£¬ÒÑ´æÔÚÏàÍ¬idµÄ¼ÆÊ±Æ÷");
-        return timerId;
+        if (_stopwatches.Value == null)
+        {
+            _stopwatches.Value = Stopwatch.StartNew();
+            return;
+        }
+        
+        _stopwatches.Value.Restart();
     }
 
     /// <summary>
-    /// Í£Ö¹¼ÆÊ±
+    /// åœæ­¢è®¡æ—¶
     /// </summary>
-    /// <param name="timerId">¼ÆÊ±Æ÷id</param>
     /// <returns></returns>
-    /// <exception cref="ArgumentException">ÕÒ²»µ½¶ÔÓ¦idµÄ¼ÆÊ±Æ÷Ê±»áÅ×Òì³£</exception>
-    public virtual TimeSpan StopTimer(Guid timerId)
+    /// <exception cref="ArgumentException">æ‰¾ä¸åˆ°è®¡æ—¶å™¨æ—¶ä¼šæŠ›å¼‚å¸¸</exception>
+    public TimeSpan StopTimer()
     {
-        if (!_stopwatches.TryRemove(timerId, out var stopwatch)) throw new ArgumentException($"ÕÒ²»µ½idÎª:{timerId}µÄ¼ÆÊ±Æ÷");
+        if (_stopwatches.Value == null) throw new ArgumentException("æ‰¾ä¸åˆ°è®¡æ—¶å™¨, æ˜¯å¦å¯ç”¨äº†è®¡æ—¶å™¨");
+
+        var stopwatch = _stopwatches.Value;
         stopwatch.Stop();
         return stopwatch.Elapsed;
     }

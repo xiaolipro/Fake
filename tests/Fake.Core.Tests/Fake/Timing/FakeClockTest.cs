@@ -16,9 +16,9 @@ public class FakeClockTest : FakeClockTestBase
     [Fact]
     void 测试计时器()
     {
-        var timerId = _fakeClock.StartTimer();
+        _fakeClock.StartTimer();
         Task.Delay(3000).GetAwaiter().GetResult();
-        var time = _fakeClock.StopTimer(timerId);
+        var time = _fakeClock.StopTimer();
         Assert.True(time.Seconds is >= 3 and < 4);
     }
 
