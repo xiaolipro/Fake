@@ -38,7 +38,7 @@ public sealed class FakeClock : IFakeClock
         return Normalize(datetime).ToString(_options.DateTimeFormat);
     }
     
-    public virtual TimeSpan MeasureExecutionTime([NotNull]Action action)
+    public TimeSpan MeasureExecutionTime([NotNull]Action action)
     {
         _stopwatch.Value = new Stopwatch();
         _stopwatch.Value.Start();
