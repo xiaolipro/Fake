@@ -8,7 +8,7 @@ public static class FakeServiceCollectionObjectAccessorExtensions
     {
         if (services.Any(s => s.ServiceType == typeof(ObjectAccessor<T>)))
         {
-            return services.GetSingletonInstance<ObjectAccessor<T>>();
+            return services.GetInstance<ObjectAccessor<T>>();
         }
 
         return services.AddObjectAccessor<T>();
@@ -17,7 +17,7 @@ public static class FakeServiceCollectionObjectAccessorExtensions
     public static ObjectAccessor<T> GetObjectAccessorOrNull<T>(this IServiceCollection services)
         where T : class
     {
-        return services.GetSingletonInstanceOrNull<ObjectAccessor<T>>();
+        return services.GetInstanceOrNull<ObjectAccessor<T>>();
     }
     
     public static ObjectAccessor<T> AddObjectAccessor<T>(this IServiceCollection services)

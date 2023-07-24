@@ -33,16 +33,12 @@ public class FakeEntityFrameworkCoreTestModule : FakeModule
             //使用sqlite内存模式要open
             var connection = new SqliteConnection("Filename=:memory:");
             connection.Open();
-
-           
             builder.UseSqlite(connection);
-
-
 #if DEBUG
-            builder.AddInterceptors(new FakeDbCommandInterceptor());
+            var sp = context.Services.GetObjectAccessorOrNull<IServiceProvider>();
+            builder.AddInterceptors(sp.Value!.GetRequiredService<FakeDbCommandInterceptor>());
 #endif
         });
-
 
         context.Services.Replace(new ServiceDescriptor(typeof(OrderingContext), typeof(OrderingContext),
             ServiceLifetime.Transient));

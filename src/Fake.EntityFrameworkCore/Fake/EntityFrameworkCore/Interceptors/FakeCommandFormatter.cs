@@ -28,18 +28,17 @@ public class FakeCommandFormatter : ICommandFormatter
         {
             var parameterName = parameter.ParameterName;
             var parameterValue = GetParameterValue(parameter);
-            var parameterValueWrapper = GetParameterValueWrapper(parameter);
-            formattedCommand.Replace(parameterName, $"{parameterValueWrapper}{parameterValue}{parameterValueWrapper}");
+            var parameterValueWrapper = GetParameterValueWrapper(parameter, parameterValue);
+            formattedCommand.Replace(parameterName, parameterValueWrapper);
         }
 
         return formattedCommand.ToString();
     }
 
-    private string GetParameterValueWrapper(IDataParameter parameter)
+    private string GetParameterValueWrapper(IDataParameter parameter, string parameterValue)
     {
-        // if (parameter.Value is string or char or ) return "'";
-        // if (parameter.Value is )
-        return "'";
+        if (parameter.Value is string or char or Guid or DateTime) return $"'{parameterValue}'";
+        return parameterValue;
     }
 
     public virtual string GetParameterValue(IDataParameter parameter)

@@ -47,7 +47,7 @@ public static class FakeRegistrationExtensions
 
     private static void Register(ContainerBuilder builder, IServiceCollection services)
     {
-        var moduleContainer = services.GetSingletonInstance<IModuleContainer>();
+        var moduleContainer = services.GetInstance<IModuleContainer>();
         var registrationActionList = services.GetRegistrationActionList();
 
         foreach (var serviceDescriptor in services)

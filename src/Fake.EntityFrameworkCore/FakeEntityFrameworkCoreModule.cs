@@ -1,6 +1,8 @@
 ﻿using Fake.Auditing;
+using Fake.EntityFrameworkCore.Interceptors;
 using Fake.Modularity;
 using Fake.UnitOfWork.EntityFrameWorkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 
@@ -12,6 +14,9 @@ public class FakeEntityFrameworkCoreModule : FakeModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
-        context.Services.TryAddTransient(typeof(IDbContextProvider<>), typeof(UnitOfWorkDbContextProvider<>));
+        context.Services.AddTransient(typeof(IDbContextProvider<>), typeof(UnitOfWorkDbContextProvider<>));
+        
+        context.Services.AddSingleton<FakeDbCommandInterceptor>();
+        context.Services.AddSingleton<ICommandFormatter, FakeCommandFormatter>();
     }
 }

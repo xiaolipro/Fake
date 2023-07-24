@@ -1,28 +1,51 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
 using System.Data.Common;
+using System.Diagnostics;
+using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Fake.Data;
-using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.Logging;
 
 namespace Fake.EntityFrameworkCore.Interceptors;
 
 public class FakeDbCommandInterceptor : IDbCommandInterceptor
 {
-    public ICommandFormatter CommandFormatter { get; set; }
+    private readonly ICommandFormatter _commandFormatter;
+    private readonly ILogger<FakeDbCommandInterceptor> _logger;
+    private Stopwatch _stopwatch;
+
+    public FakeDbCommandInterceptor(ICommandFormatter commandFormatter, ILogger<FakeDbCommandInterceptor> logger)
+    {
+        _commandFormatter = commandFormatter;
+        _logger = logger;
+    }
 
     public virtual ValueTask<InterceptionResult<DbDataReader>> ReaderExecutingAsync(DbCommand command,
         CommandEventData eventData, InterceptionResult<DbDataReader> result,
         CancellationToken cancellationToken = default)
     {
-        Console.WriteLine("------------ReaderExecuting----BEGIN-------------");
-        Console.WriteLine(CommandFormatter.Format(command));
-        Console.WriteLine("------------ReaderExecuting----END-------------");
+        _stopwatch = Stopwatch.StartNew();
 
-        return new ValueTask<InterceptionResult<DbDataReader>>(result);
+        return new ValueTask<InterceptionResult<DbDataReader>>(result);  
+    }
+
+    public ValueTask<DbDataReader> ReaderExecutedAsync(DbCommand command, CommandExecutedEventData eventData, DbDataReader result,
+        CancellationToken cancellationToken = new CancellationToken())
+    {
+        _stopwatch.Stop();
+        var sb = new StringBuilder();
+
+        sb.AppendLine($"DbCommand LOG: [ReaderExecuting]");
+        // sb.AppendLine($"- UserName - UserId      : {UserName} - {UserId}");
+        // sb.AppendLine($"- ClientIpAddress        : {ClientIpAddress}");
+        sb.AppendLine($"- ExecutionDuration      : {_stopwatch.ElapsedMilliseconds} ms");
+        sb.AppendLine($"  {_commandFormatter.Format(command)}");
+        
+        _logger.LogInformation(sb.ToString());
+
+        return new ValueTask<DbDataReader>(result);
     }
 
 
@@ -30,7 +53,7 @@ public class FakeDbCommandInterceptor : IDbCommandInterceptor
         CommandEventData eventData, InterceptionResult<int> result, CancellationToken cancellationToken = default)
     {
         Console.WriteLine("------------NonQueryExecuting----BEGIN-------------");
-        Console.WriteLine(CommandFormatter.Format(command));
+        Console.WriteLine(_commandFormatter.Format(command));
         Console.WriteLine("------------ NonQueryExecuting----END-------------");
 
         return new ValueTask<InterceptionResult<int>>(result);
@@ -42,7 +65,7 @@ public class FakeDbCommandInterceptor : IDbCommandInterceptor
         CancellationToken cancellationToken = default(CancellationToken))
     {
         Console.WriteLine("------------ScalarExecuting----BEGIN-------------");
-        Console.WriteLine(CommandFormatter.Format(command));
+        Console.WriteLine(_commandFormatter.Format(command));
         Console.WriteLine("------------ ScalarExecuting----END-------------");
 
 

@@ -11,7 +11,7 @@ public class FakeApplicationInitializeTests
         using var app = FakeApplicationFactory.Create<IndependentModule>();
         
         // Arrange
-        var module = app.Services.GetSingletonInstance<IndependentModule>();
+        var module = app.Services.GetInstance<IndependentModule>();
             
         // Action
         app.InitializeApplication();

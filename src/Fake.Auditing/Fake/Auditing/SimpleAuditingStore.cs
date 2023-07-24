@@ -17,6 +17,7 @@ public class SimpleAuditingStore:IAuditingStore
     
     public Task SaveAsync(AuditLogInfo auditInfo)
     {
+        // todo: 要统一成ILogger
         _logger.LogInformation(auditInfo.ToString());
         Console.WriteLine(auditInfo);
         return Task.FromResult(0);

@@ -241,7 +241,7 @@ public class FakeApplication : IFakeApplication
     
     private IReadOnlyList<IModuleDescriptor> LoadModules(IServiceCollection services)
     {
-        return services.GetSingletonInstance<IModuleLoader>().LoadModules(services, StartupModuleType);
+        return services.GetInstance<IModuleLoader>().LoadModules(services, StartupModuleType);
     }
 
     private static string GetApplicationName(FakeApplicationCreationOptions options)
