@@ -46,7 +46,8 @@ public class FakeModuleLoader : IModuleLoader
 
     protected virtual void FillModuleDescriptors(List<IModuleDescriptor> descriptors, IServiceCollection services, Type startupModuleType)
     {
-        var logger = services.GetLogger<IModuleLoader>();
+        // tips：这里必须用FakeApplication，否则InitializeApplication-WriteInitLogs取不到Entries
+        var logger = services.GetInitLogger<FakeApplication>();
 
         foreach (var moduleType in FakeModuleHelper.FindAllModuleTypes(startupModuleType,logger))
         {

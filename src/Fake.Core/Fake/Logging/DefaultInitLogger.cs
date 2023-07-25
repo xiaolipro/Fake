@@ -2,11 +2,11 @@
 
 namespace Fake.Logging;
 
-public class FakeInitLogger<T> : IInitLogger<T>
+public class DefaultInitLogger<T> : IInitLogger<T>
 {
     public List<InitLoggerEntry> Entries { get; }
     
-    public FakeInitLogger()
+    public DefaultInitLogger()
     {
         Entries = new List<InitLoggerEntry>();
     }

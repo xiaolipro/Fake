@@ -46,6 +46,7 @@ public class FakeApplication : IFakeApplication
         StartupModuleType = startupModuleType;
         Services = services;
 
+        // important: 此时的ObjectAccessor<IServiceProvider>只是个空壳，等到InitializeApplication被调用时才真正赋值！
         services.GetOrAddObjectAccessor<IServiceProvider>();
 
         var options = new FakeApplicationCreationOptions(services);
@@ -57,7 +58,6 @@ public class FakeApplication : IFakeApplication
         services.AddSingleton<IApplicationInfo>(this);
         services.AddSingleton<IModuleContainer>(this);
 
-        services.AddLogging();
         services.AddFakeCoreServices(this, options);
 
         Modules = LoadModules(services);
@@ -168,6 +168,8 @@ public class FakeApplication : IFakeApplication
     public void InitializeApplication([CanBeNull]IServiceProvider serviceProvider = null)
     {
         serviceProvider ??= Services.BuildServiceProviderFromFactory().CreateScope().ServiceProvider;
+        
+        // tips：正式赋值ServiceProvider
         SetServiceProvider(serviceProvider);
 
         InitializeModules();

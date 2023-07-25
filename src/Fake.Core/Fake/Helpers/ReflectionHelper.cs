@@ -81,5 +81,4 @@ public static class ReflectionHelper
         //TODO: 可以优化
         return Activator.CreateInstance(type) as TInstance;
     }
-    
 }
