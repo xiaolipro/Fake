@@ -3,7 +3,7 @@ using Fake.VirtualFileSystem;
 using Microsoft.Extensions.DependencyInjection;
 
 [DependsOn(typeof(FakeVirtualFileSystemModule))]
-public class FakeVirtualFileSystemTestModule:FakeModule
+public class FakeVirtualFileSystemTestModule : FakeModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {

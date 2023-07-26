@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Fake.Testing;
-using Fake.UnitOfWork;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 using Xunit;
 
-public class UnitOfWorkActionTests : FakeIntegrationTest<FakeUnitOfWorkModule>
+namespace Fake.UnitOfWork;
+
+public class UnitOfWorkActionTest : FakeIntegrationTest<FakeUnitOfWorkModule>
 {
     private readonly IUnitOfWorkManager _unitOfWorkManager;
 
-    public UnitOfWorkActionTests()
+    public UnitOfWorkActionTest()
     {
         _unitOfWorkManager = ServiceProvider.GetRequiredService<IUnitOfWorkManager>();
     }

@@ -1,9 +1,10 @@
-﻿using Fake.Localization;
-using Fake.Testing;
+﻿using Fake.Testing;
 using Localization;
 using Microsoft.Extensions.Localization;
 using Shouldly;
 using Xunit;
+
+namespace Fake.Localization;
 
 public sealed class FakeStringLocalizerFactoryTest: FakeIntegrationTest<FakeLocalizationTestModule>
 {

@@ -4,6 +4,8 @@ using Microsoft.Extensions.Localization;
 using Shouldly;
 using Xunit;
 
+namespace Fake.Localization;
+
 public sealed class FakeStringLocalizerTest:FakeIntegrationTest<FakeLocalizationTestModule>
 {
     private readonly IStringLocalizer<LocalizationTestResource> _localizer;
