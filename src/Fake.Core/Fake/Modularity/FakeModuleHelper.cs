@@ -22,7 +22,7 @@ internal static class FakeModuleHelper
     public static List<Type> FindAllModuleTypes(Type startupModuleType, ILogger logger)
     {
         var moduleTypes = new List<Type>();
-        logger.Log(LogLevel.Information, "开始加载Fake模块:");
+        logger.Log(LogLevel.Information, "开始寻找Fake模块:");
         AddModuleAndDependenciesRecursively(moduleTypes, startupModuleType, logger);
         return moduleTypes;
     }

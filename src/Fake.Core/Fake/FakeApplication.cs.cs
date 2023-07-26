@@ -29,6 +29,7 @@ public class FakeApplication : IFakeApplication
 
     private bool _configuredServices;
     private bool _initializedModules;
+    private readonly ILogger<FakeApplication> _logger;
 
     internal FakeApplication(Type startupModuleType, Action<FakeApplicationCreationOptions> optionsAction)
         : this(startupModuleType, new ServiceCollection(), optionsAction)
@@ -59,8 +60,11 @@ public class FakeApplication : IFakeApplication
         services.AddSingleton<IModuleContainer>(this);
 
         services.AddFakeCoreServices(this, options);
+        _logger = Services.GetInitLogger<FakeApplication>();
 
         Modules = LoadModules(services);
+        
+        _logger.LogDebug($"模块加载顺序：{Modules.Select(x => x.Type.Name).JoinAsString(" -> ")}");
 
         ConfigureServices();
     }
@@ -80,10 +84,12 @@ public class FakeApplication : IFakeApplication
         var context = new ServiceConfigurationContext(Services);
 
         // PreConfigureServices
-        foreach (var module in Modules)
+        for (var depth = 0; depth < Modules.Count; depth++)
         {
+            var module = Modules[depth];
             try
             {
+                _logger.LogDebug($"{new string(' ', depth * 2)}- {module.Type.Name} {nameof(IConfigureServicesLifecycle.PreConfigureServices)}");
                 module.Instance.PreConfigureServices(context);
             }
             catch (Exception ex)
@@ -96,8 +102,9 @@ public class FakeApplication : IFakeApplication
 
         // ConfigureServices
         var assemblies = new HashSet<Assembly>();
-        foreach (var module in Modules)
+        for (var depth = 0; depth < Modules.Count; depth++)
         {
+            var module = Modules[depth];
             if (module.Instance is FakeModule fakeModule)
             {
                 if (!fakeModule.SkipAutoServiceRegistration)
@@ -110,9 +117,11 @@ public class FakeApplication : IFakeApplication
                     }
                 }
             }
-            
+
             try
             {
+                _logger.LogDebug(
+                    $"{new string(' ', depth * 2)}- {module.Type.Name} {nameof(IConfigureServicesLifecycle.ConfigureServices)}");
                 module.Instance.ConfigureServices(context);
             }
             catch (Exception ex)
@@ -124,10 +133,13 @@ public class FakeApplication : IFakeApplication
         }
 
         // PostConfigureServices
-        foreach (var module in Modules)
+        for (var depth = 0; depth < Modules.Count; depth++)
         {
+            var module = Modules[depth];
             try
             {
+                _logger.LogDebug(
+                    $"{new string(' ', depth * 2)}- {module.Type.Name} {nameof(IConfigureServicesLifecycle.ConfigureServices)}");
                 module.Instance.PostConfigureServices(context);
             }
             catch (Exception ex)
