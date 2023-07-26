@@ -1,7 +1,7 @@
 using System.Security.Cryptography;
 using Microsoft.Extensions.Options;
 
-namespace Fake.Domain.Entities.IDGenerators;
+namespace Fake.IDGenerators;
 
 /// <summary>
 /// 有序guid生成器

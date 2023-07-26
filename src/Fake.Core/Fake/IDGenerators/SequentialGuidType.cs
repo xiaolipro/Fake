@@ -1,4 +1,4 @@
-namespace Fake.Domain.Entities.IDGenerators;
+namespace Fake.IDGenerators;
 
 public enum SequentialGuidType
 {

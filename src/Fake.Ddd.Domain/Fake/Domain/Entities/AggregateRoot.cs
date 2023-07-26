@@ -1,6 +1,6 @@
 ﻿
 using Fake.Domain.Entities.Auditing;
-using Fake.Domain.Entities.IDGenerators;
+using Fake.IDGenerators;
 
 namespace Fake.Domain.Entities;
 
