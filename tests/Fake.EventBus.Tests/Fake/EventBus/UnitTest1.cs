@@ -1,4 +1,4 @@
-namespace Fake.EventBus.Tests;
+namespace Fake.EventBus;
 
 public class UnitTest1
 {
