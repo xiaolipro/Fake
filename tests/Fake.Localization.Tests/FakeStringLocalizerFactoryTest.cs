@@ -5,11 +5,11 @@ using Microsoft.Extensions.Localization;
 using Shouldly;
 using Xunit;
 
-public sealed class FakeStringLocalizerFactoryTests: FakeIntegrationTest<FakeLocalizationTestModule>
+public sealed class FakeStringLocalizerFactoryTest: FakeIntegrationTest<FakeLocalizationTestModule>
 {
     private readonly IStringLocalizerFactory _localizerFactory;
     
-    public FakeStringLocalizerFactoryTests()
+    public FakeStringLocalizerFactoryTest()
     {
         _localizerFactory = GetRequiredService<IStringLocalizerFactory>();
     }

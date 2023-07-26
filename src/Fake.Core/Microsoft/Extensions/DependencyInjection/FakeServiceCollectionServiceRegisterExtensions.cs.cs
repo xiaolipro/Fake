@@ -8,7 +8,7 @@ public static class FakeServiceCollectionServiceRegisterExtensions
     #region ServiceRegistered 服务注册后切面
 
     /// <summary>
-    /// 在每个服务注册到IOC容器后执行
+    /// 在每个服务注册到IOC容器后调度
     /// </summary>
     /// <param name="services"></param>
     /// <param name="registrationAction"></param>
@@ -38,7 +38,7 @@ public static class FakeServiceCollectionServiceRegisterExtensions
     #region ServiceExposing 服务暴露切面
     
     /// <summary>
-    /// 服务暴露时执行，可以在这里变更暴露内容
+    /// 服务暴露时调度，可以在这里变更暴露内容
     /// </summary>
     /// <param name="services"></param>
     /// <param name="exposeAction"></param>

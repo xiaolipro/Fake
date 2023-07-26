@@ -1,17 +1,17 @@
-﻿
-using System;
+﻿using System;
 using System.Text;
 using Fake.Testing;
-using Fake.VirtualFileSystem;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 using Xunit;
 
-public class VirtualFileProviderTests:FakeIntegrationTest<FakeVirtualFileSystemTestModule>
+namespace Fake.VirtualFileSystem;
+
+public class VirtualFileProviderTest:FakeIntegrationTest<FakeVirtualFileSystemTestModule>
 {
     private readonly VirtualFileProvider _virtualFileProvider;
 
-    public VirtualFileProviderTests()
+    public VirtualFileProviderTest()
     {
         _virtualFileProvider = ServiceProvider.GetRequiredService<VirtualFileProvider>();
     }
