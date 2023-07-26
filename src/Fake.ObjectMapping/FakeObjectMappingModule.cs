@@ -6,6 +6,6 @@ public class FakeObjectMappingModule:FakeModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
-        context.Services.AddTransient<IAutoMappingProvider, NotImplementedAutoMappingProvider>();
+        context.Services.AddTransient<IObjectMappingProvider, NotImplementedObjectMappingProvider>();
     }
 }

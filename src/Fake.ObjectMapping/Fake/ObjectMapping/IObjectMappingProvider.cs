@@ -1,6 +1,6 @@
 ﻿namespace Fake.ObjectMapping;
 
-public interface IAutoMappingProvider
+public interface IObjectMappingProvider
 {
     TDestination Map<TSource, TDestination>(object source);
 

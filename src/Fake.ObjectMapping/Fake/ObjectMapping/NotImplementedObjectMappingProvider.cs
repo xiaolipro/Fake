@@ -2,7 +2,7 @@ using System;
 
 namespace Fake.ObjectMapping;
 
-public class NotImplementedAutoMappingProvider : IAutoMappingProvider
+public class NotImplementedObjectMappingProvider : IObjectMappingProvider
 {
     public TDestination Map<TSource, TDestination>(object source)
     {

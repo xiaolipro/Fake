@@ -5,12 +5,12 @@ namespace Fake.ObjectMapping;
 
 public class DefaultObjectMapper : IObjectMapper
 {
-    public IAutoMappingProvider AutoMappingProvider { get; }
+    public IObjectMappingProvider ObjectMappingProvider { get; }
     protected IServiceProvider ServiceProvider { get; }
 
-    public DefaultObjectMapper(IAutoMappingProvider autoMappingProvider, IServiceProvider serviceProvider)
+    public DefaultObjectMapper(IObjectMappingProvider objectMappingProvider, IServiceProvider serviceProvider)
     {
-        AutoMappingProvider = autoMappingProvider;
+        ObjectMappingProvider = objectMappingProvider;
         ServiceProvider = serviceProvider;
     }
     public virtual TDestination Map<TSource, TDestination>(object source)
@@ -24,8 +24,7 @@ public class DefaultObjectMapper : IObjectMapper
             return specificMapper.Map(source);
         }
         
-        // 自动映射
-        return AutoMappingProvider.Map<TSource, TDestination>(source);
+        return ObjectMappingProvider.Map<TSource, TDestination>(source);
     }
 
     public virtual TDestination Map<TSource, TDestination>(TSource source, TDestination destination)
@@ -39,7 +38,6 @@ public class DefaultObjectMapper : IObjectMapper
             return specificMapper.Map(source);
         }
         
-        // 自动映射
-        return AutoMappingProvider.Map(source, destination);
+        return ObjectMappingProvider.Map(source, destination);
     }
 }

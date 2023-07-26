@@ -5,7 +5,7 @@ namespace Fake.ObjectMapping;
 /// </summary>
 public interface IObjectMapper
 {
-    public IAutoMappingProvider AutoMappingProvider { get; }
+    public IObjectMappingProvider ObjectMappingProvider { get; }
 
     /// <summary>
     /// 将<paramref name="source"/>映射成<typeparamref name="TDestination"/>
