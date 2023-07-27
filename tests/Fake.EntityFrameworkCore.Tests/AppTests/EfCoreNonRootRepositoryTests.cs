@@ -9,10 +9,11 @@ using Xunit;
 
 namespace AppTests;
 
-public class EfCoreNonRootRepositoryTests: AppTestBase<FakeEntityFrameworkCoreTestModule>
+public class EfCoreNonRootRepositoryTests : AppTestBase<FakeEntityFrameworkCoreTestModule>
 {
     private readonly IOrderQueryRepository _orderQueryRepository;
     private readonly IOrderRepository _orderRepository;
+
     public EfCoreNonRootRepositoryTests()
     {
         _orderQueryRepository = GetRequiredService<IOrderQueryRepository>();
@@ -39,10 +40,10 @@ public class EfCoreNonRootRepositoryTests: AppTestBase<FakeEntityFrameworkCoreTe
     {
         var cnt = await _orderRepository.GetCountAsync();
         cnt.ShouldBe(1);
-        
+
         var order = AppTestDataBuilder.BuildOrder();
         order.SetId(Guid.NewGuid());
-        Should.Throw<FakeException>(async () =>
+        Should.Throw<InvalidOperationException>(async () =>
         {
             await _orderQueryRepository.AddAsync(order);
 
@@ -50,17 +51,16 @@ public class EfCoreNonRootRepositoryTests: AppTestBase<FakeEntityFrameworkCoreTe
             cnt.ShouldBe(2);
         });
     }
-    
-    
-    [Fact]
-        async Task 无根仓储中用SQL写入不会抛出异常()
-        {
-            var cnt = await _orderRepository.GetCountAsync();
-            cnt.ShouldBe(1);
-            
-            var order = AppTestDataBuilder.BuildOrder();
-            order.SetId(Guid.NewGuid());
-            await _orderQueryRepository.AddBySqlAsync(order);
 
-        }
+
+    [Fact]
+    async Task 无根仓储中用SQL写入不会抛出异常()
+    {
+        var cnt = await _orderRepository.GetCountAsync();
+        cnt.ShouldBe(1);
+
+        var order = AppTestDataBuilder.BuildOrder();
+        order.SetId(Guid.NewGuid());
+        await _orderQueryRepository.AddBySqlAsync(order);
+    }
 }

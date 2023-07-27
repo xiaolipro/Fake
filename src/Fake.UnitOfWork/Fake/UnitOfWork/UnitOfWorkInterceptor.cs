@@ -35,7 +35,7 @@ public class UnitOfWorkInterceptor : IFakeInterceptor
         {
             if (unitOfWork.HasHasChanges())
             {
-                throw new FakeException("请不要在只读工作单元内执行非查询操作！");
+                throw new InvalidOperationException("请不要在只读工作单元内执行查询以外的操作！");
             }
         }
         else
