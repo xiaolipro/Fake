@@ -81,4 +81,25 @@ public static class ReflectionHelper
         //TODO: 可以优化
         return Activator.CreateInstance(type) as TInstance;
     }
+    
+    /// <summary>
+    /// 获取成员类型
+    /// </summary>
+    /// <param name="member"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
+    [CanBeNull]
+    public static Type GetMemberType(this MemberInfo member)
+    {
+        if (member is PropertyInfo propertyInfo)
+            return propertyInfo.PropertyType;
+        if (member is MethodInfo methodInfo)
+            return methodInfo.ReturnType;
+        if (member is FieldInfo fieldInfo)
+            return fieldInfo.FieldType;
+        if ((object) member == null)
+            throw new ArgumentNullException(nameof (member));
+        throw new ArgumentOutOfRangeException(nameof (member));
+    }
 }

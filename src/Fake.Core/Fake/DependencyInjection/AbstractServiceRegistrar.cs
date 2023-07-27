@@ -42,9 +42,14 @@ public abstract class AbstractServiceRegistrar : IServiceRegistrar
         }
     }
 
+    /// <summary>
+    /// 获取服务生命周期：优先从Attribute读取，其次是类的层次体系
+    /// </summary>
+    /// <param name="type">给定类型</param>
+    /// <param name="attribute">依赖注入的配置</param>
+    /// <returns></returns>
     protected virtual ServiceLifetime? GetLifeTimeOrNull(Type type, [CanBeNull] DependencyAttribute attribute)
     {
-        // 优先从Attribute读取，其次是类的层次体系
         return attribute?.Lifetime ?? GetServiceLifetimeFromClassHierarchy(type);
     }
 
