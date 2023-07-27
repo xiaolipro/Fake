@@ -23,7 +23,6 @@ public class FakeObjectMappingMasterModule:FakeModule
     private Mapper CreateMapper(IServiceProvider serviceProvider)
     {
         var options = serviceProvider.GetRequiredService<IOptions<FakeMapsterOptions>>().Value;
-
         return new Mapper(options.TypeAdapterConfig);
     }
 }
