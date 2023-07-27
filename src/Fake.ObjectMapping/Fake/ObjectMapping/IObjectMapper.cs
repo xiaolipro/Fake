@@ -26,3 +26,15 @@ public interface IObjectMapper
     /// <returns></returns>
     public TDestination Map<TSource, TDestination>(TSource source, TDestination destination);
 }
+
+/// <summary>
+/// 实现此接口以处理特定类型间的映射
+/// </summary>
+/// <typeparam name="TSource">源类型</typeparam>
+/// <typeparam name="TDestination">目标类型</typeparam>
+public interface IObjectMapper<in TSource, TDestination>
+{
+    public TDestination Map(TSource source);
+    
+    TDestination Map(TSource source, TDestination destination);
+}
