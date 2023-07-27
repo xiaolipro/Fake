@@ -105,16 +105,13 @@ public class FakeApplication : IFakeApplication
         for (var depth = 0; depth < Modules.Count; depth++)
         {
             var module = Modules[depth];
-            if (module.Instance is FakeModule fakeModule)
+            if (module.Instance is FakeModule { SkipAutoServiceRegistration: false })
             {
-                if (!fakeModule.SkipAutoServiceRegistration)
+                var assembly = module.Type.Assembly;
+                if (!assemblies.Contains(assembly))
                 {
-                    var assembly = module.Type.Assembly;
-                    if (!assemblies.Contains(assembly))
-                    {
-                        Services.AddAssembly(assembly);
-                        assemblies.Add(assembly);
-                    }
+                    Services.AddAssembly(assembly);
+                    assemblies.Add(assembly);
                 }
             }
 

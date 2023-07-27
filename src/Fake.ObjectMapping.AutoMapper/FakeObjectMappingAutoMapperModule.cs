@@ -22,9 +22,9 @@ public class FakeObjectMappingAutoMapperModule : FakeModule
         context.Services.Replace(
             ServiceDescriptor.Transient<IObjectMappingProvider, AutoMapperObjectMappingProvider>()
         );
+        
         context.Services.AddSingleton<IMapper, Mapper>(CreateMapper);
     }
-
     private Mapper CreateMapper(IServiceProvider serviceProvider)
     {
         var options = serviceProvider.GetRequiredService<IOptions<FakeAutoMapperOptions>>().Value;

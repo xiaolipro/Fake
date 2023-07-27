@@ -41,6 +41,16 @@ public abstract class AbstractServiceRegistrar : IServiceRegistrar
             action.Invoke(context);
         }
     }
+    
+    /// <summary>
+    /// 是否跳过服务注册
+    /// </summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
+    protected virtual bool IsSkipServiceRegistration(Type type)
+    {
+        return type.IsDefined(typeof(DisableServiceRegistrationAttribute), true);
+    }
 
     /// <summary>
     /// 获取服务生命周期：优先从Attribute读取，其次是类的层次体系

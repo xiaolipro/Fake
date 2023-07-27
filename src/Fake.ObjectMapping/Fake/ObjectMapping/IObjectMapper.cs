@@ -14,7 +14,7 @@ public interface IObjectMapper
     /// <typeparam name="TSource">原类型</typeparam>
     /// <typeparam name="TDestination">目标类型</typeparam>
     /// <returns></returns>
-    public TDestination Map<TSource, TDestination>(object source);
+    public TDestination Map<TSource, TDestination>(TSource source);
 
     /// <summary>
     /// 将<paramref name="source"/>映射成<paramref name="destination"/>的类型.

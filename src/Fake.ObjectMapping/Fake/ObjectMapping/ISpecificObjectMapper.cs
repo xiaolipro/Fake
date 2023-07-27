@@ -5,9 +5,9 @@ namespace Fake.ObjectMapping;
 /// </summary>
 /// <typeparam name="TSource">源类型</typeparam>
 /// <typeparam name="TDestination">目标类型</typeparam>
-public interface ISpecificObjectMapper<in TSource, TDestination>
+public interface IObjectMapper<in TSource, TDestination>
 {
-    public TDestination Map(object source);
+    public TDestination Map(TSource source);
     
     TDestination Map(TSource source, TDestination destination);
 }

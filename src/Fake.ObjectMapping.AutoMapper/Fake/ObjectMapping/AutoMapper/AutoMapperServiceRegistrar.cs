@@ -14,14 +14,14 @@ public class AutoMapperServiceRegistrar : DefaultServiceRegistrar
         typeof(IMemberValueResolver<,,,>),
         typeof(ITypeConverter<,>),
         typeof(IValueConverter<,>),
-        typeof(IMappingAction<,>)
+        typeof(IMappingAction<,>),
     };
 
-    protected override bool IsDisableServiceRegistration(Type type)
+    protected override bool IsSkipServiceRegistration(Type type)
     {
         return !type.GetInterfaces()
                    .Any(x => x.IsGenericType && _openTypes.Contains(x.GetGenericTypeDefinition())) 
-               || base.IsDisableServiceRegistration(type);
+               || base.IsSkipServiceRegistration(type);
     }
 
     protected override ServiceLifetime? GetLifeTimeOrNull(Type type, DependencyAttribute attribute)

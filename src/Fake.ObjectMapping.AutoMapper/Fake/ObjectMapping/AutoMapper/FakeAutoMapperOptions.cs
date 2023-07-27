@@ -18,6 +18,12 @@ public class FakeAutoMapperOptions
     /// 需要验证的Profile
     /// </summary>
     public ITypeList<Profile> ValidatingProfile { get; set; }
+    
+    public FakeAutoMapperOptions()
+    {
+        Configurators = new List<Action<IMapperConfigurationExpression, IServiceProvider>>();
+        ValidatingProfile = new TypeList<Profile>();
+    }
 
     /// <summary>
     /// 添加模块中的Profile和用AutoMapAttribute标记的类
