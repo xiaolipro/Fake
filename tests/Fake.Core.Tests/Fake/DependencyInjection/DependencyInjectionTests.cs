@@ -69,6 +69,16 @@ public class DependencyInjectionTests
         
         application.ServiceProvider.GetServices<AHierarchy>().Count().ShouldBe(1);
     }
+    
+    [Fact]
+    void Singleton大于Scoped大于Transient()
+    {
+        using var application = FakeApplicationFactory.Create<IndependentModule>();
+        application.InitializeApplication();
+        
+        application.Services.First(x => x.ServiceType == typeof(IDifferentLife)).Lifetime.ShouldBe(ServiceLifetime.Singleton);
+        application.Services.First(x => x.ServiceType == typeof(DifferentLife)).Lifetime.ShouldBe(ServiceLifetime.Singleton);
+    }
 }
 
 public interface IHierarchy : ISingletonDependency
@@ -104,5 +114,12 @@ public class X : IB, IScopedDependency
 
 [DisableServiceRegistration]
 public class MyB : IA
+{
+}
+
+public interface IDifferentLife : ISingletonDependency
+{
+}
+public class DifferentLife: IDifferentLife, ITransientDependency
 {
 }

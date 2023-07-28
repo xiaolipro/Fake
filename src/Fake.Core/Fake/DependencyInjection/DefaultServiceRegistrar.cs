@@ -94,7 +94,7 @@ public class DefaultServiceRegistrar : AbstractServiceRegistrar
             return implementationType;
         }
 
-        // 重定向到可分配自的暴露
+        // 重定向到第一个可分配的暴露
         return allExposedServiceTypes.FirstOrDefault(x =>
             x != exposedServiceType && x.IsAssignableTo(exposedServiceType));
     }
