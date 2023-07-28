@@ -1,9 +1,5 @@
 ﻿namespace Fake.Modularity;
 
-public interface IModuleLifecycle : IConfigureServicesLifecycle, IConfigureApplicationLifecycle, IShutdownLifecycle
-{
-}
-
 public interface IConfigureServicesLifecycle
 {
     void PreConfigureServices(ServiceConfigurationContext context);

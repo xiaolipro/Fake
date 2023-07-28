@@ -17,8 +17,7 @@ using Fake.Timing;
 /// </summary>
 public class FakeCoreModule : FakeModule
 {
-    public override bool IsFakeFrameworkModule => true;
-    public override bool SkipAutoServiceRegistration => true;
+    public override bool SkipServiceRegistration => true;
 
     public override void ConfigureServices(ServiceConfigurationContext context)
     {

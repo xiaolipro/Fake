@@ -4,8 +4,7 @@ namespace Fake.Modularity;
 
 public abstract class FakeModule:IFakeModule
 {
-    public virtual bool IsFakeFrameworkModule => false;
-    public virtual bool SkipAutoServiceRegistration => false;
+    public virtual bool SkipServiceRegistration => false;
     
     public virtual void PreConfigureServices(ServiceConfigurationContext context)
     {

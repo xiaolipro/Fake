@@ -29,6 +29,26 @@ public class ModuleLoaderTests
             loader.LoadModules(services, typeof(StartupModule));
         });
     }
+    
+    [Fact]
+    void 模块依赖循环应该抛异常()
+    {
+        Should.Throw<ArgumentException>(() =>
+        {
+            var loader = new FakeModuleLoader();
+            var services = new ServiceCollection();
+            services.AddSingleton<IInitLoggerFactory>(new DefaultInitLoggerFactory());
+            loader.LoadModules(services, typeof(CircularDependencyModule));
+        });
+    }
+}
+
+[DependsOn(typeof(CircularDependencyModule))]
+public class CircularDependencyModule : FakeModule
+{
+    public override void ConfigureServices(ServiceConfigurationContext context)
+    {
+    }
 }
 
 [DependsOn(typeof(CustomModule))]

@@ -84,12 +84,10 @@ public class FakeApplication : IFakeApplication
         var context = new ServiceConfigurationContext(Services);
 
         // PreConfigureServices
-        for (var depth = 0; depth < Modules.Count; depth++)
+        foreach (var module in Modules)
         {
-            var module = Modules[depth];
             try
             {
-                _logger.LogDebug($"{new string(' ', depth * 2)}- {module.Type.Name} {nameof(IConfigureServicesLifecycle.PreConfigureServices)}");
                 module.Instance.PreConfigureServices(context);
             }
             catch (Exception ex)
@@ -102,10 +100,9 @@ public class FakeApplication : IFakeApplication
 
         // ConfigureServices
         var assemblies = new HashSet<Assembly>();
-        for (var depth = 0; depth < Modules.Count; depth++)
+        foreach (var module in Modules)
         {
-            var module = Modules[depth];
-            if (module.Instance is FakeModule { SkipAutoServiceRegistration: false })
+            if (module.Instance is FakeModule { SkipServiceRegistration: false })
             {
                 var assembly = module.Type.Assembly;
                 if (!assemblies.Contains(assembly))
@@ -117,8 +114,6 @@ public class FakeApplication : IFakeApplication
 
             try
             {
-                _logger.LogDebug(
-                    $"{new string(' ', depth * 2)}- {module.Type.Name} {nameof(IConfigureServicesLifecycle.ConfigureServices)}");
                 module.Instance.ConfigureServices(context);
             }
             catch (Exception ex)
@@ -130,13 +125,10 @@ public class FakeApplication : IFakeApplication
         }
 
         // PostConfigureServices
-        for (var depth = 0; depth < Modules.Count; depth++)
+        foreach (var module in Modules)
         {
-            var module = Modules[depth];
             try
             {
-                _logger.LogDebug(
-                    $"{new string(' ', depth * 2)}- {module.Type.Name} {nameof(IConfigureServicesLifecycle.ConfigureServices)}");
                 module.Instance.PostConfigureServices(context);
             }
             catch (Exception ex)
@@ -153,7 +145,7 @@ public class FakeApplication : IFakeApplication
     public virtual void Shutdown()
     {
         // Shutdown
-        var context = new ApplicationShutdownContext(_serviceProvider);
+        var context = new ApplicationShutdownContext(ServiceProvider);
         foreach (var module in Modules)
         {
             try
@@ -171,7 +163,7 @@ public class FakeApplication : IFakeApplication
 
     public virtual void Dispose()
     {
-        // 应该在这里销毁ServiceProvider，但Shutdown可能还没被调用
+        Shutdown();
     }
 
     public void InitializeApplication([CanBeNull]IServiceProvider serviceProvider = null)
