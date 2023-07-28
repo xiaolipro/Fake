@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using Fake;
+using Fake.Helpers;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -16,33 +17,33 @@ public static class FakeServiceCollectionCommonExtensions
     }
 
     /// <summary>
-    /// 直接从IOC容器中获取实例，找不到就返回null
+    /// 直接从IOC容器中获取实例，找不到就返回null。
+    /// tips：仅仅是简单的根据type取ImplementationInstance，尽可能的从ServiceProvider取而不是ServiceCollection
     /// </summary>
     /// <param name="services"></param>
-    /// <param name="lifetime"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static T GetInstanceOrNull<T>(this IServiceCollection services, ServiceLifetime lifetime = ServiceLifetime.Singleton)
+    public static T GetInstanceOrNull<T>(this IServiceCollection services) where T : class
     {
         return (T)services
-            .FirstOrDefault(d => d.ServiceType == typeof(T) && d.Lifetime == lifetime)
+            .FirstOrDefault(d => d.ServiceType == typeof(T))
             ?.ImplementationInstance;
     }
 
     /// <summary>
-    /// 直接从IOC容器中获取实例
+    /// 直接从IOC容器中获取实例。
+    /// tips：仅仅是简单的根据type取ImplementationInstance，尽可能的从ServiceProvider取而不是ServiceCollection
     /// </summary>
     /// <param name="services"></param>
-    /// <param name="lifetime"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException">找不到服务实例</exception>
-    public static T GetInstance<T>(this IServiceCollection services, ServiceLifetime lifetime = ServiceLifetime.Singleton)
+    public static T GetInstance<T>(this IServiceCollection services) where T : class
     {
-        var service = services.GetInstanceOrNull<T>(lifetime);
+        var service = services.GetInstanceOrNull<T>();
         if (service == null)
         {
-            throw new InvalidOperationException($"找不到服务{lifetime}实例：{typeof(T).AssemblyQualifiedName}");
+            throw new InvalidOperationException($"找不到服务实例：{typeof(T).AssemblyQualifiedName}");
         }
 
         return service;

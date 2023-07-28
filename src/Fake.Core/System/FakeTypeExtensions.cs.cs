@@ -17,11 +17,11 @@ public static class FakeTypeExtensions
     }
 
     /// <summary>
-    /// 是否可以分配给<paramref name="targetType"></paramref>。
-    /// 内部使用 <see cref="Type.IsAssignableFrom"/>，翻转实现
+    /// 是否可以分配给<paramref name="targetType"></paramref>，翻转 <see cref="Type.IsAssignableFrom"/>。
     /// </summary>
     /// <param name="fromType">可分配类型</param>
     /// <param name="targetType">目标类型</param>
+    /// <returns>A:IA 则 typeof(A).IsAssignableTo(typeof(IA)) = true</returns>
     public static bool IsAssignableTo([NotNull] this Type fromType, [NotNull] Type targetType)
     {
         ThrowHelper.ThrowIfNull(targetType, nameof(targetType));

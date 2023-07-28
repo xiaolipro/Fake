@@ -10,7 +10,7 @@ public class ModuleLoaderTests
     {
         var loader = new FakeModuleLoader();
         var services = new ServiceCollection();
-        services.AddSingleton<IInitLoggerFactory>(new FakeInitLoggerFactory());
+        services.AddSingleton<IInitLoggerFactory>(new DefaultInitLoggerFactory());
         var modules = loader.LoadModules(services, typeof(StartupModule));
         
         modules.Length.ShouldBe(3);

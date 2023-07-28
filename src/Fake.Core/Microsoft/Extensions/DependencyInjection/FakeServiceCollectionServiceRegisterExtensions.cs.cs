@@ -8,7 +8,7 @@ public static class FakeServiceCollectionServiceRegisterExtensions
     #region ServiceRegistered 服务注册后切面
 
     /// <summary>
-    /// 在每个服务注册到IOC容器后执行
+    /// 在每个服务注册到IOC容器后调度
     /// </summary>
     /// <param name="services"></param>
     /// <param name="registrationAction"></param>
@@ -38,7 +38,7 @@ public static class FakeServiceCollectionServiceRegisterExtensions
     #region ServiceExposing 服务暴露切面
     
     /// <summary>
-    /// 服务暴露时执行，可以在这里变更暴露内容
+    /// 服务暴露时调度，可以在这里变更暴露内容
     /// </summary>
     /// <param name="services"></param>
     /// <param name="exposeAction"></param>
@@ -66,6 +66,13 @@ public static class FakeServiceCollectionServiceRegisterExtensions
     #endregion
 
     #region ServiceRegistrar 服务注册切面
+    
+    /// <summary>
+    /// 注册给定程序集内所有满足注册标准的服务
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="assembly"></param>
+    /// <returns></returns>
     internal static IServiceCollection AddAssembly(this IServiceCollection services, Assembly assembly)
     {
         foreach (var registrar in services.GetOrCreateServiceRegisterList())
@@ -76,6 +83,12 @@ public static class FakeServiceCollectionServiceRegisterExtensions
         return services;
     }
     
+    /// <summary>
+    /// 添加服务注册器，服务注册时会执行每一个注册器
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="registrar"></param>
+    /// <returns></returns>
     public static IServiceCollection AddServiceRegistrar(this IServiceCollection services, IServiceRegistrar registrar)
     {
         services.GetOrCreateServiceRegisterList().Add(registrar);

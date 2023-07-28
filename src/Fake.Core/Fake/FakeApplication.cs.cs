@@ -29,6 +29,7 @@ public class FakeApplication : IFakeApplication
 
     private bool _configuredServices;
     private bool _initializedModules;
+    private readonly ILogger<FakeApplication> _logger;
 
     internal FakeApplication(Type startupModuleType, Action<FakeApplicationCreationOptions> optionsAction)
         : this(startupModuleType, new ServiceCollection(), optionsAction)
@@ -46,6 +47,7 @@ public class FakeApplication : IFakeApplication
         StartupModuleType = startupModuleType;
         Services = services;
 
+        // important: 此时的ObjectAccessor<IServiceProvider>只是个空壳，等到InitializeApplication被调用时才真正赋值！
         services.GetOrAddObjectAccessor<IServiceProvider>();
 
         var options = new FakeApplicationCreationOptions(services);
@@ -57,10 +59,12 @@ public class FakeApplication : IFakeApplication
         services.AddSingleton<IApplicationInfo>(this);
         services.AddSingleton<IModuleContainer>(this);
 
-        services.AddLogging();
         services.AddFakeCoreServices(this, options);
+        _logger = Services.GetInitLogger<FakeApplication>();
 
         Modules = LoadModules(services);
+        
+        _logger.LogDebug($"模块加载顺序：{Modules.Select(x => x.Type.Name).JoinAsString(" -> ")}");
 
         ConfigureServices();
     }
@@ -80,10 +84,12 @@ public class FakeApplication : IFakeApplication
         var context = new ServiceConfigurationContext(Services);
 
         // PreConfigureServices
-        foreach (var module in Modules)
+        for (var depth = 0; depth < Modules.Count; depth++)
         {
+            var module = Modules[depth];
             try
             {
+                _logger.LogDebug($"{new string(' ', depth * 2)}- {module.Type.Name} {nameof(IConfigureServicesLifecycle.PreConfigureServices)}");
                 module.Instance.PreConfigureServices(context);
             }
             catch (Exception ex)
@@ -96,23 +102,23 @@ public class FakeApplication : IFakeApplication
 
         // ConfigureServices
         var assemblies = new HashSet<Assembly>();
-        foreach (var module in Modules)
+        for (var depth = 0; depth < Modules.Count; depth++)
         {
-            if (module.Instance is FakeModule fakeModule)
+            var module = Modules[depth];
+            if (module.Instance is FakeModule { SkipAutoServiceRegistration: false })
             {
-                if (!fakeModule.SkipAutoServiceRegistration)
+                var assembly = module.Type.Assembly;
+                if (!assemblies.Contains(assembly))
                 {
-                    var assembly = module.Type.Assembly;
-                    if (!assemblies.Contains(assembly))
-                    {
-                        Services.AddAssembly(assembly);
-                        assemblies.Add(assembly);
-                    }
+                    Services.AddAssembly(assembly);
+                    assemblies.Add(assembly);
                 }
             }
-            
+
             try
             {
+                _logger.LogDebug(
+                    $"{new string(' ', depth * 2)}- {module.Type.Name} {nameof(IConfigureServicesLifecycle.ConfigureServices)}");
                 module.Instance.ConfigureServices(context);
             }
             catch (Exception ex)
@@ -124,10 +130,13 @@ public class FakeApplication : IFakeApplication
         }
 
         // PostConfigureServices
-        foreach (var module in Modules)
+        for (var depth = 0; depth < Modules.Count; depth++)
         {
+            var module = Modules[depth];
             try
             {
+                _logger.LogDebug(
+                    $"{new string(' ', depth * 2)}- {module.Type.Name} {nameof(IConfigureServicesLifecycle.ConfigureServices)}");
                 module.Instance.PostConfigureServices(context);
             }
             catch (Exception ex)
@@ -168,6 +177,8 @@ public class FakeApplication : IFakeApplication
     public void InitializeApplication([CanBeNull]IServiceProvider serviceProvider = null)
     {
         serviceProvider ??= Services.BuildServiceProviderFromFactory().CreateScope().ServiceProvider;
+        
+        // tips：正式赋值ServiceProvider
         SetServiceProvider(serviceProvider);
 
         InitializeModules();

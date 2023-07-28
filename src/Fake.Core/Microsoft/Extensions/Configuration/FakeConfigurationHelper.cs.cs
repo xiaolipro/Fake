@@ -4,7 +4,7 @@ namespace Microsoft.Extensions.Configuration;
 
 public static class FakeConfigurationHelper
 {
-    public static IConfigurationRoot Build(
+    public static IConfigurationRoot BuildConfiguration(
         FakeConfigurationBuilderOptions options = null,
         Action<IConfigurationBuilder> builderAction = null)
     {

@@ -8,6 +8,7 @@ using Fake.DependencyInjection;
 using Fake.Identity.Security.Claims;
 using Fake.Threading;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace SimpleConsoleDemo;
 
@@ -22,9 +23,8 @@ public class Program
                    options.Services.AddSingleton(typeof(IAmbientScopeProvider<>), typeof(AmbientScopeProvider<>));
                }))
         {
-            Console.WriteLine("Initializing the application...");
             application.InitializeApplication();
-            Console.WriteLine("Initializing the application... OK");
+            //logger.LogInformation("Initializing the application... OK");
             
             var myAuditedObject1 = application.ServiceProvider.GetRequiredService<MyAuditedObject1>();
             

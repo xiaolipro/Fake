@@ -86,6 +86,11 @@ public class TypeList<TBaseType> :ITypeList<TBaseType>
         _typeList.Add(typeof(T));
     }
 
+    public void AddRange(IEnumerable<TypeInfo> types)
+    {
+        _typeList.AddRange(types);
+    }
+
     public bool TryAdd<T>() where T : TBaseType
     {
         if (Contains<T>())
