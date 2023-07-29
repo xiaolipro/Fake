@@ -20,10 +20,10 @@ public class MapsterTest : FakeIntegrationTest<FakeObjectMappingMapsterTestModul
     void 映射()
     {
         var dto = _objectMapper.Map<MyEntity, MyDto>(new MyEntity { Number = 42 });
-        Assert.Equal(dto.Number, 42);
+        Assert.Equal(42, dto.Number);
 
         // ReverseMap
         var entity = _objectMapper.Map<MyDto, MyEntity>(new MyDto { Number = 42 });
-        Assert.Equal(entity.Number, 42);
+        Assert.Equal(42, entity.Number);
     }
 }
