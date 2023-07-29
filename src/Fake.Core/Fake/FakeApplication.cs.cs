@@ -55,6 +55,7 @@ public class FakeApplication : IFakeApplication
 
         ApplicationName = GetApplicationName(options);
 
+        services.AddSingleton(this);
         services.AddSingleton<IFakeApplication>(this);
         services.AddSingleton<IApplicationInfo>(this);
         services.AddSingleton<IModuleContainer>(this);

@@ -17,7 +17,6 @@ public static class FakeApplicationBuilderExtensions
         var application = app.ApplicationServices.GetRequiredService<FakeApplication>();
         
         var applicationLifetime = app.ApplicationServices.GetRequiredService<IHostApplicationLifetime>();
-        applicationLifetime.ApplicationStopping.Register(() => application.Shutdown());
         applicationLifetime.ApplicationStopped.Register(() => application.Dispose());
 
         application.InitializeApplication(app.ApplicationServices);
