@@ -1,10 +1,9 @@
-using System.Collections.Concurrent;
 using System.Diagnostics;
 using Microsoft.Extensions.Options;
 
 namespace Fake.Timing;
 
-public sealed class FakeClock : IFakeClock
+public class FakeClock : IFakeClock
 {
     private readonly FakeClockOptions _options;
 
@@ -15,10 +14,10 @@ public sealed class FakeClock : IFakeClock
         _options = options.Value;
     }
     
-    public DateTime Now  => _options.Kind == DateTimeKind.Utc ? DateTime.UtcNow : DateTime.Now;
-    public DateTimeKind Kind  => _options.Kind;
+    public virtual DateTime Now  => _options.Kind == DateTimeKind.Utc ? DateTime.UtcNow : DateTime.Now;
+    public virtual DateTimeKind Kind  => _options.Kind;
     
-    public DateTime Normalize(DateTime dateTime)
+    public virtual DateTime Normalize(DateTime dateTime)
     {
         if (Kind == DateTimeKind.Unspecified || Kind == dateTime.Kind)
         {
@@ -33,12 +32,12 @@ public sealed class FakeClock : IFakeClock
         };
     }
 
-    public string NormalizeAsString(DateTime datetime)
+    public virtual string NormalizeAsString(DateTime datetime)
     {
         return Normalize(datetime).ToString(_options.DateTimeFormat);
     }
     
-    public TimeSpan MeasureExecutionTime([NotNull]Action action)
+    public virtual TimeSpan MeasureExecutionTime([NotNull]Action action)
     {
         _stopwatch.Value = new Stopwatch();
         _stopwatch.Value.Start();
@@ -49,7 +48,7 @@ public sealed class FakeClock : IFakeClock
         return elapsed;
     }
 
-    public async Task<TimeSpan> MeasureExecutionTimeAsync(Func<Task> task)
+    public virtual async Task<TimeSpan> MeasureExecutionTimeAsync(Func<Task> task)
     {
         _stopwatch.Value = new Stopwatch();
         _stopwatch.Value.Start();
