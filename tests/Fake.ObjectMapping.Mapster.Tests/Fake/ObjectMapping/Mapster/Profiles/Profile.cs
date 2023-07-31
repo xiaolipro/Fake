@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using Mapster;
-using MapsterMapper;
+﻿using Mapster;
 using Microsoft.Extensions.Options;
 
 namespace Fake.ObjectMapping.Mapster.Profiles;
@@ -11,5 +9,7 @@ public class Profile : IProfile
 
     public Profile(IOptions<FakeMapsterOptions> options) => _config = options.Value.TypeAdapterConfig;
 
-    public TypeAdapterSetter<TSource, TSrc> CreateConfig<TSource, TSrc>() => _config.NewConfig<TSource, TSrc>();
+    public TypeAdapterSetter<TSource, TSrc> CreateNewConfig<TSource, TSrc>() => _config.NewConfig<TSource, TSrc>();
+
+    public TypeAdapterSetter<TSource, TSrc> CreateForType<TSource, TSrc>() => _config.ForType<TSource, TSrc>();
 }

@@ -1,7 +1,6 @@
 using Fake.Modularity;
 using Fake.ObjectMapping.Mapster;
 using Fake.ObjectMapping.Mapster.Profiles;
-using Fake.ObjectMapping.Models;
 using Mapster;
 using Microsoft.Extensions.DependencyInjection;
 

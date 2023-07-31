@@ -3,7 +3,6 @@ using Fake.ObjectMapping.Models;
 using Fake.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using MapsterMapper;
 
 namespace Fake.ObjectMapping.Mapster;
 
@@ -39,4 +38,4 @@ public class MapsterTest : FakeIntegrationTest<FakeObjectMappingMapsterTestModul
         var dto = _objectMapper.Map<TestEntity, TestDto>(new TestEntity(){CreateTime = time});
         Assert.Equal(dto.CreateTime, time.ToString("yyyy-MM-dd"));
     }
-}
+}   
