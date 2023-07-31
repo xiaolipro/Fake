@@ -1,7 +1,7 @@
 ﻿using Fake.ObjectMapping.Models;
 using Mapster;
 
-namespace Fake.ObjectMapping.Mapster.Profiles;
+namespace Fake.ObjectMapping.Mapster.Registers;
 
 public class MappingRegister : IRegister
 {

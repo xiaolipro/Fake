@@ -1,5 +1,4 @@
-﻿using Fake.ObjectMapping.Mapster.Profiles;
-using Fake.ObjectMapping.Models;
+﻿using Fake.ObjectMapping.Models;
 using Fake.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using System;
