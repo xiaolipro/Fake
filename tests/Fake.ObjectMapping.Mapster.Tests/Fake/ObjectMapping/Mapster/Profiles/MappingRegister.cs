@@ -1,13 +1,13 @@
 ﻿using Fake.ObjectMapping.Models;
-using Microsoft.Extensions.Options;
+using Mapster;
 
 namespace Fake.ObjectMapping.Mapster.Profiles;
 
-public class MyProfile : Profile
+public class MappingRegister : IRegister
 {
-    public MyProfile(IOptions<FakeMapsterOptions> options) : base(options)
+    public void Register(TypeAdapterConfig config)
     {
-        CreateForType<TestEntity, TestDto>()
+        config.ForType<TestEntity, TestDto>()
             .Map(dest => dest.CreateTime, src => src.CreateTime.ToString("yyyy-MM-dd"));
     }
 }

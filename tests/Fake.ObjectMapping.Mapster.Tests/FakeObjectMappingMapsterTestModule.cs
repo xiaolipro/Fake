@@ -1,6 +1,5 @@
 using Fake.Modularity;
 using Fake.ObjectMapping.Mapster;
-using Fake.ObjectMapping.Mapster.Profiles;
 using Mapster;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,8 +12,7 @@ public class FakeObjectMappingMapsterTestModule : FakeModule
         context.Services.Configure<FakeMapsterOptions>(options =>
         {
             options.TypeAdapterConfig.Default.PreserveReference(true);
+            options.AddMaps<FakeObjectMappingMapsterTestModule>();
         });
-
-        context.Services.AddSingleton<MyProfile>();
     }
 }

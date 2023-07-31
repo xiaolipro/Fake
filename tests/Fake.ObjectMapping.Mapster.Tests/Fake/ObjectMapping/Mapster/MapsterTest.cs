@@ -32,10 +32,9 @@ public class MapsterTest : FakeIntegrationTest<FakeObjectMappingMapsterTestModul
     [Fact]
     void 自定义规则映射()
     {
-        ServiceProvider.GetRequiredService<MyProfile>();
         var time = DateTime.Now;
-
         var dto = _objectMapper.Map<TestEntity, TestDto>(new TestEntity(){CreateTime = time});
+        var date = dto.CreateTime;
         Assert.Equal(dto.CreateTime, time.ToString("yyyy-MM-dd"));
     }
 }   
