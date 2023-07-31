@@ -99,9 +99,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fake.ObjectMapping.AutoMapp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fake.ObjectMapping.Mapster", "src\Fake.ObjectMapping.Mapster\Fake.ObjectMapping.Mapster.csproj", "{05F1929E-F7D9-4E23-AB1F-204AE811D134}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fake.ObjectMapping.Mapster.Tests", "tests\Fake.ObjectMapping.Mapster.Tests\Fake.ObjectMapping.Mapster.Tests.csproj", "{AB1894D3-2A97-4F24-B15E-6A13E37119CE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fake.ObjectMapping.Mapster.Tests", "tests\Fake.ObjectMapping.Mapster.Tests\Fake.ObjectMapping.Mapster.Tests.csproj", "{AB1894D3-2A97-4F24-B15E-6A13E37119CE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleWebDemo", "simple\SimpleWebDemo\SimpleWebDemo.csproj", "{C07D02BB-AF1D-4B84-B2AE-A67CBF80E4FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleWebDemo", "simple\SimpleWebDemo\SimpleWebDemo.csproj", "{C07D02BB-AF1D-4B84-B2AE-A67CBF80E4FB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -253,12 +253,17 @@ Global
 		{05F1929E-F7D9-4E23-AB1F-204AE811D134}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{05F1929E-F7D9-4E23-AB1F-204AE811D134}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{05F1929E-F7D9-4E23-AB1F-204AE811D134}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB1894D3-2A97-4F24-B15E-6A13E37119CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB1894D3-2A97-4F24-B15E-6A13E37119CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB1894D3-2A97-4F24-B15E-6A13E37119CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB1894D3-2A97-4F24-B15E-6A13E37119CE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C07D02BB-AF1D-4B84-B2AE-A67CBF80E4FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C07D02BB-AF1D-4B84-B2AE-A67CBF80E4FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C07D02BB-AF1D-4B84-B2AE-A67CBF80E4FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C07D02BB-AF1D-4B84-B2AE-A67CBF80E4FB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AB1894D3-2A97-4F24-B15E-6A13E37119CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AB1894D3-2A97-4F24-B15E-6A13E37119CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{50A2B676-5383-4A7A-A6F4-852D7D5C5342} = {AC56DAD8-C5AB-4E41-A280-1BCC08A2BE60}
