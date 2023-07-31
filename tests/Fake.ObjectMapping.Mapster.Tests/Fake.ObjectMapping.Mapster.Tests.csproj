@@ -14,7 +14,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Fake\ObjectMapping\Mapster\" />
+	  <Folder Include="Fake\ObjectMapping\Mapster\Profiles\" />
 	</ItemGroup>
 
 </Project>
