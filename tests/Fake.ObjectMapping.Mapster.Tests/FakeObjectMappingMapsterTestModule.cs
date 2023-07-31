@@ -11,7 +11,9 @@ public class FakeObjectMappingMapsterTestModule : FakeModule
     {
         context.Services.Configure<FakeMapsterOptions>(options =>
         {
+            // options.TypeAdapterConfig.RequireExplicitMapping = true;
             options.TypeAdapterConfig.Default.PreserveReference(true);
+            options.Scan<FakeObjectMappingMapsterTestModule>();
         });
     }
 }

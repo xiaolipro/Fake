@@ -1,6 +1,8 @@
-﻿using Fake.ObjectMapping.Models;
+﻿using Fake.ObjectMapping.Mapster.Profiles;
+using Fake.ObjectMapping.Models;
 using Fake.Testing;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace Fake.ObjectMapping.Mapster;
 
@@ -26,4 +28,13 @@ public class MapsterTest : FakeIntegrationTest<FakeObjectMappingMapsterTestModul
         var entity = _objectMapper.Map<MyDto, MyEntity>(new MyDto { Number = 42 });
         Assert.Equal(42, entity.Number);
     }
-}
+
+    [Fact]
+    void 自定义规则映射()
+    {
+        var time = DateTime.Now;
+        var dto = _objectMapper.Map<TestEntity, TestDto>(new TestEntity(){CreateTime = time});
+        var date = dto.CreateTime;
+        Assert.Equal(dto.CreateTime, time.ToString("yyyy-MM-dd"));
+    }
+}   
