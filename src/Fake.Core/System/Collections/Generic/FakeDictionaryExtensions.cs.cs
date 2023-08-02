@@ -22,7 +22,7 @@ public static class FakeDictionaryExtensions
     /// <returns>存在直接返回，不存在则新增并返回factory value</returns>
     public static TValue GetOrAdd<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, Func<TValue> valueFactory)
     {
-        return dictionary.GetOrAdd(key, k => valueFactory());
+        return dictionary.GetOrAdd(key, _ => valueFactory());
     }
     
     /// <summary>

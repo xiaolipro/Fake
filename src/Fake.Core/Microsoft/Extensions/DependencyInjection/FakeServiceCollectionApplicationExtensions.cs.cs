@@ -24,12 +24,12 @@ public static class FakeServiceCollectionApplicationExtensions
     [CanBeNull]
     public static string GetApplicationName(this IServiceCollection services)
     {
-        return services.GetSingletonInstance<IApplicationInfo>().ApplicationName;
+        return services.GetInstance<IApplicationInfo>().ApplicationName;
     }
     
     [NotNull]
     public static string GetApplicationId(this IServiceCollection services)
     {
-        return services.GetSingletonInstance<IApplicationInfo>().ApplicationId;
+        return services.GetInstance<IApplicationInfo>().ApplicationId;
     }
 }

@@ -51,4 +51,10 @@ public class UnitOfWorkHelper:IUnitOfWorkHelper
         // 再从类上找
         return attr ?? methodInfo.DeclaringType.GetTypeInfo().GetCustomAttribute<UnitOfWorkAttribute>(true);
     }
+
+    public bool IsReadOnlyUnitOfWorkMethod(MethodInfo methodInfo)
+    {
+        // TODO: 后续可以支持ReadOnlyUnitOfWorkAttribute
+        return methodInfo.DeclaringType.GetTypeInfo().IsAssignableTo<IReadOnlyUnitOfWorkEnabled>();
+    }
 }

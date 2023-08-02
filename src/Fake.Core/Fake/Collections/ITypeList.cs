@@ -1,4 +1,6 @@
-﻿namespace Fake.Collections;
+﻿using System.Reflection;
+
+namespace Fake.Collections;
 
 public interface ITypeList<in TBaseType> : IList<Type>
 {
@@ -7,6 +9,12 @@ public interface ITypeList<in TBaseType> : IList<Type>
     /// </summary>
     /// <typeparam name="T"></typeparam>
     void Add<T>() where T : TBaseType;
+    
+    /// <summary>
+    /// 添加类型枚举器到列表
+    /// </summary>
+    /// <param name="types">类型枚举器</param>
+    void AddRange(IEnumerable<TypeInfo> types);
     
     /// <summary>
     /// 尝试添加类型到列表，如果已存在则直接返回false，否则添加并返回true

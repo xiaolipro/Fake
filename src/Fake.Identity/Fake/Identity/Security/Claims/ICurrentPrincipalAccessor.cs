@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Security.Claims;
 
 namespace Fake.Identity.Security.Claims;

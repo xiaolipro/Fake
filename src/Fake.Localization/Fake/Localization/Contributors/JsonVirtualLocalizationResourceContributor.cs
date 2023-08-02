@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text.Json;
-using Fake.VirtualFileSystem;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Localization;
 

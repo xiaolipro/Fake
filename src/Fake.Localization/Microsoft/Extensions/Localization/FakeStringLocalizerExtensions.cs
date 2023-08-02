@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Reflection;
 using Fake;
-using Fake.DynamicProxy;
 using Fake.Localization;
 using JetBrains.Annotations;
 
@@ -13,14 +12,13 @@ public static class FakeStringLocalizerExtensions
     public static readonly string LocalizerFieldName = "_localizer";
 
     public static IEnumerable<LocalizedString> GetAllStrings(this IStringLocalizer stringLocalizer,
-        bool includeParentCultures,
-        bool includeInheritsLocalizers)
+        bool includeParentCultures)
     {
         var internalLocalizer = stringLocalizer.GetInternalLocalizer();
 
         if (internalLocalizer is IFakeStringLocalizer fakeStringLocalizer)
         {
-            return fakeStringLocalizer.GetAllStrings(includeParentCultures, includeInheritsLocalizers);
+            return GetAllStrings(fakeStringLocalizer, includeParentCultures);
         }
 
         return stringLocalizer.GetAllStrings(includeParentCultures);

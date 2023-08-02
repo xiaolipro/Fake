@@ -4,12 +4,13 @@ using Fake.Domain;
 using Fake.Domain.Repositories;
 using Fake.Domain.Repositories.EntityFrameWorkCore;
 using Fake.EntityFrameworkCore;
+using Fake.EntityFrameworkCore.Interceptors;
 using Fake.Helpers;
 using Fake.Modularity;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Repositories;
 
 [DependsOn(typeof(FakeAppTestModule))]
@@ -26,26 +27,23 @@ public class FakeEntityFrameworkCoreTestModule : FakeModule
             typeof(OrderEfCoreEfCoreRepository));
         context.Services.AddTransient(typeof(IBuyerRepository),
             typeof(BuyerEfCoreEfCoreRepository));
+
         context.Services.AddDbContextFactory<OrderingContext>(builder =>
         {
-            //使用sqlite内存模式要开open
-            var options = new SqliteConnection("Filename=:memory:");
-            options.Open();
-            builder.UseSqlite(options).UseLoggerFactory(LoggerFactory.Create(loggingBuilder =>
-            {
-                loggingBuilder
-                    .AddFilter((category, level) =>
-                        category == DbLoggerCategory.Database.Command.Name && level == LogLevel.Information) // 仅记录命令信息
-                    .AddConsole(); // 输出到控制台
-            }));
+            //使用sqlite内存模式要open
+            var connection = new SqliteConnection("Filename=:memory:");
+            connection.Open();
+            builder.UseSqlite(connection);
 #if DEBUG
-            builder.EnableSensitiveDataLogging();
+            var sp = context.Services.GetObjectAccessorOrNull<IServiceProvider>();
+            builder.AddInterceptors(sp.Value!.GetRequiredService<FakeDbCommandInterceptor>());
 #endif
-            /*builder.UseSqlite("FileName=./fake.db");*/
         });
+
+        context.Services.Replace(new ServiceDescriptor(typeof(OrderingContext), typeof(OrderingContext),
+            ServiceLifetime.Transient));
     }
-    
-    
+
 
     public override void PreConfigureApplication(ApplicationConfigureContext context)
     {

@@ -16,7 +16,7 @@ $ dotnet restore
 - mutil-framework compatibility
 - unit test，functional test，benchmark test and more
 - simple demo，useage doc
-- bug issue and idel
+- bug issue and idel...
 
 ### 🐌基础能力
 - [x] 模块化
@@ -25,6 +25,10 @@ $ dotnet restore
 - [x] 本地化（多语言）
 - [x] 虚拟文件系统
 - [x] 工作单元
+- [x] 对象映射
+  - [x] ObjectMapper
+  - [x] AutoMapper
+  - [x] Mapster
 - [x] 发布者模式&本地事件总线
   - [x] 事件处理器
   - [x] 事件订阅器

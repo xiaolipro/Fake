@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Fake.Domain.Repositories.EntityFrameWorkCore;
 
-[UnitOfWork(ReadOnly = true)]
 public class EfCoreNoRootRepository<TDbContext> : INoRootRepository
     where TDbContext : FakeDbContext<TDbContext>
 {

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-
-namespace Fake.Domain.Entities;
+﻿namespace Fake.Domain.Entities;
 
 /// <summary>
 /// 实体顶层抽象

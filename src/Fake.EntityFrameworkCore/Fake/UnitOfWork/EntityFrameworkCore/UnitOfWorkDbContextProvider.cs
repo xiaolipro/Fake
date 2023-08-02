@@ -72,6 +72,7 @@ public class UnitOfWorkDbContextProvider<TDbContext> : IDbContextProvider<TDbCon
         {
             var dbContext = unitOfWork.Context.IsTransactional
                 ? await CreateDbContextWithTransactionAsync(unitOfWork, cancellationToken)
+                // 这里必须直接注入FakeDbContext<TDbContext>，不能用IDbContextFactory<>，否则会报错
                 : unitOfWork.ServiceProvider.GetRequiredService<TDbContext>();
 
             dbContext.Initialize(unitOfWork);

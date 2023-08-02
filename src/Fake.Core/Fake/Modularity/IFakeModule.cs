@@ -1,8 +1,9 @@
-﻿
-namespace Fake.Modularity;
+﻿namespace Fake.Modularity;
 
-public interface IFakeModule: IModuleLifecycle
+public interface IFakeModule : IConfigureServicesLifecycle, IConfigureApplicationLifecycle, IShutdownLifecycle
 {
-    public bool IsFakeFrameworkModule { get; }
-    public bool SkipAutoServiceRegistration { get; }
+    /// <summary>
+    /// 当赋值为true时 跳过Fake提供的自动服务注册
+    /// </summary>
+    public bool SkipServiceRegistration { get; }
 }

@@ -1,5 +1,4 @@
 using System.Collections.Concurrent;
-using Fake.DependencyInjection;
 
 namespace Fake.Threading;
 

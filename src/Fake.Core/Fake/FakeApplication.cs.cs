@@ -29,6 +29,7 @@ public class FakeApplication : IFakeApplication
 
     private bool _configuredServices;
     private bool _initializedModules;
+    private readonly ILogger<FakeApplication> _logger;
 
     internal FakeApplication(Type startupModuleType, Action<FakeApplicationCreationOptions> optionsAction)
         : this(startupModuleType, new ServiceCollection(), optionsAction)
@@ -46,6 +47,7 @@ public class FakeApplication : IFakeApplication
         StartupModuleType = startupModuleType;
         Services = services;
 
+        // important: 此时的ObjectAccessor<IServiceProvider>只是个空壳，等到InitializeApplication被调用时才真正赋值！
         services.GetOrAddObjectAccessor<IServiceProvider>();
 
         var options = new FakeApplicationCreationOptions(services);
@@ -53,14 +55,17 @@ public class FakeApplication : IFakeApplication
 
         ApplicationName = GetApplicationName(options);
 
+        services.AddSingleton(this);
         services.AddSingleton<IFakeApplication>(this);
         services.AddSingleton<IApplicationInfo>(this);
         services.AddSingleton<IModuleContainer>(this);
 
-        services.AddLogging();
         services.AddFakeCoreServices(this, options);
+        _logger = Services.GetInitLogger<FakeApplication>();
 
         Modules = LoadModules(services);
+        
+        _logger.LogDebug($"模块加载顺序：{Modules.Select(x => x.Type.Name).JoinAsString(" -> ")}");
 
         ConfigureServices();
     }
@@ -98,19 +103,16 @@ public class FakeApplication : IFakeApplication
         var assemblies = new HashSet<Assembly>();
         foreach (var module in Modules)
         {
-            if (module.Instance is FakeModule fakeModule)
+            if (module.Instance is FakeModule { SkipServiceRegistration: false })
             {
-                if (!fakeModule.SkipAutoServiceRegistration)
+                var assembly = module.Type.Assembly;
+                if (!assemblies.Contains(assembly))
                 {
-                    var assembly = module.Type.Assembly;
-                    if (!assemblies.Contains(assembly))
-                    {
-                        Services.AddAssembly(assembly);
-                        assemblies.Add(assembly);
-                    }
+                    Services.AddAssembly(assembly);
+                    assemblies.Add(assembly);
                 }
             }
-            
+
             try
             {
                 module.Instance.ConfigureServices(context);
@@ -144,7 +146,7 @@ public class FakeApplication : IFakeApplication
     public virtual void Shutdown()
     {
         // Shutdown
-        var context = new ApplicationShutdownContext(_serviceProvider);
+        var context = new ApplicationShutdownContext(ServiceProvider);
         foreach (var module in Modules)
         {
             try
@@ -162,12 +164,14 @@ public class FakeApplication : IFakeApplication
 
     public virtual void Dispose()
     {
-        // 应该在这里销毁ServiceProvider，但Shutdown可能还没被调用
+        Shutdown();
     }
 
     public void InitializeApplication([CanBeNull]IServiceProvider serviceProvider = null)
     {
         serviceProvider ??= Services.BuildServiceProviderFromFactory().CreateScope().ServiceProvider;
+        
+        // tips：正式赋值ServiceProvider
         SetServiceProvider(serviceProvider);
 
         InitializeModules();
@@ -241,7 +245,7 @@ public class FakeApplication : IFakeApplication
     
     private IReadOnlyList<IModuleDescriptor> LoadModules(IServiceCollection services)
     {
-        return services.GetSingletonInstance<IModuleLoader>().LoadModules(services, StartupModuleType);
+        return services.GetInstance<IModuleLoader>().LoadModules(services, StartupModuleType);
     }
 
     private static string GetApplicationName(FakeApplicationCreationOptions options)

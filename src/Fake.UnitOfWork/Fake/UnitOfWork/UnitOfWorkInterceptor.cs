@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Reflection;
+using System.Threading.Tasks;
 using Fake.DynamicProxy;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -29,7 +31,14 @@ public class UnitOfWorkInterceptor : IFakeInterceptor
 
         using var unitOfWork = unitOfWorkManager.Begin(unitOfWorkAttribute);
         await invocation.ProcessAsync();
-        if (unitOfWorkAttribute is not { ReadOnly: true })
+        if (uowHelper.IsReadOnlyUnitOfWorkMethod(invocation.Method))
+        {
+            if (unitOfWork.HasHasChanges())
+            {
+                throw new InvalidOperationException("请不要在只读工作单元内执行查询以外的操作！");
+            }
+        }
+        else
         {
             await unitOfWork.CompleteAsync();
         }

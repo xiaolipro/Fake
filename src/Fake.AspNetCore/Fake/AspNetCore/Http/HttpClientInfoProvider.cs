@@ -28,12 +28,15 @@ public class HttpClientInfoProvider:IHttpClientInfoProvider
     {
         try
         {
-            return _httpContextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString();
+            if (_httpContextAccessor.HttpContext?.Connection != null)
+                return _httpContextAccessor.HttpContext?.Connection.RemoteIpAddress?.ToString();
         }
         catch (Exception ex)
         {
             _logger.LogException(ex, LogLevel.Warning);
             return null;
         }
+
+        return null;
     }
 }

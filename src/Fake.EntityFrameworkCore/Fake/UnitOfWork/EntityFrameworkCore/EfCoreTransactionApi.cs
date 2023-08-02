@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Fake.Threading;
-using Fake.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;

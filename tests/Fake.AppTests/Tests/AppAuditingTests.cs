@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Domain.Aggregates.BuyerAggregate;
 using Domain.Aggregates.OrderAggregate;
@@ -72,7 +73,8 @@ public abstract class AppAuditingTests<TStartupModule> : AppTestBase<TStartupMod
         order = await _orderRepository.UpdateAsync(order);
 
         order.LastModifierId.ShouldBe(_currentUserId);
-        order.LastModificationTime.ShouldBeLessThanOrEqualTo(FakeClock.Now);
+        Debug.Assert(order.LastModificationTime != null, "order.LastModificationTime != null");
+        order.LastModificationTime.Value.ShouldBeLessThanOrEqualTo(FakeClock.Now);
     }
 
     [Theory]
@@ -88,7 +90,8 @@ public abstract class AppAuditingTests<TStartupModule> : AppTestBase<TStartupMod
 
         order.IsDeleted.ShouldBe(true);
         order.LastModifierId.ShouldBe(_currentUserId);
-        order.LastModificationTime.ShouldBeLessThanOrEqualTo(FakeClock.Now);
+        Debug.Assert(order.LastModificationTime != null, "order.LastModificationTime != null");
+        order.LastModificationTime.Value.ShouldBeLessThanOrEqualTo(FakeClock.Now);
 
         //TODO：被删除（软）的数据不应该被查询到（默认情况下）
         order = await _orderRepository.FirstOrDefaultAsync(x => x.Id ==AppTestDataBuilder.OrderId);

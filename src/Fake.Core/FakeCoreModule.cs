@@ -2,6 +2,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Fake.DependencyInjection;
+using Fake.IDGenerators;
 using Fake.Json;
 using Fake.Json.SystemTextJson;
 using Fake.Json.SystemTextJson.Converters;
@@ -16,15 +17,33 @@ using Fake.Timing;
 /// </summary>
 public class FakeCoreModule : FakeModule
 {
+    public override bool SkipServiceRegistration => true;
+
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
-        context.Services.AddTransient<IFakeClock, FakeClock>();
         context.Services.AddTransient(typeof(IAmbientScopeProvider<>), typeof(AmbientScopeProvider<>));
         context.Services.AddTransient<ICancellationTokenProvider, NullCancellationTokenProvider>();
-
         context.Services.AddTransient<ILazyServiceProvider, LazyServiceProvider>();
+        
+        ConfigureClock(context);
 
-        // SystemTextJson序列化
+        ConfigureSystemTextJson(context);
+
+        ConfigureIdGenerator(context);
+    }
+
+    private static void ConfigureClock(ServiceConfigurationContext context)
+    {
+        context.Services.AddTransient<IFakeClock, FakeClock>();
+        context.Services.Configure<FakeClockOptions>(options =>
+        {
+            options.Kind = DateTimeKind.Unspecified;
+            options.DateTimeFormat = "yyyy-MM-dd HH:mm:ss";
+        });
+    }
+
+    private static void ConfigureSystemTextJson(ServiceConfigurationContext context)
+    {
         context.Services.AddTransient<IFakeJsonSerializer, FakeSystemTextJsonSerializer>();
         context.Services.AddTransient<FakeDateTimeConverter>();
         context.Services.AddTransient<FakeBooleanConverter>();
@@ -59,5 +78,16 @@ public class FakeCoreModule : FakeModule
 
                 options.TypeInfoResolver = provider.GetRequiredService<FakeDefaultJsonTypeInfoResolver>();
             });
+    }
+
+    private static void ConfigureIdGenerator(ServiceConfigurationContext context)
+    {
+        context.Services.AddTransient<IGuidGenerator, SequentialGuidGenerator>();
+        // 请注意数据库适配问题
+        context.Services.Configure<SequentialGuidGeneratorOptions>(options =>
+        {
+            // 默认生成的有序guid是SequentialAsBinaryAtEnd类型的（SQLSERVER友好的）
+            options.SequentialGuidType = SequentialGuidType.SequentialAsString;
+        });
     }
 }

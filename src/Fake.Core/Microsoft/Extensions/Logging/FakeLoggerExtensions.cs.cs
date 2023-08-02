@@ -5,6 +5,11 @@ namespace Microsoft.Extensions.Logging;
 
 public static class FakeLoggerExtensions
 {
+    /// <summary>
+    /// 异常日志
+    /// </summary>
+    /// <param name="logger"></param>
+    /// <param name="exception"></param>
     public static void LogException(this ILogger logger, Exception exception)
     {
         var logLevel = exception.GetLogLevel();
@@ -12,15 +17,21 @@ public static class FakeLoggerExtensions
         logger.LogException(exception, logLevel);
     }
 
+    /// <summary>
+    /// 异常日志
+    /// </summary>
+    /// <param name="logger"></param>
+    /// <param name="exception"></param>
+    /// <param name="logLevel"></param>
     public static void LogException(this ILogger logger, Exception exception, LogLevel logLevel)
     {
-        logger.LogWithLevel(logLevel, exception.Message, exception);
+        logger.LogExceptionWithLevel(logLevel, exception.Message, exception);
 
         LogKnownProperties(logger, exception, logLevel);
-        LogData(logger, exception, logLevel);
+        LogExceptionData(logger, exception, logLevel);
     }
 
-    private static void LogData(ILogger logger, Exception exception, LogLevel logLevel)
+    private static void LogExceptionData(ILogger logger, Exception exception, LogLevel logLevel)
     {
         if (exception.Data.Count > 0)
         {
@@ -51,7 +62,14 @@ public static class FakeLoggerExtensions
     }
 
 
-    public static void LogWithLevel(this ILogger logger, LogLevel logLevel, string message, Exception exception)
+    /// <summary>
+    /// 自定义级别异常日志
+    /// </summary>
+    /// <param name="logger"></param>
+    /// <param name="logLevel"></param>
+    /// <param name="message"></param>
+    /// <param name="exception"></param>
+    public static void LogExceptionWithLevel(this ILogger logger, LogLevel logLevel, string message, Exception exception)
     {
         switch (logLevel)
         {
@@ -78,6 +96,12 @@ public static class FakeLoggerExtensions
         }
     }
 
+    /// <summary>
+    /// 自定义级别日志
+    /// </summary>
+    /// <param name="logger"></param>
+    /// <param name="logLevel"></param>
+    /// <param name="message"></param>
     public static void LogWithLevel(this ILogger logger, LogLevel logLevel, string message)
     {
         switch (logLevel)

@@ -7,31 +7,34 @@ namespace Fake.Testing;
 public abstract class FakeIntegrationTest<TStartupModule> : FakeTestWithServiceProvider, IDisposable
     where TStartupModule : IFakeModule
 {
-    protected IFakeApplication Application { get; }
-    
-    protected IServiceProvider RootServiceProvider { get; }
-    
-    protected IServiceScope TestServiceScope { get; }
+    protected IFakeApplication Application { get; set; }
+
+    protected IServiceProvider RootServiceProvider { get; set; }
+
+    protected IServiceScope TestServiceScope { get; set; }
 
 
     protected FakeIntegrationTest()
     {
+        InitApplication();
+    }
+
+    private void InitApplication()
+    {
         var services = CreateServiceCollection();
-        
+
         BeforeAddFakeApplication(services);
         var application = services.AddFakeApplication<TStartupModule>(SetApplicationCreationOptions);
-        AfterAddFakeApplication(services);
-        
         Application = application;
+        AfterAddFakeApplication(services);
 
-        RootServiceProvider = services.BuildServiceProviderFromFactory();;
-
+        RootServiceProvider = CreateServiceProvider(services);
         TestServiceScope = RootServiceProvider!.CreateScope();
+        
         application.InitializeApplication(TestServiceScope.ServiceProvider);
-
-        ServiceProvider = application.ServiceProvider;
+        ServiceProvider = Application.ServiceProvider;
     }
-    
+
     protected virtual IServiceCollection CreateServiceCollection()
     {
         return new ServiceCollection();

@@ -5,5 +5,5 @@ public interface IHasModificationTime
     /// <summary>
     /// 上一次修改时间
     /// </summary>
-    DateTime LastModificationTime { get; }
+    DateTime? LastModificationTime { get; }
 }

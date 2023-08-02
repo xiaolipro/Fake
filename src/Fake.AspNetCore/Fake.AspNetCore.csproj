@@ -13,5 +13,8 @@
       <ProjectReference Include="..\Fake.Identity\Fake.Identity.csproj" />
       <ProjectReference Include="..\Fake.UnitOfWork\Fake.UnitOfWork.csproj" />
     </ItemGroup>
+    <ItemGroup>
+      <None Remove="Properties\launchSettings.json" />
+    </ItemGroup>
 
 </Project>

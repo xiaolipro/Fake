@@ -2,7 +2,6 @@ using System.Linq.Expressions;
 using Fake.DependencyInjection;
 using Fake.Domain.Entities;
 using Fake.Threading;
-using Fake.UnitOfWork;
 
 namespace Fake.Domain.Repositories;
 
@@ -31,7 +30,6 @@ public abstract class RepositoryBase<TEntity> : IRepository<TEntity>
     }
 
     public abstract Task<IQueryable<TEntity>> GetQueryableAsync(
-        Expression<Func<TEntity, bool>> predicate = null,
         bool isInclude = true,
         CancellationToken cancellationToken = default);
 

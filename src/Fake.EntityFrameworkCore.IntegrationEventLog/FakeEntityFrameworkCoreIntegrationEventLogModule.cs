@@ -1,4 +1,5 @@
 ﻿using Fake.Modularity;
+using Microsoft.Extensions.DependencyInjection;
 
 // ReSharper disable once CheckNamespace
 namespace Fake.EntityFrameworkCore.IntegrationEventLog;
@@ -8,6 +9,6 @@ public class FakeEntityFrameworkCoreIntegrationEventLogModule:FakeModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
-        
+        context.Services.AddTransient<IIntegrationEventLogService, IntegrationEventLogService>();
     }
 }

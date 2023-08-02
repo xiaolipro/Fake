@@ -4,7 +4,6 @@ using System.Threading;
 using Fake.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Fake.EntityFrameworkCore;
 

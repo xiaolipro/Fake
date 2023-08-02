@@ -79,6 +79,11 @@ public class ChildUnitOfWork : IUnitOfWork
         return _parent.SaveChangesAsync(cancellationToken);
     }
 
+    public bool HasHasChanges()
+    {
+        return _parent.HasHasChanges();
+    }
+
     public Task CompleteAsync(CancellationToken cancellationToken = default)
     {
         return Task.CompletedTask;

@@ -5,8 +5,8 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public static class FakeServiceCollectionLoggingExtensions
 {
-    public static ILogger<T> GetLogger<T>(this IServiceCollection services)
+    public static ILogger<T> GetInitLogger<T>(this IServiceCollection services)
     {
-        return services.GetSingletonInstance<IInitLoggerFactory>().Create<T>();
+        return services.GetInstance<IInitLoggerFactory>().Create<T>();
     }
 }

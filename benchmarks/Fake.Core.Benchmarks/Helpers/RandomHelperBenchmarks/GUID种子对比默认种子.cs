@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
-using BenchmarkDotNet.Attributes;
+﻿using BenchmarkDotNet.Attributes;
 
 namespace Fake.Core.Benchmarks.Helpers.RandomHelperBenchmarks;
 
@@ -26,7 +23,7 @@ public class GUID种子对比默认种子
     public void Guid并行()
     {
         Enumerable.Range(0, 100_0000).AsParallel()
-            .Select(i => LocalRandom.Value!.Next())
+            .Select(_ => LocalRandom.Value!.Next())
             .ToArray();
     }
     
@@ -34,7 +31,7 @@ public class GUID种子对比默认种子
     public void 默认并行()
     {
         Enumerable.Range(0, 100_0000).AsParallel()
-            .Select(i => LocalRandom2.Value!.Next())
+            .Select(_ => LocalRandom2.Value!.Next())
             .ToArray();
     }
 }

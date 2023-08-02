@@ -14,7 +14,7 @@ public interface IUnitOfWork : IDatabaseApiContainer, ITransactionApiContainer, 
     public bool IsDisposed { get; }
 
     public bool IsCompleted { get; }
-
+    
     IUnitOfWork Outer { get; }
 
     void InitUnitOfWorkContext(UnitOfWorkAttribute context);
@@ -34,13 +34,19 @@ public interface IUnitOfWork : IDatabaseApiContainer, ITransactionApiContainer, 
     Task SaveChangesAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// 是否有发生Change
+    /// </summary>
+    /// <returns></returns>
+    bool HasHasChanges();
+
+    /// <summary>
     /// 完成所有操作（包括数据保存、事务提交）
     /// </summary>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     /// <exception cref="FakeException">方法已被调用</exception>
     Task CompleteAsync(CancellationToken cancellationToken = default);
-
+    
     /// <summary>
     /// 事务提交后执行
     /// </summary>

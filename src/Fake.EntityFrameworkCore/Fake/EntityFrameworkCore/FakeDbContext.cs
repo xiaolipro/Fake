@@ -9,11 +9,11 @@ using Fake.Data;
 using Fake.DependencyInjection;
 using Fake.Domain.Entities;
 using Fake.Domain.Entities.Auditing;
-using Fake.Domain.Entities.IDGenerators;
 using Fake.EntityFrameworkCore.Modeling;
 using Fake.EntityFrameworkCore.ValueConverters;
 using Fake.EventBus;
-using Fake.Reflection;
+using Fake.Helpers;
+using Fake.IDGenerators;
 using Fake.Timing;
 using Fake.UnitOfWork;
 using JetBrains.Annotations;
@@ -63,6 +63,8 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
     {
         try
         {
+            await BeforeSaveChangesAsync();
+            
             // 添加领域事件
             var domainEntities = base.ChangeTracker.Entries<Entity>()
                 .Where(x => x.Entity.DomainEvents != null && x.Entity.DomainEvents.Any())
@@ -70,6 +72,7 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
 
             var domainEvents = domainEntities
                 .SelectMany(x => x.Entity.DomainEvents)
+                .OrderBy(x => x.Order)
                 .ToList();
 
             domainEntities.ForEach(entity => entity.Entity.ClearDomainEvents());
@@ -86,6 +89,25 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
         {
             ChangeTracker.AutoDetectChangesEnabled = true;
         }
+    }
+
+    protected virtual Task BeforeSaveChangesAsync()
+    {
+        foreach (var entry in ChangeTracker.Entries())
+        {
+            // Deleted状态可能是软删，也走的更新，同受版本约束
+            if (entry.State.IsIn(EntityState.Modified, EntityState.Deleted))
+            {
+                if (entry.Entity is IHasVersionNum entity)
+                {
+                    // 保存更改时，将原始值与当前值比较，以确认是否需要更新
+                    Entry(entity).Property(x => x.VersionNum).OriginalValue = entity.VersionNum;
+                    entity.VersionNum = SimpleGuidGenerator.Instance.GenerateAsString();
+                }
+            }
+        }
+        
+        return Task.CompletedTask;
     }
 
     public void Initialize(IUnitOfWork unitOfWork)
@@ -149,11 +171,11 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
         {
             if (entityWithSoftDelete.HardDeleted) return;
 
-            // 重置entity状态
-            entry.Reload();
-
+            // todo: abp在这里重置entity状态，但是重置状态会重新加载数据，为什么要这么做？
+            //entry.Reload();
+            
+            // 跳转到Modified状态
             ReflectionHelper.TrySetProperty(entityWithSoftDelete, x => x.IsDeleted, () => true);
-
             AuditPropertySetter.SetModificationProperties(entry.Entity);
         }
     }
@@ -231,11 +253,11 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
 
         if (!typeof(TEntity).IsAssignableTo(typeof(IEntity))) return;
 
-        // TODO: 这里被迫选用一个类型事实上UserId类型是可以自定义的
+        // TODO: 这里被迫选用一个用户类型事实上UserId类型是可以自定义的
         modelBuilder.Entity<TEntity>()
             .TryConfigureCreator<Guid>()
             .TryConfigureModifier<Guid>()
-            .TryConfigureSoftDelete<Guid>()
+            .TryConfigureSoftDelete()
             .TryConfigureExtraProperties()
             .TryConfigureVersionNum();
 

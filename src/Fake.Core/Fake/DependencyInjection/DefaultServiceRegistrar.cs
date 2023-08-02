@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using Fake.Extensions;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Fake.DependencyInjection;
@@ -9,12 +8,12 @@ public class DefaultServiceRegistrar : AbstractServiceRegistrar
 {
     public override void AddType(IServiceCollection services, Type type)
     {
-        if (IsDisableServiceRegistration(type)) return;
+        if (IsSkipServiceRegistration(type)) return;
 
         var attribute = type.GetCustomAttribute<DependencyAttribute>(true);
 
         // 获取服务生命周期
-        var lifetime = base.GetLifeTimeOrNull(type, attribute);
+        var lifetime = GetLifeTimeOrNull(type, attribute);
         if (lifetime == null) return;
 
         // 获取需要暴露的服务
@@ -95,13 +94,8 @@ public class DefaultServiceRegistrar : AbstractServiceRegistrar
             return implementationType;
         }
 
-        // 重定向到可分配自的暴露
+        // 重定向到第一个可分配的暴露
         return allExposedServiceTypes.FirstOrDefault(x =>
             x != exposedServiceType && x.IsAssignableTo(exposedServiceType));
-    }
-
-    protected virtual bool IsDisableServiceRegistration(Type type)
-    {
-        return type.IsDefined(typeof(DisableServiceRegistrationAttribute), true);
     }
 }

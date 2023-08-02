@@ -1,6 +1,4 @@
-﻿using System.Security.Claims;
-using System.Security.Cryptography.X509Certificates;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 
 namespace Fake.Identity.Users;
 

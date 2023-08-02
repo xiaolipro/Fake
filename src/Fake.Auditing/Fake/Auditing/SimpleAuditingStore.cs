@@ -18,7 +18,6 @@ public class SimpleAuditingStore:IAuditingStore
     public Task SaveAsync(AuditLogInfo auditInfo)
     {
         _logger.LogInformation(auditInfo.ToString());
-        Console.WriteLine(auditInfo);
         return Task.FromResult(0);
     }
 }

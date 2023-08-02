@@ -16,7 +16,7 @@ public class DefaultAuthorizationExceptionHandler:IAuthorizationExceptionHandler
         var handlerOptions = serviceProvider.GetRequiredService<IOptions<FakeAuthorizationExceptionHandlerOptions>>().Value;
         var authenticationSchemeProvider = serviceProvider.GetRequiredService<IAuthenticationSchemeProvider>();
         
-        AuthenticationScheme scheme = null;
+        AuthenticationScheme scheme;
         var isAuthenticated = httpContext.User.Identity?.IsAuthenticated ?? false;
         
         if (handlerOptions.AuthenticationScheme.NotBeNullOrWhiteSpace())
