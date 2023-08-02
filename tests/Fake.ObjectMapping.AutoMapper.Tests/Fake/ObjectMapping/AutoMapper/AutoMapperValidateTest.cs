@@ -1,6 +1,7 @@
 ﻿using System;
 using Fake.Helpers;
-using Fake.ObjectMapping.Models;
+using Fake.ObjectMapping.Models.Dtos;
+using Fake.ObjectMapping.Models.Entities;
 using Fake.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;

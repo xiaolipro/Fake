@@ -1,6 +1,6 @@
 using System;
 
-namespace Fake.ObjectMapping.Models;
+namespace Fake.ObjectMapping.Models.Dtos;
 
 public class MyDto
 {

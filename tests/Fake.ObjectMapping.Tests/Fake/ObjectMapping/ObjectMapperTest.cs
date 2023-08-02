@@ -1,5 +1,5 @@
 ﻿using System;
-using Fake.ObjectMapping.Models;
+using Fake.ObjectMapping.Models.Entities;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 

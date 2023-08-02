@@ -1,5 +1,5 @@
 ﻿using Fake.DependencyInjection;
-using Fake.ObjectMapping.Models;
+using Fake.ObjectMapping.Models.Entities;
 
 namespace Fake.ObjectMapping.SpecificMapper;
 

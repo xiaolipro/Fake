@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
-using Fake.ObjectMapping.Models;
+using Fake.ObjectMapping.Models.Dtos;
+using Fake.ObjectMapping.Models.Entities;
 
 namespace Fake.ObjectMapping.AutoMapper.Profiles;
 
