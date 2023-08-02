@@ -5,7 +5,7 @@ namespace Fake.DependencyInjection;
 
 public abstract class AbstractServiceRegistrar : IServiceRegistrar
 {
-    public virtual void AddAssembly(IServiceCollection services, Assembly assembly)
+    public virtual void RegisterAssembly(IServiceCollection services, Assembly assembly)
     {
         var types = AssemblyHelper
             .GetAllTypes(assembly)
@@ -15,18 +15,18 @@ public abstract class AbstractServiceRegistrar : IServiceRegistrar
                 type => type is { IsClass: true, IsAbstract: false, IsGenericType: false }
             ).ToArray();
 
-        AddTypes(services, types);
+        RegisterTypes(services, types);
     }
 
-    public virtual void AddTypes(IServiceCollection services, params Type[] types)
+    public virtual void RegisterTypes(IServiceCollection services, params Type[] types)
     {
         foreach (var type in types)
         {
-            AddType(services, type);
+            RegisterType(services, type);
         }
     }
 
-    public abstract void AddType(IServiceCollection services, Type type);
+    public abstract void RegisterType(IServiceCollection services, Type type);
 
     protected virtual void TriggerServiceExposingActions(IServiceCollection services, Type implementationType,
         List<Type> exposedServiceTypes)

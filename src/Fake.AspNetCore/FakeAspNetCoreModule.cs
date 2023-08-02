@@ -6,6 +6,7 @@ using Fake.Auditing;
 using Fake.Identity;
 using Fake.Identity.Security.Claims;
 using Fake.Modularity;
+using Fake.UnitOfWork;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 

@@ -1,6 +1,7 @@
 ﻿using Fake.Auditing;
 using Fake.EntityFrameworkCore.Interceptors;
 using Fake.Modularity;
+using Fake.UnitOfWork;
 using Fake.UnitOfWork.EntityFrameWorkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;

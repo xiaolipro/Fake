@@ -108,7 +108,7 @@ public class FakeApplication : IFakeApplication
                 var assembly = module.Type.Assembly;
                 if (!assemblies.Contains(assembly))
                 {
-                    Services.AddAssembly(assembly);
+                    Services.RegisterAssembly(assembly);
                     assemblies.Add(assembly);
                 }
             }
