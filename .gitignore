@@ -9,3 +9,4 @@ riderModule.iml
 /src/Fake.AspNetCore/Properties/launchSettings.json
 /src/Fake.ObjectMapping.Mapster/FodyWeavers.xml
 /src/Fake.ObjectMapping.Mapster/FodyWeavers.xsd
+/Fake.sln.DotSettings.user
