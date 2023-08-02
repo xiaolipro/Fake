@@ -6,7 +6,7 @@ namespace Fake.DependencyInjection;
 // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
 public class DefaultServiceRegistrar : AbstractServiceRegistrar
 {
-    public override void AddType(IServiceCollection services, Type type)
+    public override void RegisterType(IServiceCollection services, Type type)
     {
         if (IsSkipServiceRegistration(type)) return;
 

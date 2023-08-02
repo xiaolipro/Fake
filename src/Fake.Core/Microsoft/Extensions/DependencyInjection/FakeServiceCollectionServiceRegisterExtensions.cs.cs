@@ -73,11 +73,11 @@ public static class FakeServiceCollectionServiceRegisterExtensions
     /// <param name="services"></param>
     /// <param name="assembly"></param>
     /// <returns></returns>
-    internal static IServiceCollection AddAssembly(this IServiceCollection services, Assembly assembly)
+    internal static IServiceCollection RegisterAssembly(this IServiceCollection services, Assembly assembly)
     {
         foreach (var registrar in services.GetOrCreateServiceRegisterList())
         {
-            registrar.AddAssembly(services, assembly);
+            registrar.RegisterAssembly(services, assembly);
         }
 
         return services;
@@ -116,16 +116,16 @@ public static class FakeServiceCollectionServiceRegisterExtensions
     }
     
     
-    public static IServiceCollection AddType<TType>(this IServiceCollection services)
+    public static IServiceCollection RegisterType<TType>(this IServiceCollection services)
     {
-        return services.AddType(typeof(TType));
+        return services.RegisterType(typeof(TType));
     }
 
-    public static IServiceCollection AddType(this IServiceCollection services, Type type)
+    public static IServiceCollection RegisterType(this IServiceCollection services, Type type)
     {
         foreach (var registrar in services.GetOrCreateServiceRegisterList())
         {
-            registrar.AddType(services, type);
+            registrar.RegisterType(services, type);
         }
 
         return services;
