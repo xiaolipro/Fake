@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace Fake.CSharp.Fake.Extensions;
+namespace Fake.CSharp.Fake.Domain.Extensions;
 
 public static class AssemblyExtensions
 {

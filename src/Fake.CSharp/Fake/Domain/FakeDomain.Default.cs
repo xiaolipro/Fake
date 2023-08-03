@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using Fake.CSharp.Fake.Helpers;
 using System.Diagnostics.Contracts;
 using System.Reflection;
-using Fake.CSharp.Fake.Extensions;
+using Fake.CSharp.Fake.Domain.Extensions;
 
 namespace Fake.CSharp.Fake.Domain;
 
