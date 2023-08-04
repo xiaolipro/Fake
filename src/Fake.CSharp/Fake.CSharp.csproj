@@ -4,6 +4,10 @@
     <ProjectReference Include="..\Fake.Core\Fake.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Fake\CompileUnit\" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
