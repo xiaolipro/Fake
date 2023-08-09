@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Fake.Data;
 using Fake.Domain.Entities.Auditing;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
