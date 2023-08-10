@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace Fake.Http.Fake.Http
 {
-    [Obsolete("先不采用服务的形式", true)]
     public interface IFakeHttp
     {
         IFakeHttp Create();
@@ -33,18 +32,12 @@ namespace Fake.Http.Fake.Http
         Task<HttpResponseMessage> PatchHttpResponseMessageAsync();
         HttpResponseMessage GetHttpResponseMessage();
         Task<T> GetAsync<T>();
-        T Get<T>();
         Task<T> PatchAsync<T>();
-        T Patch<T>();
         Task<T> PostAsync<T>();
-        T Post<T>();
         Task<T> PutAsync<T>();
-        T Put<T>();
         Task<T> DeleteAsync<T>();
-        T Delete<T>();
         string ToString();
         Task<bool> DownloadAsync(string path = null, string filename = null);
-        bool Download(string path = null, string filename = null);
     }
 }
 

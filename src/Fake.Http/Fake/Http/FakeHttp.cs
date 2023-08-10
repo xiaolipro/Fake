@@ -14,9 +14,9 @@ using Microsoft.Extensions.Options;
 
 namespace Fake.Http.Fake.Http
 {
-    public class FakeHttp
+    public class FakeHttp : IFakeHttp
     {
-        private static readonly HttpClientHandler HttpClientHandler = new HttpClientHandler
+        private readonly HttpClientHandler HttpClientHandler = new HttpClientHandler
         {
             AllowAutoRedirect = true,
             AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip,
@@ -26,24 +26,24 @@ namespace Fake.Http.Fake.Http
         private IFakeJsonSerializer Serializer => FakeHttpLocator.Serializer;
         private ILogger<FakeHttp> Logger => FakeHttpLocator.Logger;
 
-        private static readonly HttpClient HttpClientInner = new HttpClient(HttpClientHandler);
+        private readonly HttpClient HttpClientInner = new HttpClient(HttpClientHandler);
 
-        private static readonly MediaTypeHeaderValue DefaultMediaType = new MediaTypeHeaderValue("application/json");
+        private readonly MediaTypeHeaderValue DefaultMediaType = new MediaTypeHeaderValue("application/json");
 
-        private static readonly string[] DefaultAccept =
+        private readonly string[] DefaultAccept =
         {
             "application/json",
             "text/plain",
             "*/*"
         };
 
-        private static readonly HttpMethod PatchMethod = new HttpMethod("PATCH");
+        private readonly HttpMethod PatchMethod = new HttpMethod("PATCH");
 
         private FakeHttpOptions Option => FakeHttpLocator.GetOption();
 
-        private static readonly string[] DefaultAcceptEncoding = { "gzip", "deflate" };
+        private readonly string[] DefaultAcceptEncoding = { "gzip", "deflate" };
 
-        static FakeHttp()
+        FakeHttp()
         {
             try
             {
@@ -62,7 +62,7 @@ namespace Fake.Http.Fake.Http
         /// <summary>
         /// 启用请求内容gzip压缩 自动使用gzip压缩body并设置Content-Encoding为gzip
         /// </summary>
-        public static bool EnableCompress { get; set; } = false;
+        public bool EnableCompress { get; set; } = false;
 
         private string _url;
         private HttpContent _httpContent;
@@ -79,18 +79,18 @@ namespace Fake.Http.Fake.Http
             _accept = DefaultAccept;
         }
 
-        public static FakeHttp Create()
+        public IFakeHttp Create()
         {
             return new FakeHttp();
         }
 
-        protected FakeHttp Authentication(AuthenticationHeaderValue authentication)
+        protected IFakeHttp Authentication(AuthenticationHeaderValue authentication)
         {
             _authenticationHeaderValue = authentication;
             return this;
         }
 
-        public FakeHttp Authentication(string scheme, string parameter)
+        public IFakeHttp Authentication(string scheme, string parameter)
         {
             _authenticationHeaderValue = new AuthenticationHeaderValue(scheme, parameter);
             return this;
@@ -101,13 +101,13 @@ namespace Fake.Http.Fake.Http
         /// </summary>
         /// <param name="accept"> </param>
         /// <returns> </returns>
-        public FakeHttp Accept(string[] accept)
+        public IFakeHttp Accept(string[] accept)
         {
             _accept = accept;
             return this;
         }
 
-        public FakeHttp ContentType(string mediaType, string charSet = null)
+        public IFakeHttp ContentType(string mediaType, string charSet = null)
         {
             _mediaType = new MediaTypeHeaderValue(mediaType);
             if (!string.IsNullOrEmpty(charSet))
@@ -124,7 +124,7 @@ namespace Fake.Http.Fake.Http
         /// <returns> </returns>
         /// public HttpClientWrapper AcceptEncoding(string[] acceptEncoding) { //_acceptEncoding =
         /// acceptEncoding; return this; }
-        public FakeHttp Url(string url)
+        public IFakeHttp Url(string url)
         {
             if (string.IsNullOrEmpty(url))
             {
@@ -135,19 +135,19 @@ namespace Fake.Http.Fake.Http
             return this;
         }
 
-        public FakeHttp Params(object parameters)
+        public IFakeHttp Params(object parameters)
         {
             _params = parameters.GetParameters();
 
             return this;
         }
 
-        public FakeHttp Body(object body)
+        public IFakeHttp Body(object body)
         {
             return Body(Serializer.Serialize(body));
         }
 
-        public FakeHttp Body(string body)
+        public IFakeHttp Body(string body)
         {
             if (string.IsNullOrEmpty(body))
             {
@@ -178,7 +178,7 @@ namespace Fake.Http.Fake.Http
         /// <param name="name">     </param>
         /// <param name="filename"> </param>
         /// <returns> </returns>
-        public FakeHttp File(string path, string name, string filename)
+        public IFakeHttp File(string path, string name, string filename)
         {
             _httpContent = new MultipartFormDataContent();
 
@@ -196,7 +196,7 @@ namespace Fake.Http.Fake.Http
         /// <param name="content"> </param>
         /// <param name="name">    </param>
         /// <returns> </returns>
-        public FakeHttp File(string content, string name)
+        public IFakeHttp File(string content, string name)
         {
             _httpContent = new MultipartFormDataContent();
 
@@ -204,14 +204,14 @@ namespace Fake.Http.Fake.Http
             return this;
         }
 
-        public FakeHttp Form(IEnumerable<KeyValuePair<string, string>> nameValueCollection)
+        public IFakeHttp Form(IEnumerable<KeyValuePair<string, string>> nameValueCollection)
         {
             _httpContent = new FormUrlEncodedContent(nameValueCollection);
 
             return this;
         }
 
-        public FakeHttp Headers(NameValueCollection headers)
+        public IFakeHttp Headers(NameValueCollection headers)
         {
             CheckHeaderIsNull();
 
@@ -228,7 +228,7 @@ namespace Fake.Http.Fake.Http
             _headers = new NameValueCollection();
         }
 
-        public FakeHttp Header(string key, string value)
+        public IFakeHttp Header(string key, string value)
         {
             CheckHeaderIsNull();
             _headers.Add(key, value);
@@ -432,21 +432,9 @@ namespace Fake.Http.Fake.Http
             return await RequestAsync<T>(HttpMethod.Get);
         }
 
-        [Obsolete("建议使用异步方法")]
-        public T Get<T>()
-        {
-            return GetAsync<T>().GetAwaiter().GetResult();
-        }
-
         public async Task<T> PatchAsync<T>()
         {
             return await RequestAsync<T>(PatchMethod);
-        }
-
-        [Obsolete("建议使用异步方法")]
-        public T Patch<T>()
-        {
-            return PatchAsync<T>().GetAwaiter().GetResult();
         }
 
         public Task<T> PostAsync<T>()
@@ -454,32 +442,14 @@ namespace Fake.Http.Fake.Http
             return RequestAsync<T>(HttpMethod.Post);
         }
 
-        [Obsolete("建议使用异步方法")]
-        public T Post<T>()
-        {
-            return PostAsync<T>().GetAwaiter().GetResult();
-        }
-
         public Task<T> PutAsync<T>()
         {
             return RequestAsync<T>(HttpMethod.Put);
         }
 
-        [Obsolete("建议使用异步方法")]
-        public T Put<T>()
-        {
-            return PutAsync<T>().GetAwaiter().GetResult();
-        }
-
         public Task<T> DeleteAsync<T>()
         {
             return RequestAsync<T>(HttpMethod.Delete);
-        }
-
-        [Obsolete("建议使用异步方法")]
-        public T Delete<T>()
-        {
-            return DeleteAsync<T>().GetAwaiter().GetResult();
         }
 
         public override string ToString()
@@ -529,49 +499,44 @@ namespace Fake.Http.Fake.Http
 
             return true;
         }
-
-        public bool Download(string path = null, string filename = null)
-        {
-            return DownloadAsync(path, filename).GetAwaiter().GetResult();
-        }
     }
 
-    public class QFakeHttp
-    {
-        public static FakeHttp Url(string url)
-        {
-            return FakeHttp.Create().Url(url);
-        }
+    // public class QFakeHttp
+    // {
+    //     public FakeHttp Url(string url)
+    //     {
+    //         return FakeHttp.Create().Url(url);
+    //     }
 
-        public static FakeHttp Uri(string uri)
-        {
-            var baseUrl = FakeHttpLocator.GetOption()?.BaseAddress;
-            if (string.IsNullOrEmpty(baseUrl))
-            {
-                throw new InvalidOperationException("没有配置 BaseAddress 不能使用 Uri 模式");
-            }
+    //     public FakeHttp Uri(string uri)
+    //     {
+    //         var baseUrl = FakeHttpLocator.GetOption()?.BaseAddress;
+    //         if (string.IsNullOrEmpty(baseUrl))
+    //         {
+    //             throw new InvalidOperationException("没有配置 BaseAddress 不能使用 Uri 模式");
+    //         }
 
-            return FakeHttp.Create().Url($"{baseUrl}{(baseUrl.EndsWith("/") || uri.StartsWith("/") ? "" : "/")}{uri}");
-        }
+    //         return FakeHttp.Create().Url($"{baseUrl}{(baseUrl.EndsWith("/") || uri.StartsWith("/") ? "" : "/")}{uri}");
+    //     }
 
-        public static void InitAuthentication(string key, string value)
-        {
-            FakeHttpLocator.InitAuthentication(key, value);
-        }
+    //     public void InitAuthentication(string key, string value)
+    //     {
+    //         FakeHttpLocator.InitAuthentication(key, value);
+    //     }
 
-        public static void AddFakeHttp(Action<FakeHttpOptions> options)
-        {
-            FakeHttpLocator.AddFakeHttp(options);
-        }
+    //     public void AddFakeHttp(Action<FakeHttpOptions> options)
+    //     {
+    //         FakeHttpLocator.AddFakeHttp(options);
+    //     }
 
-        public static void AddHeader(string key, string value)
-        {
-            FakeHttpLocator.InitHeader(key, value);
-        }
+    //     public void AddHeader(string key, string value)
+    //     {
+    //         FakeHttpLocator.InitHeader(key, value);
+    //     }
 
-        public static async Task<T> GetAsync<T>(string url)
-        {
-            return await Url(url).GetAsync<T>();
-        }
-    }
+    //     public async Task<T> GetAsync<T>(string url)
+    //     {
+    //         return await Url(url).GetAsync<T>();
+    //     }
+    // }
 }
