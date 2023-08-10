@@ -45,4 +45,18 @@ public class FakeHttpTests : FakeIntegrationTest<FakeHttpModule>
         
         _testOutputHelper.WriteLine(res);
     }
+    
+    [Fact]
+    public async Task PostAsync()
+    {
+        var res = await _fakeHttp.Url("https://www.baidu.com")
+            .Body(new
+            {
+                Id = "1234556"
+            }, enableCompress:true).PostAsync<string>();
+        
+        res.ShouldNotBeNull();
+        
+        _testOutputHelper.WriteLine(res);
+    }
 }

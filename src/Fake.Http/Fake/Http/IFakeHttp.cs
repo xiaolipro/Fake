@@ -15,7 +15,7 @@ namespace Fake.Http.Fake.Http
         IFakeHttp ContentType(string mediaType, string charSet = null);
         IFakeHttp Url(string url);
         IFakeHttp Params(object parameters);
-        IFakeHttp Body(object body);
+        IFakeHttp Body(object body, bool? enableCompress = null);
         IFakeHttp File(string path, string name, string filename);
         IFakeHttp File(string content, string name);
         IFakeHttp Form(IEnumerable<KeyValuePair<string, string>> nameValueCollection);

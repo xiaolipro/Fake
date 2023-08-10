@@ -141,12 +141,12 @@ namespace Fake.Http.Fake.Http
             return this;
         }
 
-        public IFakeHttp Body(object body)
+        public IFakeHttp Body(object body, bool? enableCompress = null)
         {
-            return Body(Serializer.Serialize(body));
+            return Body(Serializer.Serialize(body), enableCompress);
         }
 
-        private IFakeHttp Body(string body)
+        private IFakeHttp Body(string body, bool? enableCompress = null)
         {
             if (string.IsNullOrEmpty(body))
             {
@@ -154,7 +154,7 @@ namespace Fake.Http.Fake.Http
             }
 
             var sc = new StringContent(body);
-            if (EnableCompress)
+            if (EnableCompress || (enableCompress ?? false))
             {
                 _httpContent = new CompressedContent(sc, CompressedContent.CompressionMethod.GZip);
                 sc.Headers.ContentEncoding.Add("gzip");
