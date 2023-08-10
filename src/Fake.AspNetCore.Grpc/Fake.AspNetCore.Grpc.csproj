@@ -6,18 +6,14 @@
     <PropertyGroup>
         <TargetFramework>net7.0</TargetFramework>
         <RootNamespace />
+        <DefineConstants>SUPPORT_LOAD_BALANCING</DefineConstants>
     </PropertyGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\Fake.Core\Fake.Core.csproj" />
-    </ItemGroup>
-
     <ItemGroup>
       <PackageReference Include="Grpc.AspNetCore" Version="2.55.0" />
       <PackageReference Include="SkyApm.Diagnostics.Grpc" Version="2.1.0" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Fake\AspNetCore\" />
+      <ProjectReference Include="..\Fake.AspNetCore\Fake.AspNetCore.csproj" />
     </ItemGroup>
 </Project>

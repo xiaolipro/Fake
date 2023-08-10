@@ -85,7 +85,7 @@ public class GrpcClientLoggingInterceptor : Interceptor
         }
     }
 
-    private async Task<TResponse> HandleResponse<TResponse>(Task<TResponse> t)
+    protected virtual async Task<TResponse> HandleResponse<TResponse>(Task<TResponse> t)
     {
         try
         {
@@ -183,7 +183,7 @@ public class GrpcClientLoggingInterceptor : Interceptor
     /// <typeparam name="TRequest"></typeparam>
     /// <typeparam name="TResponse"></typeparam>
     /// <param name="context"></param>
-    private void AddCallerMetadata<TRequest, TResponse>(ref ClientInterceptorContext<TRequest, TResponse> context)
+    protected virtual void AddCallerMetadata<TRequest, TResponse>(ref ClientInterceptorContext<TRequest, TResponse> context)
         where TRequest : class
         where TResponse : class
     {
@@ -211,7 +211,7 @@ public class GrpcClientLoggingInterceptor : Interceptor
     /// <typeparam name="TRequest"></typeparam>
     /// <typeparam name="TResponse"></typeparam>
     /// <param name="context"></param>
-    private void WriteLog<TRequest, TResponse>(ClientInterceptorContext<TRequest, TResponse> context)
+    protected virtual void WriteLog<TRequest, TResponse>(ClientInterceptorContext<TRequest, TResponse> context)
         where TRequest : class
         where TResponse : class
     {

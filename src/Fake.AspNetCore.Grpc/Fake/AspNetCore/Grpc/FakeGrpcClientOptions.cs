@@ -7,12 +7,12 @@ namespace Fake.AspNetCore.Grpc;
 public class FakeGrpcClientOptions
 {
     /// <summary>
-    /// grpc client默认提供两种解析：，当然，你也可以通过实现<see cref="FakeResolverFactory"/>自定义
+    /// grpc client默认提供两种解析：dns和static，当然，你也可以通过实现<see cref="FakeGrpcResolverFactory"/>自定义
     /// </summary>
     public string Resolver { get; set; }
 
     /// <summary>
-    /// grpc client默认提供两种负载均衡策略：pick_first和round_robin，当然，你也可以通过实现<see cref="FakeBalancerFactory"/>自定义
+    /// grpc client默认提供两种负载均衡策略：pick_first和round_robin，当然，你也可以通过实现<see cref="FakeGrpcBalancerFactory"/>自定义
     /// </summary>
     public string Balancer { get; set; }
     
@@ -24,6 +24,11 @@ public class FakeGrpcClientOptions
     /// 默认情况下，如果连接中断，则会刷新 DNS 解析程序。 DNS 解析程序还可以根据需要定期刷新。 这对于快速检测新的 pod 实例很有用。
     /// </summary>
     public TimeSpan RefreshInterval { get; set; }
+
+    /// <summary>
+    /// 客户端解析不到服务，会根据回退策略提供的时间，不断重试。
+    /// </summary>
+    public TimeSpan BackoffInterval { get; set; }
 
     /// <summary>
     /// 重试策略

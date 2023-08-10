@@ -1,6 +1,6 @@
 using Fake.Data;
 
-namespace Fake.LoadBalancing;
+namespace Fake.AspNetCore.LoadBalancing;
 
 public class FakeServicePikeContext:IHasExtraProperties
 {

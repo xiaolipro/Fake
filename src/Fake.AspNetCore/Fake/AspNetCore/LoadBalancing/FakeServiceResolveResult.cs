@@ -1,6 +1,7 @@
-﻿using Fake.Data;
+﻿using System.Collections.Generic;
+using Fake.Data;
 
-namespace Fake.LoadBalancing;
+namespace Fake.AspNetCore.LoadBalancing;
 
 public class FakeServiceResolveResult:IHasExtraProperties
 {
