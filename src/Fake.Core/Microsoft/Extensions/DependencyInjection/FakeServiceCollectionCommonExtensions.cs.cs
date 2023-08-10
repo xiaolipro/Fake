@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using Fake;
 using Fake.Helpers;
+using Microsoft.Extensions.Configuration;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -29,6 +30,7 @@ public static class FakeServiceCollectionCommonExtensions
             .FirstOrDefault(d => d.ServiceType == typeof(T))
             ?.ImplementationInstance;
     }
+    
 
     /// <summary>
     /// 直接从IOC容器中获取实例。

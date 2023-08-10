@@ -19,9 +19,9 @@ public interface ILoadBalancer : IHasExtraProperties
     /// <summary>
     /// 解析服务，得到服务地址集合
     /// </summary>
-    /// <param name="service"></param>
+    /// <param name="serviceName"></param>
     /// <returns></returns>
-    Task ResolutionAsync(string service);
+    Task ResolutionAsync(string serviceName);
 
     /// <summary>
     /// 执行均衡算法，得到一个均衡地址
