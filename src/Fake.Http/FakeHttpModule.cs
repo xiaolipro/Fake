@@ -26,6 +26,8 @@ namespace Fake.Http
                     new KeyValuePair<string, string> ("X-Ca-Test", "key")
                 };
             });
+            context.Services.AddSingleton<IFakeHttp, FakeHttp>();
+            base.ConfigureServices(context);
         }
 
         public override void ConfigureApplication(ApplicationConfigureContext context)

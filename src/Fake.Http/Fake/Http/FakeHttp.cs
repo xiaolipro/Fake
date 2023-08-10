@@ -46,7 +46,7 @@ namespace Fake.Http.Fake.Http
         /// <summary>
         /// 启用请求内容gzip压缩 自动使用gzip压缩body并设置Content-Encoding为gzip
         /// </summary>
-        public bool EnableCompress { get; set; } = false;
+        private bool EnableCompress => Option.EnableCompress;
 
         private string _url;
         private HttpContent _httpContent;
@@ -57,7 +57,7 @@ namespace Fake.Http.Fake.Http
 
         private Dictionary<string, object> _params;
 
-        private FakeHttp()
+        public FakeHttp()
         {
             try
             {
@@ -146,7 +146,7 @@ namespace Fake.Http.Fake.Http
             return Body(Serializer.Serialize(body));
         }
 
-        public IFakeHttp Body(string body)
+        private IFakeHttp Body(string body)
         {
             if (string.IsNullOrEmpty(body))
             {

@@ -26,6 +26,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Fake.Core\Fake.Core.csproj" />
     <ProjectReference Include="..\..\src\Fake.Http\Fake.Http.csproj" />
+    <ProjectReference Include="..\Fake.AppTests\Fake.AppTests.csproj" />
   </ItemGroup>
 
   <ItemGroup>
