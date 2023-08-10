@@ -14,9 +14,9 @@ using Microsoft.Extensions.Options;
 
 namespace Fake.Http.Fake.Http
 {
-    public class FakeHttp : IFakeHttp
+    public sealed class FakeHttp : IFakeHttp
     {
-        private readonly HttpClientHandler HttpClientHandler = new HttpClientHandler
+        private readonly HttpClientHandler _httpClientHandler = new HttpClientHandler
         {
             AllowAutoRedirect = true,
             AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip,
@@ -26,39 +26,23 @@ namespace Fake.Http.Fake.Http
         private IFakeJsonSerializer Serializer => FakeHttpLocator.Serializer;
         private ILogger<FakeHttp> Logger => FakeHttpLocator.Logger;
 
-        private readonly HttpClient HttpClientInner = new HttpClient(HttpClientHandler);
+        private readonly HttpClient _httpClientInner;
 
-        private readonly MediaTypeHeaderValue DefaultMediaType = new MediaTypeHeaderValue("application/json");
+        private readonly MediaTypeHeaderValue _defaultMediaType = new MediaTypeHeaderValue("application/json");
 
-        private readonly string[] DefaultAccept =
+        private readonly string[] _defaultAccept =
         {
             "application/json",
             "text/plain",
             "*/*"
         };
 
-        private readonly HttpMethod PatchMethod = new HttpMethod("PATCH");
+        private readonly HttpMethod _patchMethod = new HttpMethod("PATCH");
 
         private FakeHttpOptions Option => FakeHttpLocator.GetOption();
 
-        private readonly string[] DefaultAcceptEncoding = { "gzip", "deflate" };
-
-        FakeHttp()
-        {
-            try
-            {
-                ServicePointManager.Expect100Continue = false;
-                ServicePointManager.DefaultConnectionLimit = 200;
-                ServicePointManager.ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true;
-                HttpClientInner.Timeout = TimeSpan.FromSeconds(60);
-                _ = HttpClientInner.GetAsync("http://127.0.0.1").GetAwaiter().GetResult(); ;
-            }
-            catch (Exception)
-            {
-                // ignored
-            }
-        }
-
+        private readonly string[] _defaultAcceptEncoding = { "gzip", "deflate" };
+        
         /// <summary>
         /// 启用请求内容gzip压缩 自动使用gzip压缩body并设置Content-Encoding为gzip
         /// </summary>
@@ -73,10 +57,25 @@ namespace Fake.Http.Fake.Http
 
         private Dictionary<string, object> _params;
 
-        protected FakeHttp()
+        private FakeHttp()
         {
-            _mediaType = DefaultMediaType;
-            _accept = DefaultAccept;
+            try
+            {
+                _httpClientInner =  new HttpClient(_httpClientHandler);
+                
+                ServicePointManager.Expect100Continue = false;
+                ServicePointManager.DefaultConnectionLimit = 200;
+                ServicePointManager.ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true;
+                _httpClientInner.Timeout = TimeSpan.FromSeconds(60);
+                _ = _httpClientInner.GetAsync("http://127.0.0.1").GetAwaiter().GetResult(); ;
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+            
+            _mediaType = _defaultMediaType;
+            _accept = _defaultAccept;
         }
 
         public IFakeHttp Create()
@@ -84,7 +83,7 @@ namespace Fake.Http.Fake.Http
             return new FakeHttp();
         }
 
-        protected IFakeHttp Authentication(AuthenticationHeaderValue authentication)
+        private IFakeHttp Authentication(AuthenticationHeaderValue authentication)
         {
             _authenticationHeaderValue = authentication;
             return this;
@@ -251,7 +250,7 @@ namespace Fake.Http.Fake.Http
             return Serializer.Deserialize<T>(str);
         }
 
-        protected async Task<T> RequestAsync<T>(HttpMethod method)
+        private async Task<T> RequestAsync<T>(HttpMethod method)
         {
             using (var res = await GetOriginHttpResponseAsync(method))
             {
@@ -265,9 +264,9 @@ namespace Fake.Http.Fake.Http
             return t.IsPrimitive || typename.Equals("String") || typename.Equals("Decimal");
         }
 
-        protected virtual async Task<HttpResponseMessage> GetOriginHttpResponseAsync(HttpMethod method)
+        private async Task<HttpResponseMessage> GetOriginHttpResponseAsync(HttpMethod method)
         {
-            HttpStatusCode httpStatusCode = HttpStatusCode.NotFound;
+            var httpStatusCode = HttpStatusCode.NotFound;
             var sw = new Stopwatch();
 
             var realUrl = Uri.EscapeUriString(_params is null ? _url : _params.ToUrl(_url));
@@ -292,9 +291,9 @@ namespace Fake.Http.Fake.Http
                         requestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(acc));
                     }
 
-                    foreach (var accenc in DefaultAcceptEncoding)
+                    foreach (var accept in _defaultAcceptEncoding)
                     {
-                        requestMessage.Headers.AcceptEncoding.Add(new StringWithQualityHeaderValue(accenc));
+                        requestMessage.Headers.AcceptEncoding.Add(new StringWithQualityHeaderValue(accept));
                     }
 
                     if (_authenticationHeaderValue != null)
@@ -326,7 +325,7 @@ namespace Fake.Http.Fake.Http
                     }
 
                     sw.Start();
-                    HttpResponseMessage res = await HttpClientInner.SendAsync(requestMessage);
+                    var res = await _httpClientInner.SendAsync(requestMessage);
                     httpStatusCode = res.StatusCode;
                     sw.Stop();
                     return res;
@@ -410,7 +409,7 @@ namespace Fake.Http.Fake.Http
 
         public async Task<HttpResponseMessage> PatchHttpResponseMessageAsync()
         {
-            return await GetOriginHttpResponseAsync(PatchMethod);
+            return await GetOriginHttpResponseAsync(_patchMethod);
         }
 
         /// <summary>
@@ -434,7 +433,7 @@ namespace Fake.Http.Fake.Http
 
         public async Task<T> PatchAsync<T>()
         {
-            return await RequestAsync<T>(PatchMethod);
+            return await RequestAsync<T>(_patchMethod);
         }
 
         public Task<T> PostAsync<T>()
