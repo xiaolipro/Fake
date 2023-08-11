@@ -27,6 +27,7 @@ namespace Fake.Http
                 };
             });
             context.Services.AddSingleton<IFakeHttp, FakeHttp>();
+            context.Services.AddSingleton<IFakeHttpFactory, FakeHttpFactory>();
             base.ConfigureServices(context);
         }
 

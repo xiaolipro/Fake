@@ -14,6 +14,25 @@ using Microsoft.Extensions.Options;
 
 namespace Fake.Http.Fake.Http
 {
+    public interface IFakeHttpFactory
+    {
+        IFakeHttp Create();
+    }
+
+    public sealed class FakeHttpFactory : IFakeHttpFactory
+    {
+        private readonly IFakeHttp _fakeHttp;
+
+        public FakeHttpFactory(IFakeHttp fakeHttp)
+        {
+            this._fakeHttp = fakeHttp;
+        }
+        public IFakeHttp Create()
+        {
+            return _fakeHttp.Create();
+        }
+    }
+
     public sealed class FakeHttp : IFakeHttp
     {
         private readonly HttpClientHandler _httpClientHandler = new HttpClientHandler
@@ -24,7 +43,7 @@ namespace Fake.Http.Fake.Http
         };
 
         private IFakeJsonSerializer Serializer => FakeHttpLocator.Serializer;
-        private ILogger<FakeHttp> Logger => FakeHttpLocator.Logger;
+        private ILogger Logger => FakeHttpLocator.Logger;
 
         private readonly HttpClient _httpClientInner;
 
@@ -42,7 +61,7 @@ namespace Fake.Http.Fake.Http
         private FakeHttpOptions Option => FakeHttpLocator.GetOption();
 
         private readonly string[] _defaultAcceptEncoding = { "gzip", "deflate" };
-        
+
         /// <summary>
         /// 启用请求内容gzip压缩 自动使用gzip压缩body并设置Content-Encoding为gzip
         /// </summary>
@@ -61,8 +80,8 @@ namespace Fake.Http.Fake.Http
         {
             try
             {
-                _httpClientInner =  new HttpClient(_httpClientHandler);
-                
+                _httpClientInner = new HttpClient(_httpClientHandler);
+
                 ServicePointManager.Expect100Continue = false;
                 ServicePointManager.DefaultConnectionLimit = 200;
                 ServicePointManager.ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true;
@@ -73,7 +92,7 @@ namespace Fake.Http.Fake.Http
             {
                 // ignored
             }
-            
+
             _mediaType = _defaultMediaType;
             _accept = _defaultAccept;
         }

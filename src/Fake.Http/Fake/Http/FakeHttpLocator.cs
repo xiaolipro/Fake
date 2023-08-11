@@ -43,9 +43,9 @@ namespace Fake.Http.Fake.Http
         }
 
         internal static IFakeJsonSerializer Serializer { get; private set; }
-        internal static ILogger<FakeHttp> Logger { get; private set; }
+        internal static ILogger Logger { get; private set; }
 
-        public static void UseFakeHttp(IFakeJsonSerializer serializer, ILogger<FakeHttp> logger = null)
+        public static void UseFakeHttp(IFakeJsonSerializer serializer, ILogger logger = null)
         {
             Serializer = serializer;
             Logger = logger;
