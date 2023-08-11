@@ -5,15 +5,21 @@ namespace Fake.Consul;
 public class FakeConsulClientOptions
 {
     /// <summary>
-    /// 服务地址
+    /// 主机
+    /// ex：127.0.0.1
     /// </summary>
-    public string Address { get; set; }
+    public string Host { get; set; }
     
     /// <summary>
-    /// 服务Grpc地址
+    /// 服务端口
+    /// ex：8080
     /// </summary>
-    [CanBeNull]
-    public string GrpcAddress { get; set; }
+    public int Port { get; set; }
+    
+    /// <summary>
+    /// Grpc端口
+    /// </summary>
+    public int GrpcPort { get; set; }
     
     /// <summary>
     /// 服务组名称

@@ -3,7 +3,7 @@
 namespace Fake.Consul;
 
 /// <summary>
-/// Consul客户端连接配置
+/// Consul服务连接配置
 /// </summary>
 public class FakeConsulServiceOptions
 {
@@ -16,6 +16,11 @@ public class FakeConsulServiceOptions
     /// 数据中心
     /// </summary>
     public string Datacenter { get; set; }
+    
+    /// <summary>
+    /// 令牌
+    /// </summary>
+    public string Token { get; set; }
 
     /// <summary>
     /// 配置文件名称（完整的Key）

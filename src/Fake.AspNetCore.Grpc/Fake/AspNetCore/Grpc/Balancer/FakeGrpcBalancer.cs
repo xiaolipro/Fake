@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using Fake.AspNetCore.LoadBalancing;
+using Fake.LoadBalancing;
 using Grpc.Net.Client.Balancer;
 using Microsoft.Extensions.Logging;
 
@@ -9,9 +9,9 @@ namespace Fake.AspNetCore.Grpc.Balancer;
 internal class FakeGrpcBalancer : SubchannelsLoadBalancer
 {
     private readonly ILogger _logger;
-    private readonly ILoadBalancer _balancer;
+    private readonly IFakeBalancer _balancer;
 
-    public FakeGrpcBalancer(IChannelControlHelper controller, ILoggerFactory loggerFactory, ILoadBalancer balancer)
+    public FakeGrpcBalancer(IChannelControlHelper controller, ILoggerFactory loggerFactory, IFakeBalancer balancer)
         : base(controller, loggerFactory)
     {
         _logger = loggerFactory.CreateLogger(typeof(FakeGrpcBalancer));
@@ -27,10 +27,10 @@ internal class FakeGrpcBalancer : SubchannelsLoadBalancer
     private class CustomPicker : SubchannelPicker
     {
         private readonly IReadOnlyList<Subchannel> _subchannels;
-        private readonly ILoadBalancer _balancer;
+        private readonly IFakeBalancer _balancer;
         private readonly ILogger _logger;
 
-        public CustomPicker(IReadOnlyList<Subchannel> subchannels, ILoadBalancer balancer, ILogger logger)
+        public CustomPicker(IReadOnlyList<Subchannel> subchannels, IFakeBalancer balancer, ILogger logger)
         {
             _subchannels = subchannels;
             _balancer = balancer;
@@ -39,7 +39,8 @@ internal class FakeGrpcBalancer : SubchannelsLoadBalancer
 
         public override PickResult Pick(PickContext context)
         {
-            var address = _balancer.Balancing();
+            // todo：这里怎么获取还没想好
+            var address = _balancer.Pick("");
             var channel = _subchannels.FirstOrDefault(x => x.ToString() == address);
 
             if (channel == null)

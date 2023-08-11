@@ -1,15 +1,15 @@
-﻿using Fake.AspNetCore.LoadBalancing;
+﻿using Fake.LoadBalancing;
 using Grpc.Net.Client.Balancer;
 
 namespace Fake.AspNetCore.Grpc.Balancer;
 
 public class FakeGrpcBalancerFactory : LoadBalancerFactory
 {
-    private readonly ILoadBalancer _balancer;
+    private readonly IFakeBalancer _balancer;
 
     public override string Name => nameof(FakeGrpcBalancerFactory);
 
-    public FakeGrpcBalancerFactory(ILoadBalancer balancer)
+    public FakeGrpcBalancerFactory(IFakeBalancer balancer)
     {
         _balancer = balancer;
     }
