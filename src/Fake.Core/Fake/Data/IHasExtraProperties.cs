@@ -1,4 +1,4 @@
-﻿namespace Fake.Domain.Entities.Auditing;
+﻿namespace Fake.Data;
 
 public interface IHasExtraProperties
 {
