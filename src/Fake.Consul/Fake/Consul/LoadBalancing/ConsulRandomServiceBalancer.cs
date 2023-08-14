@@ -4,9 +4,9 @@ using Microsoft.Extensions.Logging;
 
 namespace Fake.Consul.LoadBalancing;
 
-public class ConsulRandomBalancer : AbstractConsulServiceBalancer
+public class ConsulRandomServiceBalancer : AbstractConsulServiceBalancer
 {
-    public ConsulRandomBalancer(ILogger<ConsulRandomBalancer> logger, IConsulClient client) : base(logger, client)
+    public ConsulRandomServiceBalancer(ILogger<ConsulRandomServiceBalancer> logger, IConsulClient client) : base(logger, client)
     {
     }
 
