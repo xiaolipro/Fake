@@ -36,7 +36,9 @@ $ dotnet restore
   - [x] 事件存储器
 
 ### 🐸微服务能力
-- [ ] Consul服务发现与注册
+- [x] Consul服务发现与注册
+  - [x] 客户端负载均衡
+  - [x] 支持kv热更新
 - [ ] Grpc客户端负载均衡
 - [x] RabbitMQ分布式事件总线
 - [ ] SkyWalking分布式链路追踪
