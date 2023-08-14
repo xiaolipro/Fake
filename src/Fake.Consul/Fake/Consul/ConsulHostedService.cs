@@ -74,12 +74,12 @@ public class ConsulHostedService : IHostedService
         };
 
         _serviceId =
-            $"{_fakeConsulClientOptions.Host}:{_fakeConsulClientOptions.Port}  Start in {DateTime.Now} {(supportGrpc ? "SupportGrpc" : "")})";
+            $"{_fakeConsulClientOptions.Host}:{_fakeConsulClientOptions.Port}  Start in {DateTime.Now} {(supportGrpc ? $"SupportGrpc in {_fakeConsulClientOptions.GrpcPort}" : "")})";
         var registration = new AgentServiceRegistration()
         {
             ID = _serviceId, // 服务唯一Id
             Name = _fakeConsulClientOptions.ServiceName, // 服务组名称
-            Address = _fakeConsulClientOptions.Host, // 服务IP
+            Address = _fakeConsulClientOptions.Host, // 服务主机
             Port = _fakeConsulClientOptions.Port, // 服务端口
             Tags = _fakeConsulClientOptions.Tags, // 一组标签
             Check = httpHealthCheck,

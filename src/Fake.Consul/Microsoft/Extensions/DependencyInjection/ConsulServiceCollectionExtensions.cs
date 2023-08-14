@@ -1,11 +1,5 @@
-﻿using System;
-using Consul;
-using Fake;
+﻿using Consul;
 using Fake.Consul;
-using Fake.Consul.LoadBalancing;
-using JetBrains.Annotations;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 

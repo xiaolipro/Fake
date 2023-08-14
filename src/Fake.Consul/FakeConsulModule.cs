@@ -34,6 +34,6 @@ public class FakeConsulModule: FakeModule
             options.ConfigFileName = "appsettings.Development.json"; // 请根据自己的配置文件名称进行修改
         });
 
-        context.Services.AddSingleton<IFakeBalancer, ConsulPollingBalancer>();
+        context.Services.AddSingleton<IServiceBalancer, ConsulPollingServiceBalancer>();
     }
 }

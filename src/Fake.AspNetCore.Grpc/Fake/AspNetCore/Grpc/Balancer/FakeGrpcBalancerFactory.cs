@@ -5,17 +5,17 @@ namespace Fake.AspNetCore.Grpc.Balancer;
 
 public class FakeGrpcBalancerFactory : LoadBalancerFactory
 {
-    private readonly IFakeBalancer _balancer;
+    private readonly IServiceBalancer _serviceBalancer;
 
     public override string Name => nameof(FakeGrpcBalancerFactory);
 
-    public FakeGrpcBalancerFactory(IFakeBalancer balancer)
+    public FakeGrpcBalancerFactory(IServiceBalancer serviceBalancer)
     {
-        _balancer = balancer;
+        _serviceBalancer = serviceBalancer;
     }
 
     public override LoadBalancer Create(LoadBalancerOptions options)
     {
-        return new FakeGrpcBalancer(options.Controller, options.LoggerFactory, _balancer);
+        return new FakeGrpcBalancer(options.Controller, options.LoggerFactory, _serviceBalancer);
     }
 }
