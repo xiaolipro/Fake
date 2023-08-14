@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using Fake;
 using Fake.Helpers;
+using Microsoft.Extensions.Configuration;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -14,6 +15,15 @@ public static class FakeServiceCollectionCommonExtensions
     public static bool IsAdded(this IServiceCollection services, Type type)
     {
         return services.Any(d => d.ServiceType == type);
+    }
+    
+    
+    public static void EnsureAdded<T>(this IServiceCollection services) where T : class
+    {
+        if (!services.IsAdded<T>())
+        {
+            throw new FakeInitializationException("请先添加服务：" + typeof(T).AssemblyQualifiedName);
+        }
     }
 
     /// <summary>
