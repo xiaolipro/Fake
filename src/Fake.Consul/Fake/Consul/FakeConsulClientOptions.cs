@@ -1,65 +1,31 @@
-﻿using JetBrains.Annotations;
+﻿using System;
 
 namespace Fake.Consul;
 
+/// <summary>
+/// Consul服务连接配置
+/// </summary>
 public class FakeConsulClientOptions
 {
     /// <summary>
-    /// 主机
-    /// ex：127.0.0.1
+    /// Consul地址
+    /// ex：http://localhost:8500
     /// </summary>
-    public string Host { get; set; }
+    public Uri Address { get; set; }
+
+    /// <summary>
+    /// 数据中心
+    /// ex：dc1
+    /// </summary>
+    public string Datacenter { get; set; }
     
     /// <summary>
-    /// 服务端口
-    /// ex：8080
+    /// 令牌
     /// </summary>
-    public int Port { get; set; }
-    
+    public string Token { get; set; }
+
     /// <summary>
-    /// Grpc端口
+    /// 配置文件名称（完整的Key）
     /// </summary>
-    public int GrpcPort { get; set; }
-    
-    /// <summary>
-    /// 服务组名称
-    /// </summary>
-    public string ServiceName { get; set; }
-    
-    /// <summary>
-    /// 服务标签
-    /// </summary>
-    [CanBeNull]
-    public string[] Tags { get; set; }
-    
-    /// <summary>
-    /// 服务心跳检查路径
-    /// </summary>
-    public string HealthCheckPath { get; set; }
-    
-    /// <summary>
-    /// Grpc服务心跳检查路径
-    /// </summary>
-    [CanBeNull]
-    public string GrpcHealthCheckPath { get; set; }
-    
-    /// <summary>
-    /// 心跳检测间隔(s)
-    /// </summary>
-    public int Interval { get; set; }
-    
-    /// <summary>
-    /// 心跳超时时间(s)
-    /// </summary>
-    public int Timeout { get; set; }
-    
-    /// <summary>
-    /// 心跳停止多久后注销服务(s)
-    /// </summary>
-    public int DeregisterTime { get; set; }
-    
-    /// <summary>
-    /// 权重(使用权重调度器时有效)
-    /// </summary>
-    public int Weight { get; set; }
+    public string ConfigFileName { get; set; }
 }

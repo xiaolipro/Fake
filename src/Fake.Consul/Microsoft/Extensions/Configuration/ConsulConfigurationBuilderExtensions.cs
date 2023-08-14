@@ -13,7 +13,7 @@ public static class ConsulConfigurationBuilderExtensions
     public static IConfigurationRoot AddConfigurationFromConsul(this IConfigurationBuilder builder)
     {
         var configuration = builder.Build();
-        var consulClientOptions = configuration.GetSection("Consul").Get<FakeConsulServiceOptions>();
+        var consulClientOptions = configuration.GetSection("Consul").Get<FakeConsulClientOptions>();
         
         // 加载Consul上的配置文件
         builder.AddConsul(consulClientOptions.ConfigFileName, sources =>
@@ -22,6 +22,7 @@ public static class ConsulConfigurationBuilderExtensions
             {
                 options.Address = consulClientOptions.Address;
                 options.Datacenter = consulClientOptions.Datacenter;
+                options.Token = consulClientOptions.Token;
             };
             sources.Optional = true;
             sources.ReloadOnChange = true; // hot-update

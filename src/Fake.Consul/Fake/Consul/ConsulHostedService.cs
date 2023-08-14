@@ -15,16 +15,16 @@ public class ConsulHostedService : IHostedService
 {
     private readonly ILogger<ConsulHostedService> _logger;
     private readonly IConsulClient _consulClient;
-    private readonly FakeConsulClientOptions _fakeConsulClientOptions;
+    private readonly FakeConsulRegisterOptions _fakeConsulRegisterOptions;
     private CancellationTokenSource _consulCancellationToken;
     private string _serviceId;
 
     public ConsulHostedService(ILogger<ConsulHostedService> logger, IConsulClient consulClient,
-        IOptions<FakeConsulClientOptions> options)
+        IOptions<FakeConsulRegisterOptions> options)
     {
         _logger = logger;
         _consulClient = consulClient;
-        _fakeConsulClientOptions = options.Value;
+        _fakeConsulRegisterOptions = options.Value;
     }
 
     public async Task StartAsync(CancellationToken cancellationToken)
@@ -34,10 +34,10 @@ public class ConsulHostedService : IHostedService
 
         #region 服务注销，防止重复注册
 
-        var services = await _consulClient.Catalog.Service(_fakeConsulClientOptions.ServiceName, cancellationToken);
+        var services = await _consulClient.Catalog.Service(_fakeConsulRegisterOptions.ServiceName, cancellationToken);
 
         var targets = services.Response.Where(x =>
-            x.ServiceAddress == _fakeConsulClientOptions.Host && x.ServicePort == _fakeConsulClientOptions.Port);
+            x.ServiceAddress == _fakeConsulRegisterOptions.Host && x.ServicePort == _fakeConsulRegisterOptions.Port);
 
         foreach (var service in targets)
         {
@@ -49,7 +49,7 @@ public class ConsulHostedService : IHostedService
 
         var registration = BuildRegistration();
         await _consulClient.Agent.ServiceRegister(registration, cancellationToken);
-        _logger.LogInformation("{SerializeObject} Consul注册已完成", JsonConvert.SerializeObject(_fakeConsulClientOptions));
+        _logger.LogInformation("Consul注册已完成 {Message}", JsonConvert.SerializeObject(_fakeConsulRegisterOptions));
     }
 
     public async Task StopAsync(CancellationToken cancellationToken)
@@ -62,30 +62,30 @@ public class ConsulHostedService : IHostedService
 
     private AgentServiceRegistration BuildRegistration()
     {
-        var supportGrpc = _fakeConsulClientOptions.GrpcPort != 0;
+        var supportGrpc = _fakeConsulRegisterOptions.GrpcPort != 0;
         var httpHealthCheck = new AgentServiceCheck()
         {
-            Interval = TimeSpan.FromSeconds(_fakeConsulClientOptions.Interval), // 健康检查时间间隔
+            Interval = TimeSpan.FromSeconds(_fakeConsulRegisterOptions.Interval), // 健康检查时间间隔
             HTTP =
-                $"{_fakeConsulClientOptions.Host}:{_fakeConsulClientOptions.Port}/{_fakeConsulClientOptions.HealthCheckPath.Trim('/')}",
-            Timeout = TimeSpan.FromSeconds(_fakeConsulClientOptions.Timeout), // 心跳超时时间
+                $"{_fakeConsulRegisterOptions.Host}:{_fakeConsulRegisterOptions.Port}/{_fakeConsulRegisterOptions.HealthCheckPath.Trim('/')}",
+            Timeout = TimeSpan.FromSeconds(_fakeConsulRegisterOptions.Timeout), // 心跳超时时间
             DeregisterCriticalServiceAfter =
-                TimeSpan.FromSeconds(_fakeConsulClientOptions.DeregisterTime), // 服务挂掉多久后注销，这个不配置挂掉的节点会一直在
+                TimeSpan.FromSeconds(_fakeConsulRegisterOptions.DeregisterTime), // 服务挂掉多久后注销，这个不配置挂掉的节点会一直在
         };
 
         _serviceId =
-            $"{_fakeConsulClientOptions.Host}:{_fakeConsulClientOptions.Port}  Start in {DateTime.Now} {(supportGrpc ? $"SupportGrpc in {_fakeConsulClientOptions.GrpcPort}" : "")})";
+            $"{_fakeConsulRegisterOptions.Host}:{_fakeConsulRegisterOptions.Port}  Start in {DateTime.Now} {(supportGrpc ? $"SupportGrpc in {_fakeConsulRegisterOptions.GrpcPort}" : "")}";
         var registration = new AgentServiceRegistration()
         {
             ID = _serviceId, // 服务唯一Id
-            Name = _fakeConsulClientOptions.ServiceName, // 服务组名称
-            Address = _fakeConsulClientOptions.Host, // 服务主机
-            Port = _fakeConsulClientOptions.Port, // 服务端口
-            Tags = _fakeConsulClientOptions.Tags, // 一组标签
+            Name = _fakeConsulRegisterOptions.ServiceName, // 服务组名称
+            Address = _fakeConsulRegisterOptions.Host, // 服务主机
+            Port = _fakeConsulRegisterOptions.Port, // 服务端口
+            Tags = _fakeConsulRegisterOptions.Tags, // 一组标签
             Check = httpHealthCheck,
             Meta = new Dictionary<string, string>()
             {
-                { nameof(_fakeConsulClientOptions.Weight), _fakeConsulClientOptions.Weight.ToString() },
+                { nameof(_fakeConsulRegisterOptions.Weight), _fakeConsulRegisterOptions.Weight.ToString() },
             } // 元数据
         };
 
@@ -93,7 +93,7 @@ public class ConsulHostedService : IHostedService
         if (supportGrpc)
         {
             registration.Check.GRPC =
-                $"{_fakeConsulClientOptions.Host}:{_fakeConsulClientOptions.GrpcPort}/{_fakeConsulClientOptions.GrpcHealthCheckPath?.Trim('/')}";
+                $"{_fakeConsulRegisterOptions.Host}:{_fakeConsulRegisterOptions.GrpcPort}/{_fakeConsulRegisterOptions.GrpcHealthCheckPath?.Trim('/')}";
             registration.Check.GRPCUseTLS = false; // consul在内网，不需要tls
         }
 

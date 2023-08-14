@@ -76,7 +76,7 @@ public abstract class AbstractConsulServiceBalancer : IServiceBalancer
         {
             Host = x.Service.Address,
             Port = x.Service.Port,
-            GrpcPort = int.TryParse(x.Service.Meta[nameof(FakeConsulClientOptions.Weight)], out var weight) ? weight : 0
+            GrpcPort = int.TryParse(x.Service.Meta[nameof(FakeConsulRegisterOptions.Weight)], out var weight) ? weight : 0
         }).ToList();
     }
     

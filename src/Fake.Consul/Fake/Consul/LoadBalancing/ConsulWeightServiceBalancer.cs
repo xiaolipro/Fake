@@ -40,7 +40,7 @@ public class ConsulWeightServiceBalancer: AbstractConsulServiceBalancer
     protected override void OnServiceEntry(string serviceName, List<ServiceEntry> entries)
     {
         var weights = entries.Select(x =>
-            int.TryParse(x.Service.Meta[nameof(FakeConsulClientOptions.Weight)], out var weight) ? weight : 0).ToList();
+            int.TryParse(x.Service.Meta[nameof(FakeConsulRegisterOptions.Weight)], out var weight) ? weight : 0).ToList();
         ServiceNodeWeights.TryAdd(serviceName, weights);
     }
 }

@@ -16,6 +16,15 @@ public static class FakeServiceCollectionCommonExtensions
     {
         return services.Any(d => d.ServiceType == type);
     }
+    
+    
+    public static void EnsureAdded<T>(this IServiceCollection services) where T : class
+    {
+        if (!services.IsAdded<T>())
+        {
+            throw new FakeInitializationException("请先添加服务：" + typeof(T).AssemblyQualifiedName);
+        }
+    }
 
     /// <summary>
     /// 直接从IOC容器中获取实例，找不到就返回null。
@@ -30,7 +39,6 @@ public static class FakeServiceCollectionCommonExtensions
             .FirstOrDefault(d => d.ServiceType == typeof(T))
             ?.ImplementationInstance;
     }
-    
 
     /// <summary>
     /// 直接从IOC容器中获取实例。
