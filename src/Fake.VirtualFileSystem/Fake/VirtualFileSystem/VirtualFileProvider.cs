@@ -6,7 +6,7 @@ using Microsoft.Extensions.Primitives;
 
 namespace Fake.VirtualFileSystem;
 
-public class VirtualFileProvider: IFileProvider
+public class VirtualFileProvider: IVirtualFileProvider
 {
     private readonly FakeVirtualFileSystemOptions _options;
     private readonly CompositeFileProvider _compositeFileProvider;

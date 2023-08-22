@@ -7,6 +7,7 @@ using Fake.Identity;
 using Fake.Identity.Security.Claims;
 using Fake.Modularity;
 using Fake.UnitOfWork;
+using Fake.VirtualFileSystem;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -16,7 +17,8 @@ namespace Fake.AspNetCore;
 [DependsOn(
     typeof(FakeIdentityModule),
     typeof(FakeAuditingModule),
-    typeof(FakeUnitOfWorkModule))]
+    typeof(FakeUnitOfWorkModule),
+    typeof(FakeVirtualFileSystemModule))]
 public class FakeAspNetCoreModule : FakeModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)

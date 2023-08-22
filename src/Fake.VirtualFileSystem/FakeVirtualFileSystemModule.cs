@@ -1,7 +1,8 @@
 ﻿using Fake.Modularity;
-using Fake.VirtualFileSystem;
 using Microsoft.Extensions.DependencyInjection;
 
+// ReSharper disable once CheckNamespace
+namespace Fake.VirtualFileSystem;
 public class FakeVirtualFileSystemModule:FakeModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
