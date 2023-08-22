@@ -2,7 +2,7 @@
 using Fake.EntityFrameworkCore.IntegrationEventLog;
 using Fake.Testing;
 
-public class IntegrationEventHandlerTests: FakeBasicIntegrationTest<FakeEntityFrameworkCoreIntegrationEventLogTestModule>
+public class IntegrationEventHandlerTests: FakeIntegrationTestWithTools<FakeEntityFrameworkCoreIntegrationEventLogTestModule>
 {
     private readonly IIntegrationEventLogService _integrationEventLogService;
 
