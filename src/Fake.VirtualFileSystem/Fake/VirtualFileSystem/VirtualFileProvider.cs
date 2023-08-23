@@ -6,12 +6,12 @@ using Microsoft.Extensions.Primitives;
 
 namespace Fake.VirtualFileSystem;
 
-public class VirtualFileProvider: IFileProvider
+public class VirtualFileProvider: IVirtualFileProvider
 {
     private readonly FakeVirtualFileSystemOptions _options;
     private readonly CompositeFileProvider _compositeFileProvider;
 
-    public VirtualFileProvider(IOptions<FakeVirtualFileSystemOptions> options,DynamicFileProvider dynamicFileProvider)
+    public VirtualFileProvider(IOptions<FakeVirtualFileSystemOptions> options,IDynamicFileProvider dynamicFileProvider)
     {
         _options = options.Value;
         _compositeFileProvider = CreateCompositeFileProvider(dynamicFileProvider);
@@ -32,7 +32,7 @@ public class VirtualFileProvider: IFileProvider
     }
 
 
-    private CompositeFileProvider CreateCompositeFileProvider(DynamicFileProvider dynamicFileProvider)
+    private CompositeFileProvider CreateCompositeFileProvider(IDynamicFileProvider dynamicFileProvider)
     {
         var allVirtualFileProviders = new List<IFileProvider>();
         

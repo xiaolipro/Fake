@@ -12,7 +12,7 @@ namespace Fake.Localization.Contributors;
 public abstract class AbstractVirtualFileLocalizationResourceContributor : ILocalizationResourceContributor
 {
     private readonly string _virtualPath;
-    private VirtualFileProvider _virtualFileProvider;
+    private IVirtualFileProvider _virtualFileProvider;
 
     // culture : localized string container
     private volatile Dictionary<string, ILocalizedStringContainer> _localizedStringContainers;
@@ -26,7 +26,7 @@ public abstract class AbstractVirtualFileLocalizationResourceContributor : ILoca
 
     public virtual void Initialize(LocalizationResourceInitializationContext context)
     {
-        _virtualFileProvider = context.ServiceProvider.GetRequiredService<VirtualFileProvider>();
+        _virtualFileProvider = context.ServiceProvider.GetRequiredService<IVirtualFileProvider>();
     }
 
     public virtual LocalizedString GetOrNull(string cultureName, string name)

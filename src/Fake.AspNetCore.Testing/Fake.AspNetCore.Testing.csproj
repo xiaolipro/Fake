@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <Import Project="../../common.props" />
+    <Import Project="../../configureawait.props" />
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <OutputType>Library</OutputType>
+        <RootNamespace />
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="Grpc.AspNetCore" Version="2.55.0" />
+        <PackageReference Include="SkyApm.Diagnostics.Grpc" Version="2.1.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Fake.AspNetCore\Fake.AspNetCore.csproj" />
+        <ProjectReference Include="..\Fake.Autofac\Fake.Autofac.csproj" />
+        <ProjectReference Include="..\Fake.Testing\Fake.Testing.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="$(MicrosoftAspNetCorePackageVersion)" />
+    </ItemGroup>
+</Project>

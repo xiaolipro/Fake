@@ -14,7 +14,9 @@ public static class ApplicationConfigureContextExtensions
     public static IApplicationBuilder GetApplicationBuilder(this ApplicationConfigureContext context)
     {
         // 在加载FakeAspNetCoreModule模块ConfigureServices时
-        return context.ServiceProvider.GetRequiredService<ObjectAccessor<IApplicationBuilder>>().Value;
+        var app = context.ServiceProvider.GetRequiredService<ObjectAccessor<IApplicationBuilder>>().Value;
+        ThrowHelper.ThrowIfNull(app, nameof(app),"请检查host是否是web host");
+        return app;
     }
     
     [CanBeNull]

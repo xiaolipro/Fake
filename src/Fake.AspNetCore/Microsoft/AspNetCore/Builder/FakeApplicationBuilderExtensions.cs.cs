@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Fake;
 using Fake.DependencyInjection;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -21,7 +22,7 @@ public static class FakeApplicationBuilderExtensions
 
         application.InitializeApplication(app.ApplicationServices);
     }
-
+    
     /// <summary>
     /// 防呆设计，验证中间件是否已经注册
     /// </summary>

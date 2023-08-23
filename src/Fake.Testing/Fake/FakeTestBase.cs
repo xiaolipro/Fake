@@ -3,9 +3,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Fake;
 
-public abstract class FakeTestWithServiceProvider
+public abstract class FakeTestBase : IServiceProviderAccessor
 {
-    protected IServiceProvider ServiceProvider { get; set; }
+    public IServiceProvider ServiceProvider { get; protected set; }
 
     protected T GetService<T>()
     {

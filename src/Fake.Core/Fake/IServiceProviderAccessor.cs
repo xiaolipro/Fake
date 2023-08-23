@@ -1,4 +1,4 @@
-﻿namespace Fake.DependencyInjection;
+﻿namespace Fake;
 
 public interface IServiceProviderAccessor
 {
