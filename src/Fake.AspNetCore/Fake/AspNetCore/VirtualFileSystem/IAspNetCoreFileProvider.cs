@@ -2,4 +2,9 @@ using Microsoft.Extensions.FileProviders;
 
 namespace Fake.AspNetCore.VirtualFileSystem;
 
-public interface IAspNetCoreFileProvider: IFileProvider{}
+/// <summary>
+/// AspNetCore文件供应商
+/// </summary>
+public interface IAspNetCoreFileProvider : IFileProvider
+{
+}

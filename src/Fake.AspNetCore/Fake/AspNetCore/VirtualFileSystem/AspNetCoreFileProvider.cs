@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using Fake.VirtualFileSystem;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.FileProviders;
@@ -10,20 +11,20 @@ namespace Fake.AspNetCore.VirtualFileSystem;
 /// <summary>
 /// AspNetCore文件供应商，由Fake虚拟文件系统和wwwroot文件系统组合而成
 /// </summary>
-public class AspNetCoreFileProvider:IAspNetCoreFileProvider
+public class AspNetCoreFileProvider : IAspNetCoreFileProvider
 {
     protected FakeAspNetCoreFileOptions FileOptions { get; }
-    private readonly IFileProvider _webRootFileProvider;
+    private readonly IFileProvider _fileProvider;
 
     public AspNetCoreFileProvider(IVirtualFileProvider virtualFileProvider,
         IWebHostEnvironment hostingEnvironment,
         IOptions<FakeAspNetCoreFileOptions> options)
     {
         FileOptions = options.Value;
-        _webRootFileProvider = CreateWebRootFileProvider(virtualFileProvider, hostingEnvironment);
+        _fileProvider = CreateFileProvider(virtualFileProvider, hostingEnvironment);
     }
 
-    private IFileProvider CreateWebRootFileProvider(IVirtualFileProvider virtualFileProvider,
+    private IFileProvider CreateFileProvider(IVirtualFileProvider virtualFileProvider,
         IWebHostEnvironment webHostEnvironment)
     {
         // 将虚拟文件系统和wwwroot物理文件系统合并
@@ -40,16 +41,21 @@ public class AspNetCoreFileProvider:IAspNetCoreFileProvider
 
     public IDirectoryContents GetDirectoryContents(string subpath)
     {
-        throw new System.NotImplementedException();
+        return _fileProvider.GetDirectoryContents(FileOptions.WebRootFilePath + subpath);
     }
 
     public IFileInfo GetFileInfo(string subpath)
     {
-        throw new System.NotImplementedException();
+        return _fileProvider.GetFileInfo(FileOptions.WebRootFilePath + subpath);
     }
 
     public IChangeToken Watch(string filter)
     {
-        throw new System.NotImplementedException();
+        return new CompositeChangeToken(
+            new[]
+            {
+                _fileProvider.Watch(filter)
+            }
+        );
     }
 }

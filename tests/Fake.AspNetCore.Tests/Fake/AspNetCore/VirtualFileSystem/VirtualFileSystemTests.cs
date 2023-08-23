@@ -10,7 +10,7 @@ public class VirtualFileSystemTests : AspNetCoreTestBase
     public async Task 请求虚拟文件()
     {
         var result = await GetResponseAsStringAsync(
-            "/asset/hi.txt"
+            "asset/hi.txt"
         );
 
         result.ShouldBe("hello world");

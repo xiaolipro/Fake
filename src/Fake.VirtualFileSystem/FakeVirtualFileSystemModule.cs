@@ -7,7 +7,7 @@ public class FakeVirtualFileSystemModule:FakeModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
-        context.Services.AddSingleton<VirtualFileProvider>();
-        context.Services.AddSingleton<DynamicFileProvider>();
+        context.Services.AddSingleton<IVirtualFileProvider, VirtualFileProvider>();
+        context.Services.AddSingleton<IDynamicFileProvider, DynamicFileProvider>();
     }
 }

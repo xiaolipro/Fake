@@ -9,11 +9,11 @@ namespace Fake.VirtualFileSystem;
 
 public class VirtualFileProviderTest:FakeIntegrationTest<FakeVirtualFileSystemTestModule>
 {
-    private readonly VirtualFileProvider _virtualFileProvider;
+    private readonly IVirtualFileProvider _virtualFileProvider;
 
     public VirtualFileProviderTest()
     {
-        _virtualFileProvider = ServiceProvider.GetRequiredService<VirtualFileProvider>();
+        _virtualFileProvider = ServiceProvider.GetRequiredService<IVirtualFileProvider>();
     }
 
     [Fact]

@@ -11,7 +11,7 @@ namespace Fake.VirtualFileSystem;
 /// <summary>
 /// 当前实现仅支持文件监视，不支持目录或通配符监视。
 /// </summary>
-public class DynamicFileProvider : AbstractInMemoryFileProvider
+public class DynamicFileProvider : AbstractInMemoryFileProvider, IDynamicFileProvider
 {
     private readonly ConcurrentDictionary<string, IFileInfo> _dynamicFiles;
     protected override IDictionary<string, IFileInfo> Files => _dynamicFiles;
