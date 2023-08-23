@@ -25,6 +25,10 @@ $ dotnet restore
 - [x] 本地化（多语言）
 - [x] 虚拟文件系统
 - [x] 工作单元
+- [x] 测试
+  - [x] Fake集成测试
+  - [x] FakeHost集成测试（AspNetCore）
+
 - [x] 对象映射
   - [x] ObjectMapper
   - [x] AutoMapper
