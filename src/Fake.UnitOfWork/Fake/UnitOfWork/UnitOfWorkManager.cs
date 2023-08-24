@@ -9,6 +9,7 @@ public class UnitOfWorkManager : IUnitOfWorkManager
     private readonly IServiceProvider _serviceProvider;
     public IUnitOfWork Current => _ambientUnitOfWorkProvider.GetCurrentByChecking();
 
+    // todo：是否需要注入服务商工厂，为每一个uow开启一个新的scope？
     public UnitOfWorkManager(IAmbientUnitOfWorkProvider ambientUnitOfWorkProvider,
         IServiceProvider serviceProvider)
     {
