@@ -108,7 +108,7 @@ public static class FakeRegistrationBuilderExtensions
 
         foreach (var interceptor in interceptors)
         {
-            // 使用Castle做动态代理
+            // 动态代理
             registrationBuilder.InterceptedBy(typeof(FakeAsyncDeterminationInterceptor<>).MakeGenericType(interceptor));
         }
 

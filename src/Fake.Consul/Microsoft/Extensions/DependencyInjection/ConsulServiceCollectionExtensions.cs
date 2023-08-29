@@ -14,6 +14,7 @@ public static class ConsulServiceCollectionExtensions
     /// 添加Consul
     /// </summary>
     /// <param name="services"></param>
+    /// <param name="configuration"></param>
     internal static IServiceCollection AddConsul(this IServiceCollection services, IConfiguration configuration)
     {
         var consulClientOptions = configuration.Get<FakeConsulClientOptions>();
