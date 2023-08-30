@@ -1,4 +1,5 @@
-﻿using Fake.Testing;
+﻿using Fake.Localization.Resources;
+using Fake.Testing;
 using Localization;
 using Microsoft.Extensions.Localization;
 using Shouldly;

@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <Import Project="../../common.props" />
+    <Import Project="../../configureawait.props" />
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <RootNamespace />
+    </PropertyGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Fake.Core\Fake.Core.csproj" />
+        <ProjectReference Include="..\Fake.Core\Fake.Localization.csproj" />
+        <ProjectReference Include="..\Fake.Identity\Fake.Identity.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Fake\Authorization\Localization\" />
+    </ItemGroup>
+
+</Project>

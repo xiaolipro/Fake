@@ -1,9 +1,4 @@
-﻿
-using Fake.AspNetCore.Grpc;
-using Fake.AspNetCore.Grpc.Interceptors;
-using Fake.Modularity;
-using Microsoft.Extensions.DependencyInjection;
-using SkyApm.Diagnostics.Grpc.Server;
+﻿using Fake.Modularity;
 
 public class FakeAspNetCoreGrpcModule:FakeModule
 {
