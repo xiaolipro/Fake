@@ -9,7 +9,7 @@ public class FakeVirtualFileSystemTestModule : FakeModule
     {
         context.Services.Configure<FakeVirtualFileSystemOptions>(options =>
         {
-            options.FileProviders.AddEmbedded<FakeVirtualFileSystemTestModule>("/Assets");
+            options.FileProviders.Add<FakeVirtualFileSystemTestModule>("/Assets");
         });
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Fake.AspNetCore;
-using Fake.AspNetCore.Testing;
 using Fake.Autofac;
 using Fake.Modularity;
 using Fake.VirtualFileSystem;
@@ -15,7 +14,7 @@ public class FakeAspNetCoreTestModule : FakeModule
     {
         context.Services.Configure<FakeVirtualFileSystemOptions>(options =>
         {
-            options.FileProviders.AddEmbedded<FakeAspNetCoreTestModule>();
+            options.FileProviders.Add<FakeAspNetCoreTestModule>();
         });
     }
 

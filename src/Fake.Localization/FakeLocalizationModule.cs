@@ -6,7 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Localization;
 
-
 [DependsOn(
     typeof(FakeVirtualFileSystemModule)
 )]
@@ -22,13 +21,13 @@ public class FakeLocalizationModule : FakeModule
 
         context.Services.Configure<FakeVirtualFileSystemOptions>(options =>
         {
-            options.FileProviders.AddEmbedded<FakeLocalizationModule>("Fake");
+            options.FileProviders.Add<FakeLocalizationModule>("Fake");
         });
 
         context.Services.Configure<FakeLocalizationOptions>(options =>
         {
             options.Resources.Add<FakeLocalizationResource>("zh")
-                .AddVirtualJson("/Localization/Resources");
+                .LoadVirtualJson("/Localization/Resources");
         });
     }
 }
