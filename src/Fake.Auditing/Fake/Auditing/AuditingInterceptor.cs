@@ -17,7 +17,7 @@ public class AuditingInterceptor : IFakeInterceptor
         _serviceScopeFactory = serviceScopeFactory;
     }
 
-    public async Task InterceptAsync(IFakeMethodInvocation invocation)
+    public virtual async Task InterceptAsync(IFakeMethodInvocation invocation)
     {
         using var serviceScope = _serviceScopeFactory.CreateScope();
 

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 using System.Threading.Tasks;
 using Fake.DynamicProxy;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,7 +14,7 @@ public class UnitOfWorkInterceptor : IFakeInterceptor
         _serviceScopeFactory = serviceScopeFactory;
     }
 
-    public async Task InterceptAsync(IFakeMethodInvocation invocation)
+    public virtual async Task InterceptAsync(IFakeMethodInvocation invocation)
     {
         using var serviceScope = _serviceScopeFactory.CreateScope();
 
