@@ -1,23 +1,21 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Fake.Authorization.Permissions;
 
 public class PermissionRequirementHandle : AuthorizationHandler<PermissionRequirement>
 {
-    protected override Task HandleRequirementAsync(AuthorizationHandlerContext context,
+    private readonly IPermissionChecker _permissionChecker;
+    public PermissionRequirementHandle(IPermissionChecker permissionChecker)
+    {
+        _permissionChecker = permissionChecker;
+    }
+    
+    protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context,
         PermissionRequirement requirement)
     {
-        throw new NotImplementedException();
+        var claimsPrincipal = context.User;
+        var isGranted = await _permissionChecker.IsGrantedAsync(claimsPrincipal, requirement);
+        if (isGranted) context.Succeed(requirement);
     }
-}
-
-public interface IPermissionValidator
-{
-    Task<PermissionGrantResult>
-}
-
-public class PermissionGrantResult
-{
 }

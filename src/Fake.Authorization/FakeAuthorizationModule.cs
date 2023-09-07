@@ -10,10 +10,7 @@ public class FakeAuthorizationModule : FakeModule
     {
         context.Services.AddAuthorizationCore();
 
-        context.Services.Configure<FakeVirtualFileSystemOptions>(options =>
-        {
-            options.FileProviders.Add<FakeAuthorizationModule>("Fake/Authorization");
-        });
+        context.Services.AddFakeVirtualFileSystem<FakeAuthorizationModule>("/Fake/Authorization");
 
         context.Services.Configure<FakeLocalizationOptions>(options =>
         {
