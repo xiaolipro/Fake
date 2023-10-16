@@ -1,7 +1,8 @@
 ﻿
+using Fake.Domain.Entities;
 using Fake.EventBus.Events;
 
-namespace Fake.Domain.Entities.Events;
+namespace Fake.Domain.Events;
 
 /// <summary>
 /// 领域事件

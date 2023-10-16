@@ -1,6 +1,4 @@
-﻿using Fake.Domain.Entities.Events;
-
-namespace Fake.Domain.Entities;
+﻿namespace Fake.Domain.Events;
 
 public interface IHasDomainEvent
 {

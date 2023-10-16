@@ -1,4 +1,6 @@
-﻿namespace Fake.Domain.Entities;
+﻿using Fake.Domain.Events;
+
+namespace Fake.Domain.Entities;
 
 /// <summary>
 /// 实体顶层抽象

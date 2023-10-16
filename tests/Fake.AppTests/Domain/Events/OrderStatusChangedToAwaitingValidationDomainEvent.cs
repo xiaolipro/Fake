@@ -1,6 +1,6 @@
 ﻿using System;
 using Domain.Aggregates.OrderAggregate;
-using Fake.Domain.Entities.Events;
+using Fake.Domain.Events;
 
 namespace Domain.Events
 {

@@ -89,7 +89,7 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
         }
     }
 
-    public void Initialize(IUnitOfWork unitOfWork)
+    public virtual void Initialize(IUnitOfWork unitOfWork)
     {
         // 设置超时时间
         if (Database.IsRelational())

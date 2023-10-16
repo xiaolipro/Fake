@@ -1,9 +1,10 @@
-﻿namespace Fake.Domain.Entities;
+﻿using Fake.Domain.Events;
+
+namespace Fake.Domain.Entities;
 
 [Serializable]
 public abstract class Entity : HasDomainEvent, IEntity
 {
-    
     public abstract object[] GetKeys();
     
     public override string ToString()

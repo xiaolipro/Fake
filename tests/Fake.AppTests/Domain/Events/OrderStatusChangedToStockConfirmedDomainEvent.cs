@@ -1,18 +1,15 @@
 ﻿using System;
-using Fake.Domain.Entities.Events;
+using Fake.Domain.Events;
 
-namespace Domain.Events
+namespace Domain.Events;
+
+/// <summary>
+/// Event used when the order stock items are confirmed
+/// </summary>
+public class OrderStatusChangedToStockConfirmedDomainEvent : DomainEvent
 {
+    public Guid OrderId { get; }
 
-    /// <summary>
-    /// Event used when the order stock items are confirmed
-    /// </summary>
-    public class OrderStatusChangedToStockConfirmedDomainEvent
-        : DomainEvent
-    {
-        public Guid OrderId { get; }
-
-        public OrderStatusChangedToStockConfirmedDomainEvent(Guid orderId)
-            => OrderId = orderId;
-    }
+    public OrderStatusChangedToStockConfirmedDomainEvent(Guid orderId)
+        => OrderId = orderId;
 }
