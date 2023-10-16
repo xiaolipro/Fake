@@ -3,9 +3,10 @@ using System.Data;
 using System.Reflection;
 using Fake.DynamicProxy;
 using Fake.Modularity;
-using Fake.UnitOfWork;
 using Microsoft.Extensions.DependencyInjection;
 
+// ReSharper disable once CheckNamespace
+namespace Fake.UnitOfWork;
 public class FakeUnitOfWorkModule:FakeModule
 {
     public override void PreConfigureServices(ServiceConfigurationContext context)

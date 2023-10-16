@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Fake.EntityFrameworkCore.IntegrationEventLog;
 
-public class IntegrationEventLogContext : DbContext
+public class IntegrationEventLogContext : FakeDbContext<IntegrationEventLogContext>
 {
     public IntegrationEventLogContext(DbContextOptions<IntegrationEventLogContext> options) : base(options)
     {
@@ -39,6 +39,5 @@ public class IntegrationEventLogContext : DbContext
 
         builder.Property(e => e.EventTypeName)
             .IsRequired();
-
     }
 }

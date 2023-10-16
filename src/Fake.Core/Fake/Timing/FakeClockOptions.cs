@@ -3,12 +3,12 @@
 public class FakeClockOptions
 {
     /// <summary>
-    /// 默认未知的: <see cref="DateTimeKind.Unspecified"/>
+    /// 日期kind
     /// </summary>
     public DateTimeKind Kind { get; set; }
-
-    public FakeClockOptions()
-    {
-        Kind = DateTimeKind.Unspecified;
-    }
+    
+    /// <summary>
+    /// 日期显示格式
+    /// </summary>
+    public string DateTimeFormat { get; set; }
 }

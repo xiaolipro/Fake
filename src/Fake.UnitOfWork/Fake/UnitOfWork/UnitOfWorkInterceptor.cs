@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 using System.Threading.Tasks;
 using Fake.DynamicProxy;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,7 +14,7 @@ public class UnitOfWorkInterceptor : IFakeInterceptor
         _serviceScopeFactory = serviceScopeFactory;
     }
 
-    public async Task InterceptAsync(IFakeMethodInvocation invocation)
+    public virtual async Task InterceptAsync(IFakeMethodInvocation invocation)
     {
         using var serviceScope = _serviceScopeFactory.CreateScope();
 
@@ -35,7 +34,7 @@ public class UnitOfWorkInterceptor : IFakeInterceptor
         {
             if (unitOfWork.HasHasChanges())
             {
-                throw new FakeException("请不要在只读工作单元内执行非查询操作！");
+                throw new InvalidOperationException("请不要在只读工作单元内执行查询以外的操作！");
             }
         }
         else

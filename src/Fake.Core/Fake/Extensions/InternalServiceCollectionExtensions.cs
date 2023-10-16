@@ -4,32 +4,45 @@ using Fake.Modularity;
 using Fake.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
 
 namespace Fake.Extensions;
 
 internal static class InternalServiceCollectionExtensions
 {
-    internal static void AddFakeCoreServices(this IServiceCollection services,IFakeApplication application, FakeApplicationCreationOptions options)
+    internal static void AddFakeCoreServices(this IServiceCollection services, IFakeApplication application,
+        FakeApplicationCreationOptions creationOptions)
     {
-        // 配置文件
-        if (!services.IsAdded<IConfiguration>())
+        var configuration = services.GetInstanceOrNull<IConfiguration>();
+        // 添加配置
+        if (configuration == null)
         {
-            var configuration = FakeConfigurationHelper.Build();
+            configuration = FakeConfigurationHelper.BuildConfiguration(creationOptions.Configuration);
             services.ReplaceConfiguration(configuration);
         }
-        
+
+        // 添加日志
+        if (services.GetInstanceOrNull<ILoggerFactory>() == null)
+        {
+            services.AddLogging(logging =>
+            {
+                logging.AddConfiguration(configuration!.GetSection("Logging"));
+                logging.AddConsole();
+            });
+        }
+
+
         var assemblyScanner = new FakeAssemblyScanner(application);
         var typeScanner = new FakeAssemblyTypeScanner(assemblyScanner);
-        
+
         services.TryAddSingleton<IModuleLoader>(new FakeModuleLoader());
         services.TryAddSingleton<IAssemblyScanner>(assemblyScanner);
         services.TryAddSingleton<ITypeScanner>(typeScanner);
-        
-        services.TryAddSingleton<IInitLoggerFactory>(new FakeInitLoggerFactory());
+
+        services.TryAddSingleton<IInitLoggerFactory>(new DefaultInitLoggerFactory());
     }
 
     internal static void ServiceRegister(this IServiceCollection services, Assembly assembly)
     {
-        
     }
 }

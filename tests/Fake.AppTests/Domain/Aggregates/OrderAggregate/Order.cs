@@ -28,7 +28,9 @@ public class Order : FullAuditedAggregate<Guid, Guid>
 
 
     // Draft orders have this set to true. Currently we don't check anywhere the draft status of an Order, but we could do it if needed
+#pragma warning disable CS0414
     private bool _isDraft;
+#pragma warning restore CS0414
 
     // DDD Patterns comment
     // Using a private collection field, better for DDD Aggregate's encapsulation
@@ -143,7 +145,7 @@ public class Order : FullAuditedAggregate<Guid, Guid>
     {
         if (_orderStatusId != OrderStatus.Paid.Id)
         {
-            StatusChangeException(OrderStatus.Shipped);
+            //StatusChangeException(OrderStatus.Shipped);
         }
 
         _orderStatusId = OrderStatus.Shipped.Id;
@@ -187,5 +189,10 @@ public class Order : FullAuditedAggregate<Guid, Guid>
     public decimal GetTotal()
     {
         return _orderItems.Sum(o => o.GetUnits() * o.GetUnitPrice());
+    }
+
+    public void SetDescription(string description)
+    {
+        _description = description;
     }
 }

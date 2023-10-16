@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Fake;
@@ -15,34 +14,30 @@ public class Program
 {
     static async Task Main(string[] args)
     {
-        using (var application = FakeApplicationFactory.Create<SimpleConsoleDemoModule>(options =>
-               {
-                   options.Configuration.CommandLineArgs = args;
-                   options.UseAutofac();
-                   options.Services.AddSingleton(typeof(IAmbientScopeProvider<>), typeof(AmbientScopeProvider<>));
-               }))
+        using var application = FakeApplicationFactory.Create<SimpleConsoleDemoModule>(options =>
         {
-            Console.WriteLine("Initializing the application...");
-            application.InitializeApplication();
-            Console.WriteLine("Initializing the application... OK");
+            options.Configuration.CommandLineArgs = args;
+            options.UseAutofac();
+        });
+        application.InitializeApplication();
+        //logger.LogInformation("Initializing the application... OK");
             
-            var myAuditedObject1 = application.ServiceProvider.GetRequiredService<MyAuditedObject1>();
+        var myAuditedObject1 = application.ServiceProvider.GetRequiredService<MyAuditedObject1>();
             
-            var currentPrincipalAccessor = application.ServiceProvider.GetRequiredService<ICurrentPrincipalAccessor>();
+        var currentPrincipalAccessor = application.ServiceProvider.GetRequiredService<ICurrentPrincipalAccessor>();
             
-            currentPrincipalAccessor.Change(new ClaimsPrincipal(new ClaimsIdentity(new List<Claim>
-            {
-                new Claim(FakeClaimTypes.UserId, "10086"),
-                new Claim(FakeClaimTypes.UserName, "faker"),
-            })));
+        currentPrincipalAccessor.Change(new ClaimsPrincipal(new ClaimsIdentity(new List<Claim>
+        {
+            new Claim(FakeClaimTypes.UserId, "10086"),
+            new Claim(FakeClaimTypes.UserName, "faker"),
+        })));
 
-            var manager = application.ServiceProvider.GetRequiredService<IAuditingManager>();
-            using (var scope = manager.BeginScope())
-            {
-                await myAuditedObject1.DoItAsync(new InputObject { Value1 = "forty-two", Value2 = 42 });
-                await F(myAuditedObject1);
-                await scope.SaveAsync();
-            }
+        var manager = application.ServiceProvider.GetRequiredService<IAuditingManager>();
+        using (var scope = manager.BeginScope())
+        {
+            await myAuditedObject1.DoItAsync(new InputObject { Value1 = "forty-two", Value2 = 42 });
+            await F(myAuditedObject1);
+            await scope.SaveAsync();
         }
     }
 

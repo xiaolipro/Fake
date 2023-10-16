@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Fake.Testing;
 
-public abstract class FakeIntegrationTest<TStartupModule> : FakeTestWithServiceProvider, IDisposable
+public abstract class FakeIntegrationTest<TStartupModule> : FakeTestBase, IDisposable
     where TStartupModule : IFakeModule
 {
     protected IFakeApplication Application { get; set; }
@@ -30,7 +30,7 @@ public abstract class FakeIntegrationTest<TStartupModule> : FakeTestWithServiceP
 
         RootServiceProvider = CreateServiceProvider(services);
         TestServiceScope = RootServiceProvider!.CreateScope();
-        
+
         application.InitializeApplication(TestServiceScope.ServiceProvider);
         ServiceProvider = Application.ServiceProvider;
     }
@@ -42,18 +42,16 @@ public abstract class FakeIntegrationTest<TStartupModule> : FakeTestWithServiceP
 
     protected virtual void BeforeAddFakeApplication(IServiceCollection services)
     {
-
     }
-    
+
     protected virtual void AfterAddFakeApplication(IServiceCollection services)
     {
     }
-    
+
     protected virtual void SetApplicationCreationOptions(FakeApplicationCreationOptions options)
     {
-
     }
-    
+
     protected virtual IServiceProvider CreateServiceProvider(IServiceCollection services)
     {
         return services.BuildServiceProviderFromFactory();

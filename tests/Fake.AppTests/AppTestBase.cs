@@ -6,15 +6,15 @@ using Fake.Testing;
 using Fake.UnitOfWork;
 using Microsoft.Extensions.DependencyInjection;
 
-public abstract class AppTestBase<TStartupModule>:FakeBasicIntegrationTest<TStartupModule>
-    where TStartupModule: IFakeModule
+public abstract class AppTestBase<TStartupModule> : FakeIntegrationTestWithTools<TStartupModule>
+    where TStartupModule : IFakeModule
 {
     protected override void SetApplicationCreationOptions(FakeApplicationCreationOptions options)
     {
         options.UseAutofac();
     }
-    
-    
+
+
     protected virtual Task WithUnitOfWorkAsync(Func<Task> func)
     {
         return WithUnitOfWorkAsync(new UnitOfWorkAttribute(), func);

@@ -1,4 +1,5 @@
 ﻿using System;
+using Fake.Data;
 using Fake.Domain.Entities.Auditing;
 using Fake.EntityFrameworkCore.ValueComparers;
 using Fake.EntityFrameworkCore.ValueConverters;
@@ -15,6 +16,7 @@ public static class FakeEntityTypeBuilderExtensions
         {
             builder.Property(nameof(IHasVersionNum.VersionNum))
                 .HasColumnName(nameof(IHasVersionNum.VersionNum))
+                // 当SaveChanges时，它会自动检查并发标记的值是否与原值匹配，如果不匹配就会抛出DbUpdateConcurrencyException异常
                 .IsConcurrencyToken()
                 .HasMaxLength(40);
         }

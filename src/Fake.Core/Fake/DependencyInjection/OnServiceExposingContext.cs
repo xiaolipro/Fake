@@ -2,9 +2,9 @@ namespace Fake.DependencyInjection;
 
 public class OnServiceExposingContext
 {
-    Type ImplementationType { get; }
+    public Type ImplementationType { get; }
 
-    List<Type> ExposedServiceTypes { get; }
+    public List<Type> ExposedServiceTypes { get; }
     
     public OnServiceExposingContext([NotNull] Type implementationType, List<Type> exposedServiceTypes)
     {

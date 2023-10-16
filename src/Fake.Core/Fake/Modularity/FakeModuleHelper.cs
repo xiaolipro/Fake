@@ -7,12 +7,17 @@ internal static class FakeModuleHelper
 {
     private static void CheckFakeModuleType(Type moduleType)
     {
-        if (!FakeModule.IsFakeModule(moduleType))
+        var typeInfo = moduleType.GetTypeInfo();
+
+        if (!typeInfo.IsClass &&
+            !typeInfo.IsAbstract &&
+            !typeInfo.IsGenericType &&
+            typeof(IFakeModule).GetTypeInfo().IsAssignableFrom(moduleType))
         {
             throw new ArgumentException("给定的类型不是Fake模块: " + moduleType.AssemblyQualifiedName);
         }
     }
-    
+
     /// <summary>
     /// 寻找以该模块为起点的所有模块类型（包括该模块本身）
     /// </summary>
@@ -22,11 +27,11 @@ internal static class FakeModuleHelper
     public static List<Type> FindAllModuleTypes(Type startupModuleType, ILogger logger)
     {
         var moduleTypes = new List<Type>();
-        logger.Log(LogLevel.Information, "加载Fake模块:");
+        logger.Log(LogLevel.Information, "开始寻找Fake模块:");
         AddModuleAndDependenciesRecursively(moduleTypes, startupModuleType, logger);
         return moduleTypes;
     }
-    
+
     private static void AddModuleAndDependenciesRecursively(
         List<Type> moduleTypes,
         Type moduleType,
@@ -48,7 +53,7 @@ internal static class FakeModuleHelper
             AddModuleAndDependenciesRecursively(moduleTypes, dependedModuleType, logger, depth + 1);
         }
     }
-    
+
     public static List<Type> FindDependedModuleTypes(Type moduleType)
     {
         CheckFakeModuleType(moduleType);

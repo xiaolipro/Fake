@@ -8,10 +8,14 @@
         <RootNamespace />
     </PropertyGroup>
     <ItemGroup>
+      <ProjectReference Include="..\..\tests\Fake.VirtualFileSytem.Tests\Fake.VirtualFileSytem.Tests.csproj" />
       <ProjectReference Include="..\Fake.Auditing\Fake.Auditing.csproj" />
       <ProjectReference Include="..\Fake.Core\Fake.Core.csproj" />
       <ProjectReference Include="..\Fake.Identity\Fake.Identity.csproj" />
       <ProjectReference Include="..\Fake.UnitOfWork\Fake.UnitOfWork.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+      <None Remove="Properties\launchSettings.json" />
     </ItemGroup>
 
 </Project>

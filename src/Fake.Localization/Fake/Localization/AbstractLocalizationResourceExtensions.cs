@@ -23,13 +23,13 @@ public static class AbstractLocalizationResourceExtensions
         return localizationResource;
     }
 
-    public static TLocalizationResource AddVirtualJson<TLocalizationResource>(
+    public static TLocalizationResource LoadVirtualJson<TLocalizationResource>(
         [NotNull] this TLocalizationResource localizationResource, [NotNull] string virtualPath)
         where TLocalizationResource : AbstractLocalizationResource
     {
         ThrowHelper.ThrowIfNull(localizationResource, nameof(localizationResource));
         ThrowHelper.ThrowIfNull(virtualPath, nameof(virtualPath));
-        
+
         localizationResource.Contributors.Add(new JsonVirtualLocalizationResourceContributor(virtualPath));
 
         return localizationResource;

@@ -9,11 +9,11 @@ using Fake.Data;
 using Fake.DependencyInjection;
 using Fake.Domain.Entities;
 using Fake.Domain.Entities.Auditing;
-using Fake.Domain.Entities.IDGenerators;
 using Fake.EntityFrameworkCore.Modeling;
 using Fake.EntityFrameworkCore.ValueConverters;
 using Fake.EventBus;
 using Fake.Helpers;
+using Fake.IDGenerators;
 using Fake.Timing;
 using Fake.UnitOfWork;
 using JetBrains.Annotations;
@@ -63,6 +63,8 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
     {
         try
         {
+            await BeforeSaveChangesAsync();
+            
             PublishDomainEvents();
 
             return await base.SaveChangesAsync(cancellationToken);
@@ -93,6 +95,26 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
         domainEvents.ForEach(@event => EventPublisher.Publish(@event));
     }
 
+    protected virtual Task BeforeSaveChangesAsync()
+    {
+        foreach (var entry in ChangeTracker.Entries())
+        {
+            // Deleted状态可能是软删，也走的更新，同受版本约束
+            if (entry.State.IsIn(EntityState.Modified, EntityState.Deleted))
+            {
+                if (entry.Entity is IHasVersionNum entity)
+                {
+                    // 保存更改时，将原始值与当前值比较，以确认是否需要更新
+                    Entry(entity).Property(x => x.VersionNum).OriginalValue = entity.VersionNum;
+                    entity.VersionNum = SimpleGuidGenerator.Instance.GenerateAsString();
+                }
+            }
+        }
+        
+        return Task.CompletedTask;
+    }
+
+    public void Initialize(IUnitOfWork unitOfWork)
     public virtual void Initialize(IUnitOfWork unitOfWork)
     {
         // 设置超时时间
@@ -154,11 +176,11 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
         {
             if (entityWithSoftDelete.HardDeleted) return;
 
-            // 重置entity状态
-            entry.Reload();
-
+            // todo: abp在这里重置entity状态，但是重置状态会重新加载数据，为什么要这么做？
+            //entry.Reload();
+            
+            // 跳转到Modified状态
             ReflectionHelper.TrySetProperty(entityWithSoftDelete, x => x.IsDeleted, () => true);
-
             AuditPropertySetter.SetModificationProperties(entry.Entity);
         }
     }

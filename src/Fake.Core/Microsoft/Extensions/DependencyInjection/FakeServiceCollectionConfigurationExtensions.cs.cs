@@ -23,12 +23,12 @@ public static class FakeServiceCollectionConfigurationExtensions
     [CanBeNull]
     public static IConfiguration GetConfigurationOrNull(this IServiceCollection services)
     {
-        var hostBuilderContext = services.GetSingletonInstanceOrNull<HostBuilderContext>();
+        var hostBuilderContext = services.GetInstanceOrNull<HostBuilderContext>();
         if (hostBuilderContext?.Configuration != null)
         {
             return hostBuilderContext.Configuration as IConfigurationRoot;
         }
 
-        return services.GetSingletonInstanceOrNull<IConfiguration>();
+        return services.GetInstanceOrNull<IConfiguration>();
     }
 }

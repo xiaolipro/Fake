@@ -17,7 +17,9 @@ namespace Domain.Events
         public string CardSecurityNumber { get; }
         public string CardHolderName { get; }
         public DateTime CardExpiration { get; }
+#pragma warning disable CS0108, CS0114
         public Order Order { get; }
+#pragma warning restore CS0108, CS0114
 
         public OrderStartedDomainEvent(Order order, Guid userId, string userName,
                                        CardType cardType, string cardNumber, 

@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <Import Project="../../common.props" />
+    <Import Project="../../configureawait.props" />
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <RootNamespace />
+        <OutputType>Library</OutputType>
+        <DefineConstants>SUPPORT_LOAD_BALANCING</DefineConstants>
+    </PropertyGroup>
+    <ItemGroup>
+      <PackageReference Include="Grpc.AspNetCore" Version="2.55.0" />
+      <PackageReference Include="SkyApm.Diagnostics.Grpc" Version="2.1.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Fake.AspNetCore\Fake.AspNetCore.csproj" />
+    </ItemGroup>
+</Project>

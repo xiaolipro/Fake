@@ -1,12 +1,28 @@
 ﻿using Fake.AspNetCore;
 using Fake.Autofac;
 using Fake.Modularity;
-using Fake.Testing;
+using Fake.VirtualFileSystem;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 
-[DependsOn(typeof(FakeAspNetCoreModule),
+[DependsOn(
     typeof(FakeAutofacModule),
-    typeof(FakeTestingModule))]
-public class FakeAspNetCoreTestModule:FakeModule
+    typeof(FakeAspNetCoreTestingModule))]
+public class FakeAspNetCoreTestModule : FakeModule
 {
-    
+    public override void ConfigureServices(ServiceConfigurationContext context)
+    {
+        context.Services.Configure<FakeVirtualFileSystemOptions>(options =>
+        {
+            options.FileProviders.Add<FakeAspNetCoreTestModule>();
+        });
+    }
+
+    public override void ConfigureApplication(ApplicationConfigureContext context)
+    {
+        var app = context.GetApplicationBuilder();
+        var environment = context.GetEnvironmentOrNull();
+
+        app.UseStaticFiles();
+    }
 }

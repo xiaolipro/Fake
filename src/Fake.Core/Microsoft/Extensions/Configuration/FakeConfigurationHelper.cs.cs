@@ -4,7 +4,7 @@ namespace Microsoft.Extensions.Configuration;
 
 public static class FakeConfigurationHelper
 {
-    public static IConfigurationRoot Build(
+    public static IConfigurationRoot BuildConfiguration(
         FakeConfigurationBuilderOptions options = null,
         Action<IConfigurationBuilder> builderAction = null)
     {
@@ -15,11 +15,12 @@ public static class FakeConfigurationHelper
             options.BasePath = Directory.GetCurrentDirectory();
         }
 
-        // 根据当前环境添加json文件
+        // 添加json文件
         var builder = new ConfigurationBuilder()
             .SetBasePath(options.BasePath)
             .AddJsonFile(options.FileName + ".json", optional: options.Optional, reloadOnChange: options.ReloadOnChange);
 
+        // 根据当前环境添加json文件
         if (!options.EnvironmentName.IsNullOrEmpty())
         {
             builder = builder.AddJsonFile($"{options.FileName}.{options.EnvironmentName}.json", optional: options.Optional, reloadOnChange: options.ReloadOnChange);

@@ -15,4 +15,8 @@
         <ProjectReference Include="..\Fake.AppTests\Fake.AppTests.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Fake\Timing\" />
+    </ItemGroup>
+
 </Project>

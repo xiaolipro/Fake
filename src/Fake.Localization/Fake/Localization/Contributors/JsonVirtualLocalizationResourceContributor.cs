@@ -7,8 +7,16 @@ using Microsoft.Extensions.Localization;
 
 namespace Fake.Localization.Contributors;
 
-public class JsonVirtualLocalizationResourceContributor:AbstractVirtualFileLocalizationResourceContributor
+public class JsonVirtualLocalizationResourceContributor : AbstractVirtualFileLocalizationResourceContributor
 {
+    private static readonly JsonSerializerOptions DeserializeOptions = new JsonSerializerOptions
+    {
+        PropertyNameCaseInsensitive = true, // 属性名称不区分大小写
+        DictionaryKeyPolicy = JsonNamingPolicy.CamelCase, // 字典key使用驼峰命名
+        ReadCommentHandling = JsonCommentHandling.Skip, // 跳过注释
+        AllowTrailingCommas = true // 允许尾随逗号
+    };
+
     public JsonVirtualLocalizationResourceContributor(string virtualPath) : base(virtualPath)
     {
     }
@@ -17,21 +25,14 @@ public class JsonVirtualLocalizationResourceContributor:AbstractVirtualFileLocal
     {
         return file.Name.EndsWith(".json");
     }
-    
-    private static readonly JsonSerializerOptions DeserializeOptions = new JsonSerializerOptions
-    {
-        PropertyNameCaseInsensitive = true,                // 属性名称不区分大小写
-        DictionaryKeyPolicy = JsonNamingPolicy.CamelCase,  // 字典key使用驼峰命名
-        ReadCommentHandling = JsonCommentHandling.Skip,    // 跳过注释
-        AllowTrailingCommas = true                         // 允许尾随逗号
-    };
 
     protected override ILocalizedStringContainer CreateLocalizedStringContainer(string content, string path)
     {
         JsonVirtualLocalizationResourceFile jsonVirtualFile;
         try
         {
-            jsonVirtualFile = JsonSerializer.Deserialize<JsonVirtualLocalizationResourceFile>(content, DeserializeOptions);
+            jsonVirtualFile =
+                JsonSerializer.Deserialize<JsonVirtualLocalizationResourceFile>(content, DeserializeOptions);
         }
         catch (JsonException ex)
         {
@@ -50,9 +51,9 @@ public class JsonVirtualLocalizationResourceContributor:AbstractVirtualFileLocal
         {
             if (item.Key.IsNullOrWhiteSpace())
             {
-                throw new FakeException(path + "存在空key");
+                throw new FakeException($"{path}存在空key，value是：{item.Value}");
             }
-            
+
             dic[item.Key] = new LocalizedString(item.Key, item.Value);
         }
 
