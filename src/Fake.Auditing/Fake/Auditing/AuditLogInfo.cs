@@ -31,6 +31,8 @@ public class AuditLogInfo
     public List<AuditLogActionInfo> Actions { get; set; }
 
     public List<Exception> Exceptions { get; }
+    
+    public List<EntityChangeInfo> EntityChanges { get; set; }
 
     public AuditLogInfo()
     {

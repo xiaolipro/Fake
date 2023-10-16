@@ -63,19 +63,7 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
     {
         try
         {
-            // 添加领域事件
-            var domainEntities = base.ChangeTracker.Entries<Entity>()
-                .Where(x => x.Entity.DomainEvents != null && x.Entity.DomainEvents.Any())
-                .ToList();
-
-            var domainEvents = domainEntities
-                .SelectMany(x => x.Entity.DomainEvents)
-                .OrderBy(x => x.Order)
-                .ToList();
-
-            domainEntities.ForEach(entity => entity.Entity.ClearDomainEvents());
-
-            domainEvents.ForEach(@event => EventPublisher.Publish(@event));
+            PublishDomainEvents();
 
             return await base.SaveChangesAsync(cancellationToken);
         }
@@ -87,6 +75,22 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
         {
             ChangeTracker.AutoDetectChangesEnabled = true;
         }
+    }
+
+    private void PublishDomainEvents()
+    {
+        var domainEntities = base.ChangeTracker.Entries<Entity>()
+            .Where(x => x.Entity.DomainEvents != null && x.Entity.DomainEvents.Any())
+            .ToList();
+
+        var domainEvents = domainEntities
+            .SelectMany(x => x.Entity.DomainEvents)
+            .OrderBy(x => x.Order)
+            .ToList();
+
+        domainEntities.ForEach(entity => entity.Entity.ClearDomainEvents());
+
+        domainEvents.ForEach(@event => EventPublisher.Publish(@event));
     }
 
     public virtual void Initialize(IUnitOfWork unitOfWork)
