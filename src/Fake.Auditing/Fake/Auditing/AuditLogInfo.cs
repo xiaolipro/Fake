@@ -31,13 +31,14 @@ public class AuditLogInfo
     public List<AuditLogActionInfo> Actions { get; set; }
 
     public List<Exception> Exceptions { get; }
-    
+
     public List<EntityChangeInfo> EntityChanges { get; set; }
 
     public AuditLogInfo()
     {
         Actions = new List<AuditLogActionInfo>();
         Exceptions = new List<Exception>();
+        EntityChanges = new List<EntityChangeInfo>();
     }
 
     public override string ToString()
@@ -58,7 +59,7 @@ public class AuditLogInfo
                 sb.AppendLine($"    {action.Parameters}");
             }
         }
-        
+
         if (Exceptions.Any())
         {
             sb.AppendLine("- Exceptions:");
@@ -66,6 +67,21 @@ public class AuditLogInfo
             {
                 sb.AppendLine($"  - {exception.Message}");
                 sb.AppendLine($"    {exception}");
+            }
+        }
+
+        if (EntityChanges.Any())
+        {
+            sb.AppendLine("- Entity Changes:");
+            foreach (var entityChange in EntityChanges)
+            {
+                sb.AppendLine(
+                    $"  - [{entityChange.ChangeType}] {entityChange.EntityTypeFullName}, Id = {entityChange.EntityId}");
+                foreach (var propertyChange in entityChange.PropertyChanges)
+                {
+                    sb.AppendLine(
+                        $"    {propertyChange.PropertyName}: {propertyChange.OriginalValue} -> {propertyChange.NewValue}");
+                }
             }
         }
 

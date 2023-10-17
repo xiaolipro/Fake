@@ -6,16 +6,16 @@ namespace Fake.Domain.Entities;
 public abstract class Entity : HasDomainEvent, IEntity
 {
     public abstract object[] GetKeys();
-    
+
     public override string ToString()
     {
         return $"[实体: {GetType().Name}] Keys：{string.Join(", ", GetKeys())}";
     }
-    
+
     /// <summary>
     /// 是临时实体
     /// </summary>
-    public bool IsTransient => EntityHelper.IsDefaultKeys(this);
+    public bool IsTransient => EntityHelper.IsTransientEntity(this);
 
     /// <summary>
     /// 实体相等比较
@@ -26,7 +26,6 @@ public abstract class Entity : HasDomainEvent, IEntity
     {
         return EntityHelper.EntityEquals(this, other);
     }
-    
 }
 
 /// <summary>
@@ -34,7 +33,7 @@ public abstract class Entity : HasDomainEvent, IEntity
 /// </summary>
 /// <typeparam name="TKey">实体唯一标识类型</typeparam>
 [Serializable]
-public abstract class Entity<TKey>: Entity, IEntity<TKey>
+public abstract class Entity<TKey> : Entity, IEntity<TKey>
 {
     /// <summary>
     /// 实体唯一标识
@@ -43,21 +42,20 @@ public abstract class Entity<TKey>: Entity, IEntity<TKey>
 
     protected Entity()
     {
-
     }
-    
+
     protected Entity(TKey id)
     {
         Id = id;
     }
 
     public void SetId(TKey id) => Id = id;
-    
+
     public override object[] GetKeys()
     {
         return new object[] { Id };
     }
-    
+
     public override string ToString()
     {
         return $"[实体: {GetType().Name}] Id：{Id}";

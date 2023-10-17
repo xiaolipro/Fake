@@ -109,4 +109,36 @@ public static class FakeStringExtensions
 
         return !str.StartsWith(start, comparisonType);
     }
+
+
+    /// <summary>
+    /// 截取给定长度子串，如果给定长度超出原字符串，则返回原字符串
+    /// </summary>
+    /// <param name="str">原字符串</param>
+    /// <param name="len">给定长度</param>
+    /// <returns></returns>
+    public static string Truncate(this string str, int len)
+    {
+        ThrowHelper.ThrowIfNull(str, nameof(str));
+
+        if (str.Length < len) len = str.Length;
+
+        return str.Substring(0, len);
+    }
+
+
+    /// <summary>
+    /// 截取给定长度子串，如果给定长度超出原字符串，则返回原字符串并用suffix替代超出部分
+    /// </summary>
+    /// <param name="str">原字符串</param>
+    /// <param name="maxLen">给定长度</param>
+    /// <param name="suffix">后缀</param>
+    /// <returns></returns>
+    public static string TruncateWithSuffix(this string str, int maxLen = 64, string suffix = "...")
+    {
+        if (str.IsNullOrEmpty()) return str;
+
+        if (maxLen - suffix.Length <= 0) return str.Truncate(maxLen);
+        return str.Truncate(maxLen - suffix.Length) + suffix;
+    }
 }

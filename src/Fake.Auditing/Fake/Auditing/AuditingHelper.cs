@@ -17,7 +17,8 @@ public class AuditingHelper : IAuditingHelper
     private readonly ILogger<AuditingHelper> _logger;
     private readonly FakeAuditingOptions _options;
 
-    public AuditingHelper(IOptions<FakeAuditingOptions> options, IFakeClock fakeClock, ICurrentUser currentUser,ILogger<AuditingHelper> logger)
+    public AuditingHelper(IOptions<FakeAuditingOptions> options, IFakeClock fakeClock, ICurrentUser currentUser,
+        ILogger<AuditingHelper> logger)
     {
         _fakeClock = fakeClock;
         _currentUser = currentUser;
@@ -36,6 +37,21 @@ public class AuditingHelper : IAuditingHelper
         if (methodInfo.IsDefined(typeof(DisableAuditingAttribute), true)) return false;
 
         if (IsAuditType(methodInfo.DeclaringType)) return true;
+        return false;
+    }
+
+    public bool IsAuditEntity(Type entityType)
+    {
+        if (IsAuditType(entityType)) return true;
+
+        foreach (var propertyInfo in entityType.GetProperties(BindingFlags.Instance | BindingFlags.Public))
+        {
+            if (propertyInfo.IsDefined(typeof(AuditedAttribute)))
+            {
+                return true;
+            }
+        }
+
         return false;
     }
 
@@ -64,6 +80,8 @@ public class AuditingHelper : IAuditingHelper
 
     public static bool IsAuditType(Type type)
     {
+        if (!type.IsPublic) return false;
+
         //TODO：在继承链中，最好先检查顶层类的attributes
         if (type.IsDefined(typeof(AuditedAttribute), true)) return true;
         if (type.IsDefined(typeof(DisableAuditingAttribute), true)) return false;
@@ -71,7 +89,7 @@ public class AuditingHelper : IAuditingHelper
         if (type.IsAssignableTo(typeof(IAuditingEnabled))) return true;
         return false;
     }
-    
+
     protected virtual string SerializeParameter(IReadOnlyDictionary<string, object> actionParameters)
     {
         string defaultParameter = "{}";

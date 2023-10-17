@@ -8,6 +8,7 @@
     <ItemGroup>
       <ProjectReference Include="..\Fake.Core\Fake.Core.csproj" />
       <ProjectReference Include="..\Fake.Identity\Fake.Identity.csproj" />
+      <ProjectReference Include="..\Fake.UnitOfWork\Fake.UnitOfWork.csproj"/>
     </ItemGroup>
 
 </Project>

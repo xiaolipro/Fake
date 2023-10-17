@@ -1,8 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Fake.DynamicProxy;
+using Fake.Identity.Users;
+using Fake.UnitOfWork;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -39,12 +43,16 @@ public class AuditingInterceptor : IFakeInterceptor
             return;
         }
 
-        // 使用新的auditing-scope处理
-        await ProcessWithNewAuditingScopeAsync(invocation, auditingOptions, auditingManager, auditingHelper);
+        // tips：创建新的审计scope，只有此scope会在最终save
+        var currentUser = serviceScope.ServiceProvider.GetRequiredService<ICurrentUser>();
+        var unitOfWorkManager = serviceScope.ServiceProvider.GetRequiredService<IUnitOfWorkManager>();
+        await ProcessWithNewAuditingScopeAsync(invocation, auditingOptions, auditingManager, auditingHelper,
+            currentUser, unitOfWorkManager);
     }
 
     private async Task ProcessWithNewAuditingScopeAsync(IFakeMethodInvocation invocation,
-        FakeAuditingOptions auditingOptions, IAuditingManager auditingManager, IAuditingHelper auditingHelper)
+        FakeAuditingOptions auditingOptions, IAuditingManager auditingManager, IAuditingHelper auditingHelper,
+        ICurrentUser currentUser, IUnitOfWorkManager unitOfWorkManager)
     {
         var hasError = false;
 
@@ -64,19 +72,37 @@ public class AuditingInterceptor : IFakeInterceptor
         }
         finally
         {
-            if (await ShouldSaveAsync(invocation, auditingOptions, auditingManager.Current!.Log, hasError))
+            if (await ShouldSaveAsync(invocation, auditingOptions, auditingManager.Current!.Log, hasError, currentUser))
             {
+                /*
+                 * promise：在save审计前，一定先触发uow的SaveChangesAsync
+                 */
+                if (unitOfWorkManager.Current != null)
+                {
+                    try
+                    {
+                        await unitOfWorkManager.Current.SaveChangesAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        auditingManager.Current.Log.Exceptions.TryAdd(ex);
+                    }
+                }
+
                 await scope.SaveAsync();
             }
         }
     }
 
     private async Task<bool> ShouldSaveAsync(IFakeMethodInvocation invocation, FakeAuditingOptions auditingOptions,
-        AuditLogInfo log, bool hasError)
+        AuditLogInfo log, bool hasError, ICurrentUser currentUser)
     {
         foreach (var selector in auditingOptions.LogSelectors)
         {
-            return await selector(log);
+            if (await selector(log))
+            {
+                return true;
+            }
         }
 
         if (auditingOptions.IsEnabledExceptionLog && hasError)
@@ -84,8 +110,11 @@ public class AuditingInterceptor : IFakeInterceptor
             return true;
         }
 
+        if (!auditingOptions.AllowAnonymous && !currentUser.IsAuthenticated) return false;
+
+
         if (!auditingOptions.IsEnabledGetRequestLog &&
-            invocation.Method.Name.StartsWith("Get", StringComparison.OrdinalIgnoreCase)
+            invocation.Method.Name.StartsWith(HttpMethod.Get.ToString(), StringComparison.OrdinalIgnoreCase)
            )
             return false;
 

@@ -4,11 +4,9 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Fake.EntityFrameworkCore.Auditing;
 
-public interface IEntityAuditingHelper
+public interface IEntityChangeHelper
 {
     List<EntityChangeInfo> CreateChangeList(ICollection<EntityEntry> entityEntries);
-}
-public class EntityAuditingHelper
-{
-    
+
+    void UpdateChangeList(List<EntityChangeInfo> entityChanges);
 }

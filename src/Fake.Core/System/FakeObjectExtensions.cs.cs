@@ -4,6 +4,8 @@ namespace System;
 
 public static class FakeObjectExtensions
 {
+    #region IsIn
+
     /// <summary>
     /// item是否在给定list中
     /// </summary>
@@ -14,6 +16,13 @@ public static class FakeObjectExtensions
     {
         return list.Contains(item);
     }
+
+    public static bool IsIn<T>(this T item, IEnumerable<T> items)
+    {
+        return items.Contains(item);
+    }
+
+    #endregion
 
 
     /// <summary>
@@ -27,7 +36,7 @@ public static class FakeObjectExtensions
     {
         return obj as T;
     }
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static T Cast<T>(this object obj)
         where T : class

@@ -1,10 +1,17 @@
 ﻿using Fake.Helpers;
 using Fake.IDGenerators;
+using JetBrains.Annotations;
 
 namespace Fake.Domain.Entities;
 
 public static class EntityHelper
 {
+    /// <summary>
+    /// 实体相等
+    /// </summary>
+    /// <param name="a"></param>
+    /// <param name="b"></param>
+    /// <returns></returns>
     public static bool EntityEquals(IEntity a, IEntity b)
     {
         if (a == null || b == null) return false;
@@ -14,7 +21,7 @@ public static class EntityHelper
 
         if (a.GetType() != b.GetType()) return false;
 
-        if (IsDefaultKeys(a) || IsDefaultKeys(b)) return false;
+        if (IsTransientEntity(a) || IsTransientEntity(b)) return false;
 
         object[] keysA = a.GetKeys(), keysB = b.GetKeys();
         for (int i = 0; i < keysA.Length; i++)
@@ -24,6 +31,8 @@ public static class EntityHelper
 
         return true;
     }
+
+    #region 临时实体
 
     public static bool IsDefaultKey(object value)
     {
@@ -45,7 +54,7 @@ public static class EntityHelper
         return value.Equals(Activator.CreateInstance(type));
     }
 
-    public static bool IsDefaultKeys(IEntity entity)
+    public static bool IsTransientEntity(IEntity entity)
     {
         foreach (var key in entity.GetKeys())
         {
@@ -57,6 +66,8 @@ public static class EntityHelper
 
         return true;
     }
+
+    #endregion
 
 
     /// <summary>
@@ -70,5 +81,16 @@ public static class EntityHelper
     {
         var ignoreAttributeTypes = checkIgnore ? new[] { typeof(DisableIdGenerationAttribute) } : default;
         ReflectionHelper.TrySetProperty(entity, x => x.Id, idFactory, ignoreAttributeTypes);
+    }
+
+    /// <summary>
+    /// 判断给定类型是不是实体
+    /// </summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
+    public static bool IsEntity([NotNull] Type type)
+    {
+        ThrowHelper.ThrowIfNull(type, nameof(type));
+        return type.IsAssignableTo<IEntity>();
     }
 }

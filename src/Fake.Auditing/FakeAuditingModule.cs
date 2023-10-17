@@ -4,13 +4,15 @@ using System.Linq;
 using Fake.DynamicProxy;
 using Fake.Identity;
 using Fake.Modularity;
+using Fake.UnitOfWork;
 using Microsoft.Extensions.DependencyInjection;
 
 // ReSharper disable once CheckNamespace
 namespace Fake.Auditing;
 
 [DependsOn(typeof(FakeIdentityModule))]
-public class FakeAuditingModule:FakeModule
+[DependsOn(typeof(FakeUnitOfWorkModule))]
+public class FakeAuditingModule : FakeModule
 {
     public override void PreConfigureServices(ServiceConfigurationContext context)
     {
@@ -33,15 +35,22 @@ public class FakeAuditingModule:FakeModule
             options.IsEnabledActionLog = true;
             options.IsEnabledExceptionLog = true;
             options.IsEnabledGetRequestLog = true;
+            options.AllowAnonymous = true;
+            options.EntityChangeOptions = new EntityChangeOptions
+            {
+                IsEnabled = true,
+                ValueMaxLength = 256,
+                IgnoreProperties = new List<string> { "Id" }
+            };
         });
-        
+
         context.Services.AddSingleton(typeof(IAuditingHelper), typeof(AuditingHelper));
         context.Services.AddSingleton(typeof(IAuditingStore), typeof(SimpleAuditingStore));
 
         context.Services.AddTransient<IAuditingManager, AuditingManager>();
         context.Services.AddTransient<AuditingInterceptor>();
     }
-    
+
     private static bool ShouldIntercept(Type type)
     {
         if (DynamicProxyIgnoreTypes.Contains(type)) return false;

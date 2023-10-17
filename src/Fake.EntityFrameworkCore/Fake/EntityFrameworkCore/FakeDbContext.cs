@@ -64,10 +64,9 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
         try
         {
             await BeforeSaveChangesAsync();
-            
+            var res = await base.SaveChangesAsync(cancellationToken);
             PublishDomainEvents();
-
-            return await base.SaveChangesAsync(cancellationToken);
+            return res;
         }
         catch (DbUpdateConcurrencyException ex)
         {
@@ -110,11 +109,10 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
                 }
             }
         }
-        
+
         return Task.CompletedTask;
     }
 
-    public void Initialize(IUnitOfWork unitOfWork)
     public virtual void Initialize(IUnitOfWork unitOfWork)
     {
         // 设置超时时间
@@ -178,8 +176,7 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
 
             // todo: abp在这里重置entity状态，但是重置状态会重新加载数据，为什么要这么做？
             //entry.Reload();
-            
-            // 跳转到Modified状态
+
             ReflectionHelper.TrySetProperty(entityWithSoftDelete, x => x.IsDeleted, () => true);
             AuditPropertySetter.SetModificationProperties(entry.Entity);
         }
