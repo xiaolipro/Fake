@@ -14,32 +14,34 @@ using Microsoft.Extensions.Options;
 
 namespace Fake.EntityFrameworkCore.Auditing;
 
-public class EntityAuditingHelper : IEntityChangeHelper
+public class EntityChangeHelper : IEntityChangeHelper
 {
-    protected IAuditingStore AuditingStore { get; }
+    protected IAuditingManager AuditingManager { get; }
     protected IFakeJsonSerializer JsonSerializer { get; }
     protected FakeAuditingOptions Options { get; }
     protected IAuditingHelper AuditingHelper { get; }
     protected IFakeClock Clock { get; }
 
-    public EntityAuditingHelper(
-        IAuditingStore auditingStore,
+    public EntityChangeHelper(
         IOptions<FakeAuditingOptions> options,
         IFakeClock clock,
         IFakeJsonSerializer jsonSerializer,
-        IAuditingHelper auditingHelper)
+        IAuditingHelper auditingHelper,
+        IAuditingManager auditingManager)
     {
         Clock = clock;
-        AuditingStore = auditingStore;
         JsonSerializer = jsonSerializer;
         AuditingHelper = auditingHelper;
+        AuditingManager = auditingManager;
         Options = options.Value;
     }
 
     #region 创建实体变更集合
 
-    public List<EntityChangeInfo> CreateChangeList(ICollection<EntityEntry> entityEntries)
+    public List<EntityChangeInfo> CreateChangeList(IEnumerable<EntityEntry> entityEntries)
     {
+        if (AuditingManager.Current == null) return null;
+
         var changes = new List<EntityChangeInfo>();
 
         foreach (var entry in entityEntries)
@@ -191,6 +193,10 @@ public class EntityAuditingHelper : IEntityChangeHelper
 
     public void UpdateChangeList(List<EntityChangeInfo> entityChanges)
     {
+        if (entityChanges == null) return;
+        var auditLog = AuditingManager.Current?.Log;
+        if (auditLog == null) return;
+
         foreach (var entityChange in entityChanges)
         {
             entityChange.ChangeTime = GetChangeTime(entityChange);
@@ -198,6 +204,8 @@ public class EntityAuditingHelper : IEntityChangeHelper
             var entityEntry = entityChange.EntityEntry.Cast<EntityEntry>();
             entityChange.EntityId = GetEntityId(entityEntry.Entity);
         }
+
+        auditLog.EntityChanges.AddRange(entityChanges);
     }
 
     protected virtual DateTime GetChangeTime(EntityChangeInfo entityChange)

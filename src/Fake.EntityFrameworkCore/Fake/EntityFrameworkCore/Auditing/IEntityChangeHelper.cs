@@ -1,12 +1,14 @@
 ﻿using System.Collections.Generic;
 using Fake.Auditing;
+using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Fake.EntityFrameworkCore.Auditing;
 
 public interface IEntityChangeHelper
 {
-    List<EntityChangeInfo> CreateChangeList(ICollection<EntityEntry> entityEntries);
+    [CanBeNull]
+    List<EntityChangeInfo> CreateChangeList(IEnumerable<EntityEntry> entityEntries);
 
-    void UpdateChangeList(List<EntityChangeInfo> entityChanges);
+    void UpdateChangeList([CanBeNull] List<EntityChangeInfo> entityChanges);
 }

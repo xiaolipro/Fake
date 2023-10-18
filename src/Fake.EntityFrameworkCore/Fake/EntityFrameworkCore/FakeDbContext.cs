@@ -9,6 +9,7 @@ using Fake.Data;
 using Fake.DependencyInjection;
 using Fake.Domain.Entities;
 using Fake.Domain.Entities.Auditing;
+using Fake.EntityFrameworkCore.Auditing;
 using Fake.EntityFrameworkCore.Modeling;
 using Fake.EntityFrameworkCore.ValueConverters;
 using Fake.EventBus;
@@ -41,6 +42,7 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
     private IGuidGenerator GuidGenerator => ServiceProvider.GetRequiredLazyService<IGuidGenerator>();
     private IEventPublisher EventPublisher => ServiceProvider.GetRequiredLazyService<IEventPublisher>();
     private IAuditPropertySetter AuditPropertySetter => ServiceProvider.GetRequiredLazyService<IAuditPropertySetter>();
+    private IEntityChangeHelper EntityChangeHelper => ServiceProvider.GetRequiredLazyService<IEntityChangeHelper>();
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -63,9 +65,14 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
     {
         try
         {
+            var changes = EntityChangeHelper.CreateChangeList(ChangeTracker.Entries());
+
             await BeforeSaveChangesAsync();
             var res = await base.SaveChangesAsync(cancellationToken);
             PublishDomainEvents();
+
+            // id, time ..
+            EntityChangeHelper.UpdateChangeList(changes);
             return res;
         }
         catch (DbUpdateConcurrencyException ex)
