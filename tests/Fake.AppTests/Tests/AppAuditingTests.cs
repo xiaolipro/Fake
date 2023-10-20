@@ -74,7 +74,6 @@ public abstract class AppAuditingTests<TStartupModule> : AppTestBase<TStartupMod
         order.LastModifierId.ShouldBe(Guid.Empty);
 
         order.SetCancelledStatus();
-        order.SetDescription("ok");
         order = await OrderRepository.UpdateAsync(order);
 
         order.LastModifierId.ShouldBe(CurrentUserId);
