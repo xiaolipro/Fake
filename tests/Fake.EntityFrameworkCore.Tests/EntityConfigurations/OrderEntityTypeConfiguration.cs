@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Domain.Aggregates.BuyerAggregate;
+﻿using Domain.Aggregates.BuyerAggregate;
 using Domain.Aggregates.OrderAggregate;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AppTests.EntityConfigurations
 {
@@ -17,7 +17,7 @@ namespace AppTests.EntityConfigurations
 
             //Address value object persisted as owned entity type supported since EF Core 2.0
             orderConfiguration
-                .OwnsOne(o => o.Address, a => { a.WithOwner(); });
+                .OwnsOne<Address>("Address");
 
             orderConfiguration
                 .Property<Guid?>("_buyerId")
@@ -66,7 +66,7 @@ namespace AppTests.EntityConfigurations
                 .IsRequired(false)
                 .HasForeignKey("_buyerId");
 
-            orderConfiguration.HasOne(o => o.OrderStatus)
+            orderConfiguration.HasOne<OrderStatus>()
                 .WithMany()
                 .HasForeignKey("_orderStatusId");
         }
