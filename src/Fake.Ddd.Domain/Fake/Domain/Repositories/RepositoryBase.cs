@@ -57,7 +57,7 @@ public abstract class RepositoryBase<TEntity> : IRepository<TEntity>
 
     public abstract Task<bool> AnyAsync(Expression<Func<TEntity, bool>> predicate = null, CancellationToken cancellationToken = default);
 
-    public abstract Task<TEntity> AddAsync(TEntity entity, bool autoSave = false,
+    public abstract Task<TEntity> InsertAsync(TEntity entity, bool autoSave = false,
         CancellationToken cancellationToken = default);
 
     public virtual async Task InsertRangeAsync(IEnumerable<TEntity> entities, bool autoSave = false,
@@ -65,7 +65,7 @@ public abstract class RepositoryBase<TEntity> : IRepository<TEntity>
     {
         foreach (var entity in entities)
         {
-            await AddAsync(entity, cancellationToken: cancellationToken);
+            await InsertAsync(entity, cancellationToken: cancellationToken);
         }
 
         if (autoSave) await SaveChangesAsync(cancellationToken);

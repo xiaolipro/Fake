@@ -1,7 +1,18 @@
-﻿namespace System.Collections.Generic;
+﻿using System.Linq.Expressions;
+using Fake;
+
+namespace System.Collections.Generic;
 
 public static class FakeEnumerableExtensions
 {
+    /// <summary>
+    /// 检查给定的集合对象是否没有元素。
+    /// </summary>
+    public static bool IsEmpty<T>([CanBeNull] this IEnumerable<T> source)
+    {
+        return !(source ?? throw new ArgumentNullException(nameof(source))).Any();
+    }
+    
     /// <summary>
     /// 检查给定的集合对象是否为null或没有元素。
     /// </summary>

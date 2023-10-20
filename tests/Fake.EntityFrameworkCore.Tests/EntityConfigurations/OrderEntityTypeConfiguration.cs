@@ -17,16 +17,19 @@ namespace AppTests.EntityConfigurations
 
             //Address value object persisted as owned entity type supported since EF Core 2.0
             orderConfiguration
-                .OwnsOne(o => o.Address, a =>
-                {
-                    a.WithOwner();
-                });
+                .OwnsOne(o => o.Address, a => { a.WithOwner(); });
 
             orderConfiguration
                 .Property<Guid?>("_buyerId")
                 .UsePropertyAccessMode(PropertyAccessMode.Field)
                 .HasColumnName("BuyerId")
                 .IsRequired(false);
+
+            orderConfiguration
+                .Property<DateTime>("_orderDate")
+                .UsePropertyAccessMode(PropertyAccessMode.Field)
+                .HasColumnName("OrderDate")
+                .IsRequired();
 
             orderConfiguration
                 .Property<int>("_orderStatusId")
@@ -40,7 +43,11 @@ namespace AppTests.EntityConfigurations
                 .HasColumnName("PaymentMethodId")
                 .IsRequired(false);
 
-            orderConfiguration.Property<string>("Description").IsRequired(false);
+            orderConfiguration
+                .Property<string>("_description")
+                .UsePropertyAccessMode(PropertyAccessMode.Field)
+                .HasColumnName("Description")
+                .IsRequired(false);
 
             var navigation = orderConfiguration.Metadata.FindNavigation(nameof(Order.OrderItems));
 

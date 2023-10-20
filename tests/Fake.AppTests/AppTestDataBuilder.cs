@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Domain.Aggregates.BuyerAggregate;
 using Domain.Aggregates.OrderAggregate;
+using Fake.Auditing;
 using Fake.Domain.Repositories;
 
 public class AppTestDataBuilder
@@ -19,10 +20,11 @@ public class AppTestDataBuilder
         _buyerRepository = buyerRepository;
     }
 
-    public async Task BuildAsync()
+    [Audited]
+    public virtual async Task BuildAsync()
     {
         var order = BuildOrder();
-        await _orderRepository.AddAsync(order);
+        await _orderRepository.InsertAsync(order);
         //await AddBuyer();
     }
 
@@ -32,9 +34,9 @@ public class AppTestDataBuilder
         buyer.AddPaymentMethod(CardType.Visa, "fakeAlias", "fakeCardNumber",
             "fakeSecurityNumber", "fakeCardHolderName",
             DateTime.Now.AddYears(1), OrderId);
-        await _buyerRepository.AddAsync(buyer);
+        await _buyerRepository.InsertAsync(buyer);
     }
-    
+
     public static Order BuildOrder()
     {
         var street = "fakeStreet";

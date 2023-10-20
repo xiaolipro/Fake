@@ -1,4 +1,5 @@
 ﻿using Fake.Auditing;
+using Fake.EntityFrameworkCore.Auditing;
 using Fake.EntityFrameworkCore.Interceptors;
 using Fake.Modularity;
 using Fake.UnitOfWork;
@@ -16,7 +17,7 @@ public class FakeEntityFrameworkCoreModule : FakeModule
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
         context.Services.AddTransient(typeof(IDbContextProvider<>), typeof(UnitOfWorkDbContextProvider<>));
-        
+        context.Services.AddTransient<IEntityChangeHelper, EntityChangeHelper>();
         context.Services.AddSingleton<FakeDbCommandInterceptor>();
         context.Services.AddSingleton<ICommandFormatter, FakeCommandFormatter>();
     }

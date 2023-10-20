@@ -2,7 +2,7 @@
 
 namespace Microsoft.Extensions.Hosting;
 
-public static class FakeHostingHostBuilderExtensions
+public static class FakeHostBuilderExtensions
 {
     private const string AppSettingsSecretJsonPath = "appsettings.secrets.json";
 

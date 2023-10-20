@@ -139,6 +139,8 @@ public static class FakeStringExtensions
         if (str.IsNullOrEmpty()) return str;
 
         if (maxLen - suffix.Length <= 0) return str.Truncate(maxLen);
+
+        if (str.Length <= maxLen) return str;
         return str.Truncate(maxLen - suffix.Length) + suffix;
     }
 }

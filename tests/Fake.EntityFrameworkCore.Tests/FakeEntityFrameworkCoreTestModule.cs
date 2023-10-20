@@ -47,21 +47,31 @@ public class FakeEntityFrameworkCoreTestModule : FakeModule
 
     public override void PreConfigureApplication(ApplicationConfigureContext context)
     {
-        var ctx = context.ServiceProvider.GetRequiredService<OrderingContext>();
+        var orderingContext = context.ServiceProvider.GetRequiredService<OrderingContext>();
 
-        ctx.Database.EnsureCreated();
-
-        AsyncHelper.RunSync(() => SeedAsync(ctx));
+        using (orderingContext)
+        {
+            AsyncHelper.RunSync(() => SeedAsync(orderingContext));
+        }
     }
 
 
     private async Task SeedAsync(OrderingContext context)
     {
-        var cardTypes = Enumeration.GetAll<CardType>();
-        context.CardTypes.AddRange(cardTypes);
+        await context.Database.EnsureCreatedAsync();
+        await context.Database.MigrateAsync();
+        
+        if (context.CardTypes.IsEmpty())
+        {
+            var cardTypes = Enumeration.GetAll<CardType>();
+            context.CardTypes.AddRange(cardTypes);
+        }
 
-        var orderStatus = Enumeration.GetAll<OrderStatus>();
-        context.OrderStatus.AddRange(orderStatus);
+        if (context.OrderStatus.IsEmpty())
+        {
+            var orderStatus = Enumeration.GetAll<OrderStatus>();
+            context.OrderStatus.AddRange(orderStatus);
+        }
         await context.SaveChangesAsync();
     }
 }

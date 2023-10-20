@@ -4,20 +4,24 @@ using System.Linq;
 using Domain.Aggregates.BuyerAggregate;
 using Domain.Events;
 using Fake;
+using Fake.Auditing;
+using Fake.Domain;
 using Fake.Domain.Entities.Auditing;
 
 namespace Domain.Aggregates.OrderAggregate;
 
+[Audited]
 public class Order : FullAuditedAggregate<Guid, Guid>
 {
+    // DDD Patterns comment
+    // Using private fields, allowed since EF Core 1.1, is a much better encapsulation
+    // aligned with DDD Aggregates and Domain Entities (Instead of properties and property collections)
+    private DateTime _orderDate;
+    
     // Address is a Value Object pattern example persisted as EF Core 2.0 owned entity
     public Address Address { get; private set; }
 
     public Guid? GetBuyerId => _buyerId;
-    
-    // DDD Patterns comment
-    // Using private fields, allowed since EF Core 1.1, is a much better encapsulation
-    // aligned with DDD Aggregates and Domain Entities (Instead of properties and property collections)
     private Guid? _buyerId;
 
     public OrderStatus OrderStatus { get; private set; }
@@ -59,7 +63,7 @@ public class Order : FullAuditedAggregate<Guid, Guid>
     {
         _buyerId = buyerId;
         _paymentMethodId = paymentMethodId;
-        _orderStatusId = OrderStatus.Submitted.Id;
+        _orderStatusId = OrderStatus.AwaitingValidation.Id;
         Address = address;
 
         // Add the OrderStarterDomainEvent to the domain events collection 
@@ -145,7 +149,7 @@ public class Order : FullAuditedAggregate<Guid, Guid>
     {
         if (_orderStatusId != OrderStatus.Paid.Id)
         {
-            //StatusChangeException(OrderStatus.Shipped);
+            StatusChangeException(OrderStatus.Shipped);
         }
 
         _orderStatusId = OrderStatus.Shipped.Id;
@@ -183,7 +187,7 @@ public class Order : FullAuditedAggregate<Guid, Guid>
 
     private void StatusChangeException(OrderStatus orderStatusToChange)
     {
-        throw new BusinessException($"Is not possible to change the order status from {OrderStatus.Name} to {orderStatusToChange.Name}.");
+        throw new DomainException($"Is not possible to change the order status from {OrderStatus.Name} to {orderStatusToChange.Name}.");
     }
 
     public decimal GetTotal()

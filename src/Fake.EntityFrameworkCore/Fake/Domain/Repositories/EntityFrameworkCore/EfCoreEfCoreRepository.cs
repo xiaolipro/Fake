@@ -62,7 +62,7 @@ public class EfCoreEfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntit
         cancellationToken = GetCancellationToken(cancellationToken);
 
         var query = await GetQueryableAsync(isInclude, cancellationToken);
-        
+
         return await query.WhereIf(predicate != null, predicate).FirstOrDefaultAsync(cancellationToken);
     }
 
@@ -122,7 +122,7 @@ public class EfCoreEfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntit
         return await query.WhereIf(predicate != null, predicate).AnyAsync(cancellationToken);
     }
 
-    public override async Task<TEntity> AddAsync(
+    public override async Task<TEntity> InsertAsync(
         TEntity entity,
         bool autoSave = false,
         CancellationToken cancellationToken = default)

@@ -49,7 +49,7 @@ public interface IRepository<TEntity> : IRepository where TEntity : class, IAggr
         CancellationToken cancellationToken = default);
 
     [NotNull]
-    Task<TEntity> AddAsync([NotNull] TEntity entity, bool autoSave = false,
+    Task<TEntity> InsertAsync([NotNull] TEntity entity, bool autoSave = false,
         CancellationToken cancellationToken = default);
 
     Task InsertRangeAsync([NotNull] IEnumerable<TEntity> entities, bool autoSave = false,

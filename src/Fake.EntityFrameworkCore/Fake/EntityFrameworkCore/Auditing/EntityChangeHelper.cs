@@ -103,12 +103,13 @@ public class EntityChangeHelper : IEntityChangeHelper
         var properties = entityEntry.Metadata.GetProperties();
         var isCreated = entityEntry.State == EntityState.Added;
         var isDeleted = IsDeleted(entityEntry);
+        
+        if (IsSoftDeleted(entityEntry)) return propertyChanges;
 
         foreach (var property in properties)
         {
             var propertyEntry = entityEntry.Property(property.Name);
 
-            if (IsSoftDeleted(entityEntry)) continue;
             if (ShouldSaveEntityPropertyChange(propertyEntry))
             {
                 propertyChanges.Add(new EntityPropertyChangeInfo
@@ -172,7 +173,7 @@ public class EntityChangeHelper : IEntityChangeHelper
     {
         if (propertyEntry.Metadata.Name.IsIn(Options.EntityChangeOptions.IgnoreProperties)) return false;
 
-        var propertyInfo = propertyEntry.Metadata.PropertyInfo;
+        var propertyInfo = propertyEntry.Metadata.FieldInfo;
         if (propertyInfo == null) return false;
         if (propertyInfo.IsDefined(typeof(DisableAuditingAttribute), true)) return false;
 
@@ -203,6 +204,52 @@ public class EntityChangeHelper : IEntityChangeHelper
 
             var entityEntry = entityChange.EntityEntry.Cast<EntityEntry>();
             entityChange.EntityId = GetEntityId(entityEntry.Entity);
+            
+            var foreignKeys = entityEntry.Metadata.GetForeignKeys();
+
+            foreach (var foreignKey in foreignKeys)
+            {
+                foreach (var property in foreignKey.Properties)
+                {
+                    var propertyEntry = entityEntry.Property(property.Name);
+                    var propertyChange =
+                        entityChange.PropertyChanges.FirstOrDefault(pc => pc.PropertyName == property.Name);
+
+                    if (propertyChange == null)
+                    {
+                        if (!(propertyEntry.OriginalValue?.Equals(propertyEntry.CurrentValue) ??
+                              propertyEntry.CurrentValue == null))
+                        {
+                            // Add foreign key
+                            entityChange.PropertyChanges.Add(new EntityPropertyChangeInfo
+                            {
+                                NewValue = JsonSerializer.Serialize(propertyEntry.CurrentValue),
+                                OriginalValue = JsonSerializer.Serialize(propertyEntry.OriginalValue),
+                                PropertyName = property.Name,
+                                PropertyTypeFullName = property.ClrType.FullName
+                            });
+                        }
+
+                        continue;
+                    }
+
+                    if (propertyChange.OriginalValue == propertyChange.NewValue)
+                    {
+                        var newValue = JsonSerializer.Serialize(propertyEntry.CurrentValue);
+                        if (newValue == propertyChange.NewValue)
+                        {
+                            // No change
+                            entityChange.PropertyChanges.Remove(propertyChange);
+                        }
+                        else
+                        {
+                            // Update foreign key
+                            propertyChange.NewValue =
+                                newValue.TruncateWithSuffix(Options.EntityChangeOptions.ValueMaxLength);
+                        }
+                    }
+                }
+            }
         }
 
         auditLog.EntityChanges.AddRange(entityChanges);
