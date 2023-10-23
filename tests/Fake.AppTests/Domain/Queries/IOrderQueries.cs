@@ -4,13 +4,14 @@ using System.Threading.Tasks;
 using Domain.Aggregates.OrderAggregate;
 using Fake.Domain.Repositories;
 
-namespace Domain.Aggregates.QueriesRepositories;
+namespace Domain.Queries;
 
-public interface IOrderQueryRepository : INoRootRepository
+public interface IOrderQueries : INoRootRepository
 {
     Task<List<OrderSummary>> GetOrderSummaryAsync(Guid userId);
-    
+
     Task<Order> AddAsync(Order order);
+
     Task AddBySqlAsync(Order order);
 }
 

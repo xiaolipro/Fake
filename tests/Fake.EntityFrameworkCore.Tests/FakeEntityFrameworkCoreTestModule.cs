@@ -1,17 +1,16 @@
 ﻿using Domain.Aggregates.BuyerAggregate;
 using Domain.Aggregates.OrderAggregate;
+using Domain.Repositories;
 using Fake.Domain;
 using Fake.Domain.Repositories;
 using Fake.Domain.Repositories.EntityFrameWorkCore;
 using Fake.EntityFrameworkCore;
-using Fake.EntityFrameworkCore.Interceptors;
 using Fake.Helpers;
 using Fake.Modularity;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Repositories;
 
 [DependsOn(typeof(FakeAppTestModule))]
 [DependsOn(typeof(FakeEntityFrameworkCoreModule))]
@@ -24,9 +23,9 @@ public class FakeEntityFrameworkCoreTestModule : FakeModule
         context.Services.AddTransient(typeof(IRepository<Buyer>),
             typeof(EfCoreEfCoreRepository<OrderingContext, Buyer>));
         context.Services.AddTransient(typeof(IOrderRepository),
-            typeof(OrderEfCoreEfCoreRepository));
+            typeof(OrderRepository));
         context.Services.AddTransient(typeof(IBuyerRepository),
-            typeof(BuyerEfCoreEfCoreRepository));
+            typeof(BuyerRepository));
 
         context.Services.AddDbContextFactory<OrderingContext>(builder =>
         {
@@ -35,8 +34,9 @@ public class FakeEntityFrameworkCoreTestModule : FakeModule
             connection.Open();
             builder.UseSqlite(connection);
 #if DEBUG
-            var sp = context.Services.GetObjectAccessorOrNull<IServiceProvider>();
-            builder.AddInterceptors(sp.Value!.GetRequiredService<FakeDbCommandInterceptor>());
+            builder.EnableSensitiveDataLogging();
+            // var sp = context.Services.GetObjectAccessorOrNull<IServiceProvider>();
+            // builder.AddInterceptors(sp.Value!.GetRequiredService<FakeDbCommandInterceptor>());
 #endif
         });
 
@@ -60,7 +60,7 @@ public class FakeEntityFrameworkCoreTestModule : FakeModule
     {
         await context.Database.EnsureCreatedAsync();
         await context.Database.MigrateAsync();
-        
+
         if (context.CardTypes.IsEmpty())
         {
             var cardTypes = Enumeration.GetAll<CardType>();
@@ -72,6 +72,7 @@ public class FakeEntityFrameworkCoreTestModule : FakeModule
             var orderStatus = Enumeration.GetAll<OrderStatus>();
             context.OrderStatus.AddRange(orderStatus);
         }
+
         await context.SaveChangesAsync();
     }
 }

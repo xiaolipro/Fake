@@ -1,18 +1,17 @@
 ﻿using Domain.Aggregates.OrderAggregate;
-using Domain.Aggregates.QueriesRepositories;
 using Fake.Domain.Repositories.EntityFrameWorkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace Repositories;
+namespace Domain.Queries;
 
-public class OrderQueryRepository : EfCoreNoRootRepository<OrderingContext>, IOrderQueryRepository
+public class OrderQueries : EfCoreNoRootRepository<OrderingContext>, IOrderQueries
 {
     public async Task<List<OrderSummary>> GetOrderSummaryAsync(Guid orderId)
     {
         var context = await GetDbContextAsync();
-        
+
         var res = context.Database.SqlQuery<OrderSummary>(
-            @$"SELECT o.[Id] as ordernumber,o.[CreationTime] as [date],os.[Name] as [status], SUM(oi.units*oi.unitprice) as total
+                @$"SELECT o.[Id] as ordernumber,o.[CreationTime] as [date],os.[Name] as [status], SUM(oi.units*oi.unitprice) as total
                FROM orders o
                LEFT JOIN orderitems oi ON  o.Id = oi.orderid 
                LEFT JOIN orderstatus os on o.OrderStatusId = os.Id
@@ -23,8 +22,8 @@ public class OrderQueryRepository : EfCoreNoRootRepository<OrderingContext>, IOr
 
         return res;
     }
-    
-    
+
+
     public async Task<Order> AddAsync(Order order)
     {
         var context = await GetDbContextAsync();
@@ -35,13 +34,7 @@ public class OrderQueryRepository : EfCoreNoRootRepository<OrderingContext>, IOr
     public async Task AddBySqlAsync(Order order)
     {
         var context = await GetDbContextAsync();
-        
-        await context.Database.ExecuteSqlAsync(@$"CREATE TABLE students (
-                                    id INT PRIMARY KEY,
-                                    name VARCHAR(50),
-                                    age INT,
-                                    gender VARCHAR(10),
-                                    grade VARCHAR(10)
-                                   )");
+
+        await context.Database.ExecuteSqlAsync($"INSERT INTO \"cardtypes\" (\"Name\")VALUES ('Alipay');");
     }
 }

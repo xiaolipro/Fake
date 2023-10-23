@@ -2,9 +2,9 @@
 using Fake.Domain.Repositories.EntityFrameWorkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace Repositories;
+namespace Domain.Repositories;
 
-public class OrderEfCoreEfCoreRepository : EfCoreEfCoreRepository<OrderingContext, Order>, IOrderRepository
+public class OrderRepository : EfCoreEfCoreRepository<OrderingContext, Order>, IOrderRepository
 {
     public async Task<Order> AddAsync(Order order)
     {

@@ -1,34 +1,31 @@
 ﻿using Domain.Aggregates.OrderAggregate;
-using Domain.Aggregates.QueriesRepositories;
-using Fake;
-using Fake.UnitOfWork;
+using Domain.Queries;
 using Microsoft.Extensions.DependencyInjection;
-using Repositories;
 using Shouldly;
 using Xunit;
 
 namespace AppTests;
 
-public class EfCoreNonRootRepositoryTests : AppTestBase<FakeEntityFrameworkCoreTestModule>
+public class NonRootRepositoryTests : AppTestBase<FakeEntityFrameworkCoreTestModule>
 {
-    private readonly IOrderQueryRepository _orderQueryRepository;
+    private readonly IOrderQueries _orderQueries;
     private readonly IOrderRepository _orderRepository;
 
-    public EfCoreNonRootRepositoryTests()
+    public NonRootRepositoryTests()
     {
-        _orderQueryRepository = GetRequiredService<IOrderQueryRepository>();
+        _orderQueries = GetRequiredService<IOrderQueries>();
         _orderRepository = GetRequiredService<IOrderRepository>();
     }
 
     protected override void BeforeAddFakeApplication(IServiceCollection services)
     {
-        services.AddTransient<IOrderQueryRepository, OrderQueryRepository>();
+        services.AddTransient<IOrderQueries, OrderQueries>();
     }
 
     [Fact]
     async Task GetOrderSummaryAsync()
     {
-        var orders = await _orderQueryRepository.GetOrderSummaryAsync(AppTestDataBuilder.OrderId);
+        var orders = await _orderQueries.GetOrderSummaryAsync(AppTestDataBuilder.OrderId);
         orders.Count.ShouldBe(1);
         orders.First().date.ShouldBeLessThanOrEqualTo(FakeClock.Now);
         orders[0].status.ShouldBe(OrderStatus.Submitted.Name);
@@ -45,7 +42,7 @@ public class EfCoreNonRootRepositoryTests : AppTestBase<FakeEntityFrameworkCoreT
         order.SetId(Guid.NewGuid());
         Should.Throw<InvalidOperationException>(async () =>
         {
-            await _orderQueryRepository.AddAsync(order);
+            await _orderQueries.AddAsync(order);
 
             cnt = await _orderRepository.GetCountAsync();
             cnt.ShouldBe(2);
@@ -61,6 +58,6 @@ public class EfCoreNonRootRepositoryTests : AppTestBase<FakeEntityFrameworkCoreT
 
         var order = AppTestDataBuilder.BuildOrder();
         order.SetId(Guid.NewGuid());
-        await _orderQueryRepository.AddBySqlAsync(order);
+        await _orderQueries.AddBySqlAsync(order);
     }
 }
