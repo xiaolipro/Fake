@@ -1,4 +1,6 @@
-﻿using Fake.EntityFrameworkCore.IntegrationEventLog;
+﻿using Fake.Autofac;
+using Fake.EntityFrameworkCore.IntegrationEventLog;
+using Fake.Helpers;
 using Fake.Modularity;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 
+[DependsOn(typeof(FakeAutofacModule))]
 [DependsOn(typeof(FakeEntityFrameworkCoreIntegrationEventLogModule))]
 public class FakeEntityFrameworkCoreIntegrationEventLogTestModule : FakeModule
 {
@@ -28,15 +31,23 @@ public class FakeEntityFrameworkCoreIntegrationEventLogTestModule : FakeModule
 #endif
             /*builder.UseSqlite("FileName=./fake.db");*/
         });
-        
-        context.Services.Replace(new ServiceDescriptor(typeof(IntegrationEventLogContext), typeof(IntegrationEventLogContext),
+
+        context.Services.Replace(new ServiceDescriptor(typeof(IntegrationEventLogContext),
+            typeof(IntegrationEventLogContext),
             ServiceLifetime.Transient));
     }
-    
+
     public override void PreConfigureApplication(ApplicationConfigureContext context)
     {
         var ctx = context.ServiceProvider.GetRequiredService<IntegrationEventLogContext>();
 
-        ctx.Database.EnsureCreated();
+        using (ctx)
+        {
+            AsyncHelper.RunSync(async () =>
+            {
+                await ctx.Database.EnsureCreatedAsync();
+                await ctx.Database.MigrateAsync();
+            });
+        }
     }
 }

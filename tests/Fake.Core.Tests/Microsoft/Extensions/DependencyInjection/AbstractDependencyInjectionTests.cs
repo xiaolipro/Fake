@@ -1,10 +1,9 @@
-﻿using System.Security.Claims;
-using Fake.DependencyInjection;
+﻿using Fake.DependencyInjection;
 using Fake.Testing;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-public abstract class AbstractDependencyInjectionTests:FakeIntegrationTest<DependencyInjectTestModule>
+public abstract class AbstractDependencyInjectionTests : FakeIntegrationTest<DependencyInjectTestModule>
 {
     [Fact]
     public void 单例服务可以跨越瞬态scope()
@@ -17,7 +16,7 @@ public abstract class AbstractDependencyInjectionTests:FakeIntegrationTest<Depen
         {
             transientService = scope.ServiceProvider.GetRequiredService<MyTransientService>();
             emptyTransientService = scope.ServiceProvider.GetRequiredService<MyEmptyTransientService>();
-        
+
             transientService.DoIt();
             transientService.DoIt();
 
@@ -28,15 +27,15 @@ public abstract class AbstractDependencyInjectionTests:FakeIntegrationTest<Depen
 
             singletonService = transientService.SingletonService;
         }
-        
+
         Assert.Equal(singletonService, GetRequiredService<MySingletonService>());
-        
+
         singletonService.ResolveTransient();
-        
+
         singletonService.TransientInstances.Count.ShouldBe(3);
         singletonService.TransientInstances.ForEach(s => s.IsDisposed.ShouldBeFalse());
         transientService.TransientInstances.ForEach(s => s.IsDisposed.ShouldBeTrue());
-        
+
         emptyTransientService.IsDisposed.ShouldBeTrue();
     }
 
@@ -53,12 +52,12 @@ public abstract class AbstractDependencyInjectionTests:FakeIntegrationTest<Depen
     public class ServiceWithPropertyInject : ITransientDependency
     {
         public MyEmptyTransientService PropertyInjectedServiceWithPublicSet { get; set; }
-        
-        public MyEmptyTransientService PropertyInjectedServiceWithPrivateSet { get;private set; }
-        
-        public MyEmptyTransientService PropertyInjectedServiceWithProtectedSet { get;protected set; }
-        public MyEmptyTransientService PropertyInjectedServiceWithInternalSet { get;internal set; }
-        
+
+        public MyEmptyTransientService PropertyInjectedServiceWithPrivateSet { get; private set; }
+
+        public MyEmptyTransientService PropertyInjectedServiceWithProtectedSet { get; protected set; }
+        public MyEmptyTransientService PropertyInjectedServiceWithInternalSet { get; internal set; }
+
         public static MyEmptyTransientService StaticPropertyInjectedServiceWithPublicSet { get; set; }
     }
 
