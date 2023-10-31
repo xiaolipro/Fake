@@ -41,6 +41,7 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
 
     private IFakeClock FakeClock => ServiceProvider.GetRequiredLazyService<IFakeClock>();
     private GuidGeneratorBase GuidGenerator => ServiceProvider.GetRequiredLazyService<GuidGeneratorBase>();
+    private LongIdGeneratorBase LongIdGenerator => ServiceProvider.GetRequiredLazyService<LongIdGeneratorBase>();
     private IEventPublisher EventPublisher => ServiceProvider.GetRequiredLazyService<IEventPublisher>();
     private IAuditPropertySetter AuditPropertySetter => ServiceProvider.GetRequiredLazyService<IAuditPropertySetter>();
     private IEntityChangeHelper EntityChangeHelper => ServiceProvider.GetRequiredLazyService<IEntityChangeHelper>();
@@ -217,24 +218,30 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
 
     protected virtual void CheckAndSetId(EntityEntry entry)
     {
+        if (!ShouldSetId(entry)) return;
+
         if (entry.Entity is IEntity<Guid> entityWithGuidId)
         {
-            TrySetGuidId(entry, entityWithGuidId);
+            EntityHelper.TrySetId(entityWithGuidId, () => GuidGenerator.Generate(), true);
         }
 
-        // TODO: 雪花id
+        if (entry.Entity is IEntity<long> entityWithLongId)
+        {
+            EntityHelper.TrySetId(entityWithLongId, () => LongIdGenerator.Generate(), true);
+        }
     }
 
-    protected virtual void TrySetGuidId(EntityEntry entry, IEntity<Guid> entityWithGuidId)
+
+    protected virtual bool ShouldSetId(EntityEntry entry)
     {
-        if (entityWithGuidId.Id != default) return;
+        if (entry.Entity is not Entity entity) return false;
+
+        if (!entity.IsTransient) return false;
 
         var idProperty = entry.Property(nameof(IEntity<Guid>.Id)).Metadata.PropertyInfo;
 
         var attr = ReflectionHelper.GetAttributeOrDefault<DatabaseGeneratedAttribute>(idProperty);
-        if (attr != null && attr.DatabaseGeneratedOption != DatabaseGeneratedOption.None) return;
-
-        EntityHelper.TrySetId(entityWithGuidId, () => GuidGenerator.Generate(), true);
+        return attr == null || attr.DatabaseGeneratedOption == DatabaseGeneratedOption.None;
     }
 
     protected virtual void TrySetDatabaseProvider(ModelBuilder modelBuilder)
