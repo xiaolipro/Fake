@@ -26,7 +26,11 @@ public class PermissionChecker : IPermissionChecker
     {
         ThrowHelper.ThrowIfNull(permission);
 
-        var permission = await PermissionDefinitionManager.GetOrNullAsync(name);
+        var record = await _permissionRecordStore.GetOrNullAsync(permission);
+
+        if (record == null) return false;
+
+        return true;
     }
 }
 
