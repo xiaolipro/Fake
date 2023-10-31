@@ -14,7 +14,8 @@ using Fake.EntityFrameworkCore.Modeling;
 using Fake.EntityFrameworkCore.ValueConverters;
 using Fake.EventBus;
 using Fake.Helpers;
-using Fake.IDGenerators;
+using Fake.IdGenerators;
+using Fake.IdGenerators.GuidGenerator;
 using Fake.Timing;
 using Fake.UnitOfWork;
 using JetBrains.Annotations;
@@ -39,7 +40,7 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
     }
 
     private IFakeClock FakeClock => ServiceProvider.GetRequiredLazyService<IFakeClock>();
-    private IGuidGenerator GuidGenerator => ServiceProvider.GetRequiredLazyService<IGuidGenerator>();
+    private GuidGeneratorBase GuidGenerator => ServiceProvider.GetRequiredLazyService<GuidGeneratorBase>();
     private IEventPublisher EventPublisher => ServiceProvider.GetRequiredLazyService<IEventPublisher>();
     private IAuditPropertySetter AuditPropertySetter => ServiceProvider.GetRequiredLazyService<IAuditPropertySetter>();
     private IEntityChangeHelper EntityChangeHelper => ServiceProvider.GetRequiredLazyService<IEntityChangeHelper>();

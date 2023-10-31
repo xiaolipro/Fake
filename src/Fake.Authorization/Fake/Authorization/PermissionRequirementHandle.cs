@@ -1,16 +1,18 @@
 ﻿using System.Threading.Tasks;
+using Fake.Authorization.Permissions;
 using Microsoft.AspNetCore.Authorization;
 
-namespace Fake.Authorization.Permissions;
+namespace Fake.Authorization;
 
 public class PermissionRequirementHandle : AuthorizationHandler<PermissionRequirement>
 {
     private readonly IPermissionChecker _permissionChecker;
+
     public PermissionRequirementHandle(IPermissionChecker permissionChecker)
     {
         _permissionChecker = permissionChecker;
     }
-    
+
     protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context,
         PermissionRequirement requirement)
     {

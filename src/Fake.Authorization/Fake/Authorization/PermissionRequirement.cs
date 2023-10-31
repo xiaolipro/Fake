@@ -1,13 +1,16 @@
 ﻿using JetBrains.Annotations;
 using Microsoft.AspNetCore.Authorization;
 
-namespace Fake.Authorization.Permissions;
+namespace Fake.Authorization;
 
 /// <summary>
-///     权限
+/// 权限Requirement
 /// </summary>
 public class PermissionRequirement : IAuthorizationRequirement
 {
+    public bool RequiresAll { get; }
+    public string[] Permissions { get; }
+
     public PermissionRequirement([NotNull] params string[] permissions)
     {
         Permissions = permissions;
@@ -18,7 +21,4 @@ public class PermissionRequirement : IAuthorizationRequirement
         RequiresAll = requiresAll;
         Permissions = permissions;
     }
-
-    public bool RequiresAll { get; }
-    public string[] Permissions { get; }
 }

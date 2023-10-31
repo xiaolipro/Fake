@@ -2,11 +2,11 @@
 
 namespace Fake.Json.SystemTextJson.Modifiers;
 
-public class FakeSystemTextJsonModifiersOption
+public class FakeSystemTextJsonModifiersOptions
 {
     public List<Action<JsonTypeInfo>> Modifiers { get; }
 
-    public FakeSystemTextJsonModifiersOption()
+    public FakeSystemTextJsonModifiersOptions()
     {
         Modifiers = new List<Action<JsonTypeInfo>>();
     }

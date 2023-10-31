@@ -2,7 +2,9 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Fake.DependencyInjection;
-using Fake.IDGenerators;
+using Fake.IdGenerators;
+using Fake.IdGenerators.GuidGenerator;
+using Fake.IdGenerators.Snowflake;
 using Fake.Json;
 using Fake.Json.SystemTextJson;
 using Fake.Json.SystemTextJson.Converters;
@@ -24,7 +26,7 @@ public class FakeCoreModule : FakeModule
         context.Services.AddTransient(typeof(IAmbientScopeProvider<>), typeof(AmbientScopeProvider<>));
         context.Services.AddTransient<ICancellationTokenProvider, NullCancellationTokenProvider>();
         context.Services.AddTransient<ILazyServiceProvider, LazyServiceProvider>();
-        
+
         ConfigureClock(context);
 
         ConfigureSystemTextJson(context);
@@ -49,7 +51,7 @@ public class FakeCoreModule : FakeModule
         context.Services.AddTransient<FakeBooleanConverter>();
         context.Services.AddTransient<FakeLongConverter>();
         context.Services.AddTransient<FakeDefaultJsonTypeInfoResolver>();
-        context.Services.AddOptions<FakeSystemTextJsonModifiersOption>()
+        context.Services.AddOptions<FakeSystemTextJsonModifiersOptions>()
             .Configure<IServiceProvider>((option, provider) =>
             {
                 option.Modifiers.Add(new FakeDateTimeConverterModifier().CreateModifyAction(provider));
@@ -82,12 +84,20 @@ public class FakeCoreModule : FakeModule
 
     private static void ConfigureIdGenerator(ServiceConfigurationContext context)
     {
-        context.Services.AddTransient<IGuidGenerator, SequentialGuidGenerator>();
-        // 请注意数据库适配问题
-        context.Services.Configure<SequentialGuidGeneratorOptions>(options =>
+        // 请注意数据库适配问题，默认生成的有序guid是SequentialAsBinaryAtEnd类型的（SQLSERVER友好的）
+        context.Services.AddSingleton<GuidGeneratorBase>(_ =>
+            new SequentialGuidGenerator(SequentialGuidType.SequentialAsString));
+
+        // 雪花Id
+        context.Services.AddSingleton<LongIdGeneratorBase, SnowflakeIdGenerator>();
+        context.Services.AddSingleton<IWorkerProvider, DefaultWorkerProvider>();
+        context.Services.Configure<SnowflakeIdGeneratorOptions>(options =>
         {
-            // 默认生成的有序guid是SequentialAsBinaryAtEnd类型的（SQLSERVER友好的）
-            options.SequentialGuidType = SequentialGuidType.SequentialAsString;
+            options.StartTime = new DateTime(2022, 1, 1);
+            // tips: ms精度41位可用34年
+            options.TimestampType = TimestampType.Milliseconds;
+            options.SequenceBits = 12;
+            options.WorkerIdBits = 10;
         });
     }
 }
