@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using Fake.Identity.Authorization;
+using Fake.Authorization;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,21 +8,22 @@ using Microsoft.Extensions.Options;
 
 namespace Fake.AspNetCore.ExceptionHandling;
 
-public class DefaultAuthorizationExceptionHandler:IAuthorizationExceptionHandler
+public class DefaultAuthorizationExceptionHandler : IAuthorizationExceptionHandler
 {
     public async Task HandleAsync(FakeAuthorizationException exception, HttpContext httpContext)
     {
         var serviceProvider = httpContext.RequestServices;
-        var handlerOptions = serviceProvider.GetRequiredService<IOptions<FakeAuthorizationExceptionHandlerOptions>>().Value;
+        var handlerOptions = serviceProvider.GetRequiredService<IOptions<FakeAuthorizationExceptionHandlerOptions>>()
+            .Value;
         var authenticationSchemeProvider = serviceProvider.GetRequiredService<IAuthenticationSchemeProvider>();
-        
+
         AuthenticationScheme scheme;
         var isAuthenticated = httpContext.User.Identity?.IsAuthenticated ?? false;
-        
+
         if (handlerOptions.AuthenticationScheme.NotBeNullOrWhiteSpace())
         {
             scheme = await authenticationSchemeProvider.GetSchemeAsync(handlerOptions.AuthenticationScheme);
-            
+
             if (scheme is null)
             {
                 throw new FakeException($"找不到鉴权方案{handlerOptions.AuthenticationScheme}.");
@@ -47,7 +48,7 @@ public class DefaultAuthorizationExceptionHandler:IAuthorizationExceptionHandler
                 }
             }
         }
-        
+
         var handlers = serviceProvider.GetRequiredService<IAuthenticationHandlerProvider>();
         var handler = await handlers.GetHandlerAsync(httpContext, scheme.Name);
 
@@ -55,7 +56,7 @@ public class DefaultAuthorizationExceptionHandler:IAuthorizationExceptionHandler
         {
             throw new FakeException($"找不到{scheme.Name}的handler.");
         }
-        
+
         if (isAuthenticated)
         {
             await handler.ForbidAsync(null);

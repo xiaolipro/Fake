@@ -9,6 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Fake.Autofac\Fake.Autofac.csproj"/>
       <ProjectReference Include="..\Fake.Core\Fake.Core.csproj" />
     </ItemGroup>
 

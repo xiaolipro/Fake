@@ -1,7 +1,7 @@
 using System;
 using System.Net;
+using Fake.Authorization;
 using Fake.ExceptionHandling;
-using Fake.Identity.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
@@ -15,6 +15,7 @@ public class DefaultHttpExceptionStatusCodeFinder : IHttpExceptionStatusCodeFind
     {
         _options = options.Value;
     }
+
     public virtual HttpStatusCode Find(HttpContext httpContext, Exception exception)
     {
         if (exception is IHasErrorCode exceptionWithErrorCode)
@@ -36,7 +37,7 @@ public class DefaultHttpExceptionStatusCodeFinder : IHttpExceptionStatusCodeFind
                 ? HttpStatusCode.Forbidden
                 : HttpStatusCode.Unauthorized;
         }
-        
+
         if (exception is NotImplementedException) return HttpStatusCode.NotImplemented;
 
         if (exception is BusinessException) return HttpStatusCode.BadRequest;

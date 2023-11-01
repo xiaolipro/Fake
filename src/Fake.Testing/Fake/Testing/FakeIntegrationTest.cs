@@ -50,6 +50,7 @@ public abstract class FakeIntegrationTest<TStartupModule> : FakeTestBase, IDispo
 
     protected virtual void SetApplicationCreationOptions(FakeApplicationCreationOptions options)
     {
+        options.UseAutofac();
     }
 
     protected virtual IServiceProvider CreateServiceProvider(IServiceCollection services)

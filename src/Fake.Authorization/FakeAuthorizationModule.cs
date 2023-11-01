@@ -35,6 +35,9 @@ public class FakeAuthorizationModule : FakeModule
                 .Add<FakeAuthorizationResource>("zh")
                 .LoadVirtualJson("/Localization");
         });
+
+        context.Services.AddTransient<AuthorizationInterceptor>();
+        context.Services.AddTransient<IMethodAuthorizationService, MethodAuthorizationService>();
     }
 
     private static bool ShouldIntercept(Type type)
