@@ -54,13 +54,8 @@ public class FakeExceptionHandlingMiddleware : IMiddleware
             {
                 await HandleAndWrapException(context, ex);
             }
-        }
-
-        try
-        {
-        }
-        finally
-        {
+            
+            throw;
         }
     }
 

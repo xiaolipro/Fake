@@ -21,6 +21,6 @@ public class AuthorizationInterceptor : IFakeInterceptor
             return;
         }
 
-        throw new FakeAuthorizationException(code: FakeAuthorizationResource.GivenPolicyHasNotGranted);
+        throw new FakeAuthorizationException(FakeAuthorizationResource.GivenPolicyHasNotGranted);
     }
 }
