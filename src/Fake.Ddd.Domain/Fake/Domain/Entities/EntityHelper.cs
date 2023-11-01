@@ -1,5 +1,5 @@
 ﻿using Fake.Helpers;
-using Fake.IDGenerators;
+using Fake.IdGenerators;
 using JetBrains.Annotations;
 
 namespace Fake.Domain.Entities;

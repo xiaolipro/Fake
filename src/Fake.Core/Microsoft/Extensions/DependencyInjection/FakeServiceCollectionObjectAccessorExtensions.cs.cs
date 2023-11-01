@@ -1,4 +1,5 @@
-﻿using Fake.DependencyInjection;
+﻿using Fake;
+using Fake.DependencyInjection;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -13,28 +14,28 @@ public static class FakeServiceCollectionObjectAccessorExtensions
 
         return services.AddObjectAccessor<T>();
     }
-    
+
     public static ObjectAccessor<T> GetObjectAccessorOrNull<T>(this IServiceCollection services)
         where T : class
     {
         return services.GetInstanceOrNull<ObjectAccessor<T>>();
     }
-    
+
     public static ObjectAccessor<T> AddObjectAccessor<T>(this IServiceCollection services)
     {
         return services.AddObjectAccessor(new ObjectAccessor<T>());
     }
-    
+
     public static ObjectAccessor<T> AddObjectAccessor<T>(this IServiceCollection services, T obj)
     {
         return services.AddObjectAccessor(new ObjectAccessor<T>(obj));
     }
-    
+
     public static ObjectAccessor<T> AddObjectAccessor<T>(this IServiceCollection services, ObjectAccessor<T> accessor)
     {
         if (services.Any(s => s.ServiceType == typeof(ObjectAccessor<T>)))
         {
-            throw new Exception($"已经注册过: {typeof(T).AssemblyQualifiedName} 的 {nameof(ObjectAccessor<T>)} 了");
+            throw new FakeException($"已经注册过: {typeof(T).AssemblyQualifiedName} 的 {nameof(ObjectAccessor<T>)} 了");
         }
 
         //Add to the beginning for fast retrieve

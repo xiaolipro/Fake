@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using Fake.Identity.Authorization;
+using Fake.Authorization;
 using Microsoft.AspNetCore.Http;
 
 namespace Fake.AspNetCore.ExceptionHandling;

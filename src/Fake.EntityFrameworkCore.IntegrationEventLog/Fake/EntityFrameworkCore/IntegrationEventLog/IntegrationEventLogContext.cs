@@ -5,14 +5,18 @@ namespace Fake.EntityFrameworkCore.IntegrationEventLog;
 
 public class IntegrationEventLogContext : FakeDbContext<IntegrationEventLogContext>
 {
+    public DbSet<IntegrationEventLogEntry> IntegrationEventLogs { get; set; }
+
     public IntegrationEventLogContext(DbContextOptions<IntegrationEventLogContext> options) : base(options)
     {
+        System.Diagnostics.Debug.WriteLine("IntegrationEventLogContext::ctor ->" + base.GetHashCode());
     }
 
-    public DbSet<IntegrationEventLogEntry> IntegrationEventLogs { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
+        base.OnModelCreating(builder);
+
         builder.Entity<IntegrationEventLogEntry>(ConfigureIntegrationEventLogEntry);
     }
 

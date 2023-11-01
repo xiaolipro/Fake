@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Domain.Aggregates.BuyerAggregate;
 using Domain.Events;
-using Fake;
 using Fake.Auditing;
 using Fake.Domain;
 using Fake.Domain.Entities.Auditing;
@@ -17,7 +16,7 @@ public class Order : FullAuditedAggregate<Guid, Guid>
     // Using private fields, allowed since EF Core 1.1, is a much better encapsulation
     // aligned with DDD Aggregates and Domain Entities (Instead of properties and property collections)
     private DateTime _orderDate;
-    
+
     // Address is a Value Object pattern example persisted as EF Core 2.0 owned entity
     public Address Address { get; private set; }
 
@@ -28,7 +27,6 @@ public class Order : FullAuditedAggregate<Guid, Guid>
     private int _orderStatusId;
 
     private string _description;
-
 
 
     // Draft orders have this set to true. Currently we don't check anywhere the draft status of an Order, but we could do it if needed
@@ -58,12 +56,13 @@ public class Order : FullAuditedAggregate<Guid, Guid>
         _isDraft = false;
     }
 
-    public Order(Guid userId, string userName, Address address, CardType cardType, string cardNumber, string cardSecurityNumber,
-            string cardHolderName, DateTime cardExpiration, Guid? buyerId = null, Guid? paymentMethodId = null) : this()
+    public Order(Guid userId, string userName, Address address, CardType cardType, string cardNumber,
+        string cardSecurityNumber,
+        string cardHolderName, DateTime cardExpiration, Guid? buyerId = null, Guid? paymentMethodId = null) : this()
     {
         _buyerId = buyerId;
         _paymentMethodId = paymentMethodId;
-        _orderStatusId = OrderStatus.AwaitingValidation.Id;
+        _orderStatusId = OrderStatus.Submitted.Id;
         Address = address;
 
         // Add the OrderStarterDomainEvent to the domain events collection 
@@ -79,7 +78,8 @@ public class Order : FullAuditedAggregate<Guid, Guid>
     // This Order AggregateRoot's method "AddOrderitem()" should be the only way to add Items to the Order,
     // so any behavior (discounts, etc.) and validations are controlled by the AggregateRoot 
     // in order to maintain consistency between the whole Aggregate. 
-    public void AddOrderItem(int productId, string productName, decimal unitPrice, decimal discount, string pictureUrl, int units = 1)
+    public void AddOrderItem(int productId, string productName, decimal unitPrice, decimal discount, string pictureUrl,
+        int units = 1)
     {
         var existingOrderForProduct = _orderItems.Where(o => o.ProductId == productId)
             .SingleOrDefault();
@@ -141,7 +141,8 @@ public class Order : FullAuditedAggregate<Guid, Guid>
             AddDomainEvent(new OrderStatusChangedToPaidDomainEvent(Id, OrderItems));
 
             _orderStatusId = OrderStatus.Paid.Id;
-            _description = "The payment was performed at a simulated \"American Bank checking bank account ending on XX35071\"";
+            _description =
+                "The payment was performed at a simulated \"American Bank checking bank account ending on XX35071\"";
         }
     }
 
@@ -187,7 +188,8 @@ public class Order : FullAuditedAggregate<Guid, Guid>
 
     private void StatusChangeException(OrderStatus orderStatusToChange)
     {
-        throw new DomainException($"Is not possible to change the order status from {OrderStatus.Name} to {orderStatusToChange.Name}.");
+        throw new DomainException(
+            $"Is not possible to change the order status from {OrderStatus.Name} to {orderStatusToChange.Name}.");
     }
 
     public decimal GetTotal()

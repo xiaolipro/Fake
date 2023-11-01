@@ -2,7 +2,7 @@
 
 namespace Fake.UnitOfWork;
 
-public class UnitOfWorkContext:ICloneable<UnitOfWorkContext>
+public class UnitOfWorkContext : ICloneable<UnitOfWorkContext>
 {
     /// <summary>
     /// 是否具有事务性
@@ -18,7 +18,7 @@ public class UnitOfWorkContext:ICloneable<UnitOfWorkContext>
     /// 超时时间
     /// </summary>
     public int Timeout { get; set; }
-    
+
 
     public UnitOfWorkContext Clone()
     {
