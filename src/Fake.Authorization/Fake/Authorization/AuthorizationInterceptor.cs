@@ -1,20 +1,26 @@
-﻿using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Fake.Authorization.Localization;
 using Fake.DynamicProxy;
-using Microsoft.AspNetCore.Authorization;
+using Fake.Identity.Authorization;
 
 namespace Fake.Authorization;
 
 public class AuthorizationInterceptor : IFakeInterceptor
 {
-    public virtual async Task InterceptAsync(IFakeMethodInvocation invocation)
+    private readonly IMethodAuthorizationService _methodAuthorizationService;
+
+    public AuthorizationInterceptor(IMethodAuthorizationService methodAuthorizationService)
     {
-        if (AllowAnonymous(invocation.Method)) return;
+        _methodAuthorizationService = methodAuthorizationService;
     }
 
-    protected virtual bool AllowAnonymous(MethodInfo method)
+    public virtual async Task InterceptAsync(IFakeMethodInvocation invocation)
     {
-        return method.GetCustomAttributes(true).OfType<IAllowAnonymous>().Any();
+        if (await _methodAuthorizationService.IsGrantedAsync(invocation.Method))
+        {
+            await invocation.ProcessAsync();
+        }
+
+        throw new FakeAuthorizationException(code: FakeAuthorizationResource.GivenPolicyHasNotGranted);
     }
 }
