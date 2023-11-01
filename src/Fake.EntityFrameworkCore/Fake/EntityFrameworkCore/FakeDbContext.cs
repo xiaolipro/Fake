@@ -53,6 +53,7 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
 
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())
         {
+            entityType.AddIgnored(nameof(IEntity.DomainEvents));
             ConfigureBasePropertiesMethodInfo
                 .MakeGenericMethod(entityType.ClrType)
                 .Invoke(this, new object[] { modelBuilder, entityType });
