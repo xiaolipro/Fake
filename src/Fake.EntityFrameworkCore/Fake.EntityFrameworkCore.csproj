@@ -8,10 +8,7 @@
     </PropertyGroup>
     
     <ItemGroup>
-        <ProjectReference Include="..\Fake.Auditing\Fake.Auditing.csproj" />
-        <ProjectReference Include="..\Fake.Core\Fake.Core.csproj" />
         <ProjectReference Include="..\Fake.Ddd.Domain\Fake.Ddd.Domain.csproj" />
-        <ProjectReference Include="..\Fake.UnitOfWork\Fake.UnitOfWork.csproj" />
 
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="$(MicrosoftEntityFrameworkCorePackageVersion)" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="$(MicrosoftEntityFrameworkCorePackageVersion)" />
