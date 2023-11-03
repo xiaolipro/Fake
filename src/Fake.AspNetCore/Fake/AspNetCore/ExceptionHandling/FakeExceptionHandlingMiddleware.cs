@@ -50,12 +50,7 @@ public class FakeExceptionHandlingMiddleware : IMiddleware
                 throw;
             }
 
-            if (context.Items["_FakeActionInfo"] is FakeMvcActionInfo { IsObjectResult: true })
-            {
-                await HandleAndWrapException(context, ex);
-            }
-            
-            throw;
+            await HandleAndWrapException(context, ex);
         }
     }
 
