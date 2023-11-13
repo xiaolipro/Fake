@@ -1,4 +1,5 @@
 ﻿using Fake.Modularity;
+using Microsoft.Extensions.Configuration;
 
 namespace Fake;
 
@@ -8,6 +9,11 @@ public interface IFakeApplication : IServiceProviderAccessor, IModuleContainer, 
     /// 启动模块的类型
     /// </summary>
     Type StartupModuleType { get; }
+
+    /// <summary>
+    /// 程序配置
+    /// </summary>
+    IConfiguration Configuration { get; }
 
     /// <summary>
     /// 服务容器。应用程序初始化后，无法将新服务添加到此容器。
