@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Reflection;
 using Fake.DependencyInjection;
+using Fake.IdGenerators.GuidGenerator;
 using Fake.Logging;
 using Fake.Modularity;
 using Fake.Reflection;
@@ -14,7 +15,7 @@ public class FakeApplication : IFakeApplication
 {
     public IReadOnlyList<IModuleDescriptor> Modules { get; }
     public string ApplicationName { get; }
-    public string ApplicationId { get; } = Guid.NewGuid().ToString();
+    public string ApplicationId { get; } = SimpleGuidGenerator.Instance.GenerateAsString();
 
     public Type StartupModuleType { get; }
 

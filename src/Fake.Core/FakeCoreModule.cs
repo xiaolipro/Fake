@@ -89,6 +89,7 @@ public class FakeCoreModule : FakeModule
             new SequentialGuidGenerator(SequentialGuidType.SequentialAsString));
 
         // 雪花Id
+        context.Services.AddSingleton<SnowflakeIdGenerator>();
         context.Services.AddSingleton<LongIdGeneratorBase, SnowflakeIdGenerator>();
         context.Services.AddSingleton<IWorkerProvider, DefaultWorkerProvider>();
         context.Services.Configure<SnowflakeIdGeneratorOptions>(options =>
