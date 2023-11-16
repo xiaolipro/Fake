@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Fake.Data;
 using Fake.DependencyInjection;
+using Fake.Domain;
 using Fake.Domain.Entities;
 using Fake.Domain.Entities.Auditing;
 using Fake.EntityFrameworkCore.Auditing;
@@ -291,9 +292,17 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
         var entityType = mutableEntityType.ClrType;
         if (entityType.IsDefined(typeof(OwnedAttribute), true)) return;
 
+        var properties = mutableEntityType.GetProperties().ToList();
+
+        foreach (var property in properties.Where(p =>
+                     p.PropertyInfo?.PropertyType.IsAssignableTo<Enumeration>() ?? false))
+        {
+            modelBuilder.Entity(entityType).Property(property.Name).HasConversion(new FakeEnumerationValueConverter());
+        }
+
         if (!entityType.IsDefined(typeof(DisableClockNormalizationAttribute)))
         {
-            var dateTimeProperties = mutableEntityType.GetProperties()
+            var dateTimeProperties = properties
                 .Where(p =>
                 {
                     var propertyInfo = p.PropertyInfo;

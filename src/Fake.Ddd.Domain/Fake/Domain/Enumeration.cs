@@ -26,6 +26,16 @@ public abstract class Enumeration : IComparable
         return Id == enumeration.Id;
     }
 
+    public static bool operator ==(Enumeration obj1, Enumeration obj2)
+    {
+        return obj1.Equals(obj2);
+    }
+
+    public static bool operator !=(Enumeration obj1, Enumeration obj2)
+    {
+        return !(obj1 == obj2);
+    }
+
     public override int GetHashCode()
     {
         return Id.GetHashCode();

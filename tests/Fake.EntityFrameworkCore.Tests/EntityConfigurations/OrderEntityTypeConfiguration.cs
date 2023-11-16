@@ -1,5 +1,6 @@
 ﻿using Domain.Aggregates.BuyerAggregate;
 using Domain.Aggregates.OrderAggregate;
+using Fake.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -15,7 +16,7 @@ namespace AppTests.EntityConfigurations
 
             //Address value object persisted as owned entity type supported since EF Core 2.0
             orderConfiguration
-                .OwnsOne<Address>("Address");
+                .OwnsOne<Address>(o => o.Address);
 
             orderConfiguration
                 .Property<Guid?>("_buyerId")
@@ -30,10 +31,10 @@ namespace AppTests.EntityConfigurations
                 .IsRequired();
 
             orderConfiguration
-                .Property<int>("_orderStatusId")
-                .UsePropertyAccessMode(PropertyAccessMode.Field)
-                .HasColumnName("OrderStatusId")
-                .IsRequired();
+                .Property(o => o.OrderStatus)
+                .IsRequired()
+                .HasConversion(x => x.Id,
+                    x => Enumeration.FromValue<OrderStatus>(x));
 
             orderConfiguration
                 .Property<Guid?>("_paymentMethodId")
@@ -63,10 +64,6 @@ namespace AppTests.EntityConfigurations
                 .WithMany()
                 .IsRequired(false)
                 .HasForeignKey("_buyerId");
-
-            orderConfiguration.HasOne<OrderStatus>()
-                .WithMany()
-                .HasForeignKey("_orderStatusId");
         }
     }
 }

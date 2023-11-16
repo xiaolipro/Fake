@@ -27,7 +27,7 @@ public static class ReflectionHelper
             if (propertySelector.Body.NodeType != ExpressionType.MemberAccess) return null;
 
             var memberExpression = propertySelector.Body.Cast<MemberExpression>();
-            
+
             var propertyInfo = obj.GetType().GetProperties().FirstOrDefault(x =>
                 x.Name == memberExpression.Member.Name &&
                 x.GetSetMethod(true) != null);
@@ -52,8 +52,8 @@ public static class ReflectionHelper
     /// <param name="includeDeclaringType">从定义类型上寻找</param>
     /// <typeparam name="TAttribute"></typeparam>
     /// <returns></returns>
-    public static TAttribute GetAttributeOrDefault<TAttribute>(MemberInfo memberInfo,
-        TAttribute defaultValue = default, bool inherit = true, bool includeDeclaringType = false)
+    public static TAttribute? GetAttributeOrDefault<TAttribute>(MemberInfo memberInfo,
+        TAttribute? defaultValue = default, bool inherit = true, bool includeDeclaringType = false)
         where TAttribute : Attribute
     {
         //Get attribute on the member
@@ -76,12 +76,12 @@ public static class ReflectionHelper
     /// <typeparam name="TInstance"></typeparam>
     /// <returns></returns>
     [CanBeNull]
-    public static TInstance CreateInstance<TInstance>(Type type) where TInstance: class
+    public static TInstance CreateInstance<TInstance>(Type type) where TInstance : class
     {
         //TODO: 可以优化
         return Activator.CreateInstance(type) as TInstance;
     }
-    
+
     /// <summary>
     /// 获取成员类型
     /// </summary>
@@ -98,8 +98,8 @@ public static class ReflectionHelper
             return methodInfo.ReturnType;
         if (member is FieldInfo fieldInfo)
             return fieldInfo.FieldType;
-        if ((object) member == null)
-            throw new ArgumentNullException(nameof (member));
-        throw new ArgumentOutOfRangeException(nameof (member));
+        if ((object)member == null)
+            throw new ArgumentNullException(nameof(member));
+        throw new ArgumentOutOfRangeException(nameof(member));
     }
 }
