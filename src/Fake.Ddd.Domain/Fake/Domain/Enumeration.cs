@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Concurrent;
 using System.Reflection;
 
 namespace Fake.Domain;
@@ -8,8 +8,10 @@ namespace Fake.Domain;
 /// </summary>
 public abstract class Enumeration : IComparable
 {
-    public int Id { get; private set; }
+    public int Id { get; }
     public string Name { get; private set; }
+
+    private static readonly ConcurrentDictionary<Type, IEnumerable<object>> _cache = new();
 
     protected Enumeration(int id, string name)
     {
@@ -17,7 +19,7 @@ public abstract class Enumeration : IComparable
         Name = name;
     }
 
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         if (obj is not Enumeration enumeration) return false;
 
@@ -26,12 +28,12 @@ public abstract class Enumeration : IComparable
         return Id == enumeration.Id;
     }
 
-    public static bool operator ==(Enumeration obj1, Enumeration obj2)
+    public static bool operator ==(Enumeration obj1, Enumeration? obj2)
     {
         return obj1.Equals(obj2);
     }
 
-    public static bool operator !=(Enumeration obj1, Enumeration obj2)
+    public static bool operator !=(Enumeration obj1, Enumeration? obj2)
     {
         return !(obj1 == obj2);
     }
@@ -49,8 +51,7 @@ public abstract class Enumeration : IComparable
     public int CompareTo(object obj)
     {
         var enumeration = obj as Enumeration;
-        Debug.Assert(enumeration != null);
-        return Id.CompareTo(enumeration.Id);
+        return Id.CompareTo(enumeration?.Id);
     }
 
     #region Utils
@@ -58,11 +59,12 @@ public abstract class Enumeration : IComparable
     public static IEnumerable<T> GetAll<T>() where T : Enumeration
     {
         var type = typeof(T);
-        var fields = type.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)
-            .Where(x => x.FieldType == type)
-            .Select(x => x.GetValue(default) as T);
-
-        return fields;
+        return _cache.GetOrAdd(type, () =>
+        {
+            return type.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)
+                .Where(x => x.FieldType == type)
+                .Select(x => x.GetValue(default));
+        }).Cast<T>();
     }
 
     public static T FromValue<T>(int value) where T : Enumeration
