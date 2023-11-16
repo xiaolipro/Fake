@@ -43,8 +43,33 @@ public class SnowflakeIdGeneratorTests : FakeIntegrationTestWithTools<FakeCoreTe
 
 
     [Theory]
+    [InlineData(10000)]
+    void 雪花Id具有单调递增性(int iteratorNum)
+    {
+        var ids = new List<long>(iteratorNum);
+
+        for (int i = 0; i < iteratorNum; i++)
+        {
+            var id = _longIdGenerator.Generate();
+            ids.Add(id);
+        }
+
+        var sorted = true;
+        for (int i = 1; i < ids.Count; i++)
+        {
+            if (ids[i] <= ids[i - 1])
+            {
+                sorted = false;
+                _testOutputHelper.WriteLine($"ids[{i}] {ids[i]} <= ids[{i - 1}] {ids[i - 1]}");
+            }
+        }
+
+        sorted.ShouldBe(true);
+    }
+
+    [Theory]
     [InlineData(6, 10000)]
-    void 雪花Id具有单调递增性(int threadNum, int iteratorNum)
+    void 雪花Id在并发下无法保证全局单调性(int threadNum, int iteratorNum)
     {
         var ids = new List<long>(threadNum * iteratorNum);
 
@@ -58,7 +83,7 @@ public class SnowflakeIdGeneratorTests : FakeIntegrationTestWithTools<FakeCoreTe
         });
 
         var sorted = true;
-        for (int i = 1; i <= ids.Count; i++)
+        for (int i = 1; i < ids.Count; i++)
         {
             if (ids[i] <= ids[i - 1])
             {
@@ -67,6 +92,6 @@ public class SnowflakeIdGeneratorTests : FakeIntegrationTestWithTools<FakeCoreTe
             }
         }
 
-        sorted.ShouldBe(true);
+        sorted.ShouldBe(false);
     }
 }
