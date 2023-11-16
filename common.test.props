@@ -1,6 +1,10 @@
 <Project>
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
+    <RootNamespace/>
+    <Nullable>enable</Nullable>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>true</ImplicitUsings>
     <NoWarn>$(NoWarn);CS1591;CS0436</NoWarn>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>

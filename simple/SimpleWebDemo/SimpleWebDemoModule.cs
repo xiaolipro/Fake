@@ -1,5 +1,4 @@
-﻿using Fake.AspNetCore;
-using Fake.Auditing;
+﻿using Fake.Auditing;
 using Fake.Autofac;
 using Fake.Modularity;
 
@@ -16,5 +15,11 @@ public class SimpleWebDemoModule : FakeModule
             // options.IsEnabledActionLog = false;
             // options.IsEnabledExceptionLog = false;
         });
+    }
+
+    public override void ConfigureApplication(ApplicationConfigureContext context)
+    {
+        var a = 0;
+        var b = 10 / a;
     }
 }

@@ -4,9 +4,6 @@
     <Import Project="../../configureawait.props" />
 
     <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
-        <RootNamespace />
-        <OutputType>Library</OutputType>
         <DefineConstants>SUPPORT_LOAD_BALANCING</DefineConstants>
     </PropertyGroup>
     <ItemGroup>

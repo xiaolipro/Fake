@@ -3,11 +3,6 @@
     <Import Project="../../common.props" />
     <Import Project="../../configureawait.props" />
 
-    <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
-        <OutputType>Library</OutputType>
-        <RootNamespace />
-    </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="Grpc.AspNetCore" Version="2.55.0" />
         <PackageReference Include="SkyApm.Diagnostics.Grpc" Version="2.1.0" />

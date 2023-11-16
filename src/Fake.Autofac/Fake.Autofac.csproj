@@ -2,9 +2,9 @@
 
     <Import Project="../../common.props" />
     <Import Project="../../configureawait.props" />
+
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
-        <RootNamespace />
     </PropertyGroup>
     <ItemGroup>
       <PackageReference Include="Autofac" Version="6.5.0" />

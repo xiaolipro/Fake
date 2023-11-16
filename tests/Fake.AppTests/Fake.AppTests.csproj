@@ -2,8 +2,6 @@
 
     <Import Project="..\..\common.test.props" />
     <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
-        <RootNamespace />
         <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
     </PropertyGroup>
     <ItemGroup>
@@ -11,8 +9,8 @@
         <ProjectReference Include="..\..\src\Fake.Core\Fake.Core.csproj" />
         <ProjectReference Include="..\..\src\Fake.Ddd.Domain\Fake.Ddd.Domain.csproj" />
         <ProjectReference Include="..\..\src\Fake.Testing\Fake.Testing.csproj" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(MicrosoftNETTestSdkPackageVersion)" />
         <ProjectReference Include="..\AFakeTestEntry\AFakeTestEntry.csproj" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(MicrosoftNETTestSdkPackageVersion)"/>
     </ItemGroup>
 
 </Project>

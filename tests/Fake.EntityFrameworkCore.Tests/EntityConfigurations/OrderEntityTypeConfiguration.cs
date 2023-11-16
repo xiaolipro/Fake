@@ -13,8 +13,6 @@ namespace AppTests.EntityConfigurations
 
             orderConfiguration.HasKey(o => o.Id);
 
-            orderConfiguration.Ignore(b => b.DomainEvents);
-
             //Address value object persisted as owned entity type supported since EF Core 2.0
             orderConfiguration
                 .OwnsOne<Address>("Address");

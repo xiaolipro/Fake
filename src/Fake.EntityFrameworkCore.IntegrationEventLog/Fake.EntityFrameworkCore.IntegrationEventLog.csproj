@@ -3,11 +3,6 @@
     <Import Project="../../common.props" />
     <Import Project="../../configureawait.props" />
 
-    <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
-        <RootNamespace />
-    </PropertyGroup>
-
     <ItemGroup>
       <ProjectReference Include="..\Fake.Core\Fake.Core.csproj" />
       <ProjectReference Include="..\Fake.EntityFrameworkCore\Fake.EntityFrameworkCore.csproj" />

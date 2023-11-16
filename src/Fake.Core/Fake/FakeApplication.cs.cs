@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Reflection;
+using System.Runtime.ExceptionServices;
 using Fake.DependencyInjection;
 using Fake.IdGenerators.GuidGenerator;
 using Fake.Logging;
@@ -101,9 +102,9 @@ public class FakeApplication : IFakeApplication
             }
             catch (Exception ex)
             {
-                throw new FakeInitializationException(
-                    $"模块{module.Type.AssemblyQualifiedName}在{nameof(IConfigureServicesLifecycle.PreConfigureServices)} 阶段发生异常。有关详细信息，请参阅内部异常。",
-                    ex);
+                ExceptionDispatchInfo.Capture(new FakeInitializationException(
+                    $"{module.Type.FullName}在{nameof(IConfigureServicesLifecycle.PreConfigureServices)} 阶段发生异常。",
+                    ex)).Throw();
             }
         }
 
@@ -127,9 +128,9 @@ public class FakeApplication : IFakeApplication
             }
             catch (Exception ex)
             {
-                throw new FakeInitializationException(
-                    $"模块{module.Type.AssemblyQualifiedName}在{nameof(IConfigureServicesLifecycle.ConfigureServices)}阶段发生异常。有关详细信息，请参阅内部异常。",
-                    ex);
+                ExceptionDispatchInfo.Capture(new FakeInitializationException(
+                    $"{module.Type.FullName}在{nameof(IConfigureServicesLifecycle.ConfigureServices)}阶段发生异常。",
+                    ex)).Throw();
             }
         }
 
@@ -142,9 +143,9 @@ public class FakeApplication : IFakeApplication
             }
             catch (Exception ex)
             {
-                throw new FakeInitializationException(
-                    $"模块{module.Type.AssemblyQualifiedName}在{nameof(IConfigureServicesLifecycle.PostConfigureServices)}阶段发生异常。有关详细信息，请参阅内部异常。",
-                    ex);
+                ExceptionDispatchInfo.Capture(new FakeInitializationException(
+                    $"{module.Type.FullName}在{nameof(IConfigureServicesLifecycle.PostConfigureServices)}阶段发生异常。",
+                    ex)).Throw();
             }
         }
 
@@ -163,9 +164,9 @@ public class FakeApplication : IFakeApplication
             }
             catch (Exception ex)
             {
-                throw new FakeInitializationException(
-                    $"模块{module.Type.AssemblyQualifiedName}在{nameof(IShutdownLifecycle.Shutdown)}阶段发生异常。有关详细信息，请参阅内部异常。",
-                    ex);
+                ExceptionDispatchInfo.Capture(new FakeInitializationException(
+                    $"{module.Type.FullName}在{nameof(IShutdownLifecycle.Shutdown)}阶段发生异常。",
+                    ex)).Throw();
             }
         }
     }
@@ -207,9 +208,9 @@ public class FakeApplication : IFakeApplication
             }
             catch (Exception ex)
             {
-                throw new FakeInitializationException(
-                    $"模块{module.Type.AssemblyQualifiedName}在{nameof(IConfigureApplicationLifecycle.PreConfigureApplication)}阶段发生异常。有关详细信息，请参阅内部异常。",
-                    ex);
+                ExceptionDispatchInfo.Capture(new FakeInitializationException(
+                    $"{module.Type.FullName}在{nameof(IConfigureApplicationLifecycle.PreConfigureApplication)}阶段发生异常。",
+                    ex)).Throw();
             }
         }
 
@@ -222,9 +223,9 @@ public class FakeApplication : IFakeApplication
             }
             catch (Exception ex)
             {
-                throw new FakeInitializationException(
-                    $"模块{module.Type.AssemblyQualifiedName}在{nameof(IConfigureApplicationLifecycle.ConfigureApplication)}阶段发生异常。有关详细信息，请参阅内部异常。",
-                    ex);
+                ExceptionDispatchInfo.Capture(new FakeInitializationException(
+                    $"{module.Type.FullName}在{nameof(IConfigureApplicationLifecycle.ConfigureApplication)}阶段发生异常。",
+                    ex)).Throw();
             }
         }
 
@@ -237,9 +238,9 @@ public class FakeApplication : IFakeApplication
             }
             catch (Exception ex)
             {
-                throw new FakeInitializationException(
-                    $"模块{module.Type.AssemblyQualifiedName}在{nameof(IConfigureApplicationLifecycle.PostConfigureApplication)}阶段发生异常。有关详细信息，请参阅内部异常。",
-                    ex);
+                ExceptionDispatchInfo.Capture(new FakeInitializationException(
+                    $"{module.Type.FullName}在{nameof(IConfigureApplicationLifecycle.PostConfigureApplication)}阶段发生异常。",
+                    ex)).Throw();
             }
         }
 
