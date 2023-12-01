@@ -49,7 +49,7 @@ public class FakeDateTimeConverter : JsonConverter<DateTime>
 
     public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
     {
-        if (_serializerOptions.OutputDateTimeFormat.IsNullOrWhiteSpace())
+        if (_serializerOptions.OutputDateTimeFormat?.IsNullOrWhiteSpace() ?? false)
         {
             writer.WriteStringValue(_clock.Normalize(value));
         }

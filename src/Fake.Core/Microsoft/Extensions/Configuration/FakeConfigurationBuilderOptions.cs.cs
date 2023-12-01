@@ -28,12 +28,12 @@ public class FakeConfigurationBuilderOptions
     public string? EnvironmentName { get; set; }
 
     /// <summary>
-    /// <see cref="FileName"/> 所在目录。
+    /// <see cref="FileName" /> 所在目录。
     /// </summary>
-    public string BasePath { get; set; }
+    public string? BasePath { get; set; }
 
     /// <summary>
     /// 命令行参数
     /// </summary>
-    public string[] CommandLineArgs { get; set; }
+    public string[]? CommandLineArgs { get; set; }
 }

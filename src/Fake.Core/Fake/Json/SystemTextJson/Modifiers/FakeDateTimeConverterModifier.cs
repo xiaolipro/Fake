@@ -7,14 +7,15 @@ namespace Fake.Json.SystemTextJson.Modifiers;
 
 public class FakeDateTimeConverterModifier
 {
-    private IServiceProvider _serviceProvider;
+    private IServiceProvider _serviceProvider = null!;
 
-    public Action<JsonTypeInfo> CreateModifyAction(IServiceProvider serviceProvider)
+    public Action<JsonTypeInfo> CreateModifyAction(IServiceProvider? serviceProvider)
     {
-        _serviceProvider = serviceProvider;
+        ThrowHelper.ThrowIfNull(serviceProvider, nameof(serviceProvider));
+        _serviceProvider = serviceProvider!;
         return Modify;
     }
-    
+
     private void Modify(JsonTypeInfo jsonTypeInfo)
     {
         if (ReflectionHelper.GetAttributeOrDefault<DisableClockNormalizationAttribute>(jsonTypeInfo.Type) != null)

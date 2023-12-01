@@ -7,7 +7,7 @@ public class FakeClock : IFakeClock
 {
     private readonly FakeClockOptions _options;
 
-    private readonly AsyncLocal<Stopwatch> _stopwatch = new AsyncLocal<Stopwatch>();
+    private readonly AsyncLocal<Stopwatch?> _stopwatch = new AsyncLocal<Stopwatch?>();
 
     public FakeClock(IOptions<FakeClockOptions> options)
     {

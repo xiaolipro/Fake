@@ -6,9 +6,9 @@ public class FakeClockOptions
     /// 日期kind
     /// </summary>
     public DateTimeKind Kind { get; set; }
-    
+
     /// <summary>
     /// 日期显示格式
     /// </summary>
-    public string DateTimeFormat { get; set; }
+    public string? DateTimeFormat { get; set; }
 }

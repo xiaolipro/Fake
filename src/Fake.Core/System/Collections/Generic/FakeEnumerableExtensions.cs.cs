@@ -8,26 +8,26 @@ public static class FakeEnumerableExtensions
     /// <summary>
     /// 检查给定的集合对象是否没有元素。
     /// </summary>
-    public static bool IsEmpty<T>([CanBeNull] this IEnumerable<T> source)
+    public static bool IsEmpty<T>(this IEnumerable<T>? source)
     {
         return !(source ?? throw new ArgumentNullException(nameof(source))).Any();
     }
-    
+
     /// <summary>
     /// 检查给定的集合对象是否为null或没有元素。
     /// </summary>
     [ContractAnnotation("source:null => true")]
-    public static bool IsNullOrEmpty<T>([CanBeNull] this IEnumerable<T> source)
+    public static bool IsNullOrEmpty<T>(this IEnumerable<T>? source)
     {
         return source == null || !source.Any();
     }
-    
+
     /// <summary>
     /// 提供索引
     /// </summary>
-    /// <param name="source"></param>
-    /// <typeparam name="T"></typeparam>
-    /// <returns></returns>
+    /// <param name="source"> </param>
+    /// <typeparam name="T"> </typeparam>
+    /// <returns> </returns>
     public static IEnumerable<(T item, int index)> WithIndex<T>(this IEnumerable<T> source)
     {
         int counter = 0;
@@ -38,13 +38,13 @@ public static class FakeEnumerableExtensions
     }
 
     /// <summary>
-    /// 将集合用separator拼接，等同string.Join，但不会抛<see cref="ArgumentNullException"/>
+    /// 将集合用separator拼接，等同string.Join，但不会抛 <see cref="ArgumentNullException" />
     /// </summary>
-    /// <param name="source"></param>
-    /// <param name="separator"></param>
-    /// <typeparam name="T"></typeparam>
-    /// <returns>返回拼接后的字符串</returns>
-    public static string JoinAsString<T>(this IEnumerable<T> source, string separator)
+    /// <param name="source">    </param>
+    /// <param name="separator"> </param>
+    /// <typeparam name="T"> </typeparam>
+    /// <returns> 返回拼接后的字符串 </returns>
+    public static string JoinAsString<T>(this IEnumerable<T>? source, string separator)
     {
         if (source == null) return "";
         return string.Join(separator, source);
@@ -53,19 +53,16 @@ public static class FakeEnumerableExtensions
     /// <summary>
     /// 根据元素间的依赖关系进行拓扑排序
     /// </summary>
-    /// <typeparam name="T">元素类型</typeparam>
-    /// <param name="source">待排序的集合，他们的入度为0</param>
-    /// <param name="getDependencies">获取元素依赖关系的函数</param>
-    /// <param name="comparer">节点相等性比较器</param>
-    /// <returns>
-    /// 返回一个按照依赖关系排序后的新的list，他是一个拓扑序列，
-    /// 即满足如果A依赖B，则新的list中B会在A之前出现。
-    /// </returns>
-    /// <exception cref="ArgumentException">如果依赖图中存在环，则抛出异常</exception>
+    /// <typeparam name="T"> 元素类型 </typeparam>
+    /// <param name="source">          待排序的集合，他们的入度为0 </param>
+    /// <param name="getDependencies"> 获取元素依赖关系的函数 </param>
+    /// <param name="comparer">        节点相等性比较器 </param>
+    /// <returns> 返回一个按照依赖关系排序后的新的list，他是一个拓扑序列， 即满足如果A依赖B，则新的list中B会在A之前出现。 </returns>
+    /// <exception cref="ArgumentException"> 如果依赖图中存在环，则抛出异常 </exception>
     public static List<T> SortByDependencies<T>(
         this IEnumerable<T> source,
         Func<T, IEnumerable<T>> getDependencies,
-        IEqualityComparer<T> comparer = null)
+        IEqualityComparer<T>? comparer = null)
     {
         /* See: http://www.codeproject.com/Articles/869059/Topological-sorting-in-Csharp
          *      http://en.wikipedia.org/wiki/Topological_sorting

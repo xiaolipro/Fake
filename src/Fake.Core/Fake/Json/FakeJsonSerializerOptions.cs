@@ -10,8 +10,8 @@ public class FakeJsonSerializerOptions
     /// <summary>
     /// 统一返回的日期格式
     /// </summary>
-    public string OutputDateTimeFormat { get; set; }
-    
+    public string? OutputDateTimeFormat { get; set; }
+
     /// <summary>
     /// 是否将long类型转换为string
     /// </summary>

@@ -20,11 +20,22 @@ public class FakeApplication : IFakeApplication
 
     public Type StartupModuleType { get; }
 
-    private IConfiguration _configuration;
-    public IConfiguration Configuration => _configuration;
+    private IConfiguration _configuration = null!;
+
+    public IConfiguration Configuration
+    {
+        get
+        {
+            if (!_configuredServices)
+                throw new FakeException($"{nameof(FakeApplication)}初始化前，不能使用{nameof(Configuration)}");
+
+            return _configuration;
+        }
+    }
+
     public IServiceCollection Services { get; }
 
-    private IServiceProvider _serviceProvider;
+    private IServiceProvider _serviceProvider = null!;
 
     public IServiceProvider ServiceProvider
     {
@@ -40,7 +51,7 @@ public class FakeApplication : IFakeApplication
     private bool _initializedModules;
     private readonly ILogger<FakeApplication> _logger;
 
-    internal FakeApplication(Type startupModuleType, Action<FakeApplicationCreationOptions> optionsAction)
+    internal FakeApplication(Type startupModuleType, Action<FakeApplicationCreationOptions>? optionsAction)
         : this(startupModuleType, new ServiceCollection(), optionsAction)
     {
     }
@@ -48,7 +59,7 @@ public class FakeApplication : IFakeApplication
     internal FakeApplication(
         [NotNull] Type startupModuleType,
         [NotNull] IServiceCollection services,
-        [CanBeNull] Action<FakeApplicationCreationOptions> optionsAction)
+        Action<FakeApplicationCreationOptions>? optionsAction)
     {
         ThrowHelper.ThrowIfNull(startupModuleType, nameof(startupModuleType));
         ThrowHelper.ThrowIfNull(services, nameof(services));
@@ -62,7 +73,7 @@ public class FakeApplication : IFakeApplication
         var options = new FakeApplicationCreationOptions(services);
         optionsAction?.Invoke(options);
 
-        ApplicationName = GetApplicationName(options);
+        ApplicationName = GetApplicationName(options) ?? throw new FakeException();
 
         services.AddSingleton(this);
         services.AddSingleton<IFakeApplication>(this);
@@ -79,11 +90,9 @@ public class FakeApplication : IFakeApplication
         ConfigureServices();
     }
 
-
     /// <summary>
-    /// 
     /// </summary>
-    /// <exception cref="FakeInitializationException"></exception>
+    /// <exception cref="FakeInitializationException"> </exception>
     public void ConfigureServices()
     {
         if (_configuredServices)
@@ -176,7 +185,7 @@ public class FakeApplication : IFakeApplication
         Shutdown();
     }
 
-    public void InitializeApplication([CanBeNull] IServiceProvider serviceProvider = null)
+    public void InitializeApplication(IServiceProvider? serviceProvider = null)
     {
         serviceProvider ??= Services.BuildServiceProviderFromFactory().CreateScope().ServiceProvider;
 
@@ -195,9 +204,9 @@ public class FakeApplication : IFakeApplication
 
         Debug.Assert(_serviceProvider != null);
 
-        WriteInitLogs(_serviceProvider);
+        WriteInitLogs(ServiceProvider);
 
-        var context = new ApplicationConfigureContext(_serviceProvider);
+        var context = new ApplicationConfigureContext(ServiceProvider);
 
         // PreConfigure
         foreach (var module in Modules)
@@ -247,10 +256,11 @@ public class FakeApplication : IFakeApplication
         _initializedModules = true;
     }
 
-    protected virtual void SetServiceProvider([CanBeNull] IServiceProvider serviceProvider)
+    // XXX: 改动了代码, 不确定
+    protected virtual void SetServiceProvider(IServiceProvider? serviceProvider)
     {
         _serviceProvider = serviceProvider ?? Services.BuildServiceProvider();
-        _serviceProvider.GetRequiredService<ObjectAccessor<IServiceProvider>>().Value = serviceProvider;
+        _serviceProvider.GetRequiredService<ObjectAccessor<IServiceProvider>>().Value = _serviceProvider;
     }
 
     private IReadOnlyList<IModuleDescriptor> LoadModules(IServiceCollection services)
@@ -258,7 +268,7 @@ public class FakeApplication : IFakeApplication
         return services.GetInstance<IModuleLoader>().LoadModules(services, StartupModuleType);
     }
 
-    private static string GetApplicationName(FakeApplicationCreationOptions options)
+    private static string? GetApplicationName(FakeApplicationCreationOptions options)
     {
         if (!string.IsNullOrWhiteSpace(options.ApplicationName))
         {
@@ -280,12 +290,12 @@ public class FakeApplication : IFakeApplication
 
         foreach (var entry in initLogger.Entries)
         {
-            logger.Log(entry.LogLevel, entry.EventId, entry.State, entry.Exception, entry.Formatter);
+            // XXX: Formatter应该实现个DefaultFormatter
+            logger.Log(entry.LogLevel, entry.EventId, entry.State, entry.Exception, entry.Formatter!);
         }
 
         initLogger.Entries.Clear();
     }
-
 
     private void AddFakeCoreServices(IServiceCollection services, FakeApplicationCreationOptions creationOptions)
     {

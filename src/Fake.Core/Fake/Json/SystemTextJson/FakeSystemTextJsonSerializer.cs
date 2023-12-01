@@ -19,22 +19,23 @@ public class FakeSystemTextJsonSerializer : IFakeJsonSerializer
         return JsonSerializer.Serialize(obj, GetJsonSerializerOptions(camelCase, indented));
     }
 
-    public T Deserialize<T>(string jsonString, bool camelCase = true)
+    public T? Deserialize<T>(string jsonString, bool camelCase = true)
     {
         return JsonSerializer.Deserialize<T>(jsonString, GetJsonSerializerOptions(camelCase));
     }
 
-    public object Deserialize(Type type, string jsonString, bool camelCase = true)
+    public object? Deserialize(Type type, string jsonString, bool camelCase = true)
     {
         return JsonSerializer.Deserialize(jsonString, type, GetJsonSerializerOptions(camelCase));
     }
-
 
     protected virtual JsonSerializerOptions GetJsonSerializerOptions(bool camelCase = true, bool indented = false)
     {
         return OptionsCache.GetOrAdd(new
         {
-            camelCase, indented, _options
+            camelCase,
+            indented,
+            _options
         }, _ =>
         {
             var settings = new JsonSerializerOptions(_options);

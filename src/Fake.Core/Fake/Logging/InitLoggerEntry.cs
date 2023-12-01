@@ -8,11 +8,11 @@ public class InitLoggerEntry
 
     public EventId EventId { get; set; }
 
-    public object State { get; set; }
+    public object? State { get; set; }
 
-    public Exception Exception { get; set; }
+    public Exception? Exception { get; set; }
 
-    public Func<object, Exception, string> Formatter { get; set; }
+    public Func<object, Exception?, string> Formatter { get; set; } = null!;
 
-    public string Message => Formatter(State, Exception);
+    public string? Message => Formatter.Invoke(State ?? new(), Exception);
 }

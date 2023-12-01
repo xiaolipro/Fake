@@ -6,7 +6,7 @@ public class AmbientScopeProvider<T> : IAmbientScopeProvider<T>
 {
     protected static readonly ConcurrentDictionary<string, ScopeItem> ScopeDictionary = new();
 
-    public virtual T GetValue(string contextKey)
+    public virtual T? GetValue(string contextKey)
     {
         var item = GetCurrentItemOrNull(contextKey);
         return item == null ? default : item.Value;
@@ -34,22 +34,20 @@ public class AmbientScopeProvider<T> : IAmbientScopeProvider<T>
         });
     }
 
-    [CanBeNull]
-    protected ScopeItem GetCurrentItemOrNull(string contextKey)
+    protected ScopeItem? GetCurrentItemOrNull(string contextKey)
     {
         return CallContext.GetData(contextKey) is string scopeItemId ? ScopeDictionary.GetOrDefault(scopeItemId) : null;
     }
-
 
     protected class ScopeItem
     {
         public string Id { get; }
 
-        [CanBeNull] public ScopeItem Outer { get; }
+        public ScopeItem? Outer { get; }
 
-        public T Value { get; }
+        public T? Value { get; }
 
-        public ScopeItem(T value, ScopeItem outer = null)
+        public ScopeItem(T? value, ScopeItem? outer = null)
         {
             Id = Guid.NewGuid().ToString();
 

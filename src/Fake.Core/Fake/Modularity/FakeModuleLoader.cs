@@ -14,7 +14,7 @@ public class FakeModuleLoader : IModuleLoader
 
         // 返回topology序列，确定是有向无环图
         descriptors = descriptors.SortByDependencies(m => m.Dependencies);
-        
+
         return descriptors.ToArray();
     }
 
@@ -27,7 +27,7 @@ public class FakeModuleLoader : IModuleLoader
         };
 
         FillModuleDescriptors(descriptors, services, startupModuleType);
-        
+
         // IModuleDescriptor-Dependencies
         SetModuleDependencies(descriptors);
 
@@ -78,8 +78,8 @@ public class FakeModuleLoader : IModuleLoader
 
     protected virtual IFakeModule CreateAndRegisterModule(IServiceCollection services, Type moduleType)
     {
-        var module = ReflectionHelper.CreateInstance<IFakeModule>(moduleType);
-        services.AddSingleton(moduleType, module!);
+        var module = ReflectionHelper.CreateInstance<IFakeModule>(moduleType) ?? throw new ArgumentNullException(nameof(moduleType));
+        services.AddSingleton(moduleType, module);
         return module;
     }
 }

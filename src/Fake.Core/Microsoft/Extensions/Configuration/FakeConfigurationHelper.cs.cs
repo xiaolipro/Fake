@@ -10,19 +10,19 @@ public static class FakeConfigurationHelper
     {
         options ??= new FakeConfigurationBuilderOptions();
 
-        if (options.BasePath.IsNullOrEmpty())
+        if (options.BasePath?.IsNullOrEmpty() ?? false)
         {
             options.BasePath = Directory.GetCurrentDirectory();
         }
 
         // 添加json文件
         var builder = new ConfigurationBuilder()
-            .SetBasePath(options.BasePath)
+            .SetBasePath(options.BasePath!)
             .AddJsonFile(options.FileName + ".json", optional: options.Optional,
                 reloadOnChange: options.ReloadOnChange);
 
         // 根据当前环境添加json文件
-        if (!options.EnvironmentName.IsNullOrEmpty())
+        if (!options.EnvironmentName?.IsNullOrEmpty() ?? false)
         {
             builder = builder.AddJsonFile($"{options.FileName}.{options.EnvironmentName}.json",
                 optional: options.Optional, reloadOnChange: options.ReloadOnChange);
