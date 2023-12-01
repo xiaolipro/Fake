@@ -17,8 +17,8 @@ public class ConsulHostedService : IHostedService
     private readonly IConsulClient _consulClient;
     private readonly IApplicationInfo _applicationInfo;
     private readonly FakeConsulRegisterOptions _fakeConsulRegisterOptions;
-    private CancellationTokenSource _consulCancellationToken;
-    private string _serviceId;
+    private CancellationTokenSource _consulCancellationToken = null!;
+    private string _serviceId = null!;
 
     public ConsulHostedService(ILogger<ConsulHostedService> logger, IConsulClient consulClient,
         IOptions<FakeConsulRegisterOptions> options, IApplicationInfo applicationInfo)
@@ -33,24 +33,25 @@ public class ConsulHostedService : IHostedService
     {
         // Create a linked token so we can trigger cancellation outside of this token's cancellation
         _consulCancellationToken = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        var linkedToken = _consulCancellationToken.Token;
 
         #region 服务注销，防止重复注册
 
-        var services = await _consulClient.Catalog.Service(_applicationInfo.ApplicationName, cancellationToken);
+        var services = await _consulClient.Catalog.Service(_applicationInfo.ApplicationName, linkedToken);
 
         var targets = services.Response.Where(x =>
             x.ServiceAddress == _fakeConsulRegisterOptions.Host && x.ServicePort == _fakeConsulRegisterOptions.Port);
 
         foreach (var service in targets)
         {
-            await _consulClient.Agent.ServiceDeregister(service.ServiceID, cancellationToken);
+            await _consulClient.Agent.ServiceDeregister(service.ServiceID, linkedToken);
         }
 
         #endregion
 
 
         var registration = BuildRegistration();
-        await _consulClient.Agent.ServiceRegister(registration, cancellationToken);
+        await _consulClient.Agent.ServiceRegister(registration, linkedToken);
         _logger.LogInformation("Consul注册已完成 {Message}", JsonConvert.SerializeObject(_fakeConsulRegisterOptions));
     }
 
@@ -95,7 +96,7 @@ public class ConsulHostedService : IHostedService
         if (supportGrpc)
         {
             registration.Check.GRPC =
-                $"{_fakeConsulRegisterOptions.Host}:{_fakeConsulRegisterOptions.GrpcPort}/{_fakeConsulRegisterOptions.GrpcHealthCheckPath?.Trim('/')}";
+                $"{_fakeConsulRegisterOptions.Host}:{_fakeConsulRegisterOptions.GrpcPort}/{_fakeConsulRegisterOptions.GrpcHealthCheckPath.Trim('/')}";
             registration.Check.GRPCUseTLS = false; // consul在内网，不需要tls
         }
 

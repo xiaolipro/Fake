@@ -18,6 +18,7 @@ public class FakeRabbitMqOptions
     public FakeRabbitMqOptions()
     {
         Default = new ConnectionFactory();
+        Connections = new();
     }
 
     public ConnectionFactory GetOrDefault(string connectionName)

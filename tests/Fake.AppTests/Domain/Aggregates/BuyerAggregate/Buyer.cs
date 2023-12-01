@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Domain.Events;
+﻿using Domain.Events;
 using Fake.Domain.Entities;
 
 namespace Domain.Aggregates.BuyerAggregate;
 
-public class Buyer: AggregateRoot<Guid>
+public class Buyer : AggregateRoot<Guid>
 {
     public Guid IdentityGuid { get; private set; }
 
@@ -24,7 +21,7 @@ public class Buyer: AggregateRoot<Guid>
     public Buyer(Guid identity, string name) : this()
     {
         IdentityGuid = identity;
-        Name = !string.IsNullOrWhiteSpace(name) ? name : throw new ArgumentNullException(nameof(name));
+        Name = name.IsNotNullOrWhiteSpace() ? name : throw new ArgumentNullException(nameof(name));
     }
 
     public PaymentMethod AddPaymentMethod(

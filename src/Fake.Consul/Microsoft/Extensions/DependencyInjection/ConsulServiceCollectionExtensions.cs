@@ -3,8 +3,6 @@ using Consul;
 using Fake;
 using Fake.Consul;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -14,11 +12,19 @@ public static class ConsulServiceCollectionExtensions
     /// 添加Consul
     /// </summary>
     /// <param name="services"></param>
-    /// <param name="configuration"></param>
-    internal static IServiceCollection AddConsul(this IServiceCollection services, IConfiguration configuration)
+    /// <param name="action"></param>
+    internal static IServiceCollection AddConsul(this IServiceCollection services,
+        Action<FakeConsulClientOptions>? action = null)
     {
-        var consulClientOptions = configuration.Get<FakeConsulClientOptions>();
+        var configuration = services.GetConfiguration();
+        services.Configure<FakeConsulClientOptions>(configuration.GetSection("Consul:Client"));
+
+        var consulClientOptions = configuration.Get<FakeConsulClientOptions>() ?? new FakeConsulClientOptions();
         ThrowHelper.ThrowIfNull(consulClientOptions, nameof(consulClientOptions), "Consul配置为空");
+        action?.Invoke(consulClientOptions);
+
+        services.Configure<FakeConsulRegisterOptions>(configuration.GetSection("Consul:Register"));
+
         services.AddSingleton<IConsulClient, ConsulClient>(_ => new ConsulClient(consulConfig =>
         {
             consulConfig.Address = consulClientOptions.Address;
@@ -27,20 +33,5 @@ public static class ConsulServiceCollectionExtensions
         }));
 
         return services;
-    }
-
-    /// <summary>
-    /// 注册consul
-    /// </summary>
-    /// <param name="services"></param>
-    /// <returns></returns>
-    public static IServiceCollection AddConsul(this IServiceCollection services)
-    {
-        if (!services.IsAdded<IConsulClient>())
-        {
-            throw new FakeInitializationException("请先依赖：" + nameof(FakeConsulModule));
-        }
-        
-        return services.AddSingleton<IHostedService, ConsulHostedService>();
     }
 }

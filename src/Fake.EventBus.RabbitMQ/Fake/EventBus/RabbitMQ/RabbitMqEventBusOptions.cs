@@ -2,7 +2,7 @@
 
 public class RabbitMqEventBusOptions
 {
-    public string ConnectionName { get; set; } = "Default";
+    public string? ConnectionName { get; set; } = "Default";
 
     /// <summary>
     /// Broker
@@ -13,7 +13,7 @@ public class RabbitMqEventBusOptions
     /// 订阅客户端
     /// </summary>
     public string SubscriptionClientName { get; set; }
-        
+
     #region Qos
 
     /// <summary>

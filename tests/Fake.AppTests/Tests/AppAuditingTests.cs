@@ -14,7 +14,7 @@ namespace Tests;
 public abstract class AppAuditingTests<TStartupModule> : AppTestBase<TStartupModule> where TStartupModule : IFakeModule
 {
     protected Guid CurrentUserId;
-    protected readonly IRepository<Order> OrderRepository;
+    protected readonly IRepository<Order?> OrderRepository;
     protected readonly IAuditingManager AuditingManager;
 
     public AppAuditingTests()

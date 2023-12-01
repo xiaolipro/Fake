@@ -54,8 +54,8 @@ public class EfCoreEfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntit
         return query;
     }
 
-    public override async Task<TEntity> FirstOrDefaultAsync(
-        Expression<Func<TEntity, bool>> predicate = null,
+    public override async Task<TEntity?> FirstOrDefaultAsync(
+        Expression<Func<TEntity, bool>>? predicate = null,
         bool isInclude = true,
         CancellationToken cancellationToken = default)
     {
@@ -67,8 +67,8 @@ public class EfCoreEfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntit
     }
 
     public override async Task<List<TEntity>> GetListAsync(
-        Expression<Func<TEntity, bool>> predicate = null,
-        Dictionary<string, bool> sorting = null,
+        Expression<Func<TEntity, bool>>? predicate = null,
+        Dictionary<string, bool>? sorting = null,
         bool isInclude = true,
         CancellationToken cancellationToken = default)
     {
@@ -81,10 +81,10 @@ public class EfCoreEfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntit
     }
 
     public override async Task<List<TEntity>> GetPaginatedListAsync(
-        Expression<Func<TEntity, bool>> predicate,
+        Expression<Func<TEntity, bool>>? predicate,
         int pageIndex = 1,
         int pageSize = 20,
-        Dictionary<string, bool> sorting = null,
+        Dictionary<string, bool>? sorting = null,
         bool isInclude = true,
         CancellationToken cancellationToken = default)
     {
@@ -101,7 +101,7 @@ public class EfCoreEfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntit
     }
 
     public override async Task<long> GetCountAsync(
-        Expression<Func<TEntity, bool>> predicate = null,
+        Expression<Func<TEntity, bool>>? predicate = null,
         CancellationToken cancellationToken = default)
     {
         cancellationToken = GetCancellationToken(cancellationToken);
@@ -112,7 +112,7 @@ public class EfCoreEfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntit
     }
 
     public override async Task<bool> AnyAsync(
-        Expression<Func<TEntity, bool>> predicate = null,
+        Expression<Func<TEntity, bool>>? predicate = null,
         CancellationToken cancellationToken = default)
     {
         cancellationToken = GetCancellationToken(cancellationToken);

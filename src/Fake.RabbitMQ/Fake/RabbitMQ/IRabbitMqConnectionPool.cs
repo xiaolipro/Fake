@@ -8,5 +8,5 @@ namespace Fake.RabbitMQ;
 /// </summary>
 public interface IRabbitMqConnectionPool : IDisposable
 {
-    IConnection Get(string connectionName = null);
+    IConnection Get(string? connectionName = null);
 }
