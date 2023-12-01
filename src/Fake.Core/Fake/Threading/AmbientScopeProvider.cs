@@ -4,9 +4,9 @@ namespace Fake.Threading;
 
 public class AmbientScopeProvider<T> : IAmbientScopeProvider<T>
 {
-    protected static readonly ConcurrentDictionary<string, ScopeItem> ScopeDictionary = new();
+    protected static readonly ConcurrentDictionary<string, ScopeItem?> ScopeDictionary = new();
 
-    public virtual T GetValue(string contextKey)
+    public virtual T? GetValue(string contextKey)
     {
         var item = GetCurrentItemOrNull(contextKey);
         return item == null ? default : item.Value;
@@ -30,12 +30,12 @@ public class AmbientScopeProvider<T> : IAmbientScopeProvider<T>
             ScopeDictionary.TryRemove(item.Id, out item);
 
             // 将上下文重定向到外部对象，如果没有外部对象，说明离开上下文，直接关联 NULL。
-            CallContext.SetData(contextKey, item.Outer?.Id);
+            CallContext.SetData(contextKey, item!.Outer?.Id);
         });
     }
 
-    [CanBeNull]
-    protected ScopeItem GetCurrentItemOrNull(string contextKey)
+
+    protected ScopeItem? GetCurrentItemOrNull(string contextKey)
     {
         return CallContext.GetData(contextKey) is string scopeItemId ? ScopeDictionary.GetOrDefault(scopeItemId) : null;
     }
@@ -45,11 +45,11 @@ public class AmbientScopeProvider<T> : IAmbientScopeProvider<T>
     {
         public string Id { get; }
 
-        [CanBeNull] public ScopeItem Outer { get; }
+        public ScopeItem? Outer { get; }
 
-        public T Value { get; }
+        public T? Value { get; }
 
-        public ScopeItem(T value, ScopeItem outer = null)
+        public ScopeItem(T? value, ScopeItem? outer = null)
         {
             Id = Guid.NewGuid().ToString();
 

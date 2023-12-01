@@ -22,18 +22,18 @@ namespace AppTests.EntityConfigurations
                 .IsRequired();
 
             buyerConfiguration.HasIndex("IdentityGuid")
-              .IsUnique(true);
+                .IsUnique(true);
 
             buyerConfiguration.Property(b => b.Name);
 
             buyerConfiguration.HasMany(b => b.PaymentMethods)
-               .WithOne()
-               .HasForeignKey("BuyerId")
-               .OnDelete(DeleteBehavior.Cascade);
+                .WithOne()
+                .HasForeignKey("BuyerId")
+                .OnDelete(DeleteBehavior.Cascade);
 
             var navigation = buyerConfiguration.Metadata.FindNavigation(nameof(Buyer.PaymentMethods));
 
-            navigation.SetPropertyAccessMode(PropertyAccessMode.Field);
+            navigation?.SetPropertyAccessMode(PropertyAccessMode.Field);
         }
     }
 }

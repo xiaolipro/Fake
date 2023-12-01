@@ -52,7 +52,7 @@ namespace AppTests.EntityConfigurations
 
             // DDD Patterns comment:
             //Set as field (New since EF 1.1) to access the OrderItem collection property through its field
-            navigation.SetPropertyAccessMode(PropertyAccessMode.Field);
+            navigation?.SetPropertyAccessMode(PropertyAccessMode.Field);
 
             orderConfiguration.HasOne<PaymentMethod>()
                 .WithMany()

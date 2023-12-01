@@ -7,7 +7,6 @@ public static class FakeStringExtensions
     /// <summary>
     /// 表示此字符串 是 null或空字符串。
     /// </summary>
-    [ContractAnnotation("str:null => true")]
     public static bool IsNullOrEmpty(this string str)
     {
         return string.IsNullOrEmpty(str);
@@ -16,7 +15,6 @@ public static class FakeStringExtensions
     /// <summary>
     /// 表示此字符串 不是 null或空字符串。
     /// </summary>
-    [ContractAnnotation("str:null => true")]
     public static bool NotBeNullOrEmpty(this string str)
     {
         return string.IsNullOrEmpty(str);
@@ -25,8 +23,7 @@ public static class FakeStringExtensions
     /// <summary>
     /// 表示此字符串 是 null或空字符串或空白格。
     /// </summary>
-    [ContractAnnotation("str:null => true")]
-    public static bool IsNullOrWhiteSpace(this string str)
+    public static bool IsNullOrWhiteSpace(this string? str)
     {
         return string.IsNullOrWhiteSpace(str);
     }
@@ -34,7 +31,6 @@ public static class FakeStringExtensions
     /// <summary>
     /// 表示此字符串 不是 null或空字符串或空白格。
     /// </summary>
-    [ContractAnnotation("str:null => false")]
     public static bool IsNotNullOrWhiteSpace(this string? str)
     {
         return !string.IsNullOrWhiteSpace(str);

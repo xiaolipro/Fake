@@ -46,7 +46,7 @@ public class JsonVirtualLocalizationResourceContributor : AbstractVirtualFileLoc
             throw new FakeException(path + "本地化json文件Culture不能空");
         }
 
-        var dic = new Dictionary<string, LocalizedString>();
+        var dic = new Dictionary<string, LocalizedString?>();
         foreach (var item in jsonVirtualFile.Texts)
         {
             if (item.Key.IsNullOrWhiteSpace())

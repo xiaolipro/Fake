@@ -15,15 +15,17 @@ public class ConsulHostedService : IHostedService
 {
     private readonly ILogger<ConsulHostedService> _logger;
     private readonly IConsulClient _consulClient;
+    private readonly IApplicationInfo _applicationInfo;
     private readonly FakeConsulRegisterOptions _fakeConsulRegisterOptions;
     private CancellationTokenSource _consulCancellationToken;
     private string _serviceId;
 
     public ConsulHostedService(ILogger<ConsulHostedService> logger, IConsulClient consulClient,
-        IOptions<FakeConsulRegisterOptions> options)
+        IOptions<FakeConsulRegisterOptions> options, IApplicationInfo applicationInfo)
     {
         _logger = logger;
         _consulClient = consulClient;
+        _applicationInfo = applicationInfo;
         _fakeConsulRegisterOptions = options.Value;
     }
 
@@ -34,7 +36,7 @@ public class ConsulHostedService : IHostedService
 
         #region 服务注销，防止重复注册
 
-        var services = await _consulClient.Catalog.Service(_fakeConsulRegisterOptions.ServiceName, cancellationToken);
+        var services = await _consulClient.Catalog.Service(_applicationInfo.ApplicationName, cancellationToken);
 
         var targets = services.Response.Where(x =>
             x.ServiceAddress == _fakeConsulRegisterOptions.Host && x.ServicePort == _fakeConsulRegisterOptions.Port);
@@ -78,7 +80,7 @@ public class ConsulHostedService : IHostedService
         var registration = new AgentServiceRegistration()
         {
             ID = _serviceId, // 服务唯一Id
-            Name = _fakeConsulRegisterOptions.ServiceName, // 服务组名称
+            Name = _applicationInfo.ApplicationName, // 服务组名称
             Address = _fakeConsulRegisterOptions.Host, // 服务主机
             Port = _fakeConsulRegisterOptions.Port, // 服务端口
             Tags = _fakeConsulRegisterOptions.Tags, // 一组标签

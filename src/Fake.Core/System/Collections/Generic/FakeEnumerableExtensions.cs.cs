@@ -1,27 +1,23 @@
-﻿using System.Linq.Expressions;
-using Fake;
-
-namespace System.Collections.Generic;
+﻿namespace System.Collections.Generic;
 
 public static class FakeEnumerableExtensions
 {
     /// <summary>
     /// 检查给定的集合对象是否没有元素。
     /// </summary>
-    public static bool IsEmpty<T>([CanBeNull] this IEnumerable<T> source)
+    public static bool IsEmpty<T>(this IEnumerable<T> source)
     {
         return !(source ?? throw new ArgumentNullException(nameof(source))).Any();
     }
-    
+
     /// <summary>
     /// 检查给定的集合对象是否为null或没有元素。
     /// </summary>
-    [ContractAnnotation("source:null => true")]
-    public static bool IsNullOrEmpty<T>([CanBeNull] this IEnumerable<T> source)
+    public static bool IsNullOrEmpty<T>(this IEnumerable<T>? source)
     {
         return source == null || !source.Any();
     }
-    
+
     /// <summary>
     /// 提供索引
     /// </summary>
@@ -44,7 +40,7 @@ public static class FakeEnumerableExtensions
     /// <param name="separator"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns>返回拼接后的字符串</returns>
-    public static string JoinAsString<T>(this IEnumerable<T> source, string separator)
+    public static string JoinAsString<T>(this IEnumerable<T>? source, string separator)
     {
         if (source == null) return "";
         return string.Join(separator, source);
@@ -65,7 +61,7 @@ public static class FakeEnumerableExtensions
     public static List<T> SortByDependencies<T>(
         this IEnumerable<T> source,
         Func<T, IEnumerable<T>> getDependencies,
-        IEqualityComparer<T> comparer = null)
+        IEqualityComparer<T>? comparer = null)
     {
         /* See: http://www.codeproject.com/Articles/869059/Topological-sorting-in-Csharp
          *      http://en.wikipedia.org/wiki/Topological_sorting

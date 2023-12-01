@@ -2,7 +2,7 @@
 
 namespace Fake.Json;
 
-public class FakeBooleanConverterTests:FakeJsonTestBase
+public class FakeBooleanConverterTests : FakeJsonTestBase
 {
     private readonly IFakeJsonSerializer _jsonSerializer;
 
@@ -13,10 +13,7 @@ public class FakeBooleanConverterTests:FakeJsonTestBase
 
     protected override void AfterAddFakeApplication(IServiceCollection services)
     {
-        services.Configure<FakeJsonSerializerOptions>(options =>
-        {
-            options.StringToBoolean = true;
-        });
+        services.Configure<FakeJsonSerializerOptions>(options => { options.StringToBoolean = true; });
     }
 
 
@@ -33,7 +30,7 @@ public class FakeBooleanConverterTests:FakeJsonTestBase
 
         json.ShouldBe("{\"name\":\"张三\",\"is18\":true}");
     }
-    
+
     [Fact]
     void 反序列化()
     {
@@ -43,7 +40,7 @@ public class FakeBooleanConverterTests:FakeJsonTestBase
 
         student.Name.ShouldBe("张三");
         student.Is18.ShouldBe(true);
-        
+
         json = "{\"Name\":\"张三\",\"Is18\":false}";
 
         student = _jsonSerializer.Deserialize<Student>(json);
@@ -51,7 +48,7 @@ public class FakeBooleanConverterTests:FakeJsonTestBase
         student.Name.ShouldBe("张三");
         student.Is18.ShouldBe(false);
     }
-    
+
     [Fact]
     void 不区分大小写的()
     {
@@ -61,7 +58,7 @@ public class FakeBooleanConverterTests:FakeJsonTestBase
 
         student.Name.ShouldBe("张三");
         student.Is18.ShouldBe(true);
-        
+
         json = "{\"Name\":\"张三\",\"Is18\":\"FalSe\"}";
 
         student = _jsonSerializer.Deserialize<Student>(json);
@@ -69,7 +66,7 @@ public class FakeBooleanConverterTests:FakeJsonTestBase
         student.Name.ShouldBe("张三");
         student.Is18.ShouldBe(false);
     }
-    
+
     [Fact]
     void 可空bool反序列化()
     {
@@ -78,20 +75,20 @@ public class FakeBooleanConverterTests:FakeJsonTestBase
         var student = _jsonSerializer.Deserialize<NullableBooleanClass>(json);
 
         student.Value.ShouldBe(true);
-        
+
         json = "{\"Value\":\"false\"}";
 
         student = _jsonSerializer.Deserialize<NullableBooleanClass>(json);
 
         student.Value.ShouldBe(false);
-        
+
         json = "{\"Value\":null}";
 
         student = _jsonSerializer.Deserialize<NullableBooleanClass>(json);
 
         student.Value.ShouldBeNull();
     }
-    
+
     [Fact]
     void 可空bool序列化()
     {
@@ -103,7 +100,7 @@ public class FakeBooleanConverterTests:FakeJsonTestBase
         var json = _jsonSerializer.Serialize(nullableBooleanClass);
 
         json.ShouldBe("{\"value\":true}");
-        
+
         nullableBooleanClass = new NullableBooleanClass
         {
             Value = false
@@ -112,7 +109,7 @@ public class FakeBooleanConverterTests:FakeJsonTestBase
         json = _jsonSerializer.Serialize(nullableBooleanClass);
 
         json.ShouldBe("{\"value\":false}");
-        
+
         nullableBooleanClass = new NullableBooleanClass
         {
             Value = null
@@ -122,14 +119,14 @@ public class FakeBooleanConverterTests:FakeJsonTestBase
 
         json.ShouldBe("{\"value\":null}");
     }
-    
+
     class Student
     {
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         public bool Is18 { get; set; }
     }
-    
+
     class NullableBooleanClass
     {
         public bool? Value { get; set; }

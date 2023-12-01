@@ -25,12 +25,12 @@ public class InMemoryStringLocalizer : IFakeStringLocalizer
         _options = options;
     }
 
-    public IEnumerable<LocalizedString> GetAllStrings(bool includeParentCultures)
+    public IEnumerable<LocalizedString?> GetAllStrings(bool includeParentCultures)
     {
         return GetAllStrings(CultureInfo.CurrentCulture.Name, includeParentCultures);
     }
 
-    protected virtual LocalizedString GetLocalizedStringFormatted(string name, string cultureName,
+    protected virtual LocalizedString GetLocalizedStringFormatted(string name, string? cultureName,
         params object[] arguments)
     {
         var localizedString = GetLocalizedString(name, cultureName);
@@ -38,7 +38,7 @@ public class InMemoryStringLocalizer : IFakeStringLocalizer
             localizedString.ResourceNotFound, localizedString.SearchedLocation);
     }
 
-    protected virtual LocalizedString GetLocalizedString(string name, string cultureName)
+    protected virtual LocalizedString GetLocalizedString(string name, string? cultureName)
     {
         var localizedString = _resource.GetOrNull(cultureName, name);
         if (localizedString != null) return localizedString;
@@ -79,10 +79,10 @@ public class InMemoryStringLocalizer : IFakeStringLocalizer
     }
 
 
-    protected virtual IReadOnlyList<LocalizedString> GetAllStrings(string cultureName,
+    protected virtual IReadOnlyList<LocalizedString?> GetAllStrings(string? cultureName,
         bool includeParentCultures = true, bool includeInheritLocalizers = true)
     {
-        var allStrings = new Dictionary<string, LocalizedString>();
+        var allStrings = new Dictionary<string, LocalizedString?>();
 
         // 填充继承的strings
         if (includeInheritLocalizers)

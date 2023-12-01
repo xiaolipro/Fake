@@ -41,7 +41,7 @@ public abstract class AbstractServiceRegistrar : IServiceRegistrar
             action.Invoke(context);
         }
     }
-    
+
     /// <summary>
     /// 是否跳过服务注册
     /// </summary>
@@ -58,7 +58,7 @@ public abstract class AbstractServiceRegistrar : IServiceRegistrar
     /// <param name="type">给定类型</param>
     /// <param name="attribute">依赖注入的配置</param>
     /// <returns></returns>
-    protected virtual ServiceLifetime? GetLifeTimeOrNull(Type type, [CanBeNull] DependencyAttribute attribute)
+    protected virtual ServiceLifetime? GetLifeTimeOrNull(Type type, DependencyAttribute attribute)
     {
         return attribute?.Lifetime ?? GetServiceLifetimeFromClassHierarchy(type);
     }

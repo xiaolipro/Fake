@@ -10,7 +10,7 @@ public static class FakeStringLocalizerExtensions
 {
     public static readonly string LocalizerFieldName = "_localizer";
 
-    public static IEnumerable<LocalizedString> GetAllStrings(this IStringLocalizer stringLocalizer,
+    public static IEnumerable<LocalizedString?> GetAllStrings(this IStringLocalizer stringLocalizer,
         bool includeParentCultures)
     {
         var internalLocalizer = stringLocalizer.GetInternalLocalizer();

@@ -31,11 +31,11 @@ public static class FakeServiceCollectionCommonExtensions
     /// <param name="services"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static T GetInstanceOrNull<T>(this IServiceCollection services) where T : class
+    public static T? GetInstanceOrNull<T>(this IServiceCollection services) where T : class
     {
-        return (T)services
+        return services
             .FirstOrDefault(d => d.ServiceType == typeof(T))
-            ?.ImplementationInstance;
+            ?.ImplementationInstance?.Is<T>();
     }
 
     /// <summary>
@@ -78,9 +78,9 @@ public static class FakeServiceCollectionCommonExtensions
                 .GetMethods()
                 .Single(m => m.Name == nameof(BuildServiceProviderFromFactory) && m.IsGenericMethod)
                 .MakeGenericMethod(containerBuilderType)
-                .Invoke(null, new object[] { services, null });
+                .Invoke(null, new object[] { services, null! });
 
-            return serviceProvider as IServiceProvider;
+            return serviceProvider.Is<IServiceProvider>();
         }
 
         // 如果没有第三方IOC容器则使用默认的

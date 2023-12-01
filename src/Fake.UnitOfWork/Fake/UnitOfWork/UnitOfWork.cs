@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Threading;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -52,7 +51,7 @@ public class UnitOfWork : IUnitOfWork
     /// </summary>
     /// <param name="attribute"></param>
     /// <exception cref="FakeException"></exception>
-    public virtual void InitUnitOfWorkContext([CanBeNull] UnitOfWorkAttribute attribute)
+    public virtual void InitUnitOfWorkContext(UnitOfWorkAttribute attribute)
     {
         if (Context != null)
         {
@@ -96,7 +95,7 @@ public class UnitOfWork : IUnitOfWork
             }
         }
     }
-    
+
     public bool HasHasChanges()
     {
         foreach (var databaseApi in GetAllActiveDatabaseApis())
@@ -180,7 +179,7 @@ public class UnitOfWork : IUnitOfWork
             throw;
         }
     }
-    
+
     private async Task CommitTransactionsAsync(CancellationToken cancellationToken)
     {
         foreach (var transaction in GetAllActiveTransactionApis())

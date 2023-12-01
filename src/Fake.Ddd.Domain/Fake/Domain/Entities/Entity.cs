@@ -38,7 +38,7 @@ public abstract class Entity<TKey> : Entity, IEntity<TKey>
     /// <summary>
     /// 实体唯一标识
     /// </summary>
-    public virtual TKey Id { get; private set; }
+    public virtual TKey Id { get; private set; } = default!;
 
     protected Entity()
     {

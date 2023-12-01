@@ -19,7 +19,6 @@ using Fake.IdGenerators;
 using Fake.IdGenerators.GuidGenerator;
 using Fake.Timing;
 using Fake.UnitOfWork;
-using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -28,13 +27,13 @@ namespace Fake.EntityFrameworkCore;
 
 public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : DbContext
 {
-    public ILazyServiceProvider ServiceProvider { get; [UsedImplicitly] set; }
+    public ILazyServiceProvider ServiceProvider { get; set; } = null!;
 
     private static readonly MethodInfo ConfigureBasePropertiesMethodInfo = typeof(FakeDbContext<TDbContext>)
         .GetMethod(
             nameof(ConfigureBaseProperties),
             BindingFlags.Instance | BindingFlags.NonPublic
-        );
+        )!;
 
     protected FakeDbContext(DbContextOptions<TDbContext> options) : base(options)
     {
@@ -96,7 +95,7 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
             .ToList();
 
         var domainEvents = domainEntities
-            .SelectMany(x => x.Entity.DomainEvents)
+            .SelectMany(x => x.Entity.DomainEvents ?? [])
             .OrderBy(x => x.Order)
             .ToList();
 
@@ -212,8 +211,6 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
     {
         if (entry.Entity is IHasVersionNum entityWithVersionNum)
         {
-            if (entityWithVersionNum.VersionNum != default) return;
-
             entityWithVersionNum.VersionNum = SimpleGuidGenerator.Instance.Generate().ToString("N");
         }
     }

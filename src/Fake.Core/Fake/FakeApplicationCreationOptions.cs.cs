@@ -4,7 +4,7 @@ namespace Fake;
 
 public class FakeApplicationCreationOptions
 {
-    [CanBeNull] public string ApplicationName { get; set; }
+    public string ApplicationName { get; set; }
 
     public IServiceCollection Services { get; }
 

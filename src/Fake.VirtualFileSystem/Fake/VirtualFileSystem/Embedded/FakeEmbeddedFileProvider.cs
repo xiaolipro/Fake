@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using JetBrains.Annotations;
 using Microsoft.Extensions.FileProviders;
 
 namespace Fake.VirtualFileSystem.Embedded;
@@ -12,12 +11,12 @@ public class FakeEmbeddedFileProvider : AbstractInMemoryFileProvider
 {
     protected virtual Assembly Assembly { get; }
 
-    [CanBeNull] protected virtual string Root { get; }
+    protected virtual string Root { get; }
 
     protected override IDictionary<string, IFileInfo> Files => _fileDic.Value;
     private readonly Lazy<Dictionary<string, IFileInfo>> _fileDic;
 
-    public FakeEmbeddedFileProvider(Assembly assembly, [CanBeNull] string root = null)
+    public FakeEmbeddedFileProvider(Assembly assembly, string root = null)
     {
         ThrowHelper.ThrowIfNull(assembly, nameof(assembly));
 

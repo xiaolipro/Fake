@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using Fake.Modularity;
 using Fake.VirtualFileSystem.Embedded;
-using JetBrains.Annotations;
 using Microsoft.Extensions.FileProviders;
 
 namespace Fake.VirtualFileSystem;
@@ -16,7 +15,7 @@ public class VirtualFileProviderList : List<IFileProvider>
     /// </summary>
     /// <param name="root">虚拟根目录</param>
     /// <typeparam name="TModule"></typeparam>
-    public void Add<TModule>([CanBeNull] string root = null) where TModule : FakeModule
+    public void Add<TModule>(string root = null) where TModule : FakeModule
     {
         var assembly = typeof(TModule).Assembly;
 
@@ -28,7 +27,7 @@ public class VirtualFileProviderList : List<IFileProvider>
         Add(fileProvider);
     }
 
-    private IFileProvider CreateFileProvider(Assembly assembly, [CanBeNull] string root)
+    private IFileProvider CreateFileProvider(Assembly assembly, string root)
     {
         ThrowHelper.ThrowIfNull(assembly, nameof(assembly));
 

@@ -1,6 +1,4 @@
-﻿using JetBrains.Annotations;
-
-namespace Fake.Consul;
+﻿namespace Fake.Consul;
 
 public class FakeConsulRegisterOptions
 {
@@ -8,7 +6,7 @@ public class FakeConsulRegisterOptions
     /// 主机
     /// ex：127.0.0.1
     /// </summary>
-    public string Host { get; set; }
+    public string Host { get; set; } = null!;
 
     /// <summary>
     /// 服务端口
@@ -22,26 +20,19 @@ public class FakeConsulRegisterOptions
     public int GrpcPort { get; set; }
 
     /// <summary>
-    /// 服务组名称
-    /// </summary>
-    public string ServiceName { get; set; }
-
-    /// <summary>
     /// 服务标签
     /// </summary>
-    [CanBeNull]
-    public string[] Tags { get; set; }
+    public string[]? Tags { get; set; } = null;
 
     /// <summary>
     /// 服务心跳检查路径
     /// </summary>
-    public string HealthCheckPath { get; set; }
+    public string HealthCheckPath { get; set; } = "/health";
 
     /// <summary>
     /// Grpc服务心跳检查路径
     /// </summary>
-    [CanBeNull]
-    public string GrpcHealthCheckPath { get; set; }
+    public string GrpcHealthCheckPath { get; set; } = "/grpc/health";
 
     /// <summary>
     /// 心跳检测间隔(s)

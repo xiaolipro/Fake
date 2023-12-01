@@ -1,13 +1,10 @@
-﻿using System;
-using System.Diagnostics;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using Domain.Aggregates.BuyerAggregate;
 using Domain.Aggregates.OrderAggregate;
 using Fake.Auditing;
 using Fake.Domain.Repositories;
 using Fake.Identity.Users;
 using Fake.Modularity;
-using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using Shouldly;
 using Xunit;
@@ -51,7 +48,7 @@ public abstract class AppAuditingTests<TStartupModule> : AppTestBase<TStartupMod
             new Address(street, city, state, country, zipcode),
             cardType, cardNumber, cardSecurityNumber, cardHolderName, cardExpiration);
 
-        Assert.Equal(1, fakeOrder.DomainEvents.Count);
+        Assert.Equal(1, fakeOrder.DomainEvents?.Count);
 
         var order = await OrderRepository.InsertAsync(fakeOrder);
 

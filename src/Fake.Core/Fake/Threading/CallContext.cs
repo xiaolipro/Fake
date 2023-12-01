@@ -7,16 +7,16 @@ namespace Fake.Threading;
 /// </summary>
 public static class CallContext
 {
-    private static readonly ConcurrentDictionary<string, AsyncLocal<object>> Data = new();
+    private static readonly ConcurrentDictionary<string, AsyncLocal<object?>> Data = new();
 
-    public static void SetData(string key, object value)
+    public static void SetData(string key, object? value)
     {
-        Data.GetOrAdd(key, _ => new AsyncLocal<object>()).Value = value;
+        Data.GetOrAdd(key, _ => new AsyncLocal<object?>()).Value = value;
     }
 
-    public static object GetData(string key)
+    public static object? GetData(string key)
     {
-        return Data.GetOrAdd(key, _ => new AsyncLocal<object>()).Value;
+        return Data.GetOrAdd(key, _ => new AsyncLocal<object?>()).Value;
     }
 
     public static void FreeData(string key)

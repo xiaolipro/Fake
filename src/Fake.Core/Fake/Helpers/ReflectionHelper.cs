@@ -26,7 +26,7 @@ public static class ReflectionHelper
             // 必须从字段或属性上读取
             if (propertySelector.Body.NodeType != ExpressionType.MemberAccess) return null;
 
-            var memberExpression = propertySelector.Body.Cast<MemberExpression>();
+            var memberExpression = propertySelector.Body.Is<MemberExpression>();
 
             var propertyInfo = obj.GetType().GetProperties().FirstOrDefault(x =>
                 x.Name == memberExpression.Member.Name &&
@@ -75,7 +75,6 @@ public static class ReflectionHelper
     /// <param name="type"></param>
     /// <typeparam name="TInstance"></typeparam>
     /// <returns></returns>
-    [CanBeNull]
     public static TInstance CreateInstance<TInstance>(Type type) where TInstance : class
     {
         //TODO: 可以优化
@@ -89,7 +88,6 @@ public static class ReflectionHelper
     /// <returns></returns>
     /// <exception cref="ArgumentNullException"></exception>
     /// <exception cref="ArgumentOutOfRangeException"></exception>
-    [CanBeNull]
     public static Type GetMemberType(this MemberInfo member)
     {
         if (member is PropertyInfo propertyInfo)

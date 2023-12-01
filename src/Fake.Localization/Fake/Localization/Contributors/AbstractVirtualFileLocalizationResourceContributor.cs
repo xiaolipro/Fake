@@ -15,7 +15,7 @@ public abstract class AbstractVirtualFileLocalizationResourceContributor : ILoca
     private IVirtualFileProvider _virtualFileProvider;
 
     // culture : localized string container
-    private volatile Dictionary<string, ILocalizedStringContainer> _localizedStringContainers;
+    private volatile Dictionary<string?, ILocalizedStringContainer> _localizedStringContainers;
     private bool _subscribedForChanges;
     private readonly object _syncObj = new();
 
@@ -29,19 +29,19 @@ public abstract class AbstractVirtualFileLocalizationResourceContributor : ILoca
         _virtualFileProvider = context.ServiceProvider.GetRequiredService<IVirtualFileProvider>();
     }
 
-    public virtual LocalizedString GetOrNull(string cultureName, string name)
+    public virtual LocalizedString? GetOrNull(string? cultureName, string name)
     {
         return GetLocalizedStringContainers().GetOrDefault(cultureName)?.GetLocalizedStringOrDefault(name);
     }
 
-    public virtual void Fill(string cultureName, Dictionary<string, LocalizedString> dictionary)
+    public virtual void Fill(string? cultureName, Dictionary<string, LocalizedString?> dictionary)
     {
         var localizedStringContainer = GetLocalizedStringContainers().GetOrDefault(cultureName);
 
         localizedStringContainer?.Fill(dictionary);
     }
-    
-    public virtual Task FillAsync(string cultureName, Dictionary<string, LocalizedString> dictionary)
+
+    public virtual Task FillAsync(string cultureName, Dictionary<string, LocalizedString?> dictionary)
     {
         var localizedStringContainer = GetLocalizedStringContainers().GetOrDefault(cultureName);
 
@@ -50,14 +50,14 @@ public abstract class AbstractVirtualFileLocalizationResourceContributor : ILoca
         return Task.CompletedTask;
     }
 
-    public virtual Task<IEnumerable<string>> GetSupportedCulturesAsync()
+    public virtual Task<IEnumerable<string?>> GetSupportedCulturesAsync()
     {
         var cultures = GetLocalizedStringContainers().Keys;
 
         return Task.FromResult<IEnumerable<string>>(cultures);
     }
 
-    private Dictionary<string, ILocalizedStringContainer> GetLocalizedStringContainers()
+    private Dictionary<string?, ILocalizedStringContainer> GetLocalizedStringContainers()
     {
         if (_localizedStringContainers != null) return _localizedStringContainers;
 
@@ -86,9 +86,9 @@ public abstract class AbstractVirtualFileLocalizationResourceContributor : ILoca
     }
 
 
-    private Dictionary<string, ILocalizedStringContainer> CreateLocalizedStringContainers()
+    private Dictionary<string?, ILocalizedStringContainer> CreateLocalizedStringContainers()
     {
-        var localizedStringContainers = new Dictionary<string, ILocalizedStringContainer>();
+        var localizedStringContainers = new Dictionary<string?, ILocalizedStringContainer>();
 
         foreach (var file in _virtualFileProvider.GetDirectoryContents(_virtualPath))
         {
@@ -108,6 +108,7 @@ public abstract class AbstractVirtualFileLocalizationResourceContributor : ILoca
             {
                 throw new FakeException($"已经存在Culture为：{container.CultureName}的本地化文件 {container.Path}");
             }
+
             localizedStringContainers[container.CultureName] = container;
         }
 

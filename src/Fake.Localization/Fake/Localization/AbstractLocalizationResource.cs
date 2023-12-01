@@ -1,26 +1,25 @@
 using System.Collections.Generic;
 using System.Linq;
 using Fake.Localization.Contributors;
-using JetBrains.Annotations;
 using Microsoft.Extensions.Localization;
 
 namespace Fake.Localization;
 
 public abstract class AbstractLocalizationResource
 {
-    public string ResourceName { get; }
-    [CanBeNull] public string DefaultCultureName { get; set; }
+    public string? ResourceName { get; }
+    public string? DefaultCultureName { get; set; }
 
     /// <summary>
     /// 继承的资源
     /// </summary>
-    public List<string> BaseResourceNames { get; }
+    public List<string?> BaseResourceNames { get; }
 
     public List<ILocalizationResourceContributor> Contributors { get; }
 
     public AbstractLocalizationResource(
-        string resourceName,
-        [CanBeNull] string defaultCultureName = null)
+        string? resourceName,
+        string? defaultCultureName = null)
     {
         ThrowHelper.ThrowIfNull(resourceName, nameof(resourceName));
         ResourceName = resourceName;
@@ -31,8 +30,8 @@ public abstract class AbstractLocalizationResource
     }
 
     public void Fill(
-        string cultureName,
-        Dictionary<string, LocalizedString> dictionary)
+        string? cultureName,
+        Dictionary<string, LocalizedString?> dictionary)
     {
         foreach (var contributor in Contributors)
         {
@@ -40,7 +39,7 @@ public abstract class AbstractLocalizationResource
         }
     }
 
-    public LocalizedString GetOrNull(string cultureName, string name)
+    public LocalizedString? GetOrNull(string? cultureName, string name)
     {
         // 后者优先
         foreach (var contributor in Contributors.Select(x => x).Reverse())

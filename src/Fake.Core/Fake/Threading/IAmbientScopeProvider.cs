@@ -7,7 +7,7 @@ public interface IAmbientScopeProvider<T>
     /// </summary>
     /// <param name="contextKey">上下文key</param>
     /// <returns></returns>
-    T GetValue(string contextKey);
+    T? GetValue(string contextKey);
 
     /// <summary>
     /// 开启一个新的作用域

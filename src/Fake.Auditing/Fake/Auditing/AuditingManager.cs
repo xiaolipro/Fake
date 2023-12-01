@@ -14,14 +14,14 @@ public class AuditingManager : IAuditingManager
     private const string AuditingContextKey = "Fake.Auditing.AuditLogScope";
 
     private readonly ILogger<AuditingManager> _logger;
-    private readonly IAmbientScopeProvider<IAuditLogScope> _ambientScopeProvider;
+    private readonly IAmbientScopeProvider<IAuditLogScope?> _ambientScopeProvider;
     private readonly IAuditingHelper _auditingHelper;
     private readonly IAuditingStore _auditingStore;
     private readonly IServiceProvider _serviceProvider;
-    
+
 
     public AuditingManager(
-        IAmbientScopeProvider<IAuditLogScope> ambientScopeProvider,
+        IAmbientScopeProvider<IAuditLogScope?> ambientScopeProvider,
         IAuditingHelper auditingHelper,
         IAuditingStore auditingStore,
         IServiceProvider serviceProvider)
@@ -33,7 +33,7 @@ public class AuditingManager : IAuditingManager
         _serviceProvider = serviceProvider;
     }
 
-    public IAuditLogScope Current => _ambientScopeProvider.GetValue(AuditingContextKey);
+    public IAuditLogScope? Current => _ambientScopeProvider.GetValue(AuditingContextKey);
 
     public IAuditLogSaveHandle BeginScope()
     {

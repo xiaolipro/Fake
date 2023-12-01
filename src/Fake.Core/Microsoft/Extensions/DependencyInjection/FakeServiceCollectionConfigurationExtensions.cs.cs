@@ -19,8 +19,8 @@ public static class FakeServiceCollectionConfigurationExtensions
                throw new FakeException($"service collection中找不到{typeof(IConfiguration).AssemblyQualifiedName}的实现");
     }
 
-    [CanBeNull]
-    public static IConfiguration GetConfigurationOrNull(this IServiceCollection services)
+
+    public static IConfiguration? GetConfigurationOrNull(this IServiceCollection services)
     {
         var hostBuilderContext = services.GetInstanceOrNull<HostBuilderContext>();
         if (hostBuilderContext?.Configuration != null)

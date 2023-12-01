@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Fake.Modularity;
-using JetBrains.Annotations;
 
 namespace Fake.Localization;
 
@@ -12,7 +11,7 @@ public class LocalizationResource : AbstractLocalizationResource
 
     public LocalizationResource(
         Type resourceType,
-        [CanBeNull] string defaultCultureName = null)
+        string? defaultCultureName = null)
         : base(
             LocalizationResourceNameAttribute.GetName(resourceType),
             defaultCultureName)

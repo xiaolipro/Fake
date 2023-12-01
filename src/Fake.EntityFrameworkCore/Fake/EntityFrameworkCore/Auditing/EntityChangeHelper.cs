@@ -7,7 +7,6 @@ using Fake.Domain.Entities;
 using Fake.Domain.Entities.Auditing;
 using Fake.Json;
 using Fake.Timing;
-using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Options;
@@ -56,7 +55,7 @@ public class EntityChangeHelper : IEntityChangeHelper
         return changes;
     }
 
-    [CanBeNull]
+
     protected virtual EntityChangeInfo CreateEntityChangeOrNull(EntityEntry entry)
     {
         var entity = entry.Entity;
@@ -103,7 +102,7 @@ public class EntityChangeHelper : IEntityChangeHelper
         var properties = entityEntry.Metadata.GetProperties();
         var isCreated = entityEntry.State == EntityState.Added;
         var isDeleted = IsDeleted(entityEntry);
-        
+
         if (IsSoftDeleted(entityEntry)) return propertyChanges;
 
         foreach (var property in properties)
@@ -139,10 +138,10 @@ public class EntityChangeHelper : IEntityChangeHelper
     protected virtual bool IsSoftDeleted(EntityEntry entityEntry)
     {
         var entity = entityEntry.Entity;
-        return entity is ISoftDelete && entity.Cast<ISoftDelete>().IsDeleted;
+        return entity is ISoftDelete && entity.Is<ISoftDelete>().IsDeleted;
     }
 
-    [CanBeNull]
+
     protected virtual string GetEntityId(object entityAsObj)
     {
         if (entityAsObj is not IEntity entity)
@@ -202,9 +201,9 @@ public class EntityChangeHelper : IEntityChangeHelper
         {
             entityChange.ChangeTime = GetChangeTime(entityChange);
 
-            var entityEntry = entityChange.EntityEntry.Cast<EntityEntry>();
+            var entityEntry = entityChange.EntityEntry.Is<EntityEntry>();
             entityChange.EntityId = GetEntityId(entityEntry.Entity);
-            
+
             var foreignKeys = entityEntry.Metadata.GetForeignKeys();
 
             foreach (var foreignKey in foreignKeys)
@@ -257,7 +256,7 @@ public class EntityChangeHelper : IEntityChangeHelper
 
     protected virtual DateTime GetChangeTime(EntityChangeInfo entityChange)
     {
-        var entity = entityChange.EntityEntry.Cast<EntityEntry>().Entity;
+        var entity = entityChange.EntityEntry.Is<EntityEntry>().Entity;
         switch (entityChange.ChangeType)
         {
             case EntityChangeType.Created:

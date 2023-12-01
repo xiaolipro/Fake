@@ -32,10 +32,10 @@ public abstract class AbstractInterceptionTests<TStartupModule> : FakeIntegratio
     {
         // Arrange
         var target = ServiceProvider.GetService<SimpleInterceptionTargetClass>();
-        
+
         // Action
         await target.DoItAsync();
-        
+
         // Assert
         target.Logs.Count.ShouldBe(5); // 3+2
         target.Logs[0].ShouldBe("SimpleAsyncInterceptor_InterceptAsync_BeforeInvocation");
@@ -46,22 +46,21 @@ public abstract class AbstractInterceptionTests<TStartupModule> : FakeIntegratio
     public async Task 拦截器缓存方法结果()
     {
         // Arrange
-        var target = ServiceProvider.GetService<SimpleResultCacheInterceptionTargetClass>();
+        var target = ServiceProvider.GetRequiredService<SimpleResultCacheInterceptionTargetClass>();
 
         // Act & Assert
         (await target.GetValueAsync(42)).ShouldBe(42); //First run, not cached yet
         (await target.GetValueAsync(43)).ShouldBe(42); //First run, cached previous value
         (await target.GetValueAsync(44)).ShouldBe(42); //First run, cached previous value
-        
-        
+
+
         // TODO：Interceptors failed to set a return value, or swallowed the exception thrown by the target
         // target.GetValue(1).ShouldBe(1); //First run, not cached yet
         // target.GetValue(44).ShouldBe(1); //First run, cached previous value
     }
 }
 
-
-public class SimpleAsyncInterceptor:IFakeInterceptor,ITransientDependency
+public class SimpleAsyncInterceptor : IFakeInterceptor, ITransientDependency
 {
     public async Task InterceptAsync(IFakeMethodInvocation invocation)
     {
@@ -73,10 +72,10 @@ public class SimpleAsyncInterceptor:IFakeInterceptor,ITransientDependency
     }
 }
 
-public class SimpleInterceptionTargetClass : ICanLog,ITransientDependency
+public class SimpleInterceptionTargetClass : ICanLog, ITransientDependency
 {
     public List<string> Logs { get; } = new();
-    
+
     public virtual async Task DoItAsync()
     {
         Logs.Add("EnterDoItAsync");
@@ -103,11 +102,10 @@ public class SimpleResultCacheInterceptionTargetClass : ITransientDependency
 
     public void FF(int v)
     {
-        
     }
 }
 
-public class SimpleResultCacheInterceptor : IFakeInterceptor,ITransientDependency
+public class SimpleResultCacheInterceptor : IFakeInterceptor, ITransientDependency
 {
     private readonly ConcurrentDictionary<MethodInfo, object> _cache;
 
@@ -115,6 +113,7 @@ public class SimpleResultCacheInterceptor : IFakeInterceptor,ITransientDependenc
     {
         _cache = new ConcurrentDictionary<MethodInfo, object>();
     }
+
     public async Task InterceptAsync(IFakeMethodInvocation invocation)
     {
         if (_cache.ContainsKey(invocation.Method))

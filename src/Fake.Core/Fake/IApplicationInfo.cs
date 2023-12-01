@@ -2,7 +2,7 @@
 
 public interface IApplicationInfo
 {
-    [CanBeNull] string ApplicationName { get; }
+    string ApplicationName { get; }
 
     string ApplicationId { get; }
 }
