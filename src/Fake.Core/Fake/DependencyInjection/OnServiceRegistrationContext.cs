@@ -9,12 +9,12 @@ public class OnServiceRegistrationContext
     /// 服务拦截器
     /// </summary>
     public virtual ITypeList<IFakeInterceptor> Interceptors { get; }
-    
+
     public virtual Type ServiceType { get; }
-    
+
     public virtual Type ImplementationType { get; }
-    
-    public OnServiceRegistrationContext([NotNull]Type serviceType, [NotNull] Type implementationType)
+
+    public OnServiceRegistrationContext(Type serviceType, Type implementationType)
     {
         ServiceType = ThrowHelper.ThrowIfNull(serviceType, nameof(serviceType));
         ImplementationType = ThrowHelper.ThrowIfNull(implementationType, nameof(implementationType));

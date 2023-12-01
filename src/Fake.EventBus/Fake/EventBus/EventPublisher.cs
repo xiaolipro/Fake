@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Fake.EventBus.Events;
 using Fake.EventBus.Wrappers;
 using Fake.Helpers;
-using JetBrains.Annotations;
 
 namespace Fake.EventBus;
 
@@ -22,7 +21,7 @@ public class EventPublisher : IEventPublisher
         _eventHandlers = new ConcurrentDictionary<Type, EventHandlerWrapper>();
     }
 
-    public void Publish([NotNull] IEvent @event)
+    public void Publish(IEvent @event)
     {
         ThrowHelper.ThrowIfNull(@event, nameof(@event));
 

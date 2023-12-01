@@ -4,7 +4,6 @@ using System.Reflection;
 using Autofac.Builder;
 using Fake;
 using Fake.Modularity;
-using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Autofac.Extensions.DependencyInjection;
@@ -20,7 +19,7 @@ public static class FakeRegistrationExtensions
     /// </summary>
     public static void Populate(
         this ContainerBuilder builder,
-        [NotNull] IServiceCollection services)
+        IServiceCollection services)
     {
         ThrowHelper.ThrowIfNull(services, nameof(services));
 
@@ -86,7 +85,8 @@ public static class FakeRegistrationExtensions
             }
             else
             {
-                Debug.Assert(serviceDescriptor.ImplementationInstance != null, "serviceDescriptor.ImplementationInstance != null");
+                Debug.Assert(serviceDescriptor.ImplementationInstance != null,
+                    "serviceDescriptor.ImplementationInstance != null");
                 builder.RegisterInstance(serviceDescriptor.ImplementationInstance)
                     .As(serviceDescriptor.ServiceType)
                     .ConfigureLifecycle(serviceDescriptor.Lifetime)

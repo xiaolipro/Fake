@@ -17,7 +17,7 @@ public class FakeAuthorizationException : FakeException, IHasLogLevel, IHasError
     /// <summary>
     /// 异常代码
     /// </summary>
-    public string Code { get; }
+    public string? Code { get; }
 
     public FakeAuthorizationException()
     {
@@ -30,13 +30,13 @@ public class FakeAuthorizationException : FakeException, IHasLogLevel, IHasError
         LogLevel = LogLevel.Warning;
     }
 
-    public FakeAuthorizationException(string message, Exception innerException)
+    public FakeAuthorizationException(string? message, Exception? innerException)
         : base(message, innerException)
     {
         LogLevel = LogLevel.Warning;
     }
 
-    public FakeAuthorizationException(string message = null, string code = null, Exception innerException = null)
+    public FakeAuthorizationException(string? message = null, string? code = null, Exception? innerException = null)
         : base(message, innerException)
     {
         Code = code;

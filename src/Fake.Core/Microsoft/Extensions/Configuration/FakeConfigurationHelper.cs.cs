@@ -5,8 +5,8 @@ namespace Microsoft.Extensions.Configuration;
 public static class FakeConfigurationHelper
 {
     public static IConfigurationRoot BuildConfiguration(
-        FakeConfigurationBuilderOptions options = null,
-        Action<IConfigurationBuilder> builderAction = null)
+        FakeConfigurationBuilderOptions? options = null,
+        Action<IConfigurationBuilder>? builderAction = null)
     {
         options ??= new FakeConfigurationBuilderOptions();
 
@@ -18,12 +18,14 @@ public static class FakeConfigurationHelper
         // 添加json文件
         var builder = new ConfigurationBuilder()
             .SetBasePath(options.BasePath)
-            .AddJsonFile(options.FileName + ".json", optional: options.Optional, reloadOnChange: options.ReloadOnChange);
+            .AddJsonFile(options.FileName + ".json", optional: options.Optional,
+                reloadOnChange: options.ReloadOnChange);
 
         // 根据当前环境添加json文件
         if (!options.EnvironmentName.IsNullOrEmpty())
         {
-            builder = builder.AddJsonFile($"{options.FileName}.{options.EnvironmentName}.json", optional: options.Optional, reloadOnChange: options.ReloadOnChange);
+            builder = builder.AddJsonFile($"{options.FileName}.{options.EnvironmentName}.json",
+                optional: options.Optional, reloadOnChange: options.ReloadOnChange);
         }
 
         // 非开发环境不使用用户机密

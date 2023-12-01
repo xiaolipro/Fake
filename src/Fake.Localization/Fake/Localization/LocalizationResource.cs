@@ -8,10 +8,10 @@ namespace Fake.Localization;
 
 public class LocalizationResource : AbstractLocalizationResource
 {
-    [NotNull] public Type ResourceType { get; }
+    public Type ResourceType { get; }
 
     public LocalizationResource(
-        [NotNull] Type resourceType,
+        Type resourceType,
         [CanBeNull] string defaultCultureName = null)
         : base(
             LocalizationResourceNameAttribute.GetName(resourceType),

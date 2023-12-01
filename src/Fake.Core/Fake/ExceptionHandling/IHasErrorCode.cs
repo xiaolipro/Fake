@@ -2,5 +2,5 @@
 
 public interface IHasErrorCode
 {
-    public string Code { get; }
+    public string? Code { get; }
 }

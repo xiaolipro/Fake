@@ -28,7 +28,7 @@ public class VirtualFileProviderList : List<IFileProvider>
         Add(fileProvider);
     }
 
-    private IFileProvider CreateFileProvider([NotNull] Assembly assembly, [CanBeNull] string root)
+    private IFileProvider CreateFileProvider(Assembly assembly, [CanBeNull] string root)
     {
         ThrowHelper.ThrowIfNull(assembly, nameof(assembly));
 

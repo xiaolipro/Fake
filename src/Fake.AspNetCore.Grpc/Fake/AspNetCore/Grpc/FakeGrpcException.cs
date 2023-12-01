@@ -6,7 +6,7 @@ namespace Fake.AspNetCore.Grpc;
 /// <summary>
 /// Grpc发生异常
 /// </summary>
-public class FakeGrpcException: FakeException
+public class FakeGrpcException : FakeException
 {
     public FakeGrpcException()
     {
@@ -16,7 +16,7 @@ public class FakeGrpcException: FakeException
     {
     }
 
-    public FakeGrpcException(string message, Exception innerException) : base(message, innerException)
+    public FakeGrpcException(string? message, Exception? innerException) : base(message, innerException)
     {
     }
 

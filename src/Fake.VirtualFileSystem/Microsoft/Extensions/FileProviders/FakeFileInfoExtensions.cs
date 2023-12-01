@@ -8,7 +8,7 @@ namespace Microsoft.Extensions.FileProviders;
 public static class FakeFileInfoExtensions
 {
     [CanBeNull]
-    public static string GetVirtualOrPhysicalPathOrNull([NotNull] this IFileInfo fileInfo)
+    public static string GetVirtualOrPhysicalPathOrNull(this IFileInfo fileInfo)
     {
         ThrowHelper.ThrowIfNull(fileInfo, nameof(fileInfo));
 

@@ -8,32 +8,31 @@ namespace Fake.Localization;
 
 public abstract class AbstractLocalizationResource
 {
-    [NotNull] 
     public string ResourceName { get; }
-    [CanBeNull]
-    public string DefaultCultureName { get; set; }
-    
+    [CanBeNull] public string DefaultCultureName { get; set; }
+
     /// <summary>
     /// 继承的资源
     /// </summary>
     public List<string> BaseResourceNames { get; }
-    
-    [NotNull]
+
+
     public List<ILocalizationResourceContributor> Contributors { get; }
+
     public AbstractLocalizationResource(
-        [NotNull] string resourceName,
+        string resourceName,
         [CanBeNull] string defaultCultureName = null)
     {
         ThrowHelper.ThrowIfNull(resourceName, nameof(resourceName));
         ResourceName = resourceName;
         DefaultCultureName = defaultCultureName;
-        
+
         BaseResourceNames = new();
         Contributors = new();
     }
-    
+
     public void Fill(
-        string cultureName, 
+        string cultureName,
         Dictionary<string, LocalizedString> dictionary)
     {
         foreach (var contributor in Contributors)

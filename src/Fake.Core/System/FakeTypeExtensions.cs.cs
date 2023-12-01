@@ -9,7 +9,7 @@ public static class FakeTypeExtensions
     /// 内部使用 <see cref="Type.IsAssignableFrom"/>，翻转实现
     /// </summary>
     /// <typeparam name="TTarget">目标类型</typeparam>
-    public static bool IsAssignableTo<TTarget>([NotNull] this Type fromType)
+    public static bool IsAssignableTo<TTarget>(this Type fromType)
     {
         ThrowHelper.ThrowIfNull(fromType, nameof(fromType));
 
@@ -22,14 +22,14 @@ public static class FakeTypeExtensions
     /// <param name="fromType">可分配类型</param>
     /// <param name="targetType">目标类型</param>
     /// <returns>A:IA 则 typeof(A).IsAssignableTo(typeof(IA)) = true</returns>
-    public static bool IsAssignableTo([NotNull] this Type fromType, [NotNull] Type targetType)
+    public static bool IsAssignableTo(this Type fromType, Type targetType)
     {
         ThrowHelper.ThrowIfNull(targetType, nameof(targetType));
         ThrowHelper.ThrowIfNull(fromType, nameof(fromType));
 
         return targetType.IsAssignableFrom(fromType);
     }
-    
+
     /// <summary>
     /// 获取类型约定名称
     /// 约定如下：
@@ -39,13 +39,13 @@ public static class FakeTypeExtensions
     /// <param name="type"></param>
     /// <param name="separator"></param>
     /// <returns></returns>
-    public static string GetName(this Type type,string separator = ",")
+    public static string GetName(this Type type, string separator = ",")
     {
         // 不是泛型直接返回
         if (!type.IsGenericType) return type.Name;
 
         var genericTypes = string.Join(separator, type.GetGenericArguments().Select(x => x.Name).ToArray());
-            
+
         // <A,B>
         return $"{type.Name.Remove(type.Name.IndexOf('`'))}<{genericTypes}>";
     }

@@ -2,6 +2,5 @@
 
 public interface IModuleContainer
 {
-    [NotNull]
     IReadOnlyList<IModuleDescriptor> Modules { get; }
 }

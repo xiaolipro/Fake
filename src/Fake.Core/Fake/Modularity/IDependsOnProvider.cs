@@ -2,6 +2,5 @@
 
 public interface IDependsOnProvider
 {
-    [NotNull]
     Type[] GetDependedTypes();
 }

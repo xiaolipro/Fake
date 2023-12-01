@@ -1,7 +1,5 @@
 ﻿using System.Reflection;
 using Fake;
-using Fake.Helpers;
-using Microsoft.Extensions.Configuration;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -16,8 +14,8 @@ public static class FakeServiceCollectionCommonExtensions
     {
         return services.Any(d => d.ServiceType == type);
     }
-    
-    
+
+
     public static void EnsureAdded<T>(this IServiceCollection services) where T : class
     {
         if (!services.IsAdded<T>())
@@ -33,9 +31,9 @@ public static class FakeServiceCollectionCommonExtensions
     /// <param name="services"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static T GetInstanceOrNull<T>(this IServiceCollection services) where T : class
+    public static T? GetInstanceOrNull<T>(this IServiceCollection services) where T : class
     {
-        return (T)services
+        return (T?)services
             .FirstOrDefault(d => d.ServiceType == typeof(T))
             ?.ImplementationInstance;
     }
@@ -59,7 +57,7 @@ public static class FakeServiceCollectionCommonExtensions
         return service;
     }
 
-    public static IServiceProvider BuildServiceProviderFromFactory([NotNull] this IServiceCollection services)
+    public static IServiceProvider BuildServiceProviderFromFactory(this IServiceCollection services)
     {
         ThrowHelper.ThrowIfNull(services, nameof(services));
 
@@ -80,9 +78,9 @@ public static class FakeServiceCollectionCommonExtensions
                 .GetMethods()
                 .Single(m => m.Name == nameof(BuildServiceProviderFromFactory) && m.IsGenericMethod)
                 .MakeGenericMethod(containerBuilderType)
-                .Invoke(null, new object[] { services, null });
+                .Invoke(null, new object[] { services, null! });
 
-            return serviceProvider as IServiceProvider;
+            return serviceProvider.Cast<IServiceProvider>();
         }
 
         // 如果没有第三方IOC容器则使用默认的
@@ -90,7 +88,7 @@ public static class FakeServiceCollectionCommonExtensions
     }
 
     public static IServiceProvider BuildServiceProviderFromFactory<TContainerBuilder>(
-        [NotNull] this ServiceCollection services, Action<TContainerBuilder> containerBuildAction)
+        this ServiceCollection services, Action<TContainerBuilder>? containerBuildAction)
         where TContainerBuilder : notnull
     {
         ThrowHelper.ThrowIfNull(services, nameof(services));

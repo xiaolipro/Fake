@@ -13,10 +13,10 @@ public class FakeClock : IFakeClock
     {
         _options = options.Value;
     }
-    
-    public virtual DateTime Now  => _options.Kind == DateTimeKind.Utc ? DateTime.UtcNow : DateTime.Now;
-    public virtual DateTimeKind Kind  => _options.Kind;
-    
+
+    public virtual DateTime Now => _options.Kind == DateTimeKind.Utc ? DateTime.UtcNow : DateTime.Now;
+    public virtual DateTimeKind Kind => _options.Kind;
+
     public virtual DateTime Normalize(DateTime dateTime)
     {
         if (Kind == DateTimeKind.Unspecified || Kind == dateTime.Kind)
@@ -36,8 +36,8 @@ public class FakeClock : IFakeClock
     {
         return Normalize(datetime).ToString(_options.DateTimeFormat);
     }
-    
-    public virtual TimeSpan MeasureExecutionTime([NotNull]Action action)
+
+    public virtual TimeSpan MeasureExecutionTime(Action action)
     {
         _stopwatch.Value = new Stopwatch();
         _stopwatch.Value.Start();

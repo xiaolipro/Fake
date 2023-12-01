@@ -5,7 +5,7 @@ public class FakeConfigurationBuilderOptions
     /// <summary>
     /// 用户机密id，全局唯一
     /// </summary>
-    public string UserSecretsId { get; set; }
+    public string? UserSecretsId { get; set; }
 
     /// <summary>
     /// 配置文件名，默认：appsettings
@@ -25,7 +25,7 @@ public class FakeConfigurationBuilderOptions
     /// <summary>
     /// 环境名，例如 "Development", "Staging" or "Production"。
     /// </summary>
-    public string EnvironmentName { get; set; }
+    public string? EnvironmentName { get; set; }
 
     /// <summary>
     /// <see cref="FileName"/> 所在目录。

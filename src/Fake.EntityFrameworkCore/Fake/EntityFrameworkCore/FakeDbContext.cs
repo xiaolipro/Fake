@@ -79,7 +79,7 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
             EntityChangeHelper.UpdateChangeList(changes);
             return res;
         }
-        catch (DbUpdateConcurrencyException ex)
+        catch (DbUpdateConcurrencyException? ex)
         {
             throw new FakeDbConcurrencyException(ex.Message, ex);
         }

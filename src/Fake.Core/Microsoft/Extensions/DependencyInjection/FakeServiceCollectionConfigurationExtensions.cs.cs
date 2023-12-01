@@ -13,7 +13,7 @@ public static class FakeServiceCollectionConfigurationExtensions
         return services.Replace(ServiceDescriptor.Singleton(configuration));
     }
 
-    [NotNull]
+
     public static IConfiguration GetConfiguration(this IServiceCollection services)
     {
         return services.GetConfigurationOrNull() ??
@@ -21,7 +21,7 @@ public static class FakeServiceCollectionConfigurationExtensions
     }
 
     [CanBeNull]
-    public static IConfiguration GetConfigurationOrNull(this IServiceCollection services)
+    public static IConfiguration? GetConfigurationOrNull(this IServiceCollection services)
     {
         var hostBuilderContext = services.GetInstanceOrNull<HostBuilderContext>();
         if (hostBuilderContext?.Configuration != null)

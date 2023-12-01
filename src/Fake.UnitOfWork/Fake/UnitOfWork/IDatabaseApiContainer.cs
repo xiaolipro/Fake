@@ -1,5 +1,4 @@
 using System;
-using Fake.DependencyInjection;
 using JetBrains.Annotations;
 
 namespace Fake.UnitOfWork;
@@ -10,10 +9,10 @@ namespace Fake.UnitOfWork;
 public interface IDatabaseApiContainer : IServiceProviderAccessor
 {
     [CanBeNull]
-    IDatabaseApi FindDatabaseApi([NotNull] string key);
+    IDatabaseApi FindDatabaseApi(string key);
 
-    void AddDatabaseApi([NotNull] string key, [NotNull] IDatabaseApi api);
+    void AddDatabaseApi(string key, IDatabaseApi api);
 
-    [NotNull]
-    IDatabaseApi GetOrAddDatabaseApi([NotNull] string key, [NotNull] Func<IDatabaseApi> factory);
+
+    IDatabaseApi GetOrAddDatabaseApi(string key, Func<IDatabaseApi> factory);
 }

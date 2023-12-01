@@ -4,7 +4,7 @@ namespace Fake.Localization;
 
 public class NonTypedLocalizationResource : AbstractLocalizationResource
 {
-    public NonTypedLocalizationResource([NotNull] string resourceName, [CanBeNull] string defaultCultureName = null) :
+    public NonTypedLocalizationResource(string resourceName, [CanBeNull] string defaultCultureName = null) :
         base(resourceName, defaultCultureName)
     {
     }

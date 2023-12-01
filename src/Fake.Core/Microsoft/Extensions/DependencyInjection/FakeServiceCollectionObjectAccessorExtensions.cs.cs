@@ -15,7 +15,7 @@ public static class FakeServiceCollectionObjectAccessorExtensions
         return services.AddObjectAccessor<T>();
     }
 
-    public static ObjectAccessor<T> GetObjectAccessorOrNull<T>(this IServiceCollection services)
+    public static ObjectAccessor<T>? GetObjectAccessorOrNull<T>(this IServiceCollection services)
         where T : class
     {
         return services.GetInstanceOrNull<ObjectAccessor<T>>();

@@ -1,6 +1,5 @@
 ﻿using Fake.Helpers;
 using Fake.IdGenerators;
-using JetBrains.Annotations;
 
 namespace Fake.Domain.Entities;
 
@@ -88,7 +87,7 @@ public static class EntityHelper
     /// </summary>
     /// <param name="type"></param>
     /// <returns></returns>
-    public static bool IsEntity([NotNull] Type type)
+    public static bool IsEntity(Type type)
     {
         ThrowHelper.ThrowIfNull(type, nameof(type));
         return type.IsAssignableTo<IEntity>();

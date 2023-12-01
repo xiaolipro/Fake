@@ -2,12 +2,11 @@
 
 namespace Fake.Data;
 
-public class ConnectionStringNameAttribute: Attribute
+public class ConnectionStringNameAttribute : Attribute
 {
-    [NotNull]
     public string Name { get; }
 
-    public ConnectionStringNameAttribute([NotNull] string name)
+    public ConnectionStringNameAttribute(string name)
     {
         ThrowHelper.ThrowIfNull(name, nameof(name));
 

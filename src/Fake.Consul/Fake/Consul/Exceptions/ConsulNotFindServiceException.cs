@@ -1,5 +1,5 @@
-﻿using System.Runtime.Serialization;
-using System;
+﻿using System;
+using System.Runtime.Serialization;
 
 namespace Fake.Consul.Exceptions
 {
@@ -17,7 +17,7 @@ namespace Fake.Consul.Exceptions
         {
         }
 
-        public ConsulNotFindServiceException(string message, Exception innerException) : base(message, innerException)
+        public ConsulNotFindServiceException(string? message, Exception? innerException) : base(message, innerException)
         {
         }
 
