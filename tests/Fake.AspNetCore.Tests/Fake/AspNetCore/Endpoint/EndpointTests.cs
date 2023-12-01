@@ -1,12 +1,17 @@
-﻿
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Builder;
 using Shouldly;
 using Xunit;
 
 namespace Fake.AspNetCore.Endpoint;
 
-public class EndpointTests:AspNetCoreTestBase
+public class EndpointTests : AspNetCoreTestBase
 {
+    protected override void ConfigureApplication(WebApplication app)
+    {
+        base.ConfigureApplication(app);
+        app.MapGet("/hi", () => "hello world");
+    }
+
     [Fact]
     public async Task 测试服务()
     {

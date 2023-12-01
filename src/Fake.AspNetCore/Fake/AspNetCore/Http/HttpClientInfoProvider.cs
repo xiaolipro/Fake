@@ -4,27 +4,27 @@ using Microsoft.Extensions.Logging;
 
 namespace Fake.AspNetCore.Http;
 
-public class HttpClientInfoProvider:IHttpClientInfoProvider
+public class HttpClientInfoProvider : IHttpClientInfoProvider
 {
     private readonly ILogger<HttpClientInfoProvider> _logger;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public string UserAgent => GetUserAgent();
-    public string ClientIpAddress => GetClientIpAddress();
+    public string? UserAgent => GetUserAgent();
+    public string? ClientIpAddress => GetClientIpAddress();
 
-    public HttpClientInfoProvider( ILogger<HttpClientInfoProvider> logger,
+    public HttpClientInfoProvider(ILogger<HttpClientInfoProvider> logger,
         IHttpContextAccessor httpContextAccessor)
     {
         _logger = logger;
         _httpContextAccessor = httpContextAccessor;
     }
-    
-    protected virtual string GetUserAgent()
+
+    protected virtual string? GetUserAgent()
     {
         return _httpContextAccessor.HttpContext?.Request.Headers["User-Agent"];
     }
 
-    protected virtual string GetClientIpAddress()
+    protected virtual string? GetClientIpAddress()
     {
         try
         {

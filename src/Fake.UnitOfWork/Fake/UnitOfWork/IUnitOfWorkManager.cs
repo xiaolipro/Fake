@@ -1,10 +1,16 @@
-﻿using JetBrains.Annotations;
-
-namespace Fake.UnitOfWork;
+﻿namespace Fake.UnitOfWork;
 
 public interface IUnitOfWorkManager
 {
-    [CanBeNull] IUnitOfWork Current { get; }
+    /// <summary>
+    /// 当前所处的工作单元
+    /// </summary>
+    IUnitOfWork? Current { get; }
 
-    IUnitOfWork Begin([CanBeNull] UnitOfWorkAttribute attribute = default);
+    /// <summary>
+    /// 开启一个工作单元
+    /// </summary>
+    /// <param name="attribute"></param>
+    /// <returns></returns>
+    IUnitOfWork Begin(UnitOfWorkAttribute? attribute = default);
 }

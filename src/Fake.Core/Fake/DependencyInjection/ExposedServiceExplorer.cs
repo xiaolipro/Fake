@@ -1,13 +1,14 @@
-﻿namespace Fake.DependencyInjection;
+namespace Fake.DependencyInjection;
 
 public static class ExposedServiceExplorer
 {
     private static readonly ExposeServicesAttribute DefaultExposeServicesAttribute =
         new ExposeServicesAttribute
         {
-            ExposeConventionalInterfaces = true,
-            ExposeSelf = true
+            ExposeInterface = true,
+            ExposeSelf = false
         };
+
     public static List<Type> GetExposedServiceTypes(Type type)
     {
         return type
@@ -18,5 +19,4 @@ public static class ExposedServiceExplorer
             .Distinct()
             .ToList();
     }
-
 }

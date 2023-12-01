@@ -35,7 +35,7 @@ public static class FakeStringExtensions
     /// 表示此字符串 不是 null或空字符串或空白格。
     /// </summary>
     [ContractAnnotation("str:null => false")]
-    public static bool NotBeNullOrWhiteSpace(this string str)
+    public static bool IsNotNullOrWhiteSpace(this string? str)
     {
         return !string.IsNullOrWhiteSpace(str);
     }
@@ -47,7 +47,7 @@ public static class FakeStringExtensions
     /// <param name="str"></param>
     /// <param name="list"></param>
     /// <returns></returns>
-    public static bool In(this string str, IEnumerable<string> list)
+    public static bool In(this string str, IEnumerable<string>? list)
     {
         if (list == null) return false;
         return list.Contains(str);

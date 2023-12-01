@@ -1,10 +1,8 @@
-﻿using JetBrains.Annotations;
-
-namespace Fake.Auditing;
+﻿namespace Fake.Auditing;
 
 public interface IAuditingManager
 {
-    [CanBeNull] IAuditLogScope Current { get; }
-    
+    IAuditLogScope? Current { get; }
+
     IAuditLogSaveHandle BeginScope();
 }

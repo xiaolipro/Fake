@@ -12,7 +12,7 @@ namespace Fake.AspNetCore.Testing;
 public class FakeAspNetCoreIntegrationTestWithTools<TStartupModule> : FakeAspNetCoreIntegrationTest<TStartupModule>
     where TStartupModule : class, IFakeModule
 {
-    protected virtual async Task<T> GetResponseAsync<T>(string url,
+    protected virtual async Task<T?> GetResponseAsync<T>(string url,
         HttpStatusCode expectedStatusCode = HttpStatusCode.OK)
     {
         var strResponse = await GetResponseAsStringAsync(url, expectedStatusCode);
@@ -41,7 +41,8 @@ public class FakeAspNetCoreIntegrationTestWithTools<TStartupModule> : FakeAspNet
             }
 
             var response = await Client.SendAsync(requestMessage);
-            Debug.Assert(response.StatusCode == expectedStatusCode, $"期望的状态码是 {expectedStatusCode}，但实际是 {response.StatusCode}。");
+            Debug.Assert(response.StatusCode == expectedStatusCode,
+                $"期望的状态码是 {expectedStatusCode}，但实际是 {response.StatusCode}。");
             return response;
         }
     }

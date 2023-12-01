@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using JetBrains.Annotations;
 
 namespace Fake.AspNetCore.Http;
 
@@ -14,35 +13,34 @@ public class RemoteServiceErrorModel
     /// <summary>
     /// 异常code
     /// </summary>
-    public string Code { get; set; }
-    
+    public string? Code { get; set; }
+
     /// <summary>
     /// 异常消息
     /// </summary>
     public string Message { get; set; }
-    
+
     /// <summary>
     /// 异常明细
     /// </summary>
-    public string Details { get; set; }
+    public string? Details { get; set; }
 
     /// <summary>
     /// 自定义数据
     /// </summary>
-    public IDictionary Data { get; set; }
+    public IDictionary? Data { get; set; }
 
     /// <summary>
     /// 校验异常
     /// </summary>
-    [CanBeNull]
-    public List<RemoteServiceValidationErrorModel> ValidationErrors { get; set; }
+    public List<RemoteServiceValidationErrorModel>? ValidationErrors { get; set; }
 
     public RemoteServiceErrorModel()
     {
-        
     }
 
-    public RemoteServiceErrorModel(string message, string details = null, string code = null, IDictionary data = null)
+    public RemoteServiceErrorModel(string message, string? details = null, string? code = null,
+        IDictionary? data = null)
     {
         Message = message;
         Details = details;

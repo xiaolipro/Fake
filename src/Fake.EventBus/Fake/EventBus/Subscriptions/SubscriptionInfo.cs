@@ -26,10 +26,10 @@ namespace Fake.EventBus.Subscriptions
             HandlerType = handlerType;
         }
 
-        public static SubscriptionInfo Dynamic(string eventName, Type handlerType) =>
+        public static SubscriptionInfo? Dynamic(string eventName, Type handlerType) =>
             new SubscriptionInfo(true, eventName, handlerType);
 
-        public static SubscriptionInfo Typed(string eventName, Type handlerType) =>
+        public static SubscriptionInfo? Typed(string eventName, Type handlerType) =>
             new SubscriptionInfo(false, eventName, handlerType);
     }
 }

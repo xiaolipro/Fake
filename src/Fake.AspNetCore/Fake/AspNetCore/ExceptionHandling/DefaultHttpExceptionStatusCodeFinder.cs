@@ -21,7 +21,7 @@ public class DefaultHttpExceptionStatusCodeFinder : IHttpExceptionStatusCodeFind
         if (exception is IHasErrorCode exceptionWithErrorCode)
         {
             var code = exceptionWithErrorCode.Code;
-            if (code.NotBeNullOrWhiteSpace())
+            if (code.IsNotNullOrWhiteSpace())
             {
                 if (_options.ErrorCodeToHttpStatusCodeMappings.TryGetValue(code, out var statusCode))
                 {

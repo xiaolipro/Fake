@@ -6,14 +6,14 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Fake.AspNetCore.Auditing;
 
-public class AspNetCoreAuditLogContributor:AuditLogContributor
+public class AspNetCoreAuditLogContributor : AuditLogContributor
 {
     public override void PreContribute(AuditLogContributionContext context)
     {
         var httpContext = context.ServiceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext;
-        
+
         if (httpContext == null) return;
-        
+
         if (httpContext.WebSockets.IsWebSocketRequest) return;
 
         context.AuditInfo.HttpMethod ??= httpContext.Request.Method;
@@ -27,10 +27,10 @@ public class AspNetCoreAuditLogContributor:AuditLogContributor
     public override void PostContribute(AuditLogContributionContext context)
     {
         if (context.AuditInfo.HttpStatusCode != null) return;
-        
+
         var httpContext = context.ServiceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext;
         if (httpContext == null) return;
-        
+
         context.AuditInfo.HttpStatusCode = httpContext.Response.StatusCode;
     }
 

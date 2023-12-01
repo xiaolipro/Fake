@@ -79,7 +79,7 @@ public class FakeExceptionHandlingMiddleware : IMiddleware
         httpContext.Response.Clear();
         httpContext.Response.StatusCode = (int)statusCodeFinder.Find(httpContext, exception);
         httpContext.Response.OnStarting(ClearCacheHeaders, httpContext.Response);
-        httpContext.Response.Headers.Add("Content-Type", "application/json");
+        httpContext.Response.Headers.Append("Content-Type", "application/json");
 
         await httpContext.Response.WriteAsync(
             jsonSerializer.Serialize(

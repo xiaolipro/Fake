@@ -17,16 +17,16 @@ public class DefaultAuthorizationExceptionHandler : IAuthorizationExceptionHandl
             .Value;
         var authenticationSchemeProvider = serviceProvider.GetRequiredService<IAuthenticationSchemeProvider>();
 
-        AuthenticationScheme scheme;
+        AuthenticationScheme? scheme;
         var isAuthenticated = httpContext.User.Identity?.IsAuthenticated ?? false;
 
-        if (handlerOptions.AuthenticationScheme.NotBeNullOrWhiteSpace())
+        if (handlerOptions.AuthenticationScheme.IsNotNullOrWhiteSpace())
         {
-            scheme = await authenticationSchemeProvider.GetSchemeAsync(handlerOptions.AuthenticationScheme);
+            scheme = await authenticationSchemeProvider.GetSchemeAsync(handlerOptions.AuthenticationScheme!);
 
             if (scheme is null)
             {
-                throw new FakeException($"找不到鉴权方案{handlerOptions.AuthenticationScheme}.");
+                throw new FakeException($"找不到AuthenticationScheme：{handlerOptions.AuthenticationScheme}.");
             }
         }
         else

@@ -42,7 +42,7 @@ public class FakeEmbeddedFileProvider : AbstractInMemoryFileProvider
 
         foreach (var resourcePath in Assembly.GetManifestResourceNames())
         {
-            if (Root.NotBeNullOrWhiteSpace() && !resourcePath.StartsWith(Root))
+            if (Root.IsNotNullOrWhiteSpace() && !resourcePath.StartsWith(Root))
             {
                 continue;
             }
@@ -89,7 +89,7 @@ public class FakeEmbeddedFileProvider : AbstractInMemoryFileProvider
 
     private string ConvertToRelativePath(string resourcePath)
     {
-        if (Root.NotBeNullOrWhiteSpace())
+        if (Root.IsNotNullOrWhiteSpace())
         {
             resourcePath = resourcePath.Substring(Root.Length + 1);
         }

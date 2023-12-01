@@ -2,7 +2,7 @@
 
 public interface IHttpClientInfoProvider
 {
-    public string UserAgent { get; }
+    public string? UserAgent { get; }
 
-    public string ClientIpAddress { get; }
+    public string? ClientIpAddress { get; }
 }
