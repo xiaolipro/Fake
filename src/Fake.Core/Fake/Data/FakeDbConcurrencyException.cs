@@ -1,13 +1,12 @@
 ﻿namespace Fake.Data;
 
-public class FakeDbConcurrencyException: FakeException
+public class FakeDbConcurrencyException : FakeException
 {
     /// <summary>
     /// Creates a new <see cref="FakeDbConcurrencyException"/> object.
     /// </summary>
     public FakeDbConcurrencyException()
     {
-
     }
 
     /// <summary>
@@ -17,7 +16,6 @@ public class FakeDbConcurrencyException: FakeException
     public FakeDbConcurrencyException(string message)
         : base(message)
     {
-
     }
 
     /// <summary>
@@ -25,9 +23,8 @@ public class FakeDbConcurrencyException: FakeException
     /// </summary>
     /// <param name="message">Exception message</param>
     /// <param name="innerException">Inner exception</param>
-    public FakeDbConcurrencyException(string message, Exception innerException)
+    public FakeDbConcurrencyException(string? message, Exception? innerException)
         : base(message, innerException)
     {
-
     }
 }

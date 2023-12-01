@@ -31,8 +31,7 @@ public static class FakeObjectExtensions
     /// <param name="obj"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    [CanBeNull]
-    public static T As<T>(this object obj) where T : class
+    public static T? As<T>(this object obj) where T : class
     {
         return obj as T;
     }
