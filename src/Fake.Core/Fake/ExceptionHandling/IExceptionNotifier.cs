@@ -2,5 +2,5 @@
 
 public interface IExceptionNotifier
 {
-    Task NotifyAsync([NotNull] ExceptionNotificationContext context);
+    Task NotifyAsync(ExceptionNotificationContext context);
 }

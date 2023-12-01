@@ -1,10 +1,9 @@
 using System;
 using System.Linq;
-using JetBrains.Annotations;
 
 namespace Fake.Localization;
 
-public class LocalizationResourceNameAttribute: Attribute
+public class LocalizationResourceNameAttribute : Attribute
 {
     public string Name { get; }
 
@@ -12,7 +11,7 @@ public class LocalizationResourceNameAttribute: Attribute
     {
         Name = name;
     }
-    
+
     public static LocalizationResourceNameAttribute GetOrNull(Type resourceType)
     {
         return resourceType
@@ -20,10 +19,9 @@ public class LocalizationResourceNameAttribute: Attribute
             .OfType<LocalizationResourceNameAttribute>()
             .FirstOrDefault();
     }
-    
-    [NotNull]
+
     public static string GetName(Type resourceType)
     {
-        return GetOrNull(resourceType)?.Name ?? resourceType.FullName?? resourceType.Name;
+        return GetOrNull(resourceType)?.Name ?? resourceType.FullName ?? resourceType.Name;
     }
 }

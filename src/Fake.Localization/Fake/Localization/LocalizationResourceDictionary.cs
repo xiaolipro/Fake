@@ -7,15 +7,15 @@ namespace Fake.Localization;
 /// <summary>
 /// 本地化资源字典 资源名称：资源
 /// </summary>
-public class LocalizationResourceDictionary: Dictionary<string, AbstractLocalizationResource>
+public class LocalizationResourceDictionary : Dictionary<string, AbstractLocalizationResource>
 {
     private readonly Dictionary<Type, AbstractLocalizationResource> _resourcesByTypes = new();
-    
+
     public LocalizationResource Add<TLocalizationResource>([CanBeNull] string defaultCultureName = null)
     {
         return Add(typeof(TLocalizationResource), defaultCultureName);
     }
-    
+
     public LocalizationResource Add(Type resourceType, [CanBeNull] string defaultCultureName = null)
     {
         var resourceName = LocalizationResourceNameAttribute.GetName(resourceType);
@@ -32,7 +32,7 @@ public class LocalizationResourceDictionary: Dictionary<string, AbstractLocaliza
         return resource;
     }
 
-    public NonTypedLocalizationResource Add([NotNull] string resourceName, [CanBeNull] string defaultCultureName = null)
+    public NonTypedLocalizationResource Add(string resourceName, [CanBeNull] string defaultCultureName = null)
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(resourceName, nameof(resourceName));
 
@@ -47,11 +47,11 @@ public class LocalizationResourceDictionary: Dictionary<string, AbstractLocaliza
 
         return resource;
     }
-    
+
     public AbstractLocalizationResource Get<TResource>()
     {
         var resourceType = typeof(TResource);
-        
+
         var resource = _resourcesByTypes.GetOrDefault(resourceType);
         if (resource == null)
         {
@@ -60,7 +60,7 @@ public class LocalizationResourceDictionary: Dictionary<string, AbstractLocaliza
 
         return resource;
     }
-    
+
     public AbstractLocalizationResource Get(string resourceName)
     {
         var resource = this.GetOrDefault(resourceName);

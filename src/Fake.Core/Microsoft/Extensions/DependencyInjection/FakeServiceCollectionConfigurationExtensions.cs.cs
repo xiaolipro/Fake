@@ -13,7 +13,6 @@ public static class FakeServiceCollectionConfigurationExtensions
         return services.Replace(ServiceDescriptor.Singleton(configuration));
     }
 
-    [NotNull]
     public static IConfiguration GetConfiguration(this IServiceCollection services)
     {
         return services.GetConfigurationOrNull() ??

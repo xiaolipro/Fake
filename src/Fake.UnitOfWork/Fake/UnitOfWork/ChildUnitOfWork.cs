@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
 
 namespace Fake.UnitOfWork;
 
@@ -18,7 +17,7 @@ public class ChildUnitOfWork : IUnitOfWork
 
     private readonly IUnitOfWork _parent;
 
-    public ChildUnitOfWork([NotNull] IUnitOfWork parent)
+    public ChildUnitOfWork(IUnitOfWork parent)
     {
         ThrowHelper.ThrowIfNull(parent, nameof(parent));
 

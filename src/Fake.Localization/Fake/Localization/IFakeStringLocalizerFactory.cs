@@ -6,5 +6,5 @@ namespace Fake.Localization;
 public interface IFakeStringLocalizerFactory
 {
     [CanBeNull]
-    IStringLocalizer CreateByResourceName([NotNull] string resourceName);
+    IStringLocalizer CreateByResourceName(string resourceName);
 }

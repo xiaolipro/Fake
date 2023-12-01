@@ -10,14 +10,14 @@ namespace Fake.VirtualFileSystem.Embedded;
 
 public class FakeEmbeddedFileProvider : AbstractInMemoryFileProvider
 {
-    [NotNull] protected virtual Assembly Assembly { get; }
+    protected virtual Assembly Assembly { get; }
 
     [CanBeNull] protected virtual string Root { get; }
-    
+
     protected override IDictionary<string, IFileInfo> Files => _fileDic.Value;
     private readonly Lazy<Dictionary<string, IFileInfo>> _fileDic;
-    
-    public FakeEmbeddedFileProvider([NotNull] Assembly assembly, [CanBeNull] string root = null)
+
+    public FakeEmbeddedFileProvider(Assembly assembly, [CanBeNull] string root = null)
     {
         ThrowHelper.ThrowIfNull(assembly, nameof(assembly));
 
@@ -35,7 +35,7 @@ public class FakeEmbeddedFileProvider : AbstractInMemoryFileProvider
         );
     }
 
-    
+
     public virtual void AddFiles(Dictionary<string, IFileInfo> fileDic)
     {
         var lastModificationTime = GetLastModificationTime();
@@ -46,12 +46,13 @@ public class FakeEmbeddedFileProvider : AbstractInMemoryFileProvider
             {
                 continue;
             }
-            
+
             // 资产名称a.b.c->目录层级/a/b/c
             var fullPath = ConvertToRelativePath(resourcePath);
 
             // 添加虚拟目录
-            AddVirtualDirectoriesRecursively(fileDic, fullPath.Substring(0, fullPath.LastIndexOf('/')), lastModificationTime);
+            AddVirtualDirectoriesRecursively(fileDic, fullPath.Substring(0, fullPath.LastIndexOf('/')),
+                lastModificationTime);
 
             // 添加虚拟文件
             fileDic[fullPath] = new FakeEmbeddedFileInfo(
@@ -63,8 +64,8 @@ public class FakeEmbeddedFileProvider : AbstractInMemoryFileProvider
             );
         }
     }
-    
-    
+
+
     private DateTimeOffset GetLastModificationTime()
     {
         var lastModified = DateTimeOffset.UtcNow;
@@ -85,14 +86,14 @@ public class FakeEmbeddedFileProvider : AbstractInMemoryFileProvider
 
         return lastModified;
     }
-    
+
     private string ConvertToRelativePath(string resourcePath)
     {
         if (Root.NotBeNullOrWhiteSpace())
         {
             resourcePath = resourcePath.Substring(Root.Length + 1);
         }
-        
+
         var pathParts = resourcePath.Split('.');
         if (pathParts.Length <= 2)
         {
@@ -104,8 +105,9 @@ public class FakeEmbeddedFileProvider : AbstractInMemoryFileProvider
         var fileName = pathParts.Skip(pathParts.Length - 2).JoinAsString(".");
         return folder + "/" + fileName;
     }
-    
-    private static void AddVirtualDirectoriesRecursively(Dictionary<string, IFileInfo> fileDic, string directoryPath, DateTimeOffset lastModificationTime)
+
+    private static void AddVirtualDirectoriesRecursively(Dictionary<string, IFileInfo> fileDic, string directoryPath,
+        DateTimeOffset lastModificationTime)
     {
         if (fileDic.ContainsKey(directoryPath))
         {
@@ -120,11 +122,12 @@ public class FakeEmbeddedFileProvider : AbstractInMemoryFileProvider
 
         if (directoryPath.Contains("/"))
         {
-            AddVirtualDirectoriesRecursively(fileDic, directoryPath.Substring(0, directoryPath.LastIndexOf('/')), lastModificationTime);
+            AddVirtualDirectoriesRecursively(fileDic, directoryPath.Substring(0, directoryPath.LastIndexOf('/')),
+                lastModificationTime);
         }
     }
-    
-    
+
+
     private static string CalculateFileName(string filePath)
     {
         if (!filePath.Contains("/"))

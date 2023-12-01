@@ -46,8 +46,8 @@ public class FakeApplication : IFakeApplication
     }
 
     internal FakeApplication(
-        [NotNull] Type startupModuleType,
-        [NotNull] IServiceCollection services,
+        Type startupModuleType,
+        IServiceCollection services,
         [CanBeNull] Action<FakeApplicationCreationOptions> optionsAction)
     {
         ThrowHelper.ThrowIfNull(startupModuleType, nameof(startupModuleType));

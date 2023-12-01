@@ -61,7 +61,7 @@ public static class FakeStringExtensions
     /// <param name="comparisonType"></param>
     /// <returns>追加后的结果</returns>
     /// <exception cref="ArgumentNullException">str is null</exception>
-    public static string EndsWithOrAppend([NotNull] this string str, [NotNull] string end,
+    public static string EndsWithOrAppend(this string str, string end,
         StringComparison comparisonType = StringComparison.Ordinal)
     {
         ThrowHelper.ThrowIfNull(str, nameof(str));
@@ -72,7 +72,7 @@ public static class FakeStringExtensions
         return str + end;
     }
 
-    public static bool NotBeEndsWith([NotNull] this string str, [NotNull] string start,
+    public static bool NotBeEndsWith(this string str, string start,
         StringComparison comparisonType = StringComparison.Ordinal)
     {
         ThrowHelper.ThrowIfNull(str, nameof(str));
@@ -89,7 +89,7 @@ public static class FakeStringExtensions
     /// <param name="comparisonType"></param>
     /// <returns>追加后的结果</returns>
     /// <exception cref="ArgumentNullException">str is null</exception>
-    public static string StartsWithOrAppend([NotNull] this string str, [NotNull] string start,
+    public static string StartsWithOrAppend(this string str, string start,
         StringComparison comparisonType = StringComparison.Ordinal)
     {
         ThrowHelper.ThrowIfNull(str, nameof(str));
@@ -101,7 +101,7 @@ public static class FakeStringExtensions
     }
 
 
-    public static bool NotBeStartsWith([NotNull] this string str, [NotNull] string start,
+    public static bool NotBeStartsWith(this string str, string start,
         StringComparison comparisonType = StringComparison.Ordinal)
     {
         ThrowHelper.ThrowIfNull(str, nameof(str));

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using JetBrains.Annotations;
 using RabbitMQ.Client;
 
 namespace Fake.RabbitMQ;
@@ -10,7 +9,6 @@ public class FakeRabbitMqOptions
 
     public Dictionary<string, ConnectionFactory> Connections { get; set; }
 
-    [NotNull]
     public ConnectionFactory Default
     {
         get => Connections[DefaultConnectionName];

@@ -4,15 +4,14 @@ namespace Fake.ExceptionHandling;
 
 public class ExceptionNotificationContext
 {
-    [NotNull]
     public Exception Exception { get; }
-    
+
     public LogLevel LogLevel { get; }
-    
+
     public bool ExceptionHandled { get; }
-    
+
     public ExceptionNotificationContext(
-        [NotNull] Exception exception,
+        Exception exception,
         LogLevel? logLevel = null,
         bool handled = true)
     {

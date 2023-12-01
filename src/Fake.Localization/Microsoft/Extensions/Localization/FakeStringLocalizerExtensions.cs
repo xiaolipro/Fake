@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using Fake;
 using Fake.Localization;
-using JetBrains.Annotations;
 
 namespace Microsoft.Extensions.Localization;
 
@@ -30,8 +29,7 @@ public static class FakeStringLocalizerExtensions
     /// <param name="stringLocalizer"></param>
     /// <returns></returns>
     /// <exception cref="FakeException">找不到字段</exception>
-    [NotNull]
-    public static IStringLocalizer GetInternalLocalizer([NotNull] this IStringLocalizer stringLocalizer)
+    public static IStringLocalizer GetInternalLocalizer(this IStringLocalizer stringLocalizer)
     {
         ThrowHelper.ThrowIfNull(stringLocalizer, nameof(stringLocalizer));
 

@@ -12,7 +12,7 @@ public static class FakeCollectionExtensions
     {
         return source is not { Count: > 0 };
     }
-    
+
     /// <summary>
     /// 尝试添加项到集合，项不存在则成功添加并返回true，否则返回false
     /// </summary>
@@ -20,7 +20,7 @@ public static class FakeCollectionExtensions
     /// <param name="item"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static bool TryAdd<T>([NotNull] this ICollection<T> source, T item)
+    public static bool TryAdd<T>(this ICollection<T> source, T item)
     {
         ThrowHelper.ThrowIfNull(source, nameof(source));
 

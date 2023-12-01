@@ -1,12 +1,10 @@
-﻿using Fake.DependencyInjection;
-
-namespace Fake.Modularity;
+﻿namespace Fake.Modularity;
 
 public class ApplicationConfigureContext : IServiceProviderAccessor
 {
     public IServiceProvider ServiceProvider { get; }
 
-    public ApplicationConfigureContext([NotNull] IServiceProvider serviceProvider)
+    public ApplicationConfigureContext(IServiceProvider serviceProvider)
     {
         ThrowHelper.ThrowIfNull(serviceProvider, nameof(serviceProvider));
         ServiceProvider = serviceProvider;

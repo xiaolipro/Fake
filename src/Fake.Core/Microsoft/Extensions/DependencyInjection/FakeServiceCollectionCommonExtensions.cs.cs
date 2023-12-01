@@ -1,7 +1,5 @@
 ﻿using System.Reflection;
 using Fake;
-using Fake.Helpers;
-using Microsoft.Extensions.Configuration;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -16,8 +14,8 @@ public static class FakeServiceCollectionCommonExtensions
     {
         return services.Any(d => d.ServiceType == type);
     }
-    
-    
+
+
     public static void EnsureAdded<T>(this IServiceCollection services) where T : class
     {
         if (!services.IsAdded<T>())
@@ -59,7 +57,7 @@ public static class FakeServiceCollectionCommonExtensions
         return service;
     }
 
-    public static IServiceProvider BuildServiceProviderFromFactory([NotNull] this IServiceCollection services)
+    public static IServiceProvider BuildServiceProviderFromFactory(this IServiceCollection services)
     {
         ThrowHelper.ThrowIfNull(services, nameof(services));
 
@@ -90,7 +88,7 @@ public static class FakeServiceCollectionCommonExtensions
     }
 
     public static IServiceProvider BuildServiceProviderFromFactory<TContainerBuilder>(
-        [NotNull] this ServiceCollection services, Action<TContainerBuilder> containerBuildAction)
+        this ServiceCollection services, Action<TContainerBuilder> containerBuildAction)
         where TContainerBuilder : notnull
     {
         ThrowHelper.ThrowIfNull(services, nameof(services));

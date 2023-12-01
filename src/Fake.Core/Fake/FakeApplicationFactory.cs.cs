@@ -13,25 +13,25 @@ public static class FakeApplicationFactory
     {
         return Create(typeof(TStartupModule), optionsAction);
     }
-    
+
     public static FakeApplication Create(
-        [NotNull] Type startupModuleType,
+        Type startupModuleType,
         [CanBeNull] Action<FakeApplicationCreationOptions> optionsAction = null)
     {
         return new FakeApplication(startupModuleType, optionsAction);
     }
-    
+
     public static FakeApplication Create<TStartupModule>(
-        [NotNull] IServiceCollection services,
+        IServiceCollection services,
         [CanBeNull] Action<FakeApplicationCreationOptions> optionsAction = null)
         where TStartupModule : IFakeModule
     {
         return Create(typeof(TStartupModule), services, optionsAction);
     }
-    
+
     public static FakeApplication Create(
-        [NotNull] Type startupModuleType,
-        [NotNull] IServiceCollection services,
+        Type startupModuleType,
+        IServiceCollection services,
         [CanBeNull] Action<FakeApplicationCreationOptions> optionsAction = null)
     {
         return new FakeApplication(startupModuleType, services, optionsAction);
