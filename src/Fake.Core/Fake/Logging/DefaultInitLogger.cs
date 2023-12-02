@@ -5,13 +5,14 @@ namespace Fake.Logging;
 public class DefaultInitLogger<T> : IInitLogger<T>
 {
     public List<InitLoggerEntry> Entries { get; }
-    
+
     public DefaultInitLogger()
     {
         Entries = new List<InitLoggerEntry>();
     }
 
-    public virtual void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+    public virtual void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception,
+        Func<TState, Exception?, string> formatter)
     {
         Entries.Add(new InitLoggerEntry()
         {

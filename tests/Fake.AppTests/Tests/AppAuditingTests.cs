@@ -23,6 +23,20 @@ public abstract class AppAuditingTests<TStartupModule> : AppTestBase<TStartupMod
         AuditingManager = GetRequiredService<IAuditingManager>();
     }
 
+    [Fact]
+    void ref_nullable_test()
+    {
+        List<int> arr = null;
+        foreach (var item in arr)
+        {
+        }
+    }
+
+    void say(string message)
+    {
+        Console.WriteLine(message);
+    }
+
     protected override void AfterAddFakeApplication(IServiceCollection services)
     {
         var currentUser = Substitute.For<ICurrentUser>();

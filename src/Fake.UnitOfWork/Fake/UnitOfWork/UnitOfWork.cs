@@ -22,8 +22,8 @@ public class UnitOfWork : IUnitOfWork
     public event EventHandler<UnitOfWorkFailedEventArgs> Failed;
     public event EventHandler<UnitOfWorkEventArgs> Disposed;
 
-    private readonly Dictionary<string, IDatabaseApi> _databaseApiDic;
-    private readonly Dictionary<string, ITransactionApi> _transactionApiDic;
+    private readonly Dictionary<string, IDatabaseApi?> _databaseApiDic;
+    private readonly Dictionary<string, ITransactionApi?> _transactionApiDic;
 
     private readonly ILogger<UnitOfWork> _logger;
     private readonly FakeUnitOfWorkOptions _options;
@@ -42,8 +42,8 @@ public class UnitOfWork : IUnitOfWork
 
         CompletedTasks = new List<Func<IUnitOfWork, Task>>();
 
-        _databaseApiDic = new Dictionary<string, IDatabaseApi>();
-        _transactionApiDic = new Dictionary<string, ITransactionApi>();
+        _databaseApiDic = new Dictionary<string, IDatabaseApi?>();
+        _transactionApiDic = new Dictionary<string, ITransactionApi?>();
     }
 
     /// <summary>
@@ -217,22 +217,22 @@ public class UnitOfWork : IUnitOfWork
         Outer = outer;
     }
 
-    public virtual IReadOnlyList<IDatabaseApi> GetAllActiveDatabaseApis()
+    public virtual IReadOnlyList<IDatabaseApi?> GetAllActiveDatabaseApis()
     {
         return _databaseApiDic.Values.ToImmutableList();
     }
 
-    public virtual IReadOnlyList<ITransactionApi> GetAllActiveTransactionApis()
+    public virtual IReadOnlyList<ITransactionApi?> GetAllActiveTransactionApis()
     {
         return _transactionApiDic.Values.ToImmutableList();
     }
 
-    public virtual IDatabaseApi FindDatabaseApi(string key)
+    public virtual IDatabaseApi? FindDatabaseApi(string key)
     {
         return _databaseApiDic.GetOrDefault(key);
     }
 
-    public virtual void AddDatabaseApi(string key, IDatabaseApi api)
+    public virtual void AddDatabaseApi(string key, IDatabaseApi? api)
     {
         ThrowHelper.ThrowIfNull(key, nameof(key));
         ThrowHelper.ThrowIfNull(api, nameof(api));
@@ -253,12 +253,12 @@ public class UnitOfWork : IUnitOfWork
         return _databaseApiDic.GetOrAdd(key, factory);
     }
 
-    public ITransactionApi FindTransactionApi(string key)
+    public ITransactionApi? FindTransactionApi(string key)
     {
         return _transactionApiDic.GetOrDefault(key);
     }
 
-    public void AddTransactionApi(string key, ITransactionApi api)
+    public void AddTransactionApi(string key, ITransactionApi? api)
     {
         ThrowHelper.ThrowIfNull(key, nameof(key));
         ThrowHelper.ThrowIfNull(api, nameof(api));

@@ -1,22 +1,25 @@
 ﻿using System.Diagnostics;
+using JetBrains.Annotations;
 
 namespace Fake;
 
 [DebuggerStepThrough]
 public static class ThrowHelper
 {
+    [ContractAnnotation("value:null => halt")]
     public static T ThrowIfNull<T>(
-        T value,
-        string? parameterName = null,
+        T? value,
+        [InvokerParameterName] string? parameterName = null,
         string? message = null)
     {
         if (value != null) return value;
         throw new ArgumentNullException(parameterName, message);
     }
 
-    public static string? ThrowIfNullOrWhiteSpace(
-        string? value,
-        string? parameterName = null)
+    [ContractAnnotation("value:null => halt")]
+    public static string ThrowIfNullOrWhiteSpace(
+        string value,
+        [InvokerParameterName] string? parameterName = null)
     {
         if (value.IsNotNullOrWhiteSpace()) return value;
         throw new ArgumentException($"{parameterName}不能是null，empty或white space", parameterName);

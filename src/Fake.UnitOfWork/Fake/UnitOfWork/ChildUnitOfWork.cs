@@ -28,12 +28,12 @@ public class ChildUnitOfWork : IUnitOfWork
     }
 
 
-    public IDatabaseApi FindDatabaseApi(string key)
+    public IDatabaseApi? FindDatabaseApi(string key)
     {
         return _parent.FindDatabaseApi(key);
     }
 
-    public void AddDatabaseApi(string key, IDatabaseApi api)
+    public void AddDatabaseApi(string key, IDatabaseApi? api)
     {
         _parent.AddDatabaseApi(key, api);
     }
@@ -43,12 +43,12 @@ public class ChildUnitOfWork : IUnitOfWork
         return _parent.GetOrAddDatabaseApi(key, factory);
     }
 
-    public ITransactionApi FindTransactionApi(string key)
+    public ITransactionApi? FindTransactionApi(string key)
     {
         return _parent.FindTransactionApi(key);
     }
 
-    public void AddTransactionApi(string key, ITransactionApi api)
+    public void AddTransactionApi(string key, ITransactionApi? api)
     {
         _parent.AddTransactionApi(key, api);
     }

@@ -7,37 +7,36 @@ using Microsoft.Extensions.Primitives;
 
 namespace Fake.VirtualFileSystem;
 
-
 /// <summary>
 /// 当前实现仅支持文件监视，不支持目录或通配符监视。
 /// </summary>
 public class DynamicFileProvider : AbstractInMemoryFileProvider, IDynamicFileProvider
 {
-    private readonly ConcurrentDictionary<string, IFileInfo> _dynamicFiles;
-    protected override IDictionary<string, IFileInfo> Files => _dynamicFiles;
+    private readonly ConcurrentDictionary<string, IFileInfo?> _dynamicFiles;
+    protected override IDictionary<string, IFileInfo?> Files => _dynamicFiles;
     protected ConcurrentDictionary<string, ChangeTokenInfo> FilePathTokenPairs { get; }
 
     public DynamicFileProvider()
     {
-        _dynamicFiles = new ConcurrentDictionary<string, IFileInfo>();
+        _dynamicFiles = new ConcurrentDictionary<string, IFileInfo?>();
         // 路径忽略大小写
         FilePathTokenPairs = new ConcurrentDictionary<string, ChangeTokenInfo>(StringComparer.OrdinalIgnoreCase);
     }
 
 
-    public bool AddOrUpdate(IFileInfo fileInfo)
+    public bool AddOrUpdate(IFileInfo? fileInfo)
     {
         var path = fileInfo.GetVirtualOrPhysicalPathOrNull();
         if (path == null) return false;
         _dynamicFiles.AddOrUpdate(path, fileInfo, (_, _) => fileInfo);
-        
+
         return RemoveChangeTokenInfo(path);
     }
 
     public bool Delete(string path)
     {
         if (!_dynamicFiles.TryRemove(path, out _)) return false;
-        
+
         return RemoveChangeTokenInfo(path);
     }
 
@@ -68,7 +67,7 @@ public class DynamicFileProvider : AbstractInMemoryFileProvider, IDynamicFilePro
         {
             return false;
         }
-        
+
         tokenInfo.TokenSource.Cancel();
         return true;
     }

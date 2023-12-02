@@ -26,7 +26,7 @@ public class JsonVirtualLocalizationResourceContributor : AbstractVirtualFileLoc
         return file.Name.EndsWith(".json");
     }
 
-    protected override ILocalizedStringContainer CreateLocalizedStringContainer(string content, string path)
+    protected override ILocalizedStringContainer? CreateLocalizedStringContainer(string content, string path)
     {
         JsonVirtualLocalizationResourceFile jsonVirtualFile;
         try

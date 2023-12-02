@@ -1,11 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Security.Claims;
-using System.Threading.Tasks;
+﻿using System.Security.Claims;
 using Fake;
 using Fake.Auditing;
 using Fake.DependencyInjection;
 using Fake.Identity.Security.Claims;
-using Fake.Threading;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace SimpleConsoleDemo;
@@ -21,11 +18,10 @@ public class Program
         });
         application.InitializeApplication();
         //logger.LogInformation("Initializing the application... OK");
-            
+
         var myAuditedObject1 = application.ServiceProvider.GetRequiredService<MyAuditedObject1>();
-            
+
         var currentPrincipalAccessor = application.ServiceProvider.GetRequiredService<ICurrentPrincipalAccessor>();
-            
         currentPrincipalAccessor.Change(new ClaimsPrincipal(new ClaimsIdentity(new List<Claim>
         {
             new Claim(FakeClaimTypes.UserId, "10086"),
@@ -46,9 +42,6 @@ public class Program
         await myAuditedObject1.DoItAsync(new InputObject { Value1 = "asdasd", Value2 = 1 });
     }
 }
-
-
-
 
 public interface IMyAuditedObject : ITransientDependency
 {

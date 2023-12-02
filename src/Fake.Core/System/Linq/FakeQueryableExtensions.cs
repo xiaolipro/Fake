@@ -15,9 +15,11 @@ public static class FakeQueryableExtensions
     /// <returns>过滤后的结果</returns>
     public static TQueryable WhereIf<T, TQueryable>(this TQueryable query, bool condition,
         Expression<Func<T, bool>>? predicate)
-        where TQueryable : IQueryable<T>?
+        where TQueryable : IQueryable<T>
     {
         ThrowHelper.ThrowIfNull(query, nameof(query));
+
+        if (predicate == null) return query;
 
         return condition
             ? (TQueryable)query.Where(predicate)
@@ -30,7 +32,7 @@ public static class FakeQueryableExtensions
         where TEntity : class
     {
         var num = 0;
-        foreach (var field in fields)
+        foreach (var field in fields ?? Enumerable.Empty<KeyValuePair<string, bool>>())
         {
             query = num != 0
                 ? query.ThenBy(field.Key, field.Value)
@@ -47,9 +49,10 @@ public static class FakeQueryableExtensions
         bool desc)
         where TEntity : class
     {
-        PropertyInfo propertyInfo = GetPropertyInfo(typeof(TEntity), field);
+        PropertyInfo propertyInfo = GetPropertyInfo(typeof(TEntity), field)
+                                    ?? throw new FakeException($"{typeof(TEntity).Name}中找不到字段：{field}");
         LambdaExpression orderExpression = GetOrderExpression(typeof(TEntity), propertyInfo);
-        return desc
+        return (desc
             ? typeof(Queryable).GetMethods()
                 .FirstOrDefault(m =>
                     m.Name == "OrderByDescending" && m.GetParameters().Length == 2)
@@ -58,43 +61,44 @@ public static class FakeQueryableExtensions
                     query,
                     orderExpression
                 }) as IQueryable<TEntity>
-            : (IQueryable<TEntity>)typeof(Queryable).GetMethods()
+            : (IQueryable<TEntity>?)typeof(Queryable).GetMethods()
                 .FirstOrDefault(m =>
                     m.Name == nameof(OrderBy) && m.GetParameters().Length == 2)
                 ?.MakeGenericMethod(typeof(TEntity), propertyInfo.PropertyType).Invoke(null, new object[]
                 {
                     query,
                     orderExpression
-                });
+                })) ?? query;
     }
 
-    private static IQueryable<T> ThenBy<T>(
-        this IQueryable<T> query,
+    private static IQueryable<TEntity> ThenBy<TEntity>(
+        this IQueryable<TEntity> query,
         string field,
         bool desc)
-        where T : class
+        where TEntity : class
     {
-        PropertyInfo propertyInfo = GetPropertyInfo(typeof(T), field);
-        LambdaExpression orderExpression = GetOrderExpression(typeof(T), propertyInfo);
-        return desc
+        PropertyInfo propertyInfo = GetPropertyInfo(typeof(TEntity), field)
+                                    ?? throw new FakeException($"{typeof(TEntity).Name}中找不到字段：{field}");
+        LambdaExpression orderExpression = GetOrderExpression(typeof(TEntity), propertyInfo);
+        return (desc
             ? typeof(Queryable).GetMethods()
                 .FirstOrDefault(m => m.Name == "ThenByDescending" && m.GetParameters().Length == 2)
-                ?.MakeGenericMethod(typeof(T), propertyInfo.PropertyType).Invoke(null, new object[]
+                ?.MakeGenericMethod(typeof(TEntity), propertyInfo.PropertyType).Invoke(null, new object[]
                 {
                     query,
                     orderExpression
-                }) as IQueryable<T>
-            : (IQueryable<T>)typeof(Queryable).GetMethods()
+                }) as IQueryable<TEntity>
+            : (IQueryable<TEntity>?)typeof(Queryable).GetMethods()
                 .FirstOrDefault(m => m.Name == nameof(ThenBy) && m.GetParameters().Length == 2)
-                ?.MakeGenericMethod(typeof(T), propertyInfo.PropertyType).Invoke(null, new object[]
+                ?.MakeGenericMethod(typeof(TEntity), propertyInfo.PropertyType).Invoke(null, new object[]
                 {
                     query,
                     orderExpression
-                });
+                })) ?? query;
     }
 
-    private static PropertyInfo GetPropertyInfo(Type entityType, string field) => entityType.GetProperties()
-        .FirstOrDefault(p =>
+    private static PropertyInfo? GetPropertyInfo(Type entityType, string field) =>
+        entityType.GetProperties().FirstOrDefault(p =>
             p.Name.Equals(field, StringComparison.OrdinalIgnoreCase));
 
     private static LambdaExpression GetOrderExpression(

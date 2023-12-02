@@ -15,7 +15,7 @@ public abstract class AbstractVirtualFileLocalizationResourceContributor : ILoca
     private IVirtualFileProvider _virtualFileProvider;
 
     // culture : localized string container
-    private volatile Dictionary<string?, ILocalizedStringContainer> _localizedStringContainers;
+    private volatile Dictionary<string?, ILocalizedStringContainer?> _localizedStringContainers;
     private bool _subscribedForChanges;
     private readonly object _syncObj = new();
 
@@ -41,7 +41,7 @@ public abstract class AbstractVirtualFileLocalizationResourceContributor : ILoca
         localizedStringContainer?.Fill(dictionary);
     }
 
-    public virtual Task FillAsync(string cultureName, Dictionary<string, LocalizedString?> dictionary)
+    public virtual Task FillAsync(string? cultureName, Dictionary<string, LocalizedString?> dictionary)
     {
         var localizedStringContainer = GetLocalizedStringContainers().GetOrDefault(cultureName);
 
@@ -57,7 +57,7 @@ public abstract class AbstractVirtualFileLocalizationResourceContributor : ILoca
         return Task.FromResult<IEnumerable<string>>(cultures);
     }
 
-    private Dictionary<string?, ILocalizedStringContainer> GetLocalizedStringContainers()
+    private Dictionary<string?, ILocalizedStringContainer?> GetLocalizedStringContainers()
     {
         if (_localizedStringContainers != null) return _localizedStringContainers;
 
@@ -86,9 +86,9 @@ public abstract class AbstractVirtualFileLocalizationResourceContributor : ILoca
     }
 
 
-    private Dictionary<string?, ILocalizedStringContainer> CreateLocalizedStringContainers()
+    private Dictionary<string?, ILocalizedStringContainer?> CreateLocalizedStringContainers()
     {
-        var localizedStringContainers = new Dictionary<string?, ILocalizedStringContainer>();
+        var localizedStringContainers = new Dictionary<string?, ILocalizedStringContainer?>();
 
         foreach (var file in _virtualFileProvider.GetDirectoryContents(_virtualPath))
         {
@@ -96,7 +96,7 @@ public abstract class AbstractVirtualFileLocalizationResourceContributor : ILoca
 
             if (!CanParse(file)) continue;
 
-            ILocalizedStringContainer container;
+            ILocalizedStringContainer? container;
             var path = file.GetVirtualOrPhysicalPathOrNull();
             using (var stream = file.CreateReadStream())
             {
@@ -128,5 +128,5 @@ public abstract class AbstractVirtualFileLocalizationResourceContributor : ILoca
     /// <param name="content"></param>
     /// <param name="path"></param>
     /// <returns></returns>
-    protected abstract ILocalizedStringContainer CreateLocalizedStringContainer(string content, string path);
+    protected abstract ILocalizedStringContainer? CreateLocalizedStringContainer(string content, string path);
 }

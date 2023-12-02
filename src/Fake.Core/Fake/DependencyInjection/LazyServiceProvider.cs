@@ -17,28 +17,28 @@ public class LazyServiceProvider : ILazyServiceProvider
         ServiceCacheDic.TryAdd(typeof(IServiceProvider), new Lazy<object>(() => ServiceProvider));
     }
 
-    public T GetLazyService<T>(Func<IServiceProvider, object> valueFactory = null) where T: class
+    public T? GetLazyService<T>(Func<IServiceProvider, object>? valueFactory = null) where T : class
     {
         return GetLazyService(typeof(T), valueFactory) as T;
     }
 
-    public object GetLazyService(Type serviceType, Func<IServiceProvider, object> valueFactory = null)
+    public object GetLazyService(Type serviceType, Func<IServiceProvider, object>? valueFactory = null)
     {
         if (valueFactory != null)
             return ServiceCacheDic.GetOrAdd(
                 serviceType,
                 _ => new Lazy<object>(() => valueFactory(ServiceProvider))
             ).Value;
-        
+
         return ServiceCacheDic.GetOrAdd(
             serviceType,
             _ => new Lazy<object>(() => ServiceProvider.GetService(serviceType))
         ).Value;
     }
 
-    public T GetRequiredLazyService<T>() where T: class
+    public T GetRequiredLazyService<T>() where T : class
     {
-        return GetRequiredLazyService(typeof(T)) as T;
+        return GetRequiredLazyService(typeof(T)).Is<T>();
     }
 
     public object GetRequiredLazyService(Type serviceType)

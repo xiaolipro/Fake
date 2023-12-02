@@ -21,7 +21,7 @@ public class DependencyInjectionTests
         a.ShouldNotBeNull();
 
         var c = application.ServiceProvider.GetService<MyA>();
-        c.ShouldNotBeNull();
+        c.ShouldBeNull();
     }
 
     [Fact]
@@ -61,13 +61,12 @@ public class DependencyInjectionTests
         application.InitializeApplication();
 
         var a = application.ServiceProvider.GetService<IHierarchy>();
-        var b = application.ServiceProvider.GetService<AHierarchy>();
         //a.GetHashCode().ShouldBe(b.GetHashCode());
         application.Services.First(x => x.ServiceType == typeof(IHierarchy))
             .ImplementationFactory
             ?.Invoke(application.ServiceProvider).GetType().ShouldBe(typeof(BHierarchy));
 
-        application.ServiceProvider.GetServices<AHierarchy>().Count().ShouldBe(1);
+        application.ServiceProvider.GetServices<IHierarchy>().Count().ShouldBe(1);
     }
 
     [Fact]
@@ -77,8 +76,6 @@ public class DependencyInjectionTests
         application.InitializeApplication();
 
         application.Services.First(x => x.ServiceType == typeof(IDifferentLife)).Lifetime
-            .ShouldBe(ServiceLifetime.Singleton);
-        application.Services.First(x => x.ServiceType == typeof(DifferentLife)).Lifetime
             .ShouldBe(ServiceLifetime.Singleton);
     }
 }

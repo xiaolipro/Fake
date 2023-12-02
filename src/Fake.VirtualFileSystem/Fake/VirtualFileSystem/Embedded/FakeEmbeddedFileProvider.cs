@@ -13,8 +13,8 @@ public class FakeEmbeddedFileProvider : AbstractInMemoryFileProvider
 
     protected virtual string Root { get; }
 
-    protected override IDictionary<string, IFileInfo> Files => _fileDic.Value;
-    private readonly Lazy<Dictionary<string, IFileInfo>> _fileDic;
+    protected override IDictionary<string, IFileInfo?> Files => _fileDic.Value;
+    private readonly Lazy<Dictionary<string, IFileInfo?>> _fileDic;
 
     public FakeEmbeddedFileProvider(Assembly assembly, string root = null)
     {
@@ -23,7 +23,7 @@ public class FakeEmbeddedFileProvider : AbstractInMemoryFileProvider
         Assembly = assembly;
         Root = root?.Trim('/').Replace("/", ".");
 
-        _fileDic = new Lazy<Dictionary<string, IFileInfo>>(
+        _fileDic = new Lazy<Dictionary<string, IFileInfo?>>(
             () =>
             {
                 var fileDic = new Dictionary<string, IFileInfo>(StringComparer.OrdinalIgnoreCase);

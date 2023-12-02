@@ -36,7 +36,9 @@ public class IntegrationEventLogService : IIntegrationEventLogService
         if (result.Any())
         {
             return result.OrderBy(o => o.CreationTime)
-                .Select(e => e.DeserializeJsonContent(EventTypes.Find(t => t.Name == e.EventTypeShortName)));
+                .Select(e =>
+                    e.DeserializeJsonContent(EventTypes.Find(t => t.Name == e.EventTypeShortName) ??
+                                             throw new FakeException($"非法的事件类型：{e.EventTypeShortName}")));
         }
 
         return new List<IntegrationEventLogEntry>();
@@ -88,7 +90,7 @@ public class IntegrationEventLogService : IIntegrationEventLogService
         {
             if (disposing)
             {
-                _integrationEventLogContext?.Dispose();
+                _integrationEventLogContext.Dispose();
             }
 
 

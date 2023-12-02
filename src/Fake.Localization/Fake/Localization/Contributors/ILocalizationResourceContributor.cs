@@ -12,7 +12,7 @@ public interface ILocalizationResourceContributor
 
     void Fill(string? cultureName, Dictionary<string, LocalizedString?> dictionary);
 
-    Task FillAsync(string cultureName, Dictionary<string, LocalizedString?> dictionary);
+    Task FillAsync(string? cultureName, Dictionary<string, LocalizedString?> dictionary);
 
 
     Task<IEnumerable<string?>> GetSupportedCulturesAsync();
