@@ -16,7 +16,7 @@ public class ExposeServicesAttribute : Attribute, IExposedServiceTypesProvider
     /// 例如CustomA:ICustomA,IA，那么暴露ICustomA和IA
     /// </para>
     /// </remarks>
-    public bool ExposeConventionalInterfaces { get; set; }
+    public bool ExposeInterface { get; set; }
 
     public bool ExposeSelf { get; set; }
 
@@ -25,22 +25,22 @@ public class ExposeServicesAttribute : Attribute, IExposedServiceTypesProvider
         ExposedServiceTypes = exposedServiceTypes ?? Type.EmptyTypes;
     }
 
-    
+
     public Type[] GetExposedServiceTypes(Type targetType)
     {
-        var exposedServiceTypes = ExposedServiceTypes.ToList();
+        List<Type> exposedServiceTypes = ExposedServiceTypes.ToList();
 
-        if (ExposeSelf)
-        {
-            exposedServiceTypes.TryAdd(targetType);
-        }
-
-        if (ExposeConventionalInterfaces)
+        if (ExposeInterface)
         {
             foreach (var type in GetConventionalNamingServiceTypes(targetType))
             {
                 exposedServiceTypes.TryAdd(type);
             }
+        }
+
+        if (exposedServiceTypes.Count == 0 || ExposeSelf)
+        {
+            exposedServiceTypes.TryAdd(targetType);
         }
 
         return exposedServiceTypes.ToArray();
@@ -50,7 +50,7 @@ public class ExposeServicesAttribute : Attribute, IExposedServiceTypesProvider
     {
         var serviceTypes = new List<Type>();
 
-        var interfaces = targetType.GetTypeInfo().GetInterfaces();
+        Type?[] interfaces = targetType.GetTypeInfo().GetInterfaces();
 
         foreach (var @interface in interfaces)
         {
@@ -64,7 +64,7 @@ public class ExposeServicesAttribute : Attribute, IExposedServiceTypesProvider
             {
                 interfaceName = interfaceName.Slice(1, interfaceName.Length - 1);
             }
-            
+
             //TODO：为什么这里暴露了泛型，仍然获取不了服务
             // if (targetType.IsGenericType)
             // {

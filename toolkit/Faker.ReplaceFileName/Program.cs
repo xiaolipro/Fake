@@ -1,17 +1,19 @@
-﻿namespace Faker.ReplaceFileName;
+﻿using System.IO;
+
+namespace Faker.ReplaceFileName;
 
 public class Program
 {
     static void Main(string[] args)
     {
-        string path = args[0], current = args[1],target = args[2];
+        string path = args[0], current = args[1], target = args[2];
         var dirs = Directory.GetDirectories(path, $"*{current}*", SearchOption.AllDirectories);
         foreach (var dir in dirs)
         {
             string name = dir.Replace(current, target);
             Directory.Move(dir, name);
         }
-        
+
         var files = Directory.GetFiles(path, $"*{current}*.cs", SearchOption.AllDirectories);
         foreach (var file in files)
         {

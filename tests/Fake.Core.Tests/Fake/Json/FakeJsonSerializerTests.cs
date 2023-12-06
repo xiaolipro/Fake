@@ -15,7 +15,7 @@ public class FakeJsonSerializerTests : FakeJsonTestBase
 
     protected override void AfterAddFakeApplication(IServiceCollection services)
     {
-        services.Configure<JsonSerializerOptions>(options =>
+        services.Configure<JsonSerializerOptions>(_ =>
         {
             //options.Encoder = JavaScriptEncoder.Default;
         });
@@ -99,7 +99,8 @@ public class FakeJsonSerializerTests : FakeJsonTestBase
     [Fact]
     void JsonPropertyName反序列化()
     {
-        var json = "{\"id\":19749823749832759,\"name\":\"张三\",\"is18\":true,\"ignoreMember\":\"IgnoreMember\",\"gender\":\"男\"}";
+        var json =
+            "{\"id\":19749823749832759,\"name\":\"张三\",\"is18\":true,\"ignoreMember\":\"IgnoreMember\",\"gender\":\"男\"}";
 
         var student = _jsonSerializer.Deserialize<NewStudent>(json);
 
@@ -114,18 +115,16 @@ public class FakeJsonSerializerTests : FakeJsonTestBase
     {
         public long? Id { get; set; }
 
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         public bool Is18 { get; set; }
 
-        [JsonIgnore] 
-        public string IgnoreMember { get; set; }
+        [JsonIgnore] public string? IgnoreMember { get; set; }
     }
 
 
-    class NewStudent:Student
+    class NewStudent : Student
     {
-        [JsonPropertyName("gender")] 
-        public string Sex { get; set; }
+        [JsonPropertyName("gender")] public string? Sex { get; set; }
     }
 }

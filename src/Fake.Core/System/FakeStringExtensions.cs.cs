@@ -7,7 +7,6 @@ public static class FakeStringExtensions
     /// <summary>
     /// 表示此字符串 是 null或空字符串。
     /// </summary>
-    [ContractAnnotation("str:null => true")]
     public static bool IsNullOrEmpty(this string str)
     {
         return string.IsNullOrEmpty(str);
@@ -16,7 +15,6 @@ public static class FakeStringExtensions
     /// <summary>
     /// 表示此字符串 不是 null或空字符串。
     /// </summary>
-    [ContractAnnotation("str:null => true")]
     public static bool NotBeNullOrEmpty(this string str)
     {
         return string.IsNullOrEmpty(str);
@@ -25,8 +23,7 @@ public static class FakeStringExtensions
     /// <summary>
     /// 表示此字符串 是 null或空字符串或空白格。
     /// </summary>
-    [ContractAnnotation("str:null => true")]
-    public static bool IsNullOrWhiteSpace(this string str)
+    public static bool IsNullOrWhiteSpace(this string? str)
     {
         return string.IsNullOrWhiteSpace(str);
     }
@@ -34,8 +31,7 @@ public static class FakeStringExtensions
     /// <summary>
     /// 表示此字符串 不是 null或空字符串或空白格。
     /// </summary>
-    [ContractAnnotation("str:null => false")]
-    public static bool NotBeNullOrWhiteSpace(this string? str)
+    public static bool IsNotNullOrWhiteSpace(this string? str)
     {
         return !string.IsNullOrWhiteSpace(str);
     }
@@ -47,7 +43,7 @@ public static class FakeStringExtensions
     /// <param name="str"></param>
     /// <param name="list"></param>
     /// <returns></returns>
-    public static bool In(this string str, IEnumerable<string> list)
+    public static bool In(this string str, IEnumerable<string>? list)
     {
         if (list == null) return false;
         return list.Contains(str);

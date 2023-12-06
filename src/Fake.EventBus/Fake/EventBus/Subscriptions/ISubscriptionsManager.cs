@@ -21,6 +21,7 @@ namespace Fake.EventBus.Subscriptions
 
 
         #region 添加订阅
+
         /// <summary>
         /// 添加动态订阅
         /// </summary>
@@ -64,6 +65,7 @@ namespace Fake.EventBus.Subscriptions
         /// 清除所有订阅
         /// </summary>
         void Clear();
+
         #endregion
 
 
@@ -74,14 +76,14 @@ namespace Fake.EventBus.Subscriptions
         /// </summary>
         /// <param name="eventName">事件名称</param>
         /// <returns></returns>
-        IEnumerable<SubscriptionInfo> GetSubscriptionInfos(string eventName);
+        IEnumerable<SubscriptionInfo?> GetSubscriptionInfos(string eventName);
 
         /// <summary>
         /// 获取订阅信息集合
         /// </summary>
         /// <typeparam name="TEvent">事件类型</typeparam>
         /// <returns></returns>
-        IEnumerable<SubscriptionInfo> GetSubscriptionInfos<TEvent>() where TEvent : IEvent;
+        IEnumerable<SubscriptionInfo?> GetSubscriptionInfos<TEvent>() where TEvent : IEvent;
 
 
         /// <summary>
@@ -90,6 +92,7 @@ namespace Fake.EventBus.Subscriptions
         /// <typeparam name="TEvent">事件类型</typeparam>
         /// <returns></returns>
         bool HasSubscriptions<TEvent>() where TEvent : IEvent;
+
         /// <summary>
         /// 此事件是否有订阅
         /// </summary>
@@ -101,7 +104,7 @@ namespace Fake.EventBus.Subscriptions
         string GetEventName<TEvent>() where TEvent : IEvent;
 
         Type GetEventTypeByName(string eventName);
-        #endregion
 
+        #endregion
     }
 }

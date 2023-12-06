@@ -2,7 +2,7 @@
 
 namespace Fake.Json;
 
-public class FakeLongConverterTests:FakeJsonTestBase
+public class FakeLongConverterTests : FakeJsonTestBase
 {
     private readonly IFakeJsonSerializer _jsonSerializer;
 
@@ -10,16 +10,13 @@ public class FakeLongConverterTests:FakeJsonTestBase
     {
         _jsonSerializer = ServiceProvider.GetRequiredService<IFakeJsonSerializer>();
     }
-    
+
     protected override void AfterAddFakeApplication(IServiceCollection services)
     {
-        services.Configure<FakeJsonSerializerOptions>(options =>
-        {
-            options.LongToString = true;
-        });
+        services.Configure<FakeJsonSerializerOptions>(options => { options.LongToString = true; });
     }
 
-    
+
     [Fact]
     void 序列化()
     {
@@ -35,7 +32,7 @@ public class FakeLongConverterTests:FakeJsonTestBase
 
         json.ShouldBe("{\"id\":\"1293829749328751111\",\"name\":\"张三\",\"is18\":true}");
     }
-    
+
     [Fact]
     void 反序列化()
     {
@@ -59,12 +56,12 @@ public class FakeLongConverterTests:FakeJsonTestBase
         var json = _jsonSerializer.Serialize(nullableLongClass);
 
         json.ShouldBe("{\"value\":\"1293829749328751111\"}");
-        
+
         nullableLongClass = new NullableLongClass
         {
             Value = null
         };
-        
+
         json = _jsonSerializer.Serialize(nullableLongClass);
 
         json.ShouldBe("{\"value\":null}");
@@ -78,23 +75,23 @@ public class FakeLongConverterTests:FakeJsonTestBase
         var nullableLongClass = _jsonSerializer.Deserialize<NullableLongClass>(json);
 
         nullableLongClass.Value.ShouldBe(1293829749328751111);
-        
+
         json = "{\"value\":null}";
 
         nullableLongClass = _jsonSerializer.Deserialize<NullableLongClass>(json);
 
         nullableLongClass.Value.ShouldBeNull();
     }
-    
+
     class Student
     {
         public long? Id { get; set; }
-        
-        public string Name { get; set; }
+
+        public string? Name { get; set; }
 
         public bool Is18 { get; set; }
     }
-    
+
     class NullableLongClass
     {
         public long? Value { get; set; }

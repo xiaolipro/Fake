@@ -34,5 +34,5 @@ public class FakeLocalizationOptions
     /// <summary>
     /// 默认culture，优先级低于<see cref="AbstractLocalizationResource"/>
     /// </summary>
-    public string DefaultCulture { get; set; }
+    public string? DefaultCulture { get; set; }
 }

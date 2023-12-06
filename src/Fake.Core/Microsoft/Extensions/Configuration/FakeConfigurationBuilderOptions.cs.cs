@@ -25,15 +25,15 @@ public class FakeConfigurationBuilderOptions
     /// <summary>
     /// 环境名，例如 "Development", "Staging" or "Production"。
     /// </summary>
-    public string? EnvironmentName { get; set; }
+    public string EnvironmentName { get; set; } = string.Empty;
 
     /// <summary>
     /// <see cref="FileName"/> 所在目录。
     /// </summary>
-    public string BasePath { get; set; }
+    public string BasePath { get; set; } = string.Empty;
 
     /// <summary>
     /// 命令行参数
     /// </summary>
-    public string[] CommandLineArgs { get; set; }
+    public string[] CommandLineArgs { get; set; } = Array.Empty<string>();
 }

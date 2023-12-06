@@ -26,7 +26,7 @@ public class JsonVirtualLocalizationResourceContributor : AbstractVirtualFileLoc
         return file.Name.EndsWith(".json");
     }
 
-    protected override ILocalizedStringContainer CreateLocalizedStringContainer(string content, string path)
+    protected override ILocalizedStringContainer? CreateLocalizedStringContainer(string content, string path)
     {
         JsonVirtualLocalizationResourceFile jsonVirtualFile;
         try
@@ -46,7 +46,7 @@ public class JsonVirtualLocalizationResourceContributor : AbstractVirtualFileLoc
             throw new FakeException(path + "本地化json文件Culture不能空");
         }
 
-        var dic = new Dictionary<string, LocalizedString>();
+        var dic = new Dictionary<string, LocalizedString?>();
         foreach (var item in jsonVirtualFile.Texts)
         {
             if (item.Key.IsNullOrWhiteSpace())

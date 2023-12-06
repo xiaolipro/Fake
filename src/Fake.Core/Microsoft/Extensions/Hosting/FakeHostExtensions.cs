@@ -11,7 +11,7 @@ public static class FakeHostExtensions
     /// <returns></returns>
     public static bool IsInKubernetes(this IHost host)
     {
-        var configuration = host.Services.GetService<IConfiguration>();
+        var configuration = host.Services.GetRequiredService<IConfiguration>();
         var orchestratorType = configuration.GetValue<string>("OrchestratorType");
         return orchestratorType?.ToUpper() == "K8S";
     }

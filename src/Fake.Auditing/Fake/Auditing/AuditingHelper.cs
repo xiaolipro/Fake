@@ -5,6 +5,7 @@ using System.Text.Json;
 using Fake.DynamicProxy;
 using Fake.Identity.Users;
 using Fake.Timing;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -12,24 +13,25 @@ namespace Fake.Auditing;
 
 public class AuditingHelper : IAuditingHelper
 {
-    private readonly IFakeClock _fakeClock;
-    private readonly ICurrentUser _currentUser;
-    private readonly ILogger<AuditingHelper> _logger;
-    private readonly FakeAuditingOptions _options;
+    protected readonly IFakeClock FakeClock;
+    protected readonly ICurrentUser CurrentUser;
+    protected readonly ILogger<AuditingHelper> Logger;
+    protected readonly IServiceScopeFactory ServiceScopeFactory;
+    protected readonly FakeAuditingOptions FakeAuditingOptions;
 
     public AuditingHelper(IOptions<FakeAuditingOptions> options, IFakeClock fakeClock, ICurrentUser currentUser,
-        ILogger<AuditingHelper> logger)
+        ILogger<AuditingHelper> logger, IServiceScopeFactory serviceScopeFactory)
     {
-        _fakeClock = fakeClock;
-        _currentUser = currentUser;
-        _logger = logger;
-        _options = options.Value;
+        FakeClock = fakeClock;
+        CurrentUser = currentUser;
+        Logger = logger;
+        ServiceScopeFactory = serviceScopeFactory;
+        FakeAuditingOptions = options.Value;
     }
 
     public virtual bool IsAuditMethod(MethodInfo methodInfo)
     {
-        if (!_options.IsEnabledLog) return false;
-        if (methodInfo == null) return false;
+        if (!FakeAuditingOptions.IsEnabledLog) return false;
 
         if (!methodInfo.IsPublic) return false;
 
@@ -57,13 +59,17 @@ public class AuditingHelper : IAuditingHelper
 
     public virtual AuditLogInfo CreateAuditLogInfo()
     {
-        return new AuditLogInfo()
+        var auditLog = new AuditLogInfo()
         {
-            ApplicationName = _options.ApplicationName,
-            UserId = _currentUser.UserId,
-            UserName = _currentUser.UserName,
-            ExecutionTime = _fakeClock.Now,
+            ApplicationName = FakeAuditingOptions.ApplicationName,
+            UserId = CurrentUser.UserId,
+            UserName = CurrentUser.UserName,
+            ExecutionTime = FakeClock.Now,
         };
+
+        ExecutePreContributors(auditLog);
+
+        return auditLog;
     }
 
     public AuditLogActionInfo CreateAuditLogActionInfo(IFakeMethodInvocation invocation)
@@ -73,13 +79,14 @@ public class AuditingHelper : IAuditingHelper
             ServiceName = invocation.TargetObject.GetType().Name,
             MethodName = invocation.Method.Name,
             Parameters = SerializeParameter(invocation.ArgumentsDictionary),
-            ExecutionTime = _fakeClock.Now
+            ExecutionTime = FakeClock.Now
         };
     }
 
 
-    public static bool IsAuditType(Type type)
+    public static bool IsAuditType(Type? type)
     {
+        if (type == null) return false;
         if (!type.IsPublic) return false;
 
         //TODO：在继承链中，最好先检查顶层类的attributes
@@ -101,8 +108,26 @@ public class AuditingHelper : IAuditingHelper
         }
         catch (Exception ex)
         {
-            _logger.LogWarning(ex.Message);
+            Logger.LogWarning(ex.Message);
             return defaultParameter;
+        }
+    }
+
+    protected virtual void ExecutePreContributors(AuditLogInfo auditLogInfo)
+    {
+        using var scope = ServiceScopeFactory.CreateScope();
+        var context = new AuditLogContributionContext(scope.ServiceProvider, auditLogInfo);
+
+        foreach (var contributor in FakeAuditingOptions.Contributors)
+        {
+            try
+            {
+                contributor.PreContribute(context);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogException(ex, LogLevel.Warning);
+            }
         }
     }
 }

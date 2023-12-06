@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Fake;
 using Fake.Consul;
 using Winton.Extensions.Configuration.Consul;
 
@@ -13,10 +13,11 @@ public static class ConsulConfigurationBuilderExtensions
     public static IConfigurationRoot AddConfigurationFromConsul(this IConfigurationBuilder builder)
     {
         var configuration = builder.Build();
-        var consulClientOptions = configuration.GetSection("Consul").Get<FakeConsulClientOptions>();
-        
+        var consulClientOptions = configuration.GetSection("Consul:Client").Get<FakeConsulClientOptions>() ??
+                                  new FakeConsulClientOptions();
+        ThrowHelper.ThrowIfNullOrWhiteSpace(consulClientOptions.ConfigFileName);
         // 加载Consul上的配置文件
-        builder.AddConsul(consulClientOptions.ConfigFileName, sources =>
+        builder.AddConsul(consulClientOptions.ConfigFileName!, sources =>
         {
             sources.ConsulConfigurationOptions = options =>
             {
@@ -27,6 +28,7 @@ public static class ConsulConfigurationBuilderExtensions
             sources.Optional = true;
             sources.ReloadOnChange = true; // hot-update
         });
+
 
         return builder.Build();
     }

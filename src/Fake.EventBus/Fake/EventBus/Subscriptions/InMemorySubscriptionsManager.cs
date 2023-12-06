@@ -11,36 +11,39 @@ namespace Fake.EventBus.Subscriptions
     public class InMemorySubscriptionsManager : ISubscriptionsManager
     {
         // 数据格式：{事件名称:[订阅信息]}
-        private readonly Dictionary<string, List<SubscriptionInfo>> _subscriptions;
+        private readonly Dictionary<string, List<SubscriptionInfo?>> _subscriptions;
 
         // 事件类型列表（不包含动态事件）
         private readonly List<Type> _eventTypes;
+
         public InMemorySubscriptionsManager()
         {
-            _subscriptions = new Dictionary<string, List<SubscriptionInfo>>();
+            _subscriptions = new Dictionary<string, List<SubscriptionInfo?>>();
             _eventTypes = new List<Type>();
         }
 
         #region implements
+
         public bool IsEmpty => _subscriptions.Count == 0;
 
         public event EventHandler<string> OnEventRemoved;
-        public void AddDynamicSubscription<THandler>(string eventName) 
+
+        public void AddDynamicSubscription<THandler>(string eventName)
             where THandler : IDynamicEventHandler
         {
             var handlerType = typeof(THandler);
-            var subscription = SubscriptionInfo.Dynamic(eventName,handlerType);
+            var subscription = SubscriptionInfo.Dynamic(eventName, handlerType);
             DoAddSubscriptionInfo(subscription);
         }
 
-        public void AddSubscription<TEvent, THandler>() 
-            where TEvent : IEvent 
+        public void AddSubscription<TEvent, THandler>()
+            where TEvent : IEvent
             where THandler : IEventHandler<TEvent>
         {
             string eventName = GetEventName<TEvent>();
             var subscription = SubscriptionInfo.Typed(eventName, typeof(THandler));
             DoAddSubscriptionInfo(subscription);
-            
+
             // 维护事件类型列表
             if (!_eventTypes.Contains(typeof(TEvent)))
             {
@@ -48,14 +51,14 @@ namespace Fake.EventBus.Subscriptions
             }
         }
 
-        public void RemoveDynamicSubscription<THandler>(string eventName) 
+        public void RemoveDynamicSubscription<THandler>(string eventName)
             where THandler : IDynamicEventHandler
         {
             var subscription = DoFindSubscription(eventName, typeof(THandler));
             DoRemoveSubscriptionInfo(subscription);
         }
 
-        public void RemoveSubscription<TEvent, THandler>() 
+        public void RemoveSubscription<TEvent, THandler>()
             where TEvent : IEvent
             where THandler : IEventHandler<TEvent>
         {
@@ -66,9 +69,9 @@ namespace Fake.EventBus.Subscriptions
 
         public void Clear() => _subscriptions.Clear();
 
-        public IEnumerable<SubscriptionInfo> GetSubscriptionInfos(string eventName) => _subscriptions[eventName];
-        
-        public IEnumerable<SubscriptionInfo> GetSubscriptionInfos<TEvent>() where TEvent : IEvent
+        public IEnumerable<SubscriptionInfo?> GetSubscriptionInfos(string eventName) => _subscriptions[eventName];
+
+        public IEnumerable<SubscriptionInfo?> GetSubscriptionInfos<TEvent>() where TEvent : IEvent
             => GetSubscriptionInfos(GetEventName<TEvent>());
 
         public bool HasSubscriptions<TEvent>() where TEvent : IEvent
@@ -77,10 +80,10 @@ namespace Fake.EventBus.Subscriptions
         public bool HasSubscriptions(string eventName)
             => _subscriptions.ContainsKey(eventName);
 
-        public string GetEventName<TEvent>() where TEvent : IEvent 
+        public string GetEventName<TEvent>() where TEvent : IEvent
             => typeof(TEvent).Name;
 
-        public Type GetEventTypeByName(string eventName) 
+        public Type GetEventTypeByName(string eventName)
             => _eventTypes.SingleOrDefault(type => type.Name.Equals(eventName, StringComparison.OrdinalIgnoreCase));
 
         #endregion
@@ -92,13 +95,13 @@ namespace Fake.EventBus.Subscriptions
         /// </summary>
         /// <param name="subscriptionInfo"></param>
         /// <exception cref="ArgumentException"></exception>
-        void DoAddSubscriptionInfo(SubscriptionInfo subscriptionInfo)
+        void DoAddSubscriptionInfo(SubscriptionInfo? subscriptionInfo)
         {
             string eventName = subscriptionInfo.EventName;
             var handlerType = subscriptionInfo.HandlerType;
             if (!HasSubscriptions(eventName))
             {
-                _subscriptions.Add(eventName, new List<SubscriptionInfo>());
+                _subscriptions.Add(eventName, new List<SubscriptionInfo?>());
             }
 
             if (_subscriptions[eventName].Any(x => x.HandlerType == handlerType))
@@ -113,7 +116,7 @@ namespace Fake.EventBus.Subscriptions
         /// 移除订阅信息
         /// </summary>
         /// <param name="subscriptionInfo"></param>
-        private void DoRemoveSubscriptionInfo(SubscriptionInfo subscriptionInfo)
+        private void DoRemoveSubscriptionInfo(SubscriptionInfo? subscriptionInfo)
         {
             if (subscriptionInfo == null) return;
             string eventName = subscriptionInfo.EventName;
@@ -151,7 +154,7 @@ namespace Fake.EventBus.Subscriptions
         /// <param name="eventName"></param>
         /// <param name="handlerType"></param>
         /// <returns></returns>
-        private SubscriptionInfo DoFindSubscription(string eventName, Type handlerType)
+        private SubscriptionInfo? DoFindSubscription(string eventName, Type handlerType)
         {
             if (!HasSubscriptions(eventName)) return default;
 
@@ -166,6 +169,7 @@ namespace Fake.EventBus.Subscriptions
         {
             OnEventRemoved?.Invoke(this, eventName);
         }
+
         #endregion
     }
 }

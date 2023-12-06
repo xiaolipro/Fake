@@ -36,17 +36,19 @@ public class IntegrationEventLogService : IIntegrationEventLogService
         if (result.Any())
         {
             return result.OrderBy(o => o.CreationTime)
-                .Select(e => e.DeserializeJsonContent(EventTypes.Find(t => t.Name == e.EventTypeShortName)));
+                .Select(e =>
+                    e.DeserializeJsonContent(EventTypes.Find(t => t.Name == e.EventTypeShortName) ??
+                                             throw new FakeException($"非法的事件类型：{e.EventTypeShortName}")));
         }
 
         return new List<IntegrationEventLogEntry>();
     }
 
-    public Task SaveEventAsync(IEvent @event, IDbContextTransaction transaction = null)
+    public Task SaveEventAsync(IEvent @event, IDbContextTransaction? transaction = null)
     {
         //if (transaction == null) throw new ArgumentNullException(nameof(transaction));
 
-        var eventLogEntry = new IntegrationEventLogEntry(@event, transaction?.TransactionId?? default);
+        var eventLogEntry = new IntegrationEventLogEntry(@event, transaction?.TransactionId ?? default);
 
         _integrationEventLogContext.Database.UseTransaction(transaction?.GetDbTransaction());
         _integrationEventLogContext.IntegrationEventLogs.Add(eventLogEntry);
@@ -88,7 +90,7 @@ public class IntegrationEventLogService : IIntegrationEventLogService
         {
             if (disposing)
             {
-                _integrationEventLogContext?.Dispose();
+                _integrationEventLogContext.Dispose();
             }
 
 

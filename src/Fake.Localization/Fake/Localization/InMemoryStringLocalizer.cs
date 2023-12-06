@@ -11,31 +11,34 @@ public class InMemoryStringLocalizer : IFakeStringLocalizer
     private readonly AbstractLocalizationResource _resource;
     private readonly List<IStringLocalizer> _inheritsLocalizer;
     private readonly FakeLocalizationOptions _options;
-    
+
     public virtual LocalizedString this[string name] => GetLocalizedString(name, CultureInfo.CurrentCulture.Name);
 
     public virtual LocalizedString this[string name, params object[] arguments] =>
         GetLocalizedStringFormatted(name, CultureInfo.CurrentCulture.Name, arguments);
 
-    public InMemoryStringLocalizer(AbstractLocalizationResource resource,List<IStringLocalizer> inheritsLocalizer,FakeLocalizationOptions options)
+    public InMemoryStringLocalizer(AbstractLocalizationResource resource, List<IStringLocalizer> inheritsLocalizer,
+        FakeLocalizationOptions options)
     {
         _resource = resource;
         _inheritsLocalizer = inheritsLocalizer;
         _options = options;
     }
 
-    public IEnumerable<LocalizedString> GetAllStrings(bool includeParentCultures)
+    public IEnumerable<LocalizedString?> GetAllStrings(bool includeParentCultures)
     {
         return GetAllStrings(CultureInfo.CurrentCulture.Name, includeParentCultures);
     }
 
-    protected virtual LocalizedString GetLocalizedStringFormatted(string name, string cultureName, params object[] arguments)
+    protected virtual LocalizedString GetLocalizedStringFormatted(string name, string? cultureName,
+        params object[] arguments)
     {
         var localizedString = GetLocalizedString(name, cultureName);
         return new LocalizedString(name, string.Format(localizedString.Value, arguments),
             localizedString.ResourceNotFound, localizedString.SearchedLocation);
     }
-    protected virtual LocalizedString GetLocalizedString(string name, string cultureName)
+
+    protected virtual LocalizedString GetLocalizedString(string name, string? cultureName)
     {
         var localizedString = _resource.GetOrNull(cultureName, name);
         if (localizedString != null) return localizedString;
@@ -52,14 +55,14 @@ public class InMemoryStringLocalizer : IFakeStringLocalizer
         if (_options.TryGetFromDefaultCulture)
         {
             var defaultCulture = _resource.DefaultCultureName ?? _options.DefaultCulture;
-            if (defaultCulture.NotBeNullOrWhiteSpace())
+            if (defaultCulture.IsNotNullOrWhiteSpace())
             {
                 localizedString = _resource.GetOrNull(defaultCulture, name);
                 if (localizedString != null) return localizedString;
             }
         }
 
-        
+
         // 如果还找不到，那就去父类去找
         foreach (var stringLocalizer in _inheritsLocalizer)
         {
@@ -76,10 +79,10 @@ public class InMemoryStringLocalizer : IFakeStringLocalizer
     }
 
 
-    protected virtual IReadOnlyList<LocalizedString> GetAllStrings(string cultureName,
+    protected virtual IReadOnlyList<LocalizedString?> GetAllStrings(string? cultureName,
         bool includeParentCultures = true, bool includeInheritLocalizers = true)
     {
-        var allStrings = new Dictionary<string, LocalizedString>();
+        var allStrings = new Dictionary<string, LocalizedString?>();
 
         // 填充继承的strings
         if (includeInheritLocalizers)
@@ -101,10 +104,9 @@ public class InMemoryStringLocalizer : IFakeStringLocalizer
         if (includeParentCultures)
         {
             // 填充默认culture strings
-            if (_resource.DefaultCultureName.NotBeNullOrWhiteSpace())
+            if (_resource.DefaultCultureName.IsNotNullOrWhiteSpace())
             {
                 _resource.Fill(_resource.DefaultCultureName, allStrings);
-
             }
 
             // 填充parent culture strings
@@ -113,7 +115,7 @@ public class InMemoryStringLocalizer : IFakeStringLocalizer
                 _resource.Fill(CultureHelper.GetParentCultureName(cultureName), allStrings);
             }
         }
-        
+
         // 填充自己的strings
         _resource.Fill(cultureName, allStrings);
 

@@ -21,11 +21,11 @@ public static class FakeServiceCollectionApplicationExtensions
         return FakeApplicationFactory.Create(startupModuleType, services, optionsAction);
     }
 
-    public static string? GetApplicationName(this IServiceCollection services)
+
+    public static string GetApplicationName(this IServiceCollection services)
     {
         return services.GetInstance<IApplicationInfo>().ApplicationName;
     }
-
 
     public static string GetApplicationId(this IServiceCollection services)
     {

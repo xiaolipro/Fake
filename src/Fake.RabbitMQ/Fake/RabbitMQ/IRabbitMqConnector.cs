@@ -11,11 +11,11 @@ public interface IRabbitMqConnector : IDisposable
     /// <summary>
     /// 保持连接活性
     /// </summary>
-    void KeepAlive(string connectionName);
+    void KeepAlive(string? connectionName);
 
     /// <summary>
     /// 创建channel
     /// </summary>
     /// <returns></returns>
-    IModel CreateChannel(string connectionName);
+    IModel CreateChannel(string? connectionName);
 }

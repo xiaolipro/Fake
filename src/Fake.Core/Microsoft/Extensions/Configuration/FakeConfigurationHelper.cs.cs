@@ -38,10 +38,7 @@ public static class FakeConfigurationHelper
         }
 
         // 命令行参数
-        if (options.CommandLineArgs != null)
-        {
-            builder = builder.AddCommandLine(options.CommandLineArgs);
-        }
+        builder = builder.AddCommandLine(options.CommandLineArgs);
 
         builderAction?.Invoke(builder);
 

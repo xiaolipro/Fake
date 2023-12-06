@@ -8,14 +8,13 @@ namespace Fake.Domain.Repositories;
 public abstract class RepositoryBase<TEntity> : IRepository<TEntity>
     where TEntity : class, IAggregateRoot
 {
-    // ReSharper disable once UnusedAutoPropertyAccessor.Global
-    public ILazyServiceProvider LazyServiceProvider { get; set; } // 属性注入
+    public ILazyServiceProvider LazyServiceProvider { get; set; } = null!; // 属性注入
 
     public ICancellationTokenProvider CancellationTokenProvider =>
         LazyServiceProvider.GetRequiredLazyService<ICancellationTokenProvider>();
 
     public IUnitOfWorkManager UnitOfWorkManager => LazyServiceProvider.GetRequiredLazyService<IUnitOfWorkManager>();
-    public IUnitOfWork UnitOfWork => UnitOfWorkManager.Current;
+    public IUnitOfWork? UnitOfWork => UnitOfWorkManager.Current;
 
     protected virtual CancellationToken GetCancellationToken(CancellationToken preferredValue = default)
     {
@@ -33,29 +32,30 @@ public abstract class RepositoryBase<TEntity> : IRepository<TEntity>
         bool isInclude = true,
         CancellationToken cancellationToken = default);
 
-    public abstract Task<TEntity> FirstOrDefaultAsync(
-        Expression<Func<TEntity, bool>> predicate = null,
+    public abstract Task<TEntity?> FirstOrDefaultAsync(
+        Expression<Func<TEntity, bool>>? predicate = null,
         bool isInclude = true,
         CancellationToken cancellationToken = default);
 
     public abstract Task<List<TEntity>> GetListAsync(
-        Expression<Func<TEntity, bool>> predicate = null,
-        Dictionary<string, bool> sorting = null, 
+        Expression<Func<TEntity, bool>>? predicate = null,
+        Dictionary<string, bool>? sorting = null,
         bool isInclude = true,
         CancellationToken cancellationToken = default);
 
     public abstract Task<List<TEntity>> GetPaginatedListAsync(
-        Expression<Func<TEntity, bool>> predicate,
+        Expression<Func<TEntity, bool>>? predicate,
         int pageIndex = 1,
         int pageSize = 20,
-        Dictionary<string, bool> sorting = null,
+        Dictionary<string, bool>? sorting = null,
         bool isInclude = true,
         CancellationToken cancellationToken = default);
 
-    public abstract Task<long> GetCountAsync(Expression<Func<TEntity, bool>> predicate = null,
+    public abstract Task<long> GetCountAsync(Expression<Func<TEntity, bool>>? predicate = null,
         CancellationToken cancellationToken = default);
 
-    public abstract Task<bool> AnyAsync(Expression<Func<TEntity, bool>> predicate = null, CancellationToken cancellationToken = default);
+    public abstract Task<bool> AnyAsync(Expression<Func<TEntity, bool>>? predicate = null,
+        CancellationToken cancellationToken = default);
 
     public abstract Task<TEntity> InsertAsync(TEntity entity, bool autoSave = false,
         CancellationToken cancellationToken = default);
@@ -101,5 +101,4 @@ public abstract class RepositoryBase<TEntity> : IRepository<TEntity>
 
     public abstract Task DeleteAsync(Expression<Func<TEntity, bool>> predicate, bool autoSave = false,
         CancellationToken cancellationToken = default);
-
 }

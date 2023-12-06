@@ -25,7 +25,7 @@ public class RabbitMqConnector : IRabbitMqConnector
     }
 
 
-    public IModel CreateChannel(string connectionName)
+    public IModel CreateChannel(string? connectionName)
     {
         KeepAlive(connectionName);
 
@@ -35,7 +35,7 @@ public class RabbitMqConnector : IRabbitMqConnector
     /// <summary>
     /// 保持连接活性
     /// </summary>
-    public void KeepAlive(string connectionName)
+    public void KeepAlive(string? connectionName)
     {
         if (_connectionPool.Get(connectionName) is { IsOpen: true } && !_disposed) return;
 
@@ -62,7 +62,7 @@ public class RabbitMqConnector : IRabbitMqConnector
     /// 重连
     /// </summary>
     /// <exception cref="Exception">RabbitMQ connections could not be created and opened</exception>
-    private void ConnectRabbitMq(string connectionName)
+    private void ConnectRabbitMq(string? connectionName)
     {
         _logger.LogInformation($"正在尝试连接客户端  RabbitMQ:ConnectionName:{connectionName}");
 
@@ -82,7 +82,7 @@ public class RabbitMqConnector : IRabbitMqConnector
         }
     }
 
-    private void OnConnection(IConnection connection, string connectionName)
+    private void OnConnection(IConnection connection, string? connectionName)
     {
         connection.ConnectionShutdown += (_, _) =>
         {

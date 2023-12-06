@@ -6,15 +6,13 @@
 /// <typeparam name="T"></typeparam>
 public class ObjectAccessor<T>
 {
-    [CanBeNull]
-    public T Value { get; set; }
+    public T? Value { get; set; }
 
     public ObjectAccessor()
     {
-
     }
 
-    public ObjectAccessor([CanBeNull] T obj)
+    public ObjectAccessor(T obj)
     {
         Value = obj;
     }

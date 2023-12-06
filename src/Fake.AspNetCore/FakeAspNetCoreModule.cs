@@ -30,6 +30,7 @@ public class FakeAspNetCoreModule : FakeModule
 
         context.Services.AddTransient<IAuthorizationExceptionHandler, DefaultAuthorizationExceptionHandler>();
         context.Services.AddTransient<IHttpClientInfoProvider, HttpClientInfoProvider>();
+        context.Services.AddTransient<FakeExceptionHandlingMiddleware>();
 
         context.Services.Configure<FakeAuditingOptions>(options =>
         {
@@ -49,7 +50,7 @@ public class FakeAspNetCoreModule : FakeModule
         if (environment != null)
         {
             // todo：important- WebRootFileProvider是UseStaticFiles工作的关键
-            
+
             // 由 原WebRootFileProvider、wwwroot静态文件系统、Fake虚拟文件系统 组合
             environment.WebRootFileProvider = new CompositeFileProvider(
                 environment.WebRootFileProvider,

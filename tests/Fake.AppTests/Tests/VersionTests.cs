@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Domain.Aggregates.OrderAggregate;
+﻿using Domain.Aggregates.OrderAggregate;
 using Fake.Data;
 using Fake.Domain.Repositories;
 using Fake.Modularity;
@@ -10,13 +9,13 @@ namespace Tests;
 public abstract class VersionTests<TStartupModule> : AppTestBase<TStartupModule>
     where TStartupModule : IFakeModule
 {
-    protected readonly IRepository<Order> OrderRepository;
+    protected readonly IRepository<Order?> OrderRepository;
 
     protected VersionTests()
     {
         OrderRepository = GetRequiredService<IRepository<Order>>();
     }
-    
+
     [Fact]
     public async Task 脏读不会被更新()
     {
@@ -32,7 +31,7 @@ public abstract class VersionTests<TStartupModule> : AppTestBase<TStartupModule>
             await OrderRepository.UpdateAsync(order2);
         });
     }
-    
+
     [Fact]
     public async Task 脏读不会被删除()
     {
@@ -42,9 +41,6 @@ public abstract class VersionTests<TStartupModule> : AppTestBase<TStartupModule>
         order2.SetDescription("hello");
         await OrderRepository.UpdateAsync(order2);
         //And updating my old entity throws exception!
-        await Assert.ThrowsAsync<FakeDbConcurrencyException>(async () =>
-        {
-            await OrderRepository.DeleteAsync(order);
-        });
+        await Assert.ThrowsAsync<FakeDbConcurrencyException>(async () => { await OrderRepository.DeleteAsync(order); });
     }
 }

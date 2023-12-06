@@ -33,9 +33,9 @@ public static class FakeServiceCollectionCommonExtensions
     /// <returns></returns>
     public static T? GetInstanceOrNull<T>(this IServiceCollection services) where T : class
     {
-        return (T?)services
+        return services
             .FirstOrDefault(d => d.ServiceType == typeof(T))
-            ?.ImplementationInstance;
+            ?.ImplementationInstance?.Is<T>();
     }
 
     /// <summary>
@@ -80,7 +80,7 @@ public static class FakeServiceCollectionCommonExtensions
                 .MakeGenericMethod(containerBuilderType)
                 .Invoke(null, new object[] { services, null! });
 
-            return serviceProvider.Cast<IServiceProvider>();
+            return serviceProvider.Is<IServiceProvider>();
         }
 
         // 如果没有第三方IOC容器则使用默认的
@@ -88,7 +88,7 @@ public static class FakeServiceCollectionCommonExtensions
     }
 
     public static IServiceProvider BuildServiceProviderFromFactory<TContainerBuilder>(
-        this ServiceCollection services, Action<TContainerBuilder>? containerBuildAction)
+        this ServiceCollection services, Action<TContainerBuilder> containerBuildAction)
         where TContainerBuilder : notnull
     {
         ThrowHelper.ThrowIfNull(services, nameof(services));

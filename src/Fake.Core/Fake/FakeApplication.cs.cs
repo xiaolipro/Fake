@@ -20,11 +20,11 @@ public class FakeApplication : IFakeApplication
 
     public Type StartupModuleType { get; }
 
-    private IConfiguration _configuration;
+    private IConfiguration _configuration = null!;
     public IConfiguration Configuration => _configuration;
     public IServiceCollection Services { get; }
 
-    private IServiceProvider _serviceProvider;
+    private IServiceProvider _serviceProvider = null!;
 
     public IServiceProvider ServiceProvider
     {
@@ -38,17 +38,21 @@ public class FakeApplication : IFakeApplication
 
     private bool _configuredServices;
     private bool _initializedModules;
-    private readonly ILogger<FakeApplication> _logger;
 
-    internal FakeApplication(Type startupModuleType, Action<FakeApplicationCreationOptions> optionsAction)
+    internal FakeApplication(Type startupModuleType, Action<FakeApplicationCreationOptions>? optionsAction)
         : this(startupModuleType, new ServiceCollection(), optionsAction)
     {
     }
 
+    /*
+     * AddFakeCoreServices
+     * LoadModules
+     * ConfigureServices
+     */
     internal FakeApplication(
-        [NotNull] Type startupModuleType,
-        [NotNull] IServiceCollection services,
-        [CanBeNull] Action<FakeApplicationCreationOptions> optionsAction)
+        Type startupModuleType,
+        IServiceCollection services,
+        Action<FakeApplicationCreationOptions>? optionsAction)
     {
         ThrowHelper.ThrowIfNull(startupModuleType, nameof(startupModuleType));
         ThrowHelper.ThrowIfNull(services, nameof(services));
@@ -70,11 +74,13 @@ public class FakeApplication : IFakeApplication
         services.AddSingleton<IModuleContainer>(this);
 
         AddFakeCoreServices(services, options);
-        _logger = Services.GetInitLogger<FakeApplication>();
+
+        Debug.Assert(_configuration != null, "_configuration != null");
+        ILogger<FakeApplication> logger = Services.GetInitLogger<FakeApplication>();
 
         Modules = LoadModules(services);
 
-        _logger.LogDebug("模块加载顺序：{Links}", Modules.Select(x => x.Type.Name).JoinAsString(" -> "));
+        logger.LogDebug("模块加载顺序：{Links}", Modules.Select(x => x.Type.Name).JoinAsString(" -> "));
 
         ConfigureServices();
     }
@@ -176,7 +182,7 @@ public class FakeApplication : IFakeApplication
         Shutdown();
     }
 
-    public void InitializeApplication([CanBeNull] IServiceProvider serviceProvider = null)
+    public void InitializeApplication(IServiceProvider? serviceProvider = null)
     {
         serviceProvider ??= Services.BuildServiceProviderFromFactory().CreateScope().ServiceProvider;
 
@@ -194,6 +200,7 @@ public class FakeApplication : IFakeApplication
         }
 
         Debug.Assert(_serviceProvider != null);
+        ThrowHelper.ThrowIfNull(_serviceProvider);
 
         WriteInitLogs(_serviceProvider);
 
@@ -247,10 +254,10 @@ public class FakeApplication : IFakeApplication
         _initializedModules = true;
     }
 
-    protected virtual void SetServiceProvider([CanBeNull] IServiceProvider serviceProvider)
+    protected virtual void SetServiceProvider(IServiceProvider? serviceProvider)
     {
         _serviceProvider = serviceProvider ?? Services.BuildServiceProvider();
-        _serviceProvider.GetRequiredService<ObjectAccessor<IServiceProvider>>().Value = serviceProvider;
+        _serviceProvider.GetRequiredService<ObjectAccessor<IServiceProvider>>().Value = _serviceProvider;
     }
 
     private IReadOnlyList<IModuleDescriptor> LoadModules(IServiceCollection services)
@@ -267,9 +274,9 @@ public class FakeApplication : IFakeApplication
 
         var configuration = options.Services.GetConfigurationOrNull();
 
-        if (configuration == default) return Assembly.GetEntryAssembly()?.GetName().Name;
+        if (configuration == default) return Assembly.GetEntryAssembly()?.GetName().Name ?? string.Empty;
 
-        return configuration[nameof(IApplicationInfo.ApplicationName)];
+        return configuration[nameof(IApplicationInfo.ApplicationName)] ?? string.Empty;
     }
 
     private void WriteInitLogs(IServiceProvider serviceProvider)

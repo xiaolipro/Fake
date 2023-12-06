@@ -7,8 +7,7 @@ public static class FakeCollectionExtensions
     /// <summary>
     /// 检查给定的集合对象是否为null或没有元素。
     /// </summary>
-    [ContractAnnotation("source:null => true")]
-    public static bool IsNullOrEmpty<T>([CanBeNull] this ICollection<T> source)
+    public static bool IsNullOrEmpty<T>(this ICollection<T> source)
     {
         return source is not { Count: > 0 };
     }

@@ -9,7 +9,6 @@ public class FakeRabbitMqOptions
 
     public Dictionary<string, ConnectionFactory> Connections { get; set; }
 
-
     public ConnectionFactory Default
     {
         get => Connections[DefaultConnectionName];
@@ -19,6 +18,7 @@ public class FakeRabbitMqOptions
     public FakeRabbitMqOptions()
     {
         Default = new ConnectionFactory();
+        Connections = new();
     }
 
     public ConnectionFactory GetOrDefault(string connectionName)

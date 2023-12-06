@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
 
 namespace Fake.Localization;
 
@@ -9,14 +8,14 @@ namespace Fake.Localization;
 /// </summary>
 public class LocalizationResourceDictionary : Dictionary<string, AbstractLocalizationResource>
 {
-    private readonly Dictionary<Type, AbstractLocalizationResource> _resourcesByTypes = new();
+    private readonly Dictionary<Type, AbstractLocalizationResource?> _resourcesByTypes = new();
 
-    public LocalizationResource Add<TLocalizationResource>([CanBeNull] string defaultCultureName = null)
+    public LocalizationResource? Add<TLocalizationResource>(string? defaultCultureName = null)
     {
         return Add(typeof(TLocalizationResource), defaultCultureName);
     }
 
-    public LocalizationResource Add(Type resourceType, [CanBeNull] string defaultCultureName = null)
+    public LocalizationResource? Add(Type resourceType, string? defaultCultureName = null)
     {
         var resourceName = LocalizationResourceNameAttribute.GetName(resourceType);
         if (ContainsKey(resourceName))
@@ -32,7 +31,7 @@ public class LocalizationResourceDictionary : Dictionary<string, AbstractLocaliz
         return resource;
     }
 
-    public NonTypedLocalizationResource Add(string resourceName, [CanBeNull] string defaultCultureName = null)
+    public NonTypedLocalizationResource Add(string? resourceName, string? defaultCultureName = null)
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(resourceName, nameof(resourceName));
 
@@ -72,7 +71,7 @@ public class LocalizationResourceDictionary : Dictionary<string, AbstractLocaliz
         return resource;
     }
 
-    public AbstractLocalizationResource GetOrDefault(Type resourceType)
+    public AbstractLocalizationResource? GetOrDefault(Type resourceType)
     {
         return _resourcesByTypes.GetOrDefault(resourceType);
     }

@@ -18,7 +18,7 @@ public class OrderRepository : EfCoreEfCoreRepository<OrderingContext, Order>, I
         throw new NotImplementedException();
     }
 
-    public async Task<Order> GetAsync(Guid orderId)
+    public async Task<Order?> GetAsync(Guid orderId)
     {
         var context = await GetDbContextAsync();
         var order = await context

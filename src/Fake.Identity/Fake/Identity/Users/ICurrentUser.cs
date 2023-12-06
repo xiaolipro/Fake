@@ -1,6 +1,4 @@
-﻿using JetBrains.Annotations;
-
-namespace Fake.Identity.Users;
+﻿namespace Fake.Identity.Users;
 
 public interface ICurrentUser
 {
@@ -9,12 +7,12 @@ public interface ICurrentUser
     /// <summary>
     /// 用户唯一标识
     /// </summary>
-    [CanBeNull]
+
     public string UserId { get; }
-    
+
     /// <summary>
     /// 获取当前用户的名称。
     /// </summary>
-    [CanBeNull]
+
     public string UserName { get; }
 }

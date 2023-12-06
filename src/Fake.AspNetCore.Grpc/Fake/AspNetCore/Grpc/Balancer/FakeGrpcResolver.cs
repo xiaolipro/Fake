@@ -14,7 +14,6 @@ internal class FakeGrpcResolver : PollingResolver
     private readonly ILogger _logger;
     private readonly IServiceResolver _serviceResolver;
     private readonly FakeGrpcClientOptions _options;
-    private Timer _timer;
 
     public FakeGrpcResolver(ILoggerFactory loggerFactory, IBackoffPolicyFactory backoffPolicyFactory, Uri address,
         IServiceResolver serviceResolver, FakeGrpcClientOptions options) : base(loggerFactory, backoffPolicyFactory)
@@ -33,7 +32,7 @@ internal class FakeGrpcResolver : PollingResolver
         await _serviceResolver.ResolutionAsync(_address.Host);
 
         // 防止服务端没起的时候重复请求服务解析
-        if (_serviceResolver.ServiceNodes == null || _serviceResolver.ServiceNodes.Count < 1) return;
+        if (_serviceResolver.ServiceNodes.Count < 1) return;
 
         var addresses = _serviceResolver.ServiceNodes[_address.Host]
             .Select(x => new BalancerAddress(x.Host, x.GrpcPort)).ToArray();
@@ -48,12 +47,12 @@ internal class FakeGrpcResolver : PollingResolver
 
         if (_options.RefreshInterval != Timeout.InfiniteTimeSpan)
         {
-            _timer = new Timer(OnTimerCallback, null, Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
-            _timer.Change(_options.RefreshInterval, _options.RefreshInterval);
+            var timer = new Timer(OnTimerCallback, null, Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
+            timer.Change(_options.RefreshInterval, _options.RefreshInterval);
         }
     }
 
-    private void OnTimerCallback(object state)
+    private void OnTimerCallback(object? state)
     {
         try
         {

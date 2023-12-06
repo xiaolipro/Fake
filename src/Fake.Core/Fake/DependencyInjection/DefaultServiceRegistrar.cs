@@ -3,7 +3,6 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Fake.DependencyInjection;
 
-// ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
 public class DefaultServiceRegistrar : AbstractServiceRegistrar
 {
     public override void RegisterType(IServiceCollection services, Type type)
@@ -55,7 +54,7 @@ public class DefaultServiceRegistrar : AbstractServiceRegistrar
                 implementationType,
                 lifetime
             );
-        
+
         // 适配类的层次体系
         var redirectedType = GetRedirectedTypeOrNull(
             implementationType,
@@ -71,7 +70,7 @@ public class DefaultServiceRegistrar : AbstractServiceRegistrar
                 lifetime
             );
         }
-        
+
         return ServiceDescriptor.Describe(
             exposedServiceType,
             implementationType,
@@ -79,12 +78,12 @@ public class DefaultServiceRegistrar : AbstractServiceRegistrar
         );
     }
 
-    protected virtual Type GetRedirectedTypeOrNull(Type implementationType, Type exposedServiceType,
+    protected virtual Type? GetRedirectedTypeOrNull(Type implementationType, Type exposedServiceType,
         List<Type> allExposedServiceTypes)
     {
         // 暴露的服务数量小于2代表没有形成层次体系，不需要转发
         if (allExposedServiceTypes.Count < 2) return null;
-        
+
         // 如果实现自爆，不需要转发
         if (exposedServiceType == implementationType) return null;
 

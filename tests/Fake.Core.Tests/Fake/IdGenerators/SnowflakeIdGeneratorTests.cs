@@ -12,7 +12,7 @@ public class SnowflakeIdGeneratorTests : FakeIntegrationTestWithTools<FakeCoreTe
     public SnowflakeIdGeneratorTests(ITestOutputHelper testOutputHelper)
     {
         _testOutputHelper = testOutputHelper;
-        _longIdGenerator = ServiceProvider.GetService<SnowflakeIdGenerator>();
+        _longIdGenerator = ServiceProvider.GetRequiredService<SnowflakeIdGenerator>();
     }
 
     [Fact]

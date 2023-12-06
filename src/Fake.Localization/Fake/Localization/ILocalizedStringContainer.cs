@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using JetBrains.Annotations;
 using Microsoft.Extensions.Localization;
 
 namespace Fake.Localization;
@@ -13,23 +12,22 @@ public interface ILocalizedStringContainer
     /// 路径
     /// </summary>
     string Path { get; }
-    
+
     /// <summary>
     /// 文化
     /// </summary>
-    string CultureName { get; }
+    string? CultureName { get; }
 
     /// <summary>
     /// 查字典
     /// </summary>
     /// <param name="name"></param>
     /// <returns></returns>
-    [CanBeNull]
-    LocalizedString GetLocalizedStringOrDefault(string name);
+    LocalizedString? GetLocalizedStringOrDefault(string name);
 
     /// <summary>
     /// 填充字典
     /// </summary>
     /// <param name="dictionary"></param>
-    void Fill(Dictionary<string, LocalizedString> dictionary);
+    void Fill(Dictionary<string, LocalizedString?> dictionary);
 }

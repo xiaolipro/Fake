@@ -9,7 +9,7 @@ public static class CultureHelper
     /// </summary>
     /// <param name="culture">给定文化</param>
     /// <returns>可销毁的作用域</returns>
-    public static IDisposable UseCulture(string culture)
+    public static IDisposable UseCulture(string? culture)
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(culture, nameof(culture));
 
@@ -26,7 +26,7 @@ public static class CultureHelper
     /// </summary>
     /// <param name="cultureName"></param>
     /// <returns></returns>
-    public static string GetParentCultureName(string cultureName)
+    public static string? GetParentCultureName(string? cultureName)
     {
         return new CultureInfo(cultureName).Parent.Name;
     }

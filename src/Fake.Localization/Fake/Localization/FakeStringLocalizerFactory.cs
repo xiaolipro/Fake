@@ -15,7 +15,7 @@ public class FakeStringLocalizerFactory : IStringLocalizerFactory, IFakeStringLo
     private readonly IServiceProvider _serviceProvider;
     private readonly FakeLocalizationOptions _options;
 
-    private readonly Dictionary<string, IStringLocalizer> _localizerCache;
+    private readonly Dictionary<string?, IStringLocalizer> _localizerCache;
 
     // 工厂模式，巧用锁存
     private readonly SemaphoreSlim _semaphore;
@@ -26,7 +26,7 @@ public class FakeStringLocalizerFactory : IStringLocalizerFactory, IFakeStringLo
         _innerFactory = innerFactory;
         _serviceProvider = serviceProvider;
         _options = options.Value;
-        _localizerCache = new Dictionary<string, IStringLocalizer>();
+        _localizerCache = new Dictionary<string?, IStringLocalizer>();
         _semaphore = new SemaphoreSlim(1, 1);
     }
 
@@ -53,7 +53,7 @@ public class FakeStringLocalizerFactory : IStringLocalizerFactory, IFakeStringLo
 
     private IStringLocalizer CreateStringLocalizer(AbstractLocalizationResource resource, bool latched)
     {
-        string resourceResourceName = resource.ResourceName;
+        string? resourceResourceName = resource.ResourceName;
 
         if (_localizerCache.TryGetValue(resourceResourceName, out var localizer))
         {

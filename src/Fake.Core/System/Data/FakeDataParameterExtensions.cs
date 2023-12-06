@@ -1,5 +1,4 @@
 using System.Globalization;
-using Fake.Data;
 
 namespace System.Data;
 
@@ -12,7 +11,7 @@ public static class FakeDataParameterExtensions
     // 参数:
     //   parameter:
     //     The parameter to get a value for.
-    public static string GetStringValue(this IDataParameter parameter)
+    public static string? GetStringValue(this IDataParameter parameter)
     {
         object value = parameter.Value;
         if (value == null || value == DBNull.Value)
@@ -30,7 +29,6 @@ public static class FakeDataParameterExtensions
             return datetime.ToString("d", CultureInfo.InvariantCulture);
         }
 
-        
 
         Type type = value.GetType();
         if (type.IsEnum)

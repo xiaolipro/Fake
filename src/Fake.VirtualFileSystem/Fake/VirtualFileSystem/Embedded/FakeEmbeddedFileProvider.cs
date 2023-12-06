@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using JetBrains.Annotations;
 using Microsoft.Extensions.FileProviders;
 
 namespace Fake.VirtualFileSystem.Embedded;
@@ -12,19 +11,19 @@ public class FakeEmbeddedFileProvider : AbstractInMemoryFileProvider
 {
     protected virtual Assembly Assembly { get; }
 
-    [CanBeNull] protected virtual string Root { get; }
+    protected virtual string Root { get; }
 
-    protected override IDictionary<string, IFileInfo> Files => _fileDic.Value;
-    private readonly Lazy<Dictionary<string, IFileInfo>> _fileDic;
+    protected override IDictionary<string, IFileInfo?> Files => _fileDic.Value;
+    private readonly Lazy<Dictionary<string, IFileInfo?>> _fileDic;
 
-    public FakeEmbeddedFileProvider(Assembly assembly, [CanBeNull] string root = null)
+    public FakeEmbeddedFileProvider(Assembly assembly, string root = null)
     {
         ThrowHelper.ThrowIfNull(assembly, nameof(assembly));
 
         Assembly = assembly;
         Root = root?.Trim('/').Replace("/", ".");
 
-        _fileDic = new Lazy<Dictionary<string, IFileInfo>>(
+        _fileDic = new Lazy<Dictionary<string, IFileInfo?>>(
             () =>
             {
                 var fileDic = new Dictionary<string, IFileInfo>(StringComparer.OrdinalIgnoreCase);
@@ -42,7 +41,7 @@ public class FakeEmbeddedFileProvider : AbstractInMemoryFileProvider
 
         foreach (var resourcePath in Assembly.GetManifestResourceNames())
         {
-            if (Root.NotBeNullOrWhiteSpace() && !resourcePath.StartsWith(Root))
+            if (Root.IsNotNullOrWhiteSpace() && !resourcePath.StartsWith(Root))
             {
                 continue;
             }
@@ -89,7 +88,7 @@ public class FakeEmbeddedFileProvider : AbstractInMemoryFileProvider
 
     private string ConvertToRelativePath(string resourcePath)
     {
-        if (Root.NotBeNullOrWhiteSpace())
+        if (Root.IsNotNullOrWhiteSpace())
         {
             resourcePath = resourcePath.Substring(Root.Length + 1);
         }

@@ -42,6 +42,7 @@ public class IntegrationEventLogContext : FakeDbContext<IntegrationEventLogConte
             .IsRequired();
 
         builder.Property(e => e.EventTypeName)
+            .HasMaxLength(30)
             .IsRequired();
     }
 }

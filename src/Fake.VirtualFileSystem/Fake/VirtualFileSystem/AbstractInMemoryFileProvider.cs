@@ -4,10 +4,10 @@ using Microsoft.Extensions.Primitives;
 
 namespace Fake.VirtualFileSystem;
 
-public abstract class AbstractInMemoryFileProvider: IFileProvider
+public abstract class AbstractInMemoryFileProvider : IFileProvider
 {
-    protected abstract IDictionary<string, IFileInfo> Files { get; }
-    
+    protected abstract IDictionary<string, IFileInfo?> Files { get; }
+
     public virtual IFileInfo GetFileInfo(string subpath)
     {
         if (subpath == null) return new NotFoundFileInfo("");
@@ -34,7 +34,7 @@ public abstract class AbstractInMemoryFileProvider: IFileProvider
         foreach (var fileInfo in Files.Values)
         {
             var fullPath = fileInfo.GetVirtualOrPhysicalPathOrNull();
-            
+
             if (fullPath == null || !fullPath.StartsWith(directoryPath) || fullPath == directoryPath)
             {
                 continue;

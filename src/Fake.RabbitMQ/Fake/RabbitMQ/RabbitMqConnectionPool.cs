@@ -9,7 +9,7 @@ public class RabbitMqConnectionPool : IRabbitMqConnectionPool
 {
     private readonly FakeRabbitMqOptions _options;
     protected ConcurrentDictionary<string, Lazy<IConnection>> Connections { get; }
-    
+
     private bool _isDisposed;
 
     public RabbitMqConnectionPool(IOptions<FakeRabbitMqOptions> options)
@@ -18,7 +18,7 @@ public class RabbitMqConnectionPool : IRabbitMqConnectionPool
         Connections = new ConcurrentDictionary<string, Lazy<IConnection>>();
     }
 
-    public IConnection Get(string connectionName = null)
+    public IConnection Get(string? connectionName = null)
     {
         connectionName ??= _options.DefaultConnectionName;
 

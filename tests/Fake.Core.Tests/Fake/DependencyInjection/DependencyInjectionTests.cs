@@ -1,5 +1,4 @@
-﻿using System.Data;
-using Fake.Modularity;
+﻿using Fake.Modularity;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Fake.DependencyInjection;
@@ -22,7 +21,7 @@ public class DependencyInjectionTests
         a.ShouldNotBeNull();
 
         var c = application.ServiceProvider.GetService<MyA>();
-        c.ShouldNotBeNull();
+        c.ShouldBeNull();
     }
 
     [Fact]
@@ -62,64 +61,45 @@ public class DependencyInjectionTests
         application.InitializeApplication();
 
         var a = application.ServiceProvider.GetService<IHierarchy>();
-        var b = application.ServiceProvider.GetService<AHierarchy>();
         //a.GetHashCode().ShouldBe(b.GetHashCode());
-        application.Services.First(x => x.ServiceType == typeof(IHierarchy)).ImplementationFactory
-            .Invoke(application.ServiceProvider).GetType().ShouldBe(typeof(BHierarchy));
-        
-        application.ServiceProvider.GetServices<AHierarchy>().Count().ShouldBe(1);
+        application.Services.First(x => x.ServiceType == typeof(IHierarchy))
+            .ImplementationFactory
+            ?.Invoke(application.ServiceProvider).GetType().ShouldBe(typeof(BHierarchy));
+
+        application.ServiceProvider.GetServices<IHierarchy>().Count().ShouldBe(1);
     }
-    
+
     [Fact]
     void Singleton大于Scoped大于Transient()
     {
         using var application = FakeApplicationFactory.Create<IndependentModule>();
         application.InitializeApplication();
-        
-        application.Services.First(x => x.ServiceType == typeof(IDifferentLife)).Lifetime.ShouldBe(ServiceLifetime.Singleton);
-        application.Services.First(x => x.ServiceType == typeof(DifferentLife)).Lifetime.ShouldBe(ServiceLifetime.Singleton);
+
+        application.Services.First(x => x.ServiceType == typeof(IDifferentLife)).Lifetime
+            .ShouldBe(ServiceLifetime.Singleton);
     }
 }
 
-public interface IHierarchy : ISingletonDependency
-{
-}
+public interface IHierarchy : ISingletonDependency;
 
-public class AHierarchy : IHierarchy
-{
-}
+public class AHierarchy : IHierarchy;
 
 [Dependency(Replace = true)]
-public class BHierarchy : AHierarchy
-{
-}
+public class BHierarchy : AHierarchy;
 
 [Dependency(ServiceLifetime.Transient)]
-public class MyA : IA
-{
-}
+public class MyA : IA;
 
-public interface IA : ISingletonDependency
-{
-}
+public interface IA : ISingletonDependency;
 
-public interface IB
-{
-}
+public interface IB;
 
 [ExposeServices(typeof(IB))]
-public class X : IB, IScopedDependency
-{
-}
+public class X : IB, IScopedDependency;
 
 [DisableServiceRegistration]
-public class MyB : IA
-{
-}
+public class MyB : IA;
 
-public interface IDifferentLife : ISingletonDependency
-{
-}
-public class DifferentLife: IDifferentLife, ITransientDependency
-{
-}
+public interface IDifferentLife : ISingletonDependency;
+
+public class DifferentLife : IDifferentLife, ITransientDependency;

@@ -51,14 +51,14 @@ public abstract class AbstractDependencyInjectionTests : FakeIntegrationTest<Dep
 
     public class ServiceWithPropertyInject : ITransientDependency
     {
-        public MyEmptyTransientService PropertyInjectedServiceWithPublicSet { get; set; }
+        public MyEmptyTransientService PropertyInjectedServiceWithPublicSet { get; set; } = null!;
 
-        public MyEmptyTransientService PropertyInjectedServiceWithPrivateSet { get; private set; }
+        public MyEmptyTransientService PropertyInjectedServiceWithPrivateSet { get; private set; } = null!;
 
-        public MyEmptyTransientService PropertyInjectedServiceWithProtectedSet { get; protected set; }
-        public MyEmptyTransientService PropertyInjectedServiceWithInternalSet { get; internal set; }
+        public MyEmptyTransientService PropertyInjectedServiceWithProtectedSet { get; protected set; } = null!;
+        public MyEmptyTransientService PropertyInjectedServiceWithInternalSet { get; internal set; } = null!;
 
-        public static MyEmptyTransientService StaticPropertyInjectedServiceWithPublicSet { get; set; }
+        public static MyEmptyTransientService StaticPropertyInjectedServiceWithPublicSet { get; set; } = null!;
     }
 
 

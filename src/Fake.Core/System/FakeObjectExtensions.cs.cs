@@ -1,4 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
+using Fake;
 
 namespace System;
 
@@ -36,10 +37,21 @@ public static class FakeObjectExtensions
         return obj as T;
     }
 
+    /// <summary>
+    /// 将obj强转为给定类型T，等价于obj is T
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T Cast<T>(this object obj)
+    public static T Is<T>(this object obj)
         where T : class
     {
-        return (T)obj;
+        if (obj is T t)
+        {
+            return t;
+        }
+
+        throw new FakeException($"无法将obj强转为给定类型{typeof(T).FullName}");
     }
 }
