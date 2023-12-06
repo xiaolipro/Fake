@@ -2,6 +2,7 @@
 using System.Linq;
 using Fake.Authorization;
 using Fake.Authorization.Localization;
+using Fake.Authorization.Permissions;
 using Fake.DynamicProxy;
 using Fake.Identity;
 using Fake.Localization;
@@ -38,6 +39,8 @@ public class FakeAuthorizationModule : FakeModule
 
         context.Services.AddTransient<AuthorizationInterceptor>();
         context.Services.AddTransient<IMethodAuthorizationService, MethodAuthorizationService>();
+        context.Services.AddTransient<IPermissionChecker, PermissionChecker>();
+        context.Services.AddSingleton<IPermissionRecordStore, PermissionRecordStore>();
     }
 
     private static bool ShouldIntercept(Type type)

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -8,6 +7,11 @@ public class PermissionChecker : IPermissionChecker
 {
     private readonly IPermissionRecordStore _permissionRecordStore;
 
+    public PermissionChecker(IPermissionRecordStore permissionRecordStore)
+    {
+        _permissionRecordStore = permissionRecordStore;
+    }
+
     public async Task<bool> IsGrantedAsync(ClaimsPrincipal claimsPrincipal, PermissionRequirement requirement)
     {
         ThrowHelper.ThrowIfNull(requirement.Permissions);
@@ -15,8 +19,13 @@ public class PermissionChecker : IPermissionChecker
         foreach (var permission in requirement.Permissions)
         {
             var isGranted = await IsGrantedAsync(claimsPrincipal, permission);
-            if (isGranted && !requirement.RequiresAll) return true;
-            if (!isGranted) return false;
+            switch (isGranted)
+            {
+                case true when !requirement.RequiresAll:
+                    return true;
+                case false:
+                    return false;
+            }
         }
 
         return true;
@@ -32,17 +41,4 @@ public class PermissionChecker : IPermissionChecker
 
         return true;
     }
-}
-
-public interface IPermissionRecordStore
-{
-    Task<PermissionRecord> GetOrNullAsync(string name);
-
-    Task<IReadOnlyList<PermissionRecord>> GetPermissionsAsync();
-
-    Task<IReadOnlyList<PermissionRecord>> GetGroupsAsync();
-}
-
-public record PermissionRecord
-{
 }
