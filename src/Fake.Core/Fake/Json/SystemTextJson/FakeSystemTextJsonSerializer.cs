@@ -19,14 +19,38 @@ public class FakeSystemTextJsonSerializer : IFakeJsonSerializer
         return JsonSerializer.Serialize(obj, GetJsonSerializerOptions(camelCase, indented));
     }
 
-    public T Deserialize<T>(string jsonString, bool camelCase = true)
+    public T? Deserialize<T>(string jsonString, bool camelCase = true)
     {
-        return JsonSerializer.Deserialize<T>(jsonString, GetJsonSerializerOptions(camelCase));
+        try
+        {
+            if (string.IsNullOrWhiteSpace(jsonString))
+            {
+                return default;
+            }
+
+            return JsonSerializer.Deserialize<T>(jsonString, GetJsonSerializerOptions(camelCase));
+        }
+        catch
+        {
+            return default;
+        }
     }
 
-    public object Deserialize(Type type, string jsonString, bool camelCase = true)
+    public object? Deserialize(Type type, string jsonString, bool camelCase = true)
     {
-        return JsonSerializer.Deserialize(jsonString, type, GetJsonSerializerOptions(camelCase));
+        try
+        {
+            if (string.IsNullOrWhiteSpace(jsonString))
+            {
+                return default;
+            }
+
+            return JsonSerializer.Deserialize(jsonString, type, GetJsonSerializerOptions(camelCase));
+        }
+        catch
+        {
+            return default;
+        }
     }
 
 

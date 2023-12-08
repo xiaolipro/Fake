@@ -1,4 +1,5 @@
 ﻿using Fake;
+using JetBrains.Annotations;
 
 namespace System;
 
@@ -31,7 +32,7 @@ public static class FakeStringExtensions
     /// <summary>
     /// 表示此字符串 不是 null或空字符串或空白格。
     /// </summary>
-    public static bool IsNotNullOrWhiteSpace(this string? str)
+    public static bool IsNotNullOrWhiteSpace([CanBeNull]this string? str)
     {
         return !string.IsNullOrWhiteSpace(str);
     }

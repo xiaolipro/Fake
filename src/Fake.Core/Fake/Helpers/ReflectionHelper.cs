@@ -6,8 +6,8 @@ namespace Fake.Helpers;
 
 public static class ReflectionHelper
 {
-    private static readonly ConcurrentDictionary<string, PropertyInfo> CachedPropertiesDic =
-        new ConcurrentDictionary<string, PropertyInfo>();
+    private static readonly ConcurrentDictionary<string, PropertyInfo?> CachedPropertiesDic =
+        new ConcurrentDictionary<string, PropertyInfo?>();
 
     /// <summary>
     /// 尝试为给定对象的属性赋值
@@ -19,6 +19,8 @@ public static class ReflectionHelper
     public static void TrySetProperty<TObject, TValue>(TObject obj, Expression<Func<TObject, TValue>> propertySelector,
         Func<TValue> valueFactory, params Type[] ignoreAttributeTypes)
     {
+        if (obj is null) return;
+
         var cacheKey = $"{obj.GetType().FullName}-{propertySelector}-{ignoreAttributeTypes.JoinAsString("-")}";
 
         var propertyInfo = CachedPropertiesDic.GetOrAdd(cacheKey, _ =>
@@ -75,7 +77,7 @@ public static class ReflectionHelper
     /// <param name="type"></param>
     /// <typeparam name="TInstance"></typeparam>
     /// <returns></returns>
-    public static TInstance CreateInstance<TInstance>(Type type) where TInstance : class
+    public static TInstance? CreateInstance<TInstance>(Type type) where TInstance : class
     {
         //TODO: 可以优化
         return Activator.CreateInstance(type) as TInstance;

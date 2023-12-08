@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Diagnostics;
+using System.Reflection;
 
 namespace Fake.DependencyInjection;
 
@@ -50,10 +51,14 @@ public class ExposeServicesAttribute : Attribute, IExposedServiceTypesProvider
     {
         var serviceTypes = new List<Type>();
 
-        Type?[] interfaces = targetType.GetTypeInfo().GetInterfaces();
+        Type[] interfaces = targetType.GetTypeInfo().GetInterfaces();
 
         foreach (var @interface in interfaces)
         {
+            Debug.Assert(@interface != null, $"{nameof(@interface)} != null");
+
+            if (@interface is null) throw new ArgumentNullException(nameof(@interface));
+
             var interfaceName = @interface.Name.AsSpan();
             if (@interface.IsGenericType)
             {

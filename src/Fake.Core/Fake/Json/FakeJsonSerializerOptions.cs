@@ -5,12 +5,12 @@ public class FakeJsonSerializerOptions
     /// <summary>
     /// 支持解析的日期格式
     /// </summary>
-    public List<string> InputDateTimeFormats { get; set; }
+    public List<string> InputDateTimeFormats { get; set; } = new();
 
     /// <summary>
     /// 统一返回的日期格式
     /// </summary>
-    public string OutputDateTimeFormat { get; set; }
+    public string OutputDateTimeFormat { get; set; } = string.Empty;
     
     /// <summary>
     /// 是否将long类型转换为string
@@ -21,9 +21,4 @@ public class FakeJsonSerializerOptions
     /// 尝试将"true"/"false"转化为等价的bool值（忽略大小写）
     /// </summary>
     public bool StringToBoolean { get; set; }
-
-    public FakeJsonSerializerOptions()
-    {
-        InputDateTimeFormats = new List<string>();
-    }
 }

@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization.Metadata;
+﻿using System.Diagnostics;
+using System.Text.Json.Serialization.Metadata;
 using Fake.Json.SystemTextJson.Converters;
 using Fake.Helpers;
 using Fake.Timing;
@@ -7,7 +8,7 @@ namespace Fake.Json.SystemTextJson.Modifiers;
 
 public class FakeDateTimeConverterModifier
 {
-    private IServiceProvider _serviceProvider;
+    private IServiceProvider _serviceProvider = null!;
 
     public Action<JsonTypeInfo> CreateModifyAction(IServiceProvider serviceProvider)
     {
@@ -17,6 +18,10 @@ public class FakeDateTimeConverterModifier
     
     private void Modify(JsonTypeInfo jsonTypeInfo)
     {
+        Debug.Assert(_serviceProvider != null, nameof(_serviceProvider));
+        
+        if(_serviceProvider is null) throw new InvalidOperationException($"{nameof(_serviceProvider)} is null");
+        
         if (ReflectionHelper.GetAttributeOrDefault<DisableClockNormalizationAttribute>(jsonTypeInfo.Type) != null)
         {
             return;

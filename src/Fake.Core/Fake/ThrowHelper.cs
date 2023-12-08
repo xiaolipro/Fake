@@ -18,10 +18,10 @@ public static class ThrowHelper
 
     [ContractAnnotation("value:null => halt")]
     public static string ThrowIfNullOrWhiteSpace(
-        string value,
+        string? value,
         [InvokerParameterName] string? parameterName = null)
     {
-        if (value.IsNotNullOrWhiteSpace()) return value;
+        if (value.IsNotNullOrWhiteSpace()) return value!;
         throw new ArgumentException($"{parameterName}不能是null，empty或white space", parameterName);
     }
 }

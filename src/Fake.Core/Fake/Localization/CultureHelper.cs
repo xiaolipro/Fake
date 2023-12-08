@@ -28,6 +28,8 @@ public static class CultureHelper
     /// <returns></returns>
     public static string? GetParentCultureName(string? cultureName)
     {
+        ThrowHelper.ThrowIfNullOrWhiteSpace(cultureName, nameof(cultureName));
+        
         return new CultureInfo(cultureName).Parent.Name;
     }
 }

@@ -287,7 +287,7 @@ public class FakeApplication : IFakeApplication
 
         foreach (var entry in initLogger.Entries)
         {
-            logger.Log(entry.LogLevel, entry.EventId, entry.State, entry.Exception, entry.Formatter);
+            logger.Log(entry.LogLevel, entry.EventId, entry.State, entry.Exception, entry.Formatter!);
         }
 
         initLogger.Entries.Clear();

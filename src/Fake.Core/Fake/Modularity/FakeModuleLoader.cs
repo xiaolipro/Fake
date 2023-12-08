@@ -79,6 +79,9 @@ public class FakeModuleLoader : IModuleLoader
     protected virtual IFakeModule CreateAndRegisterModule(IServiceCollection services, Type moduleType)
     {
         var module = ReflectionHelper.CreateInstance<IFakeModule>(moduleType);
+        
+        ThrowHelper.ThrowIfNull(module, nameof(module));
+        
         services.AddSingleton(moduleType, module!);
         return module;
     }
