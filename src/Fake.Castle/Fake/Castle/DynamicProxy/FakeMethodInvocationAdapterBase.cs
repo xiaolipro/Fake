@@ -13,20 +13,20 @@ public abstract class FakeMethodInvocationAdapterBase : IFakeMethodInvocation
     private readonly Lazy<IReadOnlyDictionary<string, object>> _lazyArgumentsDictionary;
     public IReadOnlyDictionary<string, object> ArgumentsDictionary => _lazyArgumentsDictionary.Value;
     public Type[] GenericArguments => Invocation.GenericArguments;
-    public object TargetObject  => Invocation.InvocationTarget ?? Invocation.MethodInvocationTarget;
+    public object TargetObject => Invocation.InvocationTarget ?? Invocation.MethodInvocationTarget;
     public MethodInfo Method => Invocation.MethodInvocationTarget ?? Invocation.Method;
-    public object ReturnValue  { get; set; }
+    public object? ReturnValue { get; set; }
 
     public FakeMethodInvocationAdapterBase(IInvocation invocation)
     {
         Invocation = invocation;
         _lazyArgumentsDictionary = new Lazy<IReadOnlyDictionary<string, object>>(GetArgumentsDictionary);
     }
-    
+
     protected IInvocation Invocation { get; }
     public abstract Task ProcessAsync();
-    
-    
+
+
     private IReadOnlyDictionary<string, object> GetArgumentsDictionary()
     {
         var dict = new Dictionary<string, object>();

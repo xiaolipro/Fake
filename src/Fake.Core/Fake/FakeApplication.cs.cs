@@ -199,7 +199,6 @@ public class FakeApplication : IFakeApplication
             throw new FakeInitializationException($"{nameof(InitializeModules)}已经调用过了，不要重复调用");
         }
 
-        Debug.Assert(_serviceProvider != null);
         ThrowHelper.ThrowIfNull(_serviceProvider);
 
         WriteInitLogs(_serviceProvider);
@@ -311,7 +310,7 @@ public class FakeApplication : IFakeApplication
         {
             services.AddLogging(logging =>
             {
-                logging.AddConfiguration(configuration!.GetSection("Logging"));
+                logging.AddConfiguration(configuration.GetSection("Logging"));
                 logging.AddConsole();
             });
         }

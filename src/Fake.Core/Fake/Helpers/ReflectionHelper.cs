@@ -77,10 +77,10 @@ public static class ReflectionHelper
     /// <param name="type"></param>
     /// <typeparam name="TInstance"></typeparam>
     /// <returns></returns>
-    public static TInstance? CreateInstance<TInstance>(Type type) where TInstance : class
+    public static TInstance CreateInstance<TInstance>(Type type) where TInstance : class
     {
         //TODO: 可以优化
-        return Activator.CreateInstance(type) as TInstance;
+        return Activator.CreateInstance(type).Is<TInstance>();
     }
 
     /// <summary>

@@ -9,6 +9,6 @@ public interface IFakeMethodInvocation
     Type[] GenericArguments { get; }
     object TargetObject { get; }
     MethodInfo Method { get; }
-    object ReturnValue { get; set; }
+    object? ReturnValue { get; set; }
     Task ProcessAsync();
 }
