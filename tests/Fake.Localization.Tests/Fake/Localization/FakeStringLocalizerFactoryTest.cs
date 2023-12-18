@@ -1,5 +1,4 @@
-﻿using Fake.Localization.Resources;
-using Fake.Testing;
+﻿using Fake.Testing;
 using Localization;
 using Microsoft.Extensions.Localization;
 using Shouldly;
@@ -7,10 +6,10 @@ using Xunit;
 
 namespace Fake.Localization;
 
-public sealed class FakeStringLocalizerFactoryTest: FakeIntegrationTest<FakeLocalizationTestModule>
+public sealed class FakeStringLocalizerFactoryTest : FakeApplicationTest<FakeLocalizationTestModule>
 {
     private readonly IStringLocalizerFactory _localizerFactory;
-    
+
     public FakeStringLocalizerFactoryTest()
     {
         _localizerFactory = GetRequiredService<IStringLocalizerFactory>();
@@ -23,20 +22,20 @@ public sealed class FakeStringLocalizerFactoryTest: FakeIntegrationTest<FakeLoca
         internalLocalizer.ShouldNotBeNull();
         internalLocalizer.ShouldBeOfType<InMemoryStringLocalizer>();
     }
-    
+
     [Fact]
     public void 可以实现本地化()
     {
         var localizer = _localizerFactory.Create(typeof(LocalizationTestResource));
-        
+
         localizer["Hi"].Value.ShouldBe("你好");
     }
-    
+
     [Fact]
     public void 本地化资源可以继承()
     {
         var localizer = _localizerFactory.Create(typeof(LocalizationTestResource));
-        
+
         localizer["ThisFieldIsRequired"].Value.ShouldBe("此字段是必填字段");
         localizer["DefaultLanguage"].Value.ShouldBe("默认语言");
     }

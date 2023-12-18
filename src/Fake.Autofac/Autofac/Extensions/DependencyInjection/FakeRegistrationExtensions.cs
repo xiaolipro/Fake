@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Reflection;
 using Autofac.Builder;
 using Fake;
@@ -78,6 +77,7 @@ public static class FakeRegistrationExtensions
                             return serviceDescriptor.ImplementationFactory(serviceProvider);
                         })
                     .ConfigureLifecycle(serviceDescriptor.Lifetime)
+                    .ConfigureFakeConventions(moduleContainer, registrationActionList)
                     .CreateRegistration();
 
                 //TODO: registrationActionList ?
@@ -85,9 +85,7 @@ public static class FakeRegistrationExtensions
             }
             else
             {
-                Debug.Assert(serviceDescriptor.ImplementationInstance != null,
-                    "serviceDescriptor.ImplementationInstance != null");
-                builder.RegisterInstance(serviceDescriptor.ImplementationInstance)
+                builder.RegisterInstance(serviceDescriptor.ImplementationInstance!)
                     .As(serviceDescriptor.ServiceType)
                     .ConfigureLifecycle(serviceDescriptor.Lifetime)
                     .ConfigureFakeConventions(moduleContainer, registrationActionList);

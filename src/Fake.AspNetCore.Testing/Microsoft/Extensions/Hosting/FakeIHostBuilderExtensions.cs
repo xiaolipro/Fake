@@ -11,7 +11,7 @@ namespace Microsoft.Extensions.Hosting;
 public static class FakeIHostBuilderExtensions
 {
     public static IHostBuilder UseFakeTestServer<TStartupModule>(this IHostBuilder builder,
-        Action<IWebHostBuilder> configure = null) where TStartupModule : IFakeModule
+        Action<IWebHostBuilder>? configure = null) where TStartupModule : IFakeModule
     {
         return builder.ConfigureWebHostDefaults(webBuilder =>
         {
@@ -25,7 +25,7 @@ public static class FakeIHostBuilderExtensions
 
                 services.AddFakeApplication<TStartupModule>();
             });
-            
+
             configure?.Invoke(webBuilder);
         });
     }

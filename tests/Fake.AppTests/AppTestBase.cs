@@ -1,12 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
-using Fake;
+﻿using Fake;
 using Fake.Modularity;
 using Fake.Testing;
 using Fake.UnitOfWork;
-using Microsoft.Extensions.DependencyInjection;
 
-public abstract class AppTestBase<TStartupModule> : FakeIntegrationTestWithTools<TStartupModule>
+public abstract class AppTestBase<TStartupModule> : FakeApplicationTestWithTools<TStartupModule>
     where TStartupModule : IFakeModule
 {
     protected override void SetApplicationCreationOptions(FakeApplicationCreationOptions options)

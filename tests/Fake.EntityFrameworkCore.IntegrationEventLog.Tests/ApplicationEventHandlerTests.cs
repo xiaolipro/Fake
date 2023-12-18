@@ -4,7 +4,7 @@ using Fake.EntityFrameworkCore.IntegrationEventLog;
 using Fake.Testing;
 
 public class
-    IntegrationEventHandlerTests : FakeIntegrationTestWithTools<FakeEntityFrameworkCoreIntegrationEventLogTestModule>
+    ApplicationEventHandlerTests : FakeApplicationTestWithTools<FakeEntityFrameworkCoreIntegrationEventLogTestModule>
 {
     private readonly IIntegrationEventLogService _integrationEventLogService;
 
@@ -13,7 +13,7 @@ public class
         options.UseAutofac();
     }
 
-    public IntegrationEventHandlerTests()
+    public ApplicationEventHandlerTests()
     {
         _integrationEventLogService = GetRequiredService<IIntegrationEventLogService>();
     }

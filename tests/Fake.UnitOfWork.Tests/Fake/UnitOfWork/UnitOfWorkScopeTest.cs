@@ -1,12 +1,11 @@
-﻿using System.Threading.Tasks;
-using Fake.Testing;
+﻿using Fake.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 using Xunit;
 
 namespace Fake.UnitOfWork;
 
-public class UnitOfWorkScopeTest : FakeIntegrationTest<FakeUnitOfWorkModule>
+public class UnitOfWorkScopeTest : FakeApplicationTest<FakeUnitOfWorkModule>
 {
     private readonly IUnitOfWorkManager _unitOfWorkManager;
 
@@ -14,7 +13,7 @@ public class UnitOfWorkScopeTest : FakeIntegrationTest<FakeUnitOfWorkModule>
     {
         _unitOfWorkManager = ServiceProvider.GetRequiredService<IUnitOfWorkManager>();
     }
-    
+
     [Fact]
     async Task 嵌套默认共享外层工作单元()
     {
@@ -24,7 +23,7 @@ public class UnitOfWorkScopeTest : FakeIntegrationTest<FakeUnitOfWorkModule>
         {
             _unitOfWorkManager.Current.ShouldNotBeNull();
             _unitOfWorkManager.Current.ShouldBe(uow1);
-            
+
             using (var uow2 = _unitOfWorkManager.Begin())
             {
                 _unitOfWorkManager.Current.ShouldNotBeNull();
@@ -40,9 +39,10 @@ public class UnitOfWorkScopeTest : FakeIntegrationTest<FakeUnitOfWorkModule>
 
                     await uow3.CompleteAsync();
                 }
+
                 _unitOfWorkManager.Current.ShouldNotBeNull();
                 _unitOfWorkManager.Current.ShouldBe(uow1);
-                
+
                 await uow2.CompleteAsync();
             }
 
@@ -51,7 +51,7 @@ public class UnitOfWorkScopeTest : FakeIntegrationTest<FakeUnitOfWorkModule>
 
             await uow1.CompleteAsync();
         }
-        
+
         _unitOfWorkManager.Current.ShouldBeNull();
     }
 }

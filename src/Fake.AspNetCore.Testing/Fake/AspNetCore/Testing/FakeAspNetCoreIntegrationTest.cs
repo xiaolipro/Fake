@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Net.Http;
 using Fake.Modularity;
+using Fake.Testing;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,7 +10,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace Fake.AspNetCore.Testing;
 
-public abstract class FakeAspNetCoreIntegrationTest<TStartupModule> : FakeTestBase, IDisposable
+public abstract class FakeAspNetCoreIntegrationTest<TStartupModule> : FakeTestServiceProvider, IDisposable
     where TStartupModule : class, IFakeModule
 {
     protected TestServer Server { get; }
@@ -40,7 +40,6 @@ public abstract class FakeAspNetCoreIntegrationTest<TStartupModule> : FakeTestBa
 
     protected virtual void ConfigureApplication(WebApplication app)
     {
-        
     }
 
     protected virtual WebApplicationBuilder CreateHostBuilder()
@@ -63,6 +62,6 @@ public abstract class FakeAspNetCoreIntegrationTest<TStartupModule> : FakeTestBa
 
     public void Dispose()
     {
-        _host?.Dispose();
+        _host.Dispose();
     }
 }

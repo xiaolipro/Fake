@@ -1,13 +1,11 @@
-﻿using System;
-using System.Threading.Tasks;
-using Fake.Testing;
+﻿using Fake.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 using Xunit;
 
 namespace Fake.UnitOfWork;
 
-public class UnitOfWorkActionTest : FakeIntegrationTest<FakeUnitOfWorkModule>
+public class UnitOfWorkActionTest : FakeApplicationTest<FakeUnitOfWorkModule>
 {
     private readonly IUnitOfWorkManager _unitOfWorkManager;
 

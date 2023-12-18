@@ -24,20 +24,26 @@ public static class FakeRegistrationBuilderExtensions
 
         if (serviceType == null) return registrationBuilder;
 
-        Type implementationType = null!;
+        Type implementationType;
 
-        if (registrationBuilder.ActivatorData is ReflectionActivatorData reflectionActivatorData)
+        switch (registrationBuilder.ActivatorData)
         {
-            implementationType = reflectionActivatorData.ImplementationType;
-        }
-        else if (registrationBuilder.ActivatorData is SimpleActivatorData simpleActivatorData)
-        {
-            implementationType = simpleActivatorData.GetType();
+            case ReflectionActivatorData reflectionActivatorData:
+                implementationType = reflectionActivatorData.ImplementationType;
+                break;
+            case SimpleActivatorData simpleActivatorData:
+                implementationType = simpleActivatorData.GetType();
+                break;
+            case DynamicRegistrationStyle dynamicRegistration:
+                implementationType = dynamicRegistration.GetType();
+                break;
+            default:
+                return registrationBuilder;
         }
 
         return registrationBuilder
-            .EnablePropertyInjection(moduleContainer, implementationType)  //启用属性注入
-            .InvokeRegistrationActions(registrationActionList, serviceType, implementationType); 
+            .EnablePropertyInjection(moduleContainer, implementationType) //启用属性注入
+            .InvokeRegistrationActions(registrationActionList, serviceType, implementationType);
     }
 
     private static IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> EnablePropertyInjection<TLimit,

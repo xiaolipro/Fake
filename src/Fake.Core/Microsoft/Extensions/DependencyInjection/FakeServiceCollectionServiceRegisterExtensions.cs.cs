@@ -12,7 +12,8 @@ public static class FakeServiceCollectionServiceRegisterExtensions
     /// </summary>
     /// <param name="services"></param>
     /// <param name="registrationAction"></param>
-    public static void OnRegistered(this IServiceCollection services, Action<OnServiceRegistrationContext> registrationAction)
+    public static void OnRegistered(this IServiceCollection services,
+        Action<OnServiceRegistrationContext> registrationAction)
     {
         GetOrCreateRegistrationActionList(services).Add(registrationAction);
     }
@@ -33,25 +34,36 @@ public static class FakeServiceCollectionServiceRegisterExtensions
 
         return actionList;
     }
+
+    /// <summary>
+    /// 禁用类的拦截器，接口拦截器不受影响
+    /// </summary>
+    /// <param name="services"></param>
+    public static void DisableClassInterceptors(this IServiceCollection services)
+    {
+        GetOrCreateRegistrationActionList(services).DisableClassInterceptors = true;
+    }
+
     #endregion
-    
+
     #region ServiceExposing 服务暴露切面
-    
+
     /// <summary>
     /// 服务暴露时调度，可以在这里变更暴露内容
     /// </summary>
     /// <param name="services"></param>
     /// <param name="exposeAction"></param>
-    public static void OnServiceExposing(this IServiceCollection services, Action<OnServiceExposingContext> exposeAction)
+    public static void OnServiceExposing(this IServiceCollection services,
+        Action<OnServiceExposingContext> exposeAction)
     {
         GetOrCreateExposingList(services).Add(exposeAction);
     }
-    
+
     public static ServiceExposingActionList GetServiceExposingActionList(this IServiceCollection services)
     {
         return GetOrCreateExposingList(services);
     }
-    
+
     private static ServiceExposingActionList GetOrCreateExposingList(IServiceCollection services)
     {
         var actionList = services.GetObjectAccessorOrNull<ServiceExposingActionList>()?.Value;
@@ -63,10 +75,11 @@ public static class FakeServiceCollectionServiceRegisterExtensions
 
         return actionList;
     }
+
     #endregion
 
     #region ServiceRegistrar 服务注册切面
-    
+
     /// <summary>
     /// 注册给定程序集内所有满足注册标准的服务
     /// </summary>
@@ -82,7 +95,7 @@ public static class FakeServiceCollectionServiceRegisterExtensions
 
         return services;
     }
-    
+
     /// <summary>
     /// 添加服务注册器，服务注册时会执行每一个注册器
     /// </summary>
@@ -95,8 +108,8 @@ public static class FakeServiceCollectionServiceRegisterExtensions
 
         return services;
     }
-    
-    
+
+
     /// <summary>
     /// 获取或创建服务注册器集合，服务注册时会执行每一个注册器
     /// </summary>
@@ -114,8 +127,8 @@ public static class FakeServiceCollectionServiceRegisterExtensions
 
         return conventionalRegistrars;
     }
-    
-    
+
+
     public static IServiceCollection RegisterType<TType>(this IServiceCollection services)
     {
         return services.RegisterType(typeof(TType));
@@ -130,5 +143,6 @@ public static class FakeServiceCollectionServiceRegisterExtensions
 
         return services;
     }
+
     #endregion
 }

@@ -1,14 +1,14 @@
-﻿using System;
-using Fake.ObjectMapping.Models;
+﻿using Fake.ObjectMapping.Models;
 using Fake.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 
 namespace Fake.ObjectMapping.AutoMapper;
 
-public class AutoMapperModuleBasicTest:FakeIntegrationTest<FakeObjectMappingAutoMapperTestModule>
+public class AutoMapperModuleBasicTest : FakeApplicationTest<FakeObjectMappingAutoMapperTestModule>
 {
     private readonly IObjectMapper _objectMapper;
+
     public AutoMapperModuleBasicTest()
     {
         _objectMapper = ServiceProvider.GetRequiredService<IObjectMapper>();
@@ -26,22 +26,22 @@ public class AutoMapperModuleBasicTest:FakeIntegrationTest<FakeObjectMappingAuto
     {
         var dto = _objectMapper.Map<MyEntity, MyDto>(new MyEntity { Number = 42 });
         dto.Number.ShouldBe(42);
-        
+
         // ReverseMap
         var entity = _objectMapper.Map<MyDto, MyEntity>(new MyDto { Number = 42 });
         entity.Number.ShouldBe(42);
     }
-    
+
     [Fact]
     void 不传目标实例则创建新对象()
     {
         var entity = new MyEntity() { Id = Guid.NewGuid(), Number = 1 };
-        var res = _objectMapper.Map<MyEntity,MyDto>(entity);
+        var res = _objectMapper.Map<MyEntity, MyDto>(entity);
         res.Id.ShouldBe(entity.Id);
         res.Number.ShouldBe(1);
     }
-    
-    
+
+
     [Fact]
     void 传目标实例则不创建新对象()
     {

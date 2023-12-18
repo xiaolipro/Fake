@@ -2,6 +2,6 @@
 
 namespace Fake.Autofac;
 
-public class AutofacDependencyInjectionTests : AbstractDependencyInjectionTests
+public class AutofacDependencyInjectionTests : DependencyInjectionTestBase
 {
 }

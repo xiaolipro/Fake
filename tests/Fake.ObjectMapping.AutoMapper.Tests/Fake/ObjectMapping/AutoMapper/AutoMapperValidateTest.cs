@@ -1,5 +1,4 @@
-﻿using System;
-using Fake.Helpers;
+﻿using Fake.Helpers;
 using Fake.ObjectMapping.Models;
 using Fake.Testing;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,14 +6,15 @@ using Shouldly;
 
 namespace Fake.ObjectMapping.AutoMapper;
 
-public class AutoMapperValidateTest:FakeIntegrationTest<FakeObjectMappingAutoMapperTestModule>
+public class AutoMapperValidateTest : FakeApplicationTest<FakeObjectMappingAutoMapperTestModule>
 {
     private readonly IObjectMapper _objectMapper;
+
     public AutoMapperValidateTest()
     {
         _objectMapper = ServiceProvider.GetRequiredService<IObjectMapper>();
     }
-    
+
     [Fact]
     void 如果不开校验_则无法映射的属性跳过赋值()
     {
@@ -25,13 +25,13 @@ public class AutoMapperValidateTest:FakeIntegrationTest<FakeObjectMappingAutoMap
             Number = RandomHelper.Next()
         };
         // Act
-        var dto = _objectMapper.Map<SimpleEntity,MyMoreNoValidateDto>(entity);
+        var dto = _objectMapper.Map<SimpleEntity, MyMoreNoValidateDto>(entity);
         // Assert
         dto.Id.ShouldBe(entity.Id);
         dto.Number.ShouldBe(entity.Number);
         dto.UpdateTime.ShouldBe(default);
     }
-    
+
     [Fact]
     void 如果开校验_则映射目标的属性必须全部能够映射()
     {
@@ -46,11 +46,11 @@ public class AutoMapperValidateTest:FakeIntegrationTest<FakeObjectMappingAutoMap
     }
 }
 
-public class MyMoreValidateDto:MyDto
+public class MyMoreValidateDto : MyDto
 {
 }
 
-public class MyMoreNoValidateDto:MyDto
+public class MyMoreNoValidateDto : MyDto
 {
-    public DateTime UpdateTime { get; set; }   
+    public DateTime UpdateTime { get; set; }
 }

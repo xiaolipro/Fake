@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 using Fake.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
@@ -7,7 +6,7 @@ using Xunit;
 
 namespace Fake.VirtualFileSystem;
 
-public class VirtualFileProviderTest:FakeIntegrationTest<FakeVirtualFileSystemTestModule>
+public class VirtualFileProviderTest : FakeApplicationTest<FakeVirtualFileSystemTestModule>
 {
     private readonly IVirtualFileProvider _virtualFileProvider;
 
@@ -21,11 +20,11 @@ public class VirtualFileProviderTest:FakeIntegrationTest<FakeVirtualFileSystemTe
     {
         //action
         var resource = _virtualFileProvider.GetFileInfo("js/jquery.js");
-        
+
         //assert
         resource.ShouldNotBeNull();
         resource.Exists.ShouldBeTrue();
-        
+
         using (var stream = resource.CreateReadStream())
         {
             Encoding.UTF8.GetString(stream.ReadAsBytes()).ShouldBe("//jquery.js content");

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Security.Claims;
-using System.Threading;
+﻿using System.Security.Claims;
 using Fake.Authorization.Tests;
 using Fake.Identity.Security.Claims;
 using Fake.IdGenerators.GuidGenerator;
@@ -8,7 +6,7 @@ using Fake.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 
-public class AuthorizationTestBase : FakeIntegrationTest<FakeAuthorizationTestModule>
+public class AuthorizationTestBase : FakeApplicationTest<FakeAuthorizationTestModule>
 {
     protected override void AfterAddFakeApplication(IServiceCollection services)
     {
