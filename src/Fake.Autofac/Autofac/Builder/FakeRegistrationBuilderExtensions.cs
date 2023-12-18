@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Autofac.Core;
 using Autofac.Extras.DynamicProxy;
 using Fake.Autofac;
@@ -42,13 +43,14 @@ public static class FakeRegistrationBuilderExtensions
         }
 
         return registrationBuilder
-            .EnablePropertyInjection(moduleContainer, implementationType) //启用属性注入
+            .EnablePropertyInjection(registrationActionList, moduleContainer, implementationType) //启用属性注入
             .InvokeRegistrationActions(registrationActionList, serviceType, implementationType);
     }
 
     private static IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> EnablePropertyInjection<TLimit,
         TActivatorData, TRegistrationStyle>(
         this IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> registrationBuilder,
+        ServiceRegistrationActionList registrationActionList,
         IModuleContainer moduleContainer,
         Type implementationType)
     {
@@ -58,7 +60,9 @@ public static class FakeRegistrationBuilderExtensions
         {
             // 注意，属性必须是实例成员，必须具有公开public的set方法，否则无法赋值
             // preserveSetValues设为false，不保留原有值，覆写
-            registrationBuilder = registrationBuilder.PropertiesAutowired(new FakePropertySelector(false));
+            registrationBuilder =
+                registrationBuilder.PropertiesAutowired(
+                    new FakePropertySelector(!registrationActionList.PropertyInjectionCover));
         }
 
         return registrationBuilder;
@@ -72,6 +76,12 @@ public static class FakeRegistrationBuilderExtensions
         Type implementationType)
     {
         var context = new OnServiceRegistrationContext(serviceType, implementationType);
+
+        foreach (var intercept in context.ImplementationType.GetCustomAttributes<FakeInterceptAttribute>(true)
+                     .Concat(context.ServiceType.GetCustomAttributes<FakeInterceptAttribute>(true)))
+        {
+            context.Interceptors.TryAdd(intercept.InterceptorType);
+        }
 
         foreach (var registrationAction in registrationActionList)
         {

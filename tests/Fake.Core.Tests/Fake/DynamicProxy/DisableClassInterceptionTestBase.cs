@@ -11,16 +11,7 @@ public abstract class DisableClassInterceptionTestBase<TStartupModule> : FakeApp
     {
         base.BeforeAddFakeApplication(services);
         services.DisableClassInterceptors();
-
         services.AddTransient<ISimpleInterceptionTarget, SimpleInterceptionTargetClass>();
-
-        services.OnRegistered(context =>
-        {
-            if (context.ServiceType == typeof(ISimpleInterceptionTarget))
-            {
-                context.Interceptors.TryAdd<SimpleAsyncInterceptor>();
-            }
-        });
     }
 
     [Fact]
