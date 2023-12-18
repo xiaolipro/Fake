@@ -1,5 +1,5 @@
 ﻿using System;
-using Fake.Domain.Events;
+using Fake.DomainDrivenDesign.Events;
 
 namespace Domain.Events;
 

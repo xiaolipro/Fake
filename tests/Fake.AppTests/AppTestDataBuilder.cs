@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Domain.Aggregates.BuyerAggregate;
 using Domain.Aggregates.OrderAggregate;
 using Fake.Auditing;
-using Fake.Domain.Repositories;
+using Fake.DomainDrivenDesign.Repositories;
 
 public class AppTestDataBuilder
 {

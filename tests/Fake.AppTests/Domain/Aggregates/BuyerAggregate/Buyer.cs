@@ -1,5 +1,5 @@
 ﻿using Domain.Events;
-using Fake.Domain.Entities;
+using Fake.DomainDrivenDesign.Entities;
 
 namespace Domain.Aggregates.BuyerAggregate;
 

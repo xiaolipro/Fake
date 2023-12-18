@@ -5,7 +5,6 @@ using Castle.DynamicProxy;
 namespace Fake.Castle.DynamicProxy;
 
 public class FakeMethodInvocationAdapterWithReturnValue<TResult> : FakeMethodInvocationAdapterBase
-    where TResult : notnull
 {
     private readonly IInvocationProceedInfo _proceedInfo;
     private readonly Func<IInvocation, IInvocationProceedInfo, Task<TResult>> _proceed;

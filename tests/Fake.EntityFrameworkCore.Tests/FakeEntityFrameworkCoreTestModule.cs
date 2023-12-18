@@ -1,9 +1,9 @@
 ﻿using Domain.Aggregates.BuyerAggregate;
 using Domain.Aggregates.OrderAggregate;
 using Domain.Repositories;
-using Fake.Domain;
-using Fake.Domain.Repositories;
-using Fake.Domain.Repositories.EntityFrameWorkCore;
+using Fake.DomainDrivenDesign;
+using Fake.DomainDrivenDesign.Repositories;
+using Fake.DomainDrivenDesign.Repositories.EntityFrameWorkCore;
 using Fake.EntityFrameworkCore;
 using Fake.Helpers;
 using Fake.Modularity;

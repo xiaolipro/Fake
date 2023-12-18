@@ -1,7 +1,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Domain.Aggregates.OrderAggregate;
-using Fake.Domain.Repositories;
+using Fake.DomainDrivenDesign.Repositories;
 using Fake.Modularity;
 using Fake.UnitOfWork;
 using Shouldly;

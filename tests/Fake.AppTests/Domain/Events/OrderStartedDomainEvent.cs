@@ -1,7 +1,7 @@
 ﻿using System;
 using Domain.Aggregates.BuyerAggregate;
 using Domain.Aggregates.OrderAggregate;
-using Fake.Domain.Events;
+using Fake.DomainDrivenDesign.Events;
 
 namespace Domain.Events
 {

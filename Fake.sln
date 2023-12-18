@@ -75,7 +75,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fake.EntityFrameworkCore.Te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fake.AppTests", "tests\Fake.AppTests\Fake.AppTests.csproj", "{31864311-83DA-4F7D-9DC1-3D8C1E667BAD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fake.Ddd.Domain", "src\Fake.Ddd.Domain\Fake.Ddd.Domain.csproj", "{67A25A30-9D91-4D51-9B79-AD1BE08BDEB9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fake.DomainDrivenDesign", "src\Fake.DomainDrivenDesign\Fake.DomainDrivenDesign.csproj", "{67A25A30-9D91-4D51-9B79-AD1BE08BDEB9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fake.EventBus", "src\Fake.EventBus\Fake.EventBus.csproj", "{AFA214FC-3902-40D6-95E5-DD8516C61926}"
 EndProject

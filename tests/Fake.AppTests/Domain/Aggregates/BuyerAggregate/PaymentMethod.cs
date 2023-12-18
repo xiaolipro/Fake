@@ -1,5 +1,5 @@
 ﻿using Fake;
-using Fake.Domain.Entities;
+using Fake.DomainDrivenDesign.Entities;
 
 namespace Domain.Aggregates.BuyerAggregate;
 

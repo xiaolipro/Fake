@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Fake.Domain;
+using Fake.DomainDrivenDesign;
 
 namespace Domain.Aggregates.OrderAggregate;
 

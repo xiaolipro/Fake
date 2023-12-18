@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Domain.Aggregates.BuyerAggregate;
 using Domain.Events;
-using Fake.Domain.Repositories;
+using Fake.DomainDrivenDesign.Repositories;
 using Fake.EventBus.Events;
 using Fake.UnitOfWork;
 using Microsoft.Extensions.Logging;

@@ -7,7 +7,7 @@
     <ItemGroup>
         <ProjectReference Include="..\..\src\Fake.Autofac\Fake.Autofac.csproj" />
         <ProjectReference Include="..\..\src\Fake.Core\Fake.Core.csproj" />
-        <ProjectReference Include="..\..\src\Fake.Ddd.Domain\Fake.Ddd.Domain.csproj" />
+        <ProjectReference Include="..\..\src\Fake.DomainDrivenDesign\Fake.DomainDrivenDesign.csproj" />
         <ProjectReference Include="..\..\src\Fake.Testing\Fake.Testing.csproj" />
         <ProjectReference Include="..\AFakeTestEntry\AFakeTestEntry.csproj" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(MicrosoftNETTestSdkPackageVersion)"/>

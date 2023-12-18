@@ -7,9 +7,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Fake.Data;
 using Fake.DependencyInjection;
-using Fake.Domain;
-using Fake.Domain.Entities;
-using Fake.Domain.Entities.Auditing;
+using Fake.DomainDrivenDesign;
+using Fake.DomainDrivenDesign.Entities;
+using Fake.DomainDrivenDesign.Entities.Auditing;
 using Fake.EntityFrameworkCore.Auditing;
 using Fake.EntityFrameworkCore.Modeling;
 using Fake.EntityFrameworkCore.ValueConverters;
@@ -233,11 +233,13 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
 
     protected virtual bool ShouldSetId(EntityEntry entry)
     {
-        if (entry.Entity is not Entity entity) return false;
+        if (entry.Entity is not IEntity<Any> entity) return false;
 
         if (!entity.IsTransient) return false;
 
-        var idProperty = entry.Property(nameof(IEntity<Guid>.Id)).Metadata.PropertyInfo;
+        var idProperty = entry.Property(nameof(IEntity<Any>.Id)).Metadata.PropertyInfo;
+        
+        if (idProperty == null) return false;
 
         var attr = ReflectionHelper.GetAttributeOrDefault<DatabaseGeneratedAttribute>(idProperty);
         return attr == null || attr.DatabaseGeneratedOption == DatabaseGeneratedOption.None;

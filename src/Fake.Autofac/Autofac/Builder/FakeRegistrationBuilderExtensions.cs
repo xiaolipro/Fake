@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Autofac.Core;
 using Autofac.Extras.DynamicProxy;
@@ -25,7 +24,7 @@ public static class FakeRegistrationBuilderExtensions
 
         if (serviceType == null) return registrationBuilder;
 
-        Type implementationType = null;
+        Type implementationType = null!;
 
         if (registrationBuilder.ActivatorData is ReflectionActivatorData reflectionActivatorData)
         {
@@ -36,7 +35,6 @@ public static class FakeRegistrationBuilderExtensions
             implementationType = simpleActivatorData.GetType();
         }
 
-        Debug.Assert(implementationType != null, nameof(implementationType) + " != null");
         return registrationBuilder
             .EnablePropertyInjection(moduleContainer, implementationType)  //启用属性注入
             .InvokeRegistrationActions(registrationActionList, serviceType, implementationType); 

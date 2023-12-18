@@ -1,4 +1,4 @@
-﻿using Fake.Domain.Repositories;
+﻿using Fake.DomainDrivenDesign.Repositories;
 
 namespace Domain.Aggregates.OrderAggregate;
 

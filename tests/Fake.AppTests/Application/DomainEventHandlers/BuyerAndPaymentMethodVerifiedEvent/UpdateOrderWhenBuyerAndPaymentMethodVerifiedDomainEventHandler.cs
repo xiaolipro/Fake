@@ -20,7 +20,7 @@ public class
         _logger = logger;
     }
 
-    // Domain Logic comment:
+    // DomainDrivenDesign Logic comment:
     // When the Buyer and Buyer's payment method have been created or verified that they existed, 
     // then we can update the original Order with the BuyerId and PaymentId (foreign keys)
     public async Task Handle(BuyerAndPaymentMethodVerifiedDomainEvent buyerPaymentMethodVerifiedEvent,

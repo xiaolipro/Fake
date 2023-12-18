@@ -1,4 +1,4 @@
-﻿using Fake.Domain;
+﻿using Fake.DomainDrivenDesign;
 
 namespace Domain.Aggregates.BuyerAggregate;
 

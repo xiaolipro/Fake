@@ -1,5 +1,5 @@
 ﻿using Domain.Aggregates.OrderAggregate;
-using Fake.Domain.Repositories.EntityFrameWorkCore;
+using Fake.DomainDrivenDesign.Repositories.EntityFrameWorkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Domain.Queries;

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Domain.Aggregates.OrderAggregate;
-using Fake.Domain.Repositories;
+using Fake.DomainDrivenDesign.Repositories;
 
 namespace Domain.Queries;
 

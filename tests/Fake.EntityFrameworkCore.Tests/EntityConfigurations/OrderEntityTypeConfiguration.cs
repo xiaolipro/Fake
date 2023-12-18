@@ -1,6 +1,6 @@
 ﻿using Domain.Aggregates.BuyerAggregate;
 using Domain.Aggregates.OrderAggregate;
-using Fake.Domain;
+using Fake.DomainDrivenDesign;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

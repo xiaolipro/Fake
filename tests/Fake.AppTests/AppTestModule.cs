@@ -2,14 +2,14 @@
 using Application.DomainEventHandlers.OrderStartedEvent;
 using Domain.Events;
 using Fake.Autofac;
-using Fake.Ddd.Domain;
+using Fake.DomainDrivenDesign;
 using Fake.EventBus.Events;
 using Fake.Helpers;
 using Fake.Modularity;
 using Microsoft.Extensions.DependencyInjection;
 
 [DependsOn(typeof(FakeAutofacModule))]
-[DependsOn(typeof(FakeDddDomainModule))]
+[DependsOn(typeof(FakeDomainDrivenDesignModule))]
 public class FakeAppTestModule : FakeModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)

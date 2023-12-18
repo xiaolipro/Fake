@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Fake.Data;
-using Fake.Domain.Entities.Auditing;
+using Fake.DomainDrivenDesign.Entities.Auditing;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Fake.EntityFrameworkCore.ValueComparers;

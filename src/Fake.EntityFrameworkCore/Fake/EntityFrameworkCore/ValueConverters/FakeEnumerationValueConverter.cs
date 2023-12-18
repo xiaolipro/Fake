@@ -1,4 +1,4 @@
-﻿using Fake.Domain;
+﻿using Fake.DomainDrivenDesign;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Fake.EntityFrameworkCore.ValueConverters;

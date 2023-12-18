@@ -1,4 +1,4 @@
-﻿using Fake.Ddd.Domain;
+﻿using Fake.DomainDrivenDesign;
 using Fake.EntityFrameworkCore.Auditing;
 using Fake.EntityFrameworkCore.Interceptors;
 using Fake.Modularity;
@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 // ReSharper disable once CheckNamespace
 namespace Fake.EntityFrameworkCore;
 
-[DependsOn(typeof(FakeDddDomainModule))]
+[DependsOn(typeof(FakeDomainDrivenDesignModule))]
 public class FakeEntityFrameworkCoreModule : FakeModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)

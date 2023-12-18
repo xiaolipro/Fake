@@ -1,6 +1,6 @@
 ﻿using System;
 using Fake.Data;
-using Fake.Domain.Entities.Auditing;
+using Fake.DomainDrivenDesign.Entities.Auditing;
 using Fake.EntityFrameworkCore.ValueComparers;
 using Fake.EntityFrameworkCore.ValueConverters;
 using Microsoft.EntityFrameworkCore;

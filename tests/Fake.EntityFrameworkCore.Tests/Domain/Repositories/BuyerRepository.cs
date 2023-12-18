@@ -1,5 +1,5 @@
 ﻿using Domain.Aggregates.BuyerAggregate;
-using Fake.Domain.Repositories.EntityFrameWorkCore;
+using Fake.DomainDrivenDesign.Repositories.EntityFrameWorkCore;
 
 namespace Domain.Repositories;
 

@@ -6,7 +6,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <OutputType>Library</OutputType>
     <Version>8.0.0-preview.1.231116</Version>
-    <NoWarn>$(NoWarn);CS1591;CS0436</NoWarn>
+    <NoWarn>$(NoWarn);CS1591;CS0436;NU1803</NoWarn>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>

@@ -1,6 +1,6 @@
 ﻿using Domain.Aggregates.OrderAggregate;
 using Fake.Data;
-using Fake.Domain.Repositories;
+using Fake.DomainDrivenDesign.Repositories;
 using Fake.Modularity;
 using Xunit;
 
