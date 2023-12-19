@@ -6,7 +6,8 @@ public static class ExposedServiceExplorer
         new ExposeServicesAttribute
         {
             ExposeInterface = true,
-            ExposeSelf = false
+            ExposeSelf = false,
+            ExposeSelfIfEmpty = true
         };
 
     public static List<Type> GetExposedServiceTypes(Type type)
@@ -18,5 +19,10 @@ public static class ExposedServiceExplorer
             .SelectMany(p => p.GetExposedServiceTypes(type))
             .Distinct()
             .ToList();
+    }
+
+    public static void SetDefaultExposeServicesAttribute(Action<ExposeServicesAttribute> options)
+    {
+        options.Invoke(DefaultExposeServicesAttribute);
     }
 }

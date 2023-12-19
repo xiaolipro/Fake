@@ -1,8 +1,11 @@
+using Fake.Castle.DynamicProxy;
 using Fake.DependencyInjection;
 using Fake.Logging;
 
 namespace Fake.DynamicProxy;
 
+[FakeIntercept(typeof(SimpleAsyncInterceptor))]
+[ExposeServices(typeof(ISimpleInterceptionTarget), ExposeSelf = true)]
 public class SimpleInterceptionTargetClass : ICanLog, ITransientDependency, ISimpleInterceptionTarget
 {
     public List<string> Logs { get; } = new();

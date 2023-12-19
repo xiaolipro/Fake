@@ -1,4 +1,5 @@
-﻿using Fake.Modularity;
+﻿using Fake.DependencyInjection;
+using Fake.Modularity;
 using Fake.Testing;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -9,18 +10,7 @@ public abstract class InterceptionTestBase<TStartupModule> : FakeApplicationTest
 {
     protected override void BeforeAddFakeApplication(IServiceCollection services)
     {
-        services.OnRegistered(context =>
-        {
-            if (context.ImplementationType == typeof(SimpleInterceptionTargetClass))
-            {
-                context.Interceptors.TryAdd<SimpleAsyncInterceptor>();
-            }
-
-            if (context.ImplementationType == typeof(SimpleResultCacheInterceptionTargetClass))
-            {
-                context.Interceptors.TryAdd<SimpleResultCacheInterceptor>();
-            }
-        });
+        ExposedServiceExplorer.SetDefaultExposeServicesAttribute(options => { options.ExposeSelf = false; });
     }
 
     [Fact]

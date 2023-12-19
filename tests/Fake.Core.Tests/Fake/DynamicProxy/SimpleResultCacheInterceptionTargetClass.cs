@@ -1,7 +1,9 @@
+using Fake.Castle.DynamicProxy;
 using Fake.DependencyInjection;
 
 namespace Fake.DynamicProxy;
 
+[FakeIntercept(typeof(SimpleResultCacheInterceptor))]
 public class SimpleResultCacheInterceptionTargetClass : ITransientDependency
 {
     public virtual int GetValue(int v)

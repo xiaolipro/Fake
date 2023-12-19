@@ -19,11 +19,19 @@ public class ExposeServicesAttribute : Attribute, IExposedServiceTypesProvider
     /// </remarks>
     public bool ExposeInterface { get; set; }
 
+    /// <summary>
+    /// 暴露自身
+    /// </summary>
     public bool ExposeSelf { get; set; }
+
+    /// <summary>
+    /// 如果没有任何要暴露的服务，则暴露自身
+    /// </summary>
+    public bool ExposeSelfIfEmpty { get; set; }
 
     public ExposeServicesAttribute(params Type[] exposedServiceTypes)
     {
-        ExposedServiceTypes = exposedServiceTypes ?? Type.EmptyTypes;
+        ExposedServiceTypes = exposedServiceTypes;
     }
 
 
@@ -39,7 +47,12 @@ public class ExposeServicesAttribute : Attribute, IExposedServiceTypesProvider
             }
         }
 
-        if (exposedServiceTypes.Count == 0 || ExposeSelf)
+        if (ExposeSelf)
+        {
+            exposedServiceTypes.TryAdd(targetType);
+        }
+
+        if (exposedServiceTypes.Count == 0 && ExposeSelfIfEmpty)
         {
             exposedServiceTypes.TryAdd(targetType);
         }

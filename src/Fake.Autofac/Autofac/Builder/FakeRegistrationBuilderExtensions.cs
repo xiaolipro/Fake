@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Autofac.Core;
 using Autofac.Extras.DynamicProxy;
 using Fake.Autofac;
@@ -76,12 +75,6 @@ public static class FakeRegistrationBuilderExtensions
         Type implementationType)
     {
         var context = new OnServiceRegistrationContext(serviceType, implementationType);
-
-        foreach (var intercept in context.ImplementationType.GetCustomAttributes<FakeInterceptAttribute>(true)
-                     .Concat(context.ServiceType.GetCustomAttributes<FakeInterceptAttribute>(true)))
-        {
-            context.Interceptors.TryAdd(intercept.InterceptorType);
-        }
 
         foreach (var registrationAction in registrationActionList)
         {
