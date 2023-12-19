@@ -32,6 +32,7 @@ namespace Fake.EventBus.RabbitMQ
 
         private readonly string _brokerName; // 事件投递的交换机
         private readonly string _subscriptionQueueName; // 客户端订阅队列名称
+
         /// <summary>
         /// 消费者专用通道
         /// </summary>
@@ -42,7 +43,8 @@ namespace Fake.EventBus.RabbitMQ
             ILogger<RabbitMqEventBus> logger,
             IServiceProvider serviceProvider,
             ISubscriptionsManager subscriptionsManager,
-            IOptions<RabbitMqEventBusOptions> eventBusOptions
+            IOptions<RabbitMqEventBusOptions> eventBusOptions,
+            IApplicationInfo applicationInfo
         )
         {
             _rabbitMqConnector = rabbitMqConnector;
@@ -53,7 +55,7 @@ namespace Fake.EventBus.RabbitMQ
 
             _eventBusOptions = eventBusOptions.Value;
             _brokerName = _eventBusOptions.BrokerName;
-            _subscriptionQueueName = _eventBusOptions.SubscriptionClientName;
+            _subscriptionQueueName = applicationInfo.ApplicationName;
             _consumerChannel = CreateConsumerChannel();
         }
 
@@ -63,9 +65,9 @@ namespace Fake.EventBus.RabbitMQ
             var eventName = @event.GetType().Name;
 
             _logger.LogTrace("创建定义RabbitMQ通道以发布事件: {EventId}（{EventName}）", @event.Id, eventName);
-            
+
             using var channel = _rabbitMqConnector.CreateChannel(_eventBusOptions.ConnectionName);
-            
+
             _logger.LogTrace("定义RabbitMQ Direct交换机（{ExchangeName}）以发布事件：{EventId}（{EventName}）", _brokerName,
                 @event.Id, eventName);
 
@@ -126,10 +128,7 @@ namespace Fake.EventBus.RabbitMQ
 
         public void Dispose()
         {
-            if (_consumerChannel != null)
-            {
-                _consumerChannel.Dispose();
-            }
+            _consumerChannel.Dispose();
 
             _subscriptionsManager.Clear();
         }
@@ -217,17 +216,17 @@ namespace Fake.EventBus.RabbitMQ
                 // 处理动态集成事件
                 if (subscriptionInfo.IsDynamic)
                 {
-                    var handler =
-                        _serviceProvider.GetRequiredService(subscriptionInfo.HandlerType) as IDynamicEventHandler;
+                    var handler = _serviceProvider.GetRequiredService(subscriptionInfo.HandlerType)
+                        .To<IDynamicEventHandler>();
 
                     _logger.LogTrace("正在处理动态集成事件: {EventName}", eventName);
 
                     Debug.Assert(handler != null, nameof(handler) + " != null");
-                    await handler.Handle(message);
+                    await handler!.Handle(message);
                 }
                 else // 处理集成事件
                 {
-                    var eventType = _subscriptionsManager.GetEventTypeByName(eventName);
+                    var eventType = subscriptionInfo.EventType!;
                     var handler = _serviceProvider.GetRequiredService(subscriptionInfo.HandlerType);
 
                     var handle = typeof(IEventHandler<>)
@@ -235,7 +234,7 @@ namespace Fake.EventBus.RabbitMQ
                         .GetMethod(nameof(IEventHandler<IEvent>.Handle));
 
                     var integrationEvent = JsonSerializer.Deserialize(message, eventType,
-                        new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
                     // see：https://stackoverflow.com/questions/22645024/when-would-i-use-task-yield
                     await Task.Yield();
@@ -262,7 +261,7 @@ namespace Fake.EventBus.RabbitMQ
              * The message expires due to per-message TTL; or
              * The message is dropped because its queue exceeded a length limit
              */
-            if (_eventBusOptions.EnableDLX)
+            if (_eventBusOptions.EnableDlx)
             {
                 string dlxExchangeName = "DLX." + _brokerName;
                 string dlxQueueName = "DLX." + _subscriptionQueueName;
@@ -282,9 +281,9 @@ namespace Fake.EventBus.RabbitMQ
                 arguments.Add("x-dead-letter-exchange", dlxExchangeName); // 设置DLX
                 arguments.Add("x-dead-letter-routing-key", dlxRouteKey); // DLX会根据该值去找到死信消息存放的队列
 
-                if (_eventBusOptions.MessageTTL > 0)
+                if (_eventBusOptions.MessageTtl > 0)
                 {
-                    arguments.Add("x-message-ttl", _eventBusOptions.MessageTTL); // 设置消息的存活时间，实现延迟队列
+                    arguments.Add("x-message-ttl", _eventBusOptions.MessageTtl); // 设置消息的存活时间，实现延迟队列
                 }
 
                 if (_eventBusOptions.QueueMaxLength > 0)
@@ -331,9 +330,9 @@ namespace Fake.EventBus.RabbitMQ
         {
             _logger.LogTrace("开启RabbitMQ消费通道的基础消费");
 
-            if (_consumerChannel == null)
+            if (_consumerChannel.IsClosed)
             {
-                _logger.LogError($"无法启动基础消费，RabbitMQ消费通道{nameof(_consumerChannel)}是null");
+                _logger.LogError("无法启动基础消费，RabbitMQ消费通道是关闭的");
                 return;
             }
 

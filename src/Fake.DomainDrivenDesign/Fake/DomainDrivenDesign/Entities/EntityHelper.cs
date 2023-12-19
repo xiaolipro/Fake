@@ -11,7 +11,7 @@ public static class EntityHelper
     /// <param name="a"></param>
     /// <param name="b"></param>
     /// <returns></returns>
-    public static bool EntityEquals(IEntity a, IEntity b)
+    public static bool EntityEquals(IEntity? a, IEntity? b)
     {
         if (a == null || b == null) return false;
 
@@ -35,8 +35,6 @@ public static class EntityHelper
 
     public static bool IsDefaultKey(object value)
     {
-        if (value == null) return true;
-
         var type = value.GetType();
 
         //Workaround for EF Core since it sets int/long to min value when attaching to DbContext
@@ -78,7 +76,7 @@ public static class EntityHelper
     /// <typeparam name="TKey"></typeparam>
     public static void TrySetId<TKey>(IEntity<TKey> entity, Func<TKey> idFactory, bool checkIgnore = false)
     {
-        var ignoreAttributeTypes = checkIgnore ? new[] { typeof(DisableIdGenerationAttribute) } : default;
+        var ignoreAttributeTypes = checkIgnore ? new[] { typeof(DisableIdGenerationAttribute) } : Array.Empty<Type>();
         ReflectionHelper.TrySetProperty(entity, x => x.Id, idFactory, ignoreAttributeTypes);
     }
 

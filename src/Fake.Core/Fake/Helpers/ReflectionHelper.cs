@@ -28,7 +28,7 @@ public static class ReflectionHelper
             // 必须从字段或属性上读取
             if (propertySelector.Body.NodeType != ExpressionType.MemberAccess) return null;
 
-            var memberExpression = propertySelector.Body.Is<MemberExpression>();
+            var memberExpression = propertySelector.Body.To<MemberExpression>();
 
             var propertyInfo = obj.GetType().GetProperties().FirstOrDefault(x =>
                 x.Name == memberExpression.Member.Name &&
@@ -80,7 +80,7 @@ public static class ReflectionHelper
     public static TInstance CreateInstance<TInstance>(Type type) where TInstance : class
     {
         //TODO: 可以优化
-        return Activator.CreateInstance(type).Is<TInstance>();
+        return Activator.CreateInstance(type).To<TInstance>();
     }
 
     /// <summary>

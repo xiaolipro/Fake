@@ -17,7 +17,7 @@ namespace Fake.EventBus.Subscriptions
         /// <summary>
         /// 事件移除时
         /// </summary>
-        event EventHandler<string> OnEventRemoved;
+        event EventHandler<string>? OnEventRemoved;
 
 
         #region 添加订阅
@@ -76,7 +76,7 @@ namespace Fake.EventBus.Subscriptions
         /// </summary>
         /// <param name="eventName">事件名称</param>
         /// <returns></returns>
-        IEnumerable<SubscriptionInfo?> GetSubscriptionInfos(string eventName);
+        IEnumerable<SubscriptionInfo> GetSubscriptionInfos(string eventName);
 
         /// <summary>
         /// 获取订阅信息集合
@@ -103,7 +103,7 @@ namespace Fake.EventBus.Subscriptions
 
         string GetEventName<TEvent>() where TEvent : IEvent;
 
-        Type GetEventTypeByName(string eventName);
+        Type? GetEventTypeByName(string eventName);
 
         #endregion
     }

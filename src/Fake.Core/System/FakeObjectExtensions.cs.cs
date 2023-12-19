@@ -44,7 +44,7 @@ public static class FakeObjectExtensions
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T Is<T>(this object obj)
+    public static T To<T>(this object obj)
         where T : class
     {
         if (obj is T t)

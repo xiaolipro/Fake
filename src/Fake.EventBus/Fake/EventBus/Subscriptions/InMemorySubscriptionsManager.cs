@@ -11,14 +11,14 @@ namespace Fake.EventBus.Subscriptions
     public class InMemorySubscriptionsManager : ISubscriptionsManager
     {
         // 数据格式：{事件名称:[订阅信息]}
-        private readonly Dictionary<string, List<SubscriptionInfo?>> _subscriptions;
+        private readonly Dictionary<string, List<SubscriptionInfo>> _subscriptions;
 
         // 事件类型列表（不包含动态事件）
         private readonly List<Type> _eventTypes;
 
         public InMemorySubscriptionsManager()
         {
-            _subscriptions = new Dictionary<string, List<SubscriptionInfo?>>();
+            _subscriptions = new Dictionary<string, List<SubscriptionInfo>>();
             _eventTypes = new List<Type>();
         }
 
@@ -26,7 +26,7 @@ namespace Fake.EventBus.Subscriptions
 
         public bool IsEmpty => _subscriptions.Count == 0;
 
-        public event EventHandler<string> OnEventRemoved;
+        public event EventHandler<string>? OnEventRemoved;
 
         public void AddDynamicSubscription<THandler>(string eventName)
             where THandler : IDynamicEventHandler
@@ -40,8 +40,7 @@ namespace Fake.EventBus.Subscriptions
             where TEvent : IEvent
             where THandler : IEventHandler<TEvent>
         {
-            string eventName = GetEventName<TEvent>();
-            var subscription = SubscriptionInfo.Typed(eventName, typeof(THandler));
+            var subscription = SubscriptionInfo.Typed(typeof(TEvent), typeof(THandler));
             DoAddSubscriptionInfo(subscription);
 
             // 维护事件类型列表
@@ -69,7 +68,7 @@ namespace Fake.EventBus.Subscriptions
 
         public void Clear() => _subscriptions.Clear();
 
-        public IEnumerable<SubscriptionInfo?> GetSubscriptionInfos(string eventName) => _subscriptions[eventName];
+        public IEnumerable<SubscriptionInfo> GetSubscriptionInfos(string eventName) => _subscriptions[eventName];
 
         public IEnumerable<SubscriptionInfo?> GetSubscriptionInfos<TEvent>() where TEvent : IEvent
             => GetSubscriptionInfos(GetEventName<TEvent>());
@@ -83,7 +82,7 @@ namespace Fake.EventBus.Subscriptions
         public string GetEventName<TEvent>() where TEvent : IEvent
             => typeof(TEvent).Name;
 
-        public Type GetEventTypeByName(string eventName)
+        public Type? GetEventTypeByName(string eventName)
             => _eventTypes.SingleOrDefault(type => type.Name.Equals(eventName, StringComparison.OrdinalIgnoreCase));
 
         #endregion
@@ -95,13 +94,13 @@ namespace Fake.EventBus.Subscriptions
         /// </summary>
         /// <param name="subscriptionInfo"></param>
         /// <exception cref="ArgumentException"></exception>
-        void DoAddSubscriptionInfo(SubscriptionInfo? subscriptionInfo)
+        void DoAddSubscriptionInfo(SubscriptionInfo subscriptionInfo)
         {
             string eventName = subscriptionInfo.EventName;
             var handlerType = subscriptionInfo.HandlerType;
             if (!HasSubscriptions(eventName))
             {
-                _subscriptions.Add(eventName, new List<SubscriptionInfo?>());
+                _subscriptions.Add(eventName, new List<SubscriptionInfo>());
             }
 
             if (_subscriptions[eventName].Any(x => x.HandlerType == handlerType))
@@ -139,7 +138,8 @@ namespace Fake.EventBus.Subscriptions
         {
             // 从订阅集中移除
             _subscriptions.Remove(eventName);
-            RaiseOnEventRemoved(eventName);
+            OnEventRemoved?.Invoke(this, eventName);
+
             // 从事件类型列表中移除
             var eventType = GetEventTypeByName(eventName);
             if (eventType != null)
@@ -159,15 +159,6 @@ namespace Fake.EventBus.Subscriptions
             if (!HasSubscriptions(eventName)) return default;
 
             return _subscriptions[eventName].SingleOrDefault(x => x.HandlerType == handlerType);
-        }
-
-        /// <summary>
-        /// 引发移除事件
-        /// </summary>
-        /// <param name="eventName"></param>
-        private void RaiseOnEventRemoved(string eventName)
-        {
-            OnEventRemoved?.Invoke(this, eventName);
         }
 
         #endregion

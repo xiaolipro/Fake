@@ -38,7 +38,7 @@ public class LazyServiceProvider : ILazyServiceProvider
 
     public T GetRequiredLazyService<T>() where T : class
     {
-        return GetRequiredLazyService(typeof(T)).Is<T>();
+        return GetRequiredLazyService(typeof(T)).To<T>();
     }
 
     public object GetRequiredLazyService(Type serviceType)

@@ -7,7 +7,7 @@ namespace Fake.EventBus.Subscriptions
         /// <summary>
         /// 是否是动态事件
         /// </summary>
-        public bool IsDynamic { get; }
+        public bool IsDynamic => EventType == null;
 
         /// <summary>
         /// 事件名
@@ -15,21 +15,30 @@ namespace Fake.EventBus.Subscriptions
         public string EventName { get; }
 
         /// <summary>
+        /// 事件类型
+        /// </summary>
+        public Type? EventType { get; }
+
+        /// <summary>
         /// 事件处理者类型
         /// </summary>
         public Type HandlerType { get; }
 
-        public SubscriptionInfo(bool isDynamic, string eventName, Type handlerType)
+        public SubscriptionInfo(string eventName, Type handlerType)
         {
-            IsDynamic = isDynamic;
             EventName = eventName;
             HandlerType = handlerType;
         }
 
-        public static SubscriptionInfo? Dynamic(string eventName, Type handlerType) =>
-            new SubscriptionInfo(true, eventName, handlerType);
+        public SubscriptionInfo(Type eventType, Type handlerType)
+        {
+            EventName = nameof(eventType);
+            EventType = eventType;
+            HandlerType = handlerType;
+        }
 
-        public static SubscriptionInfo? Typed(string eventName, Type handlerType) =>
-            new SubscriptionInfo(false, eventName, handlerType);
+        public static SubscriptionInfo Dynamic(string eventName, Type handlerType) => new(eventName, handlerType);
+
+        public static SubscriptionInfo Typed(Type eventType, Type handlerType) => new(eventType, handlerType);
     }
 }

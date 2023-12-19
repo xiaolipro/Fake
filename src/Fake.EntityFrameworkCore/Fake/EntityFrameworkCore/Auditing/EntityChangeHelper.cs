@@ -138,7 +138,7 @@ public class EntityChangeHelper : IEntityChangeHelper
     protected virtual bool IsSoftDeleted(EntityEntry entityEntry)
     {
         var entity = entityEntry.Entity;
-        return entity is ISoftDelete && entity.Is<ISoftDelete>().IsDeleted;
+        return entity is ISoftDelete && entity.To<ISoftDelete>().IsDeleted;
     }
 
 
@@ -201,7 +201,7 @@ public class EntityChangeHelper : IEntityChangeHelper
         {
             entityChange.ChangeTime = GetChangeTime(entityChange);
 
-            var entityEntry = entityChange.EntityEntry.Is<EntityEntry>();
+            var entityEntry = entityChange.EntityEntry.To<EntityEntry>();
             entityChange.EntityId = GetEntityId(entityEntry.Entity);
 
             var foreignKeys = entityEntry.Metadata.GetForeignKeys();
@@ -256,7 +256,7 @@ public class EntityChangeHelper : IEntityChangeHelper
 
     protected virtual DateTime GetChangeTime(EntityChangeInfo entityChange)
     {
-        var entity = entityChange.EntityEntry.Is<EntityEntry>().Entity;
+        var entity = entityChange.EntityEntry.To<EntityEntry>().Entity;
         switch (entityChange.ChangeType)
         {
             case EntityChangeType.Created:

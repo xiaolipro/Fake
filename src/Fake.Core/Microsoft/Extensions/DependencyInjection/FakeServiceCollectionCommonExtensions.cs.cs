@@ -35,7 +35,7 @@ public static class FakeServiceCollectionCommonExtensions
     {
         return services
             .FirstOrDefault(d => d.ServiceType == typeof(T))
-            ?.ImplementationInstance?.Is<T>();
+            ?.ImplementationInstance?.To<T>();
     }
 
     /// <summary>
@@ -80,7 +80,7 @@ public static class FakeServiceCollectionCommonExtensions
                 .MakeGenericMethod(containerBuilderType)
                 .Invoke(null, new object[] { services, null! });
 
-            return serviceProvider.Is<IServiceProvider>();
+            return serviceProvider.To<IServiceProvider>();
         }
 
         // 如果没有第三方IOC容器则使用默认的

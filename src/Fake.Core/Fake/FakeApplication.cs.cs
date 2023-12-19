@@ -66,16 +66,16 @@ public class FakeApplication : IFakeApplication
         var options = new FakeApplicationCreationOptions(services);
         optionsAction?.Invoke(options);
 
-        ApplicationName = GetApplicationName(options);
-
         services.AddSingleton(this);
         services.AddSingleton<IFakeApplication>(this);
         services.AddSingleton<IApplicationInfo>(this);
         services.AddSingleton<IModuleContainer>(this);
 
         AddFakeCoreServices(services, options);
-
         Debug.Assert(_configuration != null, "_configuration != null");
+
+        ApplicationName = GetApplicationName(options);
+
         ILogger<FakeApplication> logger = Services.GetInitLogger<FakeApplication>();
 
         Modules = LoadModules(services);

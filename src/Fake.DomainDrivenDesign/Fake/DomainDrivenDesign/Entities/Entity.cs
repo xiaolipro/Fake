@@ -11,7 +11,7 @@ public abstract class Entity : HasDomainEvent, IEntity
     {
         return $"[实体: {GetType().Name}] Keys：{string.Join(", ", GetKeys())}";
     }
-    
+
     public bool IsTransient => EntityHelper.IsTransientEntity(this);
 
     /// <summary>
@@ -19,7 +19,7 @@ public abstract class Entity : HasDomainEvent, IEntity
     /// </summary>
     /// <param name="other"></param>
     /// <returns></returns>
-    public bool EntityEquals(IEntity other)
+    public bool EntityEquals(IEntity? other)
     {
         return EntityHelper.EntityEquals(this, other);
     }
