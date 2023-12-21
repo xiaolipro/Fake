@@ -10,17 +10,17 @@ public class AuthorizationTestBase : FakeApplicationTest<FakeAuthorizationTestMo
 {
     protected override void AfterAddFakeApplication(IServiceCollection services)
     {
-        var claims = new List<Claim>()
+        var claims = new List<Claim>
         {
-            new Claim(FakeClaimTypes.UserName, "FakeName"),
-            new Claim(FakeClaimTypes.UserId, SimpleGuidGenerator.Instance.GenerateAsString()),
-            new Claim(FakeClaimTypes.Role, "FakeRole")
+            new(ClaimTypes.Name, "FakeName"),
+            new(ClaimTypes.NameIdentifier, SimpleGuidGenerator.Instance.GenerateAsString()),
+            new(ClaimTypes.Role, "FakeRole")
         };
 
         var identity = new ClaimsIdentity(claims);
         var claimsPrincipal = new ClaimsPrincipal(identity);
         var principalAccessor = Substitute.For<ICurrentPrincipalAccessor>();
-        principalAccessor.Principal.Returns(ci => claimsPrincipal);
+        principalAccessor.Principal.Returns(_ => claimsPrincipal);
         Thread.CurrentPrincipal = claimsPrincipal;
     }
 }

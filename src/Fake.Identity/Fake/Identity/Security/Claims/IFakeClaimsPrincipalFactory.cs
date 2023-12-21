@@ -5,5 +5,5 @@ namespace Fake.Identity.Security.Claims;
 
 public interface IFakeClaimsPrincipalFactory
 {
-    Task<ClaimsPrincipal> CreateAsync(ClaimsPrincipal claimsPrincipal = null);
+    Task<ClaimsPrincipal?> CreateAsync(ClaimsPrincipal? claimsPrincipal = null);
 }

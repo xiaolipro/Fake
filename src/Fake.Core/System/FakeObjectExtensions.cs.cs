@@ -52,6 +52,6 @@ public static class FakeObjectExtensions
             return t;
         }
 
-        throw new FakeException($"无法将obj强转为给定类型{typeof(T).FullName}");
+        throw new FakeException($"无法将对象强转为给定类型{typeof(T).FullName}");
     }
 }

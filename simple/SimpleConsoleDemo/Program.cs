@@ -24,8 +24,8 @@ public class Program
         var currentPrincipalAccessor = application.ServiceProvider.GetRequiredService<ICurrentPrincipalAccessor>();
         currentPrincipalAccessor.Change(new ClaimsPrincipal(new ClaimsIdentity(new List<Claim>
         {
-            new Claim(FakeClaimTypes.UserId, "10086"),
-            new Claim(FakeClaimTypes.UserName, "faker"),
+            new Claim(ClaimTypes.NameIdentifier, "10086"),
+            new Claim(ClaimTypes.Name, "faker"),
         })));
 
         var manager = application.ServiceProvider.GetRequiredService<IAuditingManager>();

@@ -8,11 +8,11 @@ public interface ICurrentUser
     /// 用户唯一标识
     /// </summary>
 
-    public string UserId { get; }
+    public string? UserId { get; }
 
     /// <summary>
     /// 获取当前用户的名称。
     /// </summary>
 
-    public string UserName { get; }
+    public string? UserName { get; }
 }

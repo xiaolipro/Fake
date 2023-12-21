@@ -1,5 +1,4 @@
 ﻿using System.Security.Claims;
-using System.Threading.Tasks;
 using Fake.Authorization.Services;
 using Fake.Identity.Security.Claims;
 using Fake.IdGenerators.GuidGenerator;
@@ -46,7 +45,7 @@ public class AuthorizationTests : AuthorizationTestBase
     [Fact]
     async Task 授权可以访问所有方法()
     {
-        var claim = new Claim(FakeClaimTypes.UserId,
+        var claim = new Claim(ClaimTypes.NameIdentifier,
             SimpleGuidGenerator.Instance.GenerateAsString());
         using var _ = _currentPrincipalAccessor.Change(new ClaimsIdentity(claims: new[] { claim },
             authenticationType: "bearer"));
