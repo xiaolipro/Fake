@@ -43,6 +43,7 @@ public static class FakeObjectExtensions
     /// <param name="obj"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
+    /// <exception cref="FakeException">无法将对象强转为给定类型</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static T To<T>(this object obj)
         where T : class

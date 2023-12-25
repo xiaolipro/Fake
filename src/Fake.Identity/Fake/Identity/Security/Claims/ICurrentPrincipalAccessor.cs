@@ -8,7 +8,7 @@ public interface ICurrentPrincipalAccessor
     /// <summary>
     /// 获取当前ClaimsPrincipal
     /// </summary>
-    ClaimsPrincipal Principal { get; }
+    ClaimsPrincipal? Principal { get; }
 
     /// <summary>
     /// 切换当前ClaimsPrincipal，dispose时还原到之前

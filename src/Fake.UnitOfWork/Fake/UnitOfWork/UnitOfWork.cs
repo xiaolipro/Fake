@@ -13,22 +13,22 @@ public class UnitOfWork : IUnitOfWork
 {
     public Guid Id { get; }
     public IServiceProvider ServiceProvider { get; }
-    public UnitOfWorkContext Context { get; private set; }
+    public UnitOfWorkContext Context { get; private set; } = default!;
     public bool IsDisposed { get; private set; }
     public bool IsCompleted { get; private set; }
-    public IUnitOfWork Outer { get; private set; }
+    public IUnitOfWork? Outer { get; private set; }
 
     protected List<Func<IUnitOfWork, Task>> CompletedTasks { get; }
-    public event EventHandler<UnitOfWorkFailedEventArgs> Failed;
-    public event EventHandler<UnitOfWorkEventArgs> Disposed;
+    public event EventHandler<UnitOfWorkFailedEventArgs>? Failed;
+    public event EventHandler<UnitOfWorkEventArgs>? Disposed;
 
-    private readonly Dictionary<string, IDatabaseApi?> _databaseApiDic;
-    private readonly Dictionary<string, ITransactionApi?> _transactionApiDic;
+    private readonly Dictionary<string, IDatabaseApi> _databaseApiDic;
+    private readonly Dictionary<string, ITransactionApi> _transactionApiDic;
 
     private readonly ILogger<UnitOfWork> _logger;
     private readonly FakeUnitOfWorkOptions _options;
 
-    private Exception _exception;
+    private Exception? _exception;
     private bool _isCompleting, _isRollBacked;
 
     public UnitOfWork(IServiceProvider serviceProvider, ILogger<UnitOfWork> logger,
@@ -42,8 +42,8 @@ public class UnitOfWork : IUnitOfWork
 
         CompletedTasks = new List<Func<IUnitOfWork, Task>>();
 
-        _databaseApiDic = new Dictionary<string, IDatabaseApi?>();
-        _transactionApiDic = new Dictionary<string, ITransactionApi?>();
+        _databaseApiDic = new Dictionary<string, IDatabaseApi>();
+        _transactionApiDic = new Dictionary<string, ITransactionApi>();
     }
 
     /// <summary>
@@ -51,7 +51,7 @@ public class UnitOfWork : IUnitOfWork
     /// </summary>
     /// <param name="attribute"></param>
     /// <exception cref="FakeException"></exception>
-    public virtual void InitUnitOfWorkContext(UnitOfWorkAttribute attribute)
+    public virtual void InitUnitOfWorkContext(UnitOfWorkAttribute? attribute)
     {
         if (Context != null)
         {
@@ -212,17 +212,17 @@ public class UnitOfWork : IUnitOfWork
         Disposed?.Invoke(this, new UnitOfWorkEventArgs(this));
     }
 
-    public void SetOuter(IUnitOfWork outer)
+    public void SetOuter(IUnitOfWork? outer)
     {
         Outer = outer;
     }
 
-    public virtual IReadOnlyList<IDatabaseApi?> GetAllActiveDatabaseApis()
+    public virtual IReadOnlyList<IDatabaseApi> GetAllActiveDatabaseApis()
     {
         return _databaseApiDic.Values.ToImmutableList();
     }
 
-    public virtual IReadOnlyList<ITransactionApi?> GetAllActiveTransactionApis()
+    public virtual IReadOnlyList<ITransactionApi> GetAllActiveTransactionApis()
     {
         return _transactionApiDic.Values.ToImmutableList();
     }
@@ -232,7 +232,7 @@ public class UnitOfWork : IUnitOfWork
         return _databaseApiDic.GetOrDefault(key);
     }
 
-    public virtual void AddDatabaseApi(string key, IDatabaseApi? api)
+    public virtual void AddDatabaseApi(string key, IDatabaseApi api)
     {
         ThrowHelper.ThrowIfNull(key, nameof(key));
         ThrowHelper.ThrowIfNull(api, nameof(api));
@@ -258,7 +258,7 @@ public class UnitOfWork : IUnitOfWork
         return _transactionApiDic.GetOrDefault(key);
     }
 
-    public void AddTransactionApi(string key, ITransactionApi? api)
+    public void AddTransactionApi(string key, ITransactionApi api)
     {
         ThrowHelper.ThrowIfNull(key, nameof(key));
         ThrowHelper.ThrowIfNull(api, nameof(api));

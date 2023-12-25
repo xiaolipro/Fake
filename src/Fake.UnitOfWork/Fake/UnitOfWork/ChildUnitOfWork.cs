@@ -11,9 +11,9 @@ public class ChildUnitOfWork : IUnitOfWork
     public UnitOfWorkContext Context => _parent.Context;
     public bool IsDisposed => _parent.IsDisposed;
     public bool IsCompleted => _parent.IsCompleted;
-    public IUnitOfWork Outer => _parent.Outer;
-    public event EventHandler<UnitOfWorkFailedEventArgs> Failed;
-    public event EventHandler<UnitOfWorkEventArgs> Disposed;
+    public IUnitOfWork? Outer => _parent.Outer;
+    public event EventHandler<UnitOfWorkFailedEventArgs>? Failed;
+    public event EventHandler<UnitOfWorkEventArgs>? Disposed;
 
     private readonly IUnitOfWork _parent;
 
@@ -22,7 +22,6 @@ public class ChildUnitOfWork : IUnitOfWork
         ThrowHelper.ThrowIfNull(parent, nameof(parent));
 
         _parent = parent;
-
         _parent.Failed += (sender, args) => { Failed?.Invoke(sender, args); };
         _parent.Disposed += (sender, args) => { Disposed?.Invoke(sender, args); };
     }
@@ -33,7 +32,7 @@ public class ChildUnitOfWork : IUnitOfWork
         return _parent.FindDatabaseApi(key);
     }
 
-    public void AddDatabaseApi(string key, IDatabaseApi? api)
+    public void AddDatabaseApi(string key, IDatabaseApi api)
     {
         _parent.AddDatabaseApi(key, api);
     }
@@ -48,7 +47,7 @@ public class ChildUnitOfWork : IUnitOfWork
         return _parent.FindTransactionApi(key);
     }
 
-    public void AddTransactionApi(string key, ITransactionApi? api)
+    public void AddTransactionApi(string key, ITransactionApi api)
     {
         _parent.AddTransactionApi(key, api);
     }
@@ -63,7 +62,7 @@ public class ChildUnitOfWork : IUnitOfWork
     }
 
 
-    public void InitUnitOfWorkContext(UnitOfWorkAttribute context)
+    public void InitUnitOfWorkContext(UnitOfWorkAttribute? context)
     {
         _parent.InitUnitOfWorkContext(context);
     }
@@ -93,7 +92,7 @@ public class ChildUnitOfWork : IUnitOfWork
         _parent.OnCompleted(func);
     }
 
-    public void SetOuter(IUnitOfWork outer)
+    public void SetOuter(IUnitOfWork? outer)
     {
         _parent.SetOuter(outer);
     }

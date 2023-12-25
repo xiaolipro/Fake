@@ -9,7 +9,7 @@ public class CurrentUser : ICurrentUser
     private readonly ICurrentPrincipalAccessor _currentPrincipalAccessor;
 
     // public virtual bool IsAuthenticated => !string.IsNullOrEmpty(this.m_authenticationType);
-    public bool IsAuthenticated => _currentPrincipalAccessor.Principal.Identity.IsAuthenticated;
+    public bool IsAuthenticated => _currentPrincipalAccessor.Principal?.Identity.IsAuthenticated ?? false;
     public string? UserId => FindClaimValueOrNull(ClaimTypes.NameIdentifier);
     public string? UserName => FindClaimValueOrNull(ClaimTypes.Name);
 
@@ -22,7 +22,7 @@ public class CurrentUser : ICurrentUser
     public virtual string? FindClaimValueOrNull(string claimType)
     {
         return _currentPrincipalAccessor
-            .Principal
+            .Principal?
             .Claims
             .FirstOrDefault(c => c.Type == claimType)?.Value;
     }

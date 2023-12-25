@@ -9,8 +9,8 @@ namespace Fake.Identity.Security.Claims;
 /// </summary>
 public class ThreadCurrentPrincipalAccessor : AbstractCurrentPrincipalAccessor
 {
-    protected override ClaimsPrincipal GetClaimsPrincipal()
+    protected override ClaimsPrincipal? GetClaimsPrincipal()
     {
-        return Thread.CurrentPrincipal.To<ClaimsPrincipal>();
+        return Thread.CurrentPrincipal.As<ClaimsPrincipal>();
     }
 }

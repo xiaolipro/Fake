@@ -14,9 +14,9 @@ public interface IUnitOfWork : IDatabaseApiContainer, ITransactionApiContainer, 
 
     public bool IsCompleted { get; }
 
-    IUnitOfWork Outer { get; }
+    IUnitOfWork? Outer { get; }
 
-    void InitUnitOfWorkContext(UnitOfWorkAttribute context);
+    void InitUnitOfWorkContext(UnitOfWorkAttribute? context);
 
     /// <summary>
     /// 回滚事务
@@ -64,5 +64,5 @@ public interface IUnitOfWork : IDatabaseApiContainer, ITransactionApiContainer, 
     /// 设置外层工作单元
     /// </summary>
     /// <param name="outer"></param>
-    void SetOuter(IUnitOfWork outer);
+    void SetOuter(IUnitOfWork? outer);
 }

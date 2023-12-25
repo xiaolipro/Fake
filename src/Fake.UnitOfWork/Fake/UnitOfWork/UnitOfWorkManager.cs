@@ -1,4 +1,3 @@
-using System;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Fake.UnitOfWork;
@@ -6,18 +5,17 @@ namespace Fake.UnitOfWork;
 public class UnitOfWorkManager : IUnitOfWorkManager
 {
     private readonly IAmbientUnitOfWorkProvider _ambientUnitOfWorkProvider;
-    private readonly IServiceProvider _serviceProvider;
-    public IUnitOfWork Current => _ambientUnitOfWorkProvider.GetCurrentByChecking();
+    private readonly IServiceScopeFactory _serviceScopeFactory;
+    public IUnitOfWork? Current => _ambientUnitOfWorkProvider.GetCurrentByChecking();
 
-    // todo：是否需要注入服务商工厂，为每一个uow开启一个新的scope？
     public UnitOfWorkManager(IAmbientUnitOfWorkProvider ambientUnitOfWorkProvider,
-        IServiceProvider serviceProvider)
+        IServiceScopeFactory serviceScopeFactory)
     {
         _ambientUnitOfWorkProvider = ambientUnitOfWorkProvider;
-        _serviceProvider = serviceProvider;
+        _serviceScopeFactory = serviceScopeFactory;
     }
 
-    public IUnitOfWork Begin(UnitOfWorkAttribute attribute)
+    public IUnitOfWork Begin(UnitOfWorkAttribute? attribute)
     {
         var currentUow = Current;
         var requiresNew = attribute?.RequiresNew ?? false;
@@ -34,20 +32,31 @@ public class UnitOfWorkManager : IUnitOfWorkManager
 
     private IUnitOfWork CreateNewUnitOfWork()
     {
-        var outerUow = Current;
-
-        var unitOfWork = _serviceProvider.GetRequiredService<IUnitOfWork>();
-
-        unitOfWork.SetOuter(outerUow);
-
-        _ambientUnitOfWorkProvider.SetUnitOfWork(unitOfWork);
-
-        unitOfWork.Disposed += (_, _) =>
+        var scope = _serviceScopeFactory.CreateScope();
+        try
         {
-            // 重定向到外层工作单元
-            _ambientUnitOfWorkProvider.SetUnitOfWork(outerUow);
-        };
+            var outerUow = Current;
 
-        return unitOfWork;
+            var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+
+            unitOfWork.SetOuter(outerUow);
+
+            _ambientUnitOfWorkProvider.SetUnitOfWork(unitOfWork);
+
+            var localScope = scope; // 将scope拷贝到局部变量
+            unitOfWork.Disposed += (_, _) =>
+            {
+                // 重定向到外层工作单元
+                _ambientUnitOfWorkProvider.SetUnitOfWork(outerUow);
+                localScope.Dispose();
+            };
+
+            return unitOfWork;
+        }
+        catch
+        {
+            scope.Dispose();
+            throw;
+        }
     }
 }

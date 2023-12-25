@@ -1,8 +1,9 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 
 namespace Fake.UnitOfWork;
 
-public class UnitOfWorkContext : ICloneable<UnitOfWorkContext>
+public class UnitOfWorkContext : ICloneable
 {
     /// <summary>
     /// 是否具有事务性
@@ -19,8 +20,7 @@ public class UnitOfWorkContext : ICloneable<UnitOfWorkContext>
     /// </summary>
     public int Timeout { get; set; }
 
-
-    public UnitOfWorkContext Clone()
+    public object Clone()
     {
         return new UnitOfWorkContext
         {

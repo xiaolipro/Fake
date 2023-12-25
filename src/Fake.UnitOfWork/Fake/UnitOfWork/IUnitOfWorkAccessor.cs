@@ -2,7 +2,7 @@ namespace Fake.UnitOfWork;
 
 public interface IUnitOfWorkAccessor
 {
-    IUnitOfWork UnitOfWork { get; }
+    IUnitOfWork? UnitOfWork { get; }
 
-    void SetUnitOfWork(IUnitOfWork unitOfWork);
+    void SetUnitOfWork(IUnitOfWork? unitOfWork);
 }

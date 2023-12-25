@@ -22,13 +22,14 @@ public class FakeAsyncInterceptorAdapter<TInterceptor> : AsyncInterceptorBase wh
         await _fakeInterceptor.InterceptAsync(adapter);
     }
 
-    protected override async Task<TResult> InterceptAsync<TResult>(IInvocation invocation, IInvocationProceedInfo proceedInfo,
+    protected override async Task<TResult> InterceptAsync<TResult>(IInvocation invocation,
+        IInvocationProceedInfo proceedInfo,
         Func<IInvocation, IInvocationProceedInfo, Task<TResult>> proceed)
     {
         var adapter = new FakeMethodInvocationAdapterWithReturnValue<TResult>(invocation, proceedInfo, proceed);
-        
+
         await _fakeInterceptor.InterceptAsync(adapter);
 
-        return (TResult)adapter.ReturnValue;
+        return (TResult)adapter.ReturnValue!;
     }
 }

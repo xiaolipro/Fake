@@ -15,7 +15,7 @@ public class SimpleResultCacheInterceptionTargetClass : ITransientDependency
     public virtual async Task<int> GetValueAsync(int v)
     {
         await Task.Delay(5);
-        return v;
+        return 42;
     }
 
     public void Ff(int v)
