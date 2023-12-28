@@ -1,4 +1,4 @@
-﻿namespace Fake.DomainDrivenDesign;
+﻿namespace Fake.DomainDrivenDesign.Application;
 
 /// <summary>
 /// 应用服务

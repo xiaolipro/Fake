@@ -8,7 +8,7 @@ public static class FakeStringExtensions
     /// <summary>
     /// 表示此字符串 是 null或空字符串。
     /// </summary>
-    public static bool IsNullOrEmpty(this string str)
+    public static bool IsNullOrEmpty(this string? str)
     {
         return string.IsNullOrEmpty(str);
     }
@@ -32,7 +32,7 @@ public static class FakeStringExtensions
     /// <summary>
     /// 表示此字符串 不是 null或空字符串或空白格。
     /// </summary>
-    public static bool IsNotNullOrWhiteSpace([CanBeNull]this string? str)
+    public static bool IsNotNullOrWhiteSpace([CanBeNull] this string? str)
     {
         return !string.IsNullOrWhiteSpace(str);
     }
@@ -114,7 +114,7 @@ public static class FakeStringExtensions
     /// <param name="str">原字符串</param>
     /// <param name="len">给定长度</param>
     /// <returns></returns>
-    public static string Truncate(this string str, int len)
+    public static string? Truncate(this string? str, int len)
     {
         ThrowHelper.ThrowIfNull(str, nameof(str));
 
@@ -131,7 +131,7 @@ public static class FakeStringExtensions
     /// <param name="maxLen">给定长度</param>
     /// <param name="suffix">后缀</param>
     /// <returns></returns>
-    public static string TruncateWithSuffix(this string str, int maxLen = 64, string suffix = "...")
+    public static string? TruncateWithSuffix(this string? str, int maxLen = 64, string suffix = "...")
     {
         if (str.IsNullOrEmpty()) return str;
 

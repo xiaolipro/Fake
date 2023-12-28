@@ -40,7 +40,7 @@ public abstract class DependencyInjectionTestBase : FakeApplicationTest<Dependen
     }
 
     [Fact]
-    public void 支持属性注入()
+    public void 属性注入必须public且具有set()
     {
         GetRequiredService<ServiceWithPropertyInject>().PropertyInjectedServiceWithPublicSet.ShouldNotBeNull();
         GetRequiredService<ServiceWithPropertyInject>().PropertyInjectedServiceWithPrivateSet.ShouldBeNull();

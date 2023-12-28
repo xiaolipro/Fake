@@ -1,6 +1,7 @@
 ﻿using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Fake.Data.Filtering;
 using Fake.DependencyInjection;
 using Fake.IdGenerators;
 using Fake.IdGenerators.GuidGenerator;
@@ -32,9 +33,17 @@ public class FakeCoreModule : FakeModule
         ConfigureSystemTextJson(context);
 
         ConfigureIdGenerator(context);
+
+        ConfigureData(context);
     }
 
-    private static void ConfigureClock(ServiceConfigurationContext context)
+    private void ConfigureData(ServiceConfigurationContext context)
+    {
+        context.Services.AddSingleton<IDataFilter, DataFilter>();
+        context.Services.AddSingleton(typeof(IDataFilter<>), typeof(DataFilter<>));
+    }
+
+    private void ConfigureClock(ServiceConfigurationContext context)
     {
         context.Services.AddTransient<IFakeClock, FakeClock>();
         context.Services.Configure<FakeClockOptions>(options =>
@@ -44,7 +53,7 @@ public class FakeCoreModule : FakeModule
         });
     }
 
-    private static void ConfigureSystemTextJson(ServiceConfigurationContext context)
+    private void ConfigureSystemTextJson(ServiceConfigurationContext context)
     {
         context.Services.AddTransient<IFakeJsonSerializer, FakeSystemTextJsonSerializer>();
         context.Services.AddTransient<FakeDateTimeConverter>();

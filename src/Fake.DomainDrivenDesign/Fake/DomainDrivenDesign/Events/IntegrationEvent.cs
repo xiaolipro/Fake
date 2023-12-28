@@ -1,4 +1,6 @@
-﻿namespace Fake.EventBus.Events;
+﻿using Fake.EventBus.Events;
+
+namespace Fake.DomainDrivenDesign.Events;
 
 /// <summary>
 /// 集成事件

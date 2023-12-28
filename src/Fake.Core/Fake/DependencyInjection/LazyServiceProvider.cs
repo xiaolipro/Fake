@@ -8,44 +8,44 @@ namespace Fake.DependencyInjection;
 public class LazyServiceProvider : ILazyServiceProvider
 {
     protected IServiceProvider ServiceProvider { get; }
-    protected ConcurrentDictionary<Type, Lazy<object>> ServiceCacheDic { get; }
+    protected ConcurrentDictionary<Type, Lazy<object?>> ServiceCacheDic { get; }
 
     public LazyServiceProvider(IServiceProvider serviceProvider)
     {
         ServiceProvider = serviceProvider;
-        ServiceCacheDic = new ConcurrentDictionary<Type, Lazy<object>>();
-        ServiceCacheDic.TryAdd(typeof(IServiceProvider), new Lazy<object>(() => ServiceProvider));
+        ServiceCacheDic = new ConcurrentDictionary<Type, Lazy<object?>>();
+        ServiceCacheDic.TryAdd(typeof(IServiceProvider), new Lazy<object?>(() => serviceProvider));
     }
 
-    public T? GetLazyService<T>(Func<IServiceProvider, object>? valueFactory = null) where T : class
+    public T? GetService<T>(Func<IServiceProvider, object>? valueFactory = null) where T : class
     {
-        return GetLazyService(typeof(T), valueFactory) as T;
+        return GetService(typeof(T), valueFactory) as T;
     }
 
-    public object GetLazyService(Type serviceType, Func<IServiceProvider, object>? valueFactory = null)
+    public object? GetService(Type serviceType, Func<IServiceProvider, object>? valueFactory = null)
     {
         if (valueFactory != null)
             return ServiceCacheDic.GetOrAdd(
                 serviceType,
-                _ => new Lazy<object>(() => valueFactory(ServiceProvider))
+                _ => new Lazy<object?>(() => valueFactory(ServiceProvider))
             ).Value;
 
         return ServiceCacheDic.GetOrAdd(
             serviceType,
-            _ => new Lazy<object>(() => ServiceProvider.GetService(serviceType))
+            _ => new Lazy<object?>(() => ServiceProvider.GetService(serviceType))
         ).Value;
     }
 
-    public T GetRequiredLazyService<T>() where T : class
+    public T GetRequiredService<T>() where T : class
     {
-        return GetRequiredLazyService(typeof(T)).To<T>();
+        return GetRequiredService(typeof(T)).To<T>();
     }
 
-    public object GetRequiredLazyService(Type serviceType)
+    public object GetRequiredService(Type serviceType)
     {
         return ServiceCacheDic.GetOrAdd(
             serviceType,
-            _ => new Lazy<object>(() => ServiceProvider.GetRequiredService(serviceType))
-        ).Value;
+            _ => new Lazy<object?>(() => ServiceProvider.GetRequiredService(serviceType))
+        ).Value!;
     }
 }

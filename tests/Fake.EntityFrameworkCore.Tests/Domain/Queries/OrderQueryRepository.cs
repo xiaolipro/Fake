@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Domain.Queries;
 
-public class OrderQueries : EfCoreNoRootRepository<OrderingContext>, IOrderQueries
+public class OrderQueries : EfCoreRootlessRepository<OrderingContext>, IOrderQueries
 {
     public async Task<List<OrderSummary>> GetOrderSummaryAsync(Guid orderId)
     {

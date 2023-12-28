@@ -37,7 +37,7 @@ public class EntityChangeHelper : IEntityChangeHelper
 
     #region 创建实体变更集合
 
-    public List<EntityChangeInfo> CreateChangeList(IEnumerable<EntityEntry> entityEntries)
+    public List<EntityChangeInfo>? CreateChangeList(IEnumerable<EntityEntry> entityEntries)
     {
         if (AuditingManager.Current == null) return null;
 
@@ -56,7 +56,7 @@ public class EntityChangeHelper : IEntityChangeHelper
     }
 
 
-    protected virtual EntityChangeInfo CreateEntityChangeOrNull(EntityEntry entry)
+    protected virtual EntityChangeInfo? CreateEntityChangeOrNull(EntityEntry entry)
     {
         var entity = entry.Entity;
 
@@ -78,11 +78,9 @@ public class EntityChangeHelper : IEntityChangeHelper
                 return null;
         }
 
-        var entityId = GetEntityId(entity);
-        if (entityId == null && changeType != EntityChangeType.Created)
-        {
-            return null;
-        }
+        var entityId = GetEntityIdAsString(entity);
+
+        if (changeType != EntityChangeType.Created) return null;
 
         var entityChange = new EntityChangeInfo
         {
@@ -115,14 +113,14 @@ public class EntityChangeHelper : IEntityChangeHelper
                 {
                     NewValue = isDeleted
                         ? null
-                        : JsonSerializer.Serialize(propertyEntry.CurrentValue)
+                        : JsonSerializer.Serialize(propertyEntry.CurrentValue!)
                             .TruncateWithSuffix(Options.EntityChangeOptions.ValueMaxLength),
                     OriginalValue = isCreated
                         ? null
-                        : JsonSerializer.Serialize(propertyEntry.OriginalValue)
+                        : JsonSerializer.Serialize(propertyEntry.OriginalValue!)
                             .TruncateWithSuffix(Options.EntityChangeOptions.ValueMaxLength),
                     PropertyName = property.Name,
-                    PropertyTypeFullName = property.ClrType.FullName
+                    PropertyTypeFullName = property.ClrType.FullName!
                 });
             }
         }
@@ -142,7 +140,7 @@ public class EntityChangeHelper : IEntityChangeHelper
     }
 
 
-    protected virtual string GetEntityId(object entityAsObj)
+    protected virtual string GetEntityIdAsString(object entityAsObj)
     {
         if (entityAsObj is not IEntity entity)
         {
@@ -150,8 +148,7 @@ public class EntityChangeHelper : IEntityChangeHelper
                 $"实体必须实现{typeof(IEntity).AssemblyQualifiedName}接口！给定的实体并没有实现它: {entityAsObj.GetType().AssemblyQualifiedName}");
         }
 
-        var keys = entity.GetKeys();
-        return keys.All(k => k == null) ? null : keys.JoinAsString(",");
+        return entity.GetKeys().JoinAsString(",");
     }
 
     protected virtual bool ShouldSaveEntityChange(EntityEntry entry)
@@ -193,7 +190,6 @@ public class EntityChangeHelper : IEntityChangeHelper
 
     public void UpdateChangeList(List<EntityChangeInfo> entityChanges)
     {
-        if (entityChanges == null) return;
         var auditLog = AuditingManager.Current?.Log;
         if (auditLog == null) return;
 
@@ -202,7 +198,7 @@ public class EntityChangeHelper : IEntityChangeHelper
             entityChange.ChangeTime = GetChangeTime(entityChange);
 
             var entityEntry = entityChange.EntityEntry.To<EntityEntry>();
-            entityChange.EntityId = GetEntityId(entityEntry.Entity);
+            entityChange.EntityId = GetEntityIdAsString(entityEntry.Entity);
 
             var foreignKeys = entityEntry.Metadata.GetForeignKeys();
 
@@ -222,10 +218,10 @@ public class EntityChangeHelper : IEntityChangeHelper
                             // Add foreign key
                             entityChange.PropertyChanges.Add(new EntityPropertyChangeInfo
                             {
-                                NewValue = JsonSerializer.Serialize(propertyEntry.CurrentValue),
-                                OriginalValue = JsonSerializer.Serialize(propertyEntry.OriginalValue),
+                                NewValue = JsonSerializer.Serialize(propertyEntry.CurrentValue!),
+                                OriginalValue = JsonSerializer.Serialize(propertyEntry.OriginalValue!),
                                 PropertyName = property.Name,
-                                PropertyTypeFullName = property.ClrType.FullName
+                                PropertyTypeFullName = property.ClrType.FullName!
                             });
                         }
 
@@ -234,7 +230,7 @@ public class EntityChangeHelper : IEntityChangeHelper
 
                     if (propertyChange.OriginalValue == propertyChange.NewValue)
                     {
-                        var newValue = JsonSerializer.Serialize(propertyEntry.CurrentValue);
+                        var newValue = JsonSerializer.Serialize(propertyEntry.CurrentValue!);
                         if (newValue == propertyChange.NewValue)
                         {
                             // No change

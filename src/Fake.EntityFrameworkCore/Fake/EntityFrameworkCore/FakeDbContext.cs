@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Fake.Data;
+using Fake.Data.Filtering;
 using Fake.DependencyInjection;
 using Fake.DomainDrivenDesign;
 using Fake.DomainDrivenDesign.Entities;
@@ -22,10 +23,12 @@ using Fake.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Fake.EntityFrameworkCore;
 
-public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : DbContext
+public abstract class FakeDbContext<TDbContext>(DbContextOptions<TDbContext> options) : DbContext(options)
+    where TDbContext : DbContext
 {
     public ILazyServiceProvider ServiceProvider { get; set; } = null!;
 
@@ -35,17 +38,13 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
             BindingFlags.Instance | BindingFlags.NonPublic
         )!;
 
-    protected FakeDbContext(DbContextOptions<TDbContext> options) : base(options)
-    {
-    }
-
-    private IFakeClock FakeClock => ServiceProvider.GetRequiredLazyService<IFakeClock>();
-    private GuidGeneratorBase GuidGenerator => ServiceProvider.GetRequiredLazyService<GuidGeneratorBase>();
-    private LongIdGeneratorBase LongIdGenerator => ServiceProvider.GetRequiredLazyService<LongIdGeneratorBase>();
-    private IEventPublisher EventPublisher => ServiceProvider.GetRequiredLazyService<IEventPublisher>();
-    private IAuditPropertySetter AuditPropertySetter => ServiceProvider.GetRequiredLazyService<IAuditPropertySetter>();
-    private IEntityChangeHelper EntityChangeHelper => ServiceProvider.GetRequiredLazyService<IEntityChangeHelper>();
-
+    protected IFakeClock FakeClock => ServiceProvider.GetRequiredService<IFakeClock>();
+    protected GuidGeneratorBase GuidGenerator => ServiceProvider.GetRequiredService<GuidGeneratorBase>();
+    protected LongIdGeneratorBase LongIdGenerator => ServiceProvider.GetRequiredService<LongIdGeneratorBase>();
+    protected IEventPublisher EventPublisher => ServiceProvider.GetRequiredService<IEventPublisher>();
+    protected IAuditPropertySetter AuditPropertySetter => ServiceProvider.GetRequiredService<IAuditPropertySetter>();
+    protected IEntityChangeHelper EntityChangeHelper => ServiceProvider.GetRequiredService<IEntityChangeHelper>();
+    protected IDataFilter DataFilter => ServiceProvider.GetRequiredService<IDataFilter>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -74,8 +73,12 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
             var res = await base.SaveChangesAsync(cancellationToken);
             PublishDomainEvents();
 
-            // id, time ..
-            EntityChangeHelper.UpdateChangeList(changes);
+            if (changes != null)
+            {
+                // id, time ..
+                EntityChangeHelper.UpdateChangeList(changes);
+            }
+
             return res;
         }
         catch (DbUpdateConcurrencyException? ex)
@@ -109,15 +112,15 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
         foreach (var entry in ChangeTracker.Entries())
         {
             // Deleted状态可能是软删，也走的更新，同受版本约束
-            if (entry.State.IsIn(EntityState.Modified, EntityState.Deleted))
-            {
-                if (entry.Entity is IHasVersionNum entity)
-                {
-                    // 保存更改时，将原始值与当前值比较，以确认是否需要更新
-                    Entry(entity).Property(x => x.VersionNum).OriginalValue = entity.VersionNum;
-                    entity.VersionNum = SimpleGuidGenerator.Instance.GenerateAsString();
-                }
-            }
+            if (!entry.State.IsIn(EntityState.Modified, EntityState.Deleted)) continue;
+
+            if (entry.Entity is not IHasVersionNum entity) continue;
+
+            // tips：
+            // 通过修改entry在内存中的原值，来实现乐观锁，因为save changes时会比对期望受影响行。
+            // 如果不一致，会抛出DbUpdateConcurrencyException异常
+            Entry(entity).Property(x => x.VersionNum).OriginalValue = entity.VersionNum;
+            entity.VersionNum = SimpleGuidGenerator.Instance.GenerateAsString();
         }
 
         return Task.CompletedTask;
@@ -163,7 +166,7 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
             case EntityState.Unchanged: //未变更状态：该实体正在由上下文跟踪并存在于数据库中，其属性值与数据库中的值没有变化。
                 break;
             case EntityState.Deleted: //删除状态：该实体正在由上下文跟踪并存在于数据库中，它已标记为从数据库中删除
-                SoftDelete(entry);
+                ApplyDelete(entry);
                 break;
             case EntityState.Modified: //修改状态：该实体正在由上下文跟踪并存在于数据库中，其部分或全部属性值已被修改
                 SetModifier(entry);
@@ -178,25 +181,25 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
         }
     }
 
-    protected virtual void SoftDelete(EntityEntry entry)
+    protected virtual void ApplyDelete(EntityEntry entry)
     {
-        if (entry.Entity is ISoftDelete entityWithSoftDelete)
-        {
-            if (entityWithSoftDelete.HardDeleted) return;
+        if (entry.Entity is not ISoftDelete entityWithSoftDelete) return;
 
-            // todo: abp在这里重置entity状态，但是重置状态会重新加载数据，为什么要这么做？
-            //entry.Reload();
+        if (entityWithSoftDelete.HardDeleted) return;
 
-            ReflectionHelper.TrySetProperty(entityWithSoftDelete, x => x.IsDeleted, () => true);
-            AuditPropertySetter.SetModificationProperties(entry.Entity);
-        }
+        // tips: 这里必須重置entity状态，设置完修改审计后转会到EntityState.Modified
+        entry.Reload();
+
+        ReflectionHelper.TrySetProperty(entityWithSoftDelete, x => x.IsDeleted, () => true);
+        AuditPropertySetter.SetModificationProperties(entry.Entity);
     }
 
     protected virtual void SetModifier(EntityEntry entry)
     {
         // 只要有一个属性被修改了，且值不由数据库生成
-        if (entry.Properties.Any(p => p.IsModified && p.Metadata.ValueGenerated == ValueGenerated.Never))
+        if (entry.Properties.Any(p => p is { IsModified: true, Metadata.ValueGenerated: ValueGenerated.Never }))
         {
+            // AuditPropertySetter.SetVersionNumProperty(entry.Entity);
             AuditPropertySetter.SetModificationProperties(entry.Entity);
         }
     }
@@ -238,7 +241,7 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
         if (!entity.IsTransient) return false;
 
         var idProperty = entry.Property(nameof(IEntity<Any>.Id)).Metadata.PropertyInfo;
-        
+
         if (idProperty == null) return false;
 
         var attr = ReflectionHelper.GetAttributeOrDefault<DatabaseGeneratedAttribute>(idProperty);
@@ -327,19 +330,35 @@ public abstract class FakeDbContext<TDbContext> : DbContext where TDbContext : D
         IMutableEntityType mutableEntityType)
         where TEntity : class
     {
-        // 如果实体有父类则不应该拦截
-        if (mutableEntityType.BaseType != null) return;
+        if (!ShouldFilterEntity<TEntity>(mutableEntityType)) return;
 
-        Expression<Func<TEntity, bool>> expression = null;
+        Expression<Func<TEntity, bool>>? filter = null;
 
         if (typeof(TEntity).IsAssignableTo(typeof(ISoftDelete)))
         {
-            expression = entity => !EF.Property<bool>(entity, nameof(ISoftDelete.IsDeleted));
+            filter = entity => !DataFilter.IsEnabled<ISoftDelete>() ||
+                               !EF.Property<bool>(entity, nameof(ISoftDelete.IsDeleted));
         }
 
-        if (expression != null)
+        if (filter == null) return;
+
+#pragma warning disable EF1001
+        // 保留已有的过滤器
+        if (modelBuilder.Entity<TEntity>().Metadata.FindAnnotation(CoreAnnotationNames.QueryFilter) is
+            { Value: Expression<Func<TEntity, bool>> existingFilter })
         {
-            modelBuilder.Entity<TEntity>().HasQueryFilter(expression);
+            filter = ExpressionHelper.Combine(filter, existingFilter);
         }
+#pragma warning restore EF1001
+        modelBuilder.Entity<TEntity>().HasQueryFilter(filter);
+    }
+
+    protected virtual bool ShouldFilterEntity<TEntity>(IMutableEntityType mutableEntityType) where TEntity : class
+    {
+        if (mutableEntityType.BaseType != null) return false;
+
+        if (typeof(TEntity).IsAssignableTo<ISoftDelete>()) return true;
+
+        return false;
     }
 }

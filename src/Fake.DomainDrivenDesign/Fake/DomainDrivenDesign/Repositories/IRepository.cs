@@ -21,6 +21,11 @@ public interface IRepository<TEntity> : IRepository where TEntity : class, IAggr
         bool isInclude = true,
         CancellationToken cancellationToken = default);
 
+    Task<TEntity> First(
+        Expression<Func<TEntity, bool>>? predicate = null,
+        bool isInclude = true,
+        CancellationToken cancellationToken = default);
+
     Task<TEntity?> FirstOrDefaultAsync(
         Expression<Func<TEntity, bool>>? predicate = null,
         bool isInclude = true,

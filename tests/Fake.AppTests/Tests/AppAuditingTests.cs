@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics;
 using Domain.Aggregates.BuyerAggregate;
 using Domain.Aggregates.OrderAggregate;
-using Fake.Auditing;
 using Fake.DomainDrivenDesign.Repositories;
 using Fake.Identity.Users;
 using Fake.Modularity;
@@ -14,27 +13,11 @@ namespace Tests;
 public abstract class AppAuditingTests<TStartupModule> : AppTestBase<TStartupModule> where TStartupModule : IFakeModule
 {
     protected Guid CurrentUserId;
-    protected readonly IRepository<Order?> OrderRepository;
-    protected readonly IAuditingManager AuditingManager;
+    protected readonly IRepository<Order> OrderRepository;
 
     public AppAuditingTests()
     {
         OrderRepository = GetRequiredService<IRepository<Order>>();
-        AuditingManager = GetRequiredService<IAuditingManager>();
-    }
-
-    [Fact]
-    void ref_nullable_test()
-    {
-        List<int> arr = null;
-        foreach (var item in arr)
-        {
-        }
-    }
-
-    void say(string message)
-    {
-        Console.WriteLine(message);
     }
 
     protected override void AfterAddFakeApplication(IServiceCollection services)
@@ -78,11 +61,10 @@ public abstract class AppAuditingTests<TStartupModule> : AppTestBase<TStartupMod
     [InlineData("4b2790fc-3f51-43d5-88a1-a92d96a9e6ea")]
     public async Task 修改审计(string currentUserId)
     {
-        using var scope = AuditingManager.BeginScope();
         Guid.TryParse(currentUserId, out CurrentUserId);
 
         var order = await OrderRepository.FirstOrDefaultAsync(x => x.Id == AppTestDataBuilder.OrderId);
-        order.LastModifierId.ShouldBe(Guid.Empty);
+        order!.LastModifierId.ShouldBe(Guid.Empty);
 
         order.SetCancelledStatus();
         order = await OrderRepository.UpdateAsync(order);
@@ -90,8 +72,6 @@ public abstract class AppAuditingTests<TStartupModule> : AppTestBase<TStartupMod
         order.LastModifierId.ShouldBe(CurrentUserId);
         Debug.Assert(order.LastModificationTime != null, "order.LastModificationTime != null");
         order.LastModificationTime.Value.ShouldBeLessThanOrEqualTo(FakeClock.Now);
-
-        await scope.SaveAsync();
     }
 
     [Theory]
@@ -101,6 +81,7 @@ public abstract class AppAuditingTests<TStartupModule> : AppTestBase<TStartupMod
         Guid.TryParse(currentUserId, out CurrentUserId);
 
         var order = await OrderRepository.FirstOrDefaultAsync(x => x.Id == AppTestDataBuilder.OrderId);
+        order.ShouldNotBeNull();
         order.CreationTime.ShouldBeLessThanOrEqualTo(FakeClock.Now);
         order.LastModifierId.ShouldBe(Guid.Empty);
         await OrderRepository.DeleteAsync(order);
@@ -110,7 +91,6 @@ public abstract class AppAuditingTests<TStartupModule> : AppTestBase<TStartupMod
         Debug.Assert(order.LastModificationTime != null, "order.LastModificationTime != null");
         order.LastModificationTime.Value.ShouldBeLessThanOrEqualTo(FakeClock.Now);
 
-        //TODO：被删除（软）的数据不应该被查询到（默认情况下）
         order = await OrderRepository.FirstOrDefaultAsync(x => x.Id == AppTestDataBuilder.OrderId);
         order.ShouldBeNull();
     }

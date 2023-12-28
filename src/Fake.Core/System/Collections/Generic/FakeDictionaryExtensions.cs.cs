@@ -1,4 +1,6 @@
-﻿namespace System.Collections.Generic;
+﻿using Fake;
+
+namespace System.Collections.Generic;
 
 public static class FakeDictionaryExtensions
 {
@@ -36,6 +38,9 @@ public static class FakeDictionaryExtensions
     public static TValue GetOrAdd<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key,
         Func<TKey, TValue> valueFactory)
     {
+        ThrowHelper.ThrowIfNull(key);
+        ThrowHelper.ThrowIfNull(valueFactory);
+
         if (dictionary.TryGetValue(key, out var obj))
         {
             return obj;

@@ -15,9 +15,9 @@ public abstract class RepositoryBase<TEntity> : IRepository<TEntity>
     public ILazyServiceProvider LazyServiceProvider { get; set; } = null!; // 属性注入
 
     public ICancellationTokenProvider CancellationTokenProvider =>
-        LazyServiceProvider.GetRequiredLazyService<ICancellationTokenProvider>();
+        LazyServiceProvider.GetRequiredService<ICancellationTokenProvider>();
 
-    public IUnitOfWorkManager UnitOfWorkManager => LazyServiceProvider.GetRequiredLazyService<IUnitOfWorkManager>();
+    public IUnitOfWorkManager UnitOfWorkManager => LazyServiceProvider.GetRequiredService<IUnitOfWorkManager>();
     public IUnitOfWork? UnitOfWork => UnitOfWorkManager.Current;
 
     protected virtual CancellationToken GetCancellationToken(CancellationToken preferredValue = default)
@@ -35,6 +35,14 @@ public abstract class RepositoryBase<TEntity> : IRepository<TEntity>
     public abstract Task<IQueryable<TEntity>> GetQueryableAsync(
         bool isInclude = true,
         CancellationToken cancellationToken = default);
+
+    public async Task<TEntity> First(Expression<Func<TEntity, bool>>? predicate = null, bool isInclude = true,
+        CancellationToken cancellationToken = default)
+    {
+        var res = await FirstOrDefaultAsync(predicate, isInclude, cancellationToken);
+        if (res == default) ThrowHelper.ThrowNoMatchException();
+        return res!;
+    }
 
     public abstract Task<TEntity?> FirstOrDefaultAsync(
         Expression<Func<TEntity, bool>>? predicate = null,

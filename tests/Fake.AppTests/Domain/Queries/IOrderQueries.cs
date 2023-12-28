@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Domain.Aggregates.OrderAggregate;
+﻿using Domain.Aggregates.OrderAggregate;
 using Fake.DomainDrivenDesign.Repositories;
 
 namespace Domain.Queries;
 
-public interface IOrderQueries : INoRootRepository
+public interface IOrderQueries : IRootlessRepository
 {
     Task<List<OrderSummary>> GetOrderSummaryAsync(Guid userId);
 

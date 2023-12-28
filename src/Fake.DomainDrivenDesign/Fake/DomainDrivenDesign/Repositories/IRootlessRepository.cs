@@ -3,6 +3,6 @@
 /// <summary>
 /// 无根仓储，面向数据库上下文操作
 /// </summary>
-public interface INoRootRepository : IRepository, IReadOnlyUnitOfWorkEnabled
+public interface IRootlessRepository : IRepository, IReadOnlyUnitOfWorkEnabled
 {
 }

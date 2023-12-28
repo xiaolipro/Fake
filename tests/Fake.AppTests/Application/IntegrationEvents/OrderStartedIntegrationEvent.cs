@@ -1,9 +1,8 @@
-﻿using System;
-using Fake.EventBus.Events;
+﻿using Fake.DomainDrivenDesign.Events;
 
 namespace Application.IntegrationEvents;
 
-public class OrderStartedIntegrationEvent: IntegrationEvent
+public class OrderStartedIntegrationEvent : IntegrationEvent
 {
     public Guid UserId { get; set; }
 
