@@ -1,12 +1,14 @@
-﻿namespace Fake.DomainDrivenDesign.Entities.Auditing;
+﻿using Fake.Data.Filtering;
 
-public interface ISoftDelete
+namespace Fake.DomainDrivenDesign.Entities.Auditing;
+
+public interface ISoftDelete : ICanDataFilter
 {
     /// <summary>
     /// 已经删除
     /// </summary>
     bool IsDeleted { get; }
-    
+
     /// <summary>
     /// 硬删除，物理删除
     /// </summary>

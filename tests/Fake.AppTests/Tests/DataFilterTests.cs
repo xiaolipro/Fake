@@ -21,15 +21,18 @@ public abstract class DataFilterTests<TStartupModule> : AppTestBase<TStartupModu
     }
 
     [Fact]
-    public async Task 关闭软删审计()
+    public async Task 禁用软删审计()
     {
         await SoftDeleteAsync();
 
-        using (var _ = SoftDeleteDataFilter.Disable())
+        using (SoftDeleteDataFilter.Disable())
         {
             var order = await OrderRepository.FirstOrDefaultAsync(x => x.Id == AppTestDataBuilder.OrderId);
             order.ShouldNotBeNull();
         }
+
+        var order2 = await OrderRepository.FirstOrDefaultAsync(x => x.Id == AppTestDataBuilder.OrderId);
+        order2.ShouldBeNull();
     }
 
 
