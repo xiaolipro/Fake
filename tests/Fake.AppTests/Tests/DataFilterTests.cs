@@ -35,6 +35,22 @@ public abstract class DataFilterTests<TStartupModule> : AppTestBase<TStartupModu
         order2.ShouldBeNull();
     }
 
+    [Fact]
+    public async Task 软删下的物理删()
+    {
+        var order = await OrderRepository.FirstOrDefaultAsync(x => x.Id == AppTestDataBuilder.OrderId);
+        order.ShouldNotBeNull();
+        order.CreationTime.ShouldBeLessThanOrEqualTo(FakeClock.Now);
+        order.LastModifierId.ShouldBe(Guid.Empty);
+        order.HardDeleted = true;
+        await OrderRepository.DeleteAsync(order);
+
+        using (SoftDeleteDataFilter.Disable())
+        {
+            var order2 = await OrderRepository.FirstOrDefaultAsync(x => x.Id == AppTestDataBuilder.OrderId);
+            order2.ShouldBeNull();
+        }
+    }
 
     private async Task SoftDeleteAsync()
     {
