@@ -60,10 +60,11 @@ public class AuditingInterceptor : IFakeInterceptor
         try
         {
             Debug.Assert(auditingManager.Current != null, "auditingManager.Current != null");
-            await ProcessWithCurrentAuditingScopeAsync(invocation, auditingOptions, auditingHelper,
-                auditingManager.Current.Log);
 
-            if (auditingManager.Current.Log.Exceptions.Any()) hasError = true;
+            await ProcessWithCurrentAuditingScopeAsync(invocation, auditingOptions, auditingHelper,
+                auditingManager.Current!.Log);
+
+            if (auditingManager.Current!.Log.Exceptions.Any()) hasError = true;
         }
         catch (Exception)
         {
@@ -125,7 +126,7 @@ public class AuditingInterceptor : IFakeInterceptor
         FakeAuditingOptions auditingOptions,
         IAuditingHelper auditingHelper, AuditLogInfo auditLogInfo)
     {
-        AuditLogActionInfo auditLogActionInfo = null;
+        AuditLogActionInfo? auditLogActionInfo = null;
         if (auditingOptions.IsEnabledActionLog)
         {
             auditLogActionInfo = auditingHelper.CreateAuditLogActionInfo(invocation);

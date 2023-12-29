@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Data.Common;
 using System.Diagnostics;
-using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,7 +13,7 @@ public class FakeDbCommandInterceptor : IDbCommandInterceptor
 {
     private readonly ICommandFormatter _commandFormatter;
     private readonly ILogger<FakeDbCommandInterceptor> _logger;
-    private Stopwatch _stopwatch;
+    private Stopwatch _stopwatch = default!;
 
     public FakeDbCommandInterceptor(ICommandFormatter commandFormatter, ILogger<FakeDbCommandInterceptor> logger)
     {
@@ -28,10 +27,11 @@ public class FakeDbCommandInterceptor : IDbCommandInterceptor
     {
         _stopwatch = Stopwatch.StartNew();
 
-        return new ValueTask<InterceptionResult<DbDataReader>>(result);  
+        return new ValueTask<InterceptionResult<DbDataReader>>(result);
     }
 
-    public ValueTask<DbDataReader> ReaderExecutedAsync(DbCommand command, CommandExecutedEventData eventData, DbDataReader result,
+    public ValueTask<DbDataReader> ReaderExecutedAsync(DbCommand command, CommandExecutedEventData eventData,
+        DbDataReader result,
         CancellationToken cancellationToken = new CancellationToken())
     {
         _stopwatch.Stop();
@@ -42,7 +42,8 @@ public class FakeDbCommandInterceptor : IDbCommandInterceptor
         // sb.AppendLine($"- ClientIpAddress        : {ClientIpAddress}");
         sb.AppendLine($"- ExecutionDuration      : {_stopwatch.ElapsedMilliseconds} ms");
         sb.AppendLine($"  {_commandFormatter.Format(command)}");
-        
+
+        // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
         _logger.LogInformation(sb.ToString());
 
         return new ValueTask<DbDataReader>(result);

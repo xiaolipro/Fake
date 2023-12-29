@@ -6,12 +6,12 @@ public interface IFakeClock
     /// 当前时间
     /// </summary>
     DateTime Now { get; }
-    
+
     /// <summary>
     /// 时间种类
     /// </summary>
     DateTimeKind Kind { get; }
-    
+
     /// <summary>
     /// 标准化
     /// </summary>
@@ -24,7 +24,7 @@ public interface IFakeClock
     /// </summary>
     /// <param name="datetime"></param>
     /// <returns></returns>
-    string NormalizeAsString(DateTime datetime);
+    string? NormalizeAsString(DateTime datetime);
 
     /// <summary>
     /// 度量动作执行时间

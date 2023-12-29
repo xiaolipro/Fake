@@ -9,8 +9,8 @@ namespace Fake.DomainDrivenDesign.Repositories.EntityFrameWorkCore;
 public class EfCoreRootlessRepository<TDbContext> : IRootlessRepository
     where TDbContext : FakeDbContext<TDbContext>
 {
-    // ReSharper disable once UnusedAutoPropertyAccessor.Global
-    public ILazyServiceProvider LazyServiceProvider { get; set; } // 属性注入
+    // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Global
+    public ILazyServiceProvider LazyServiceProvider { get; set; } = default!; // 属性注入
 
     private IDbContextProvider<TDbContext> DbContextProvider =>
         LazyServiceProvider.GetRequiredService<IDbContextProvider<TDbContext>>();

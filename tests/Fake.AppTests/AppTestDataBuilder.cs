@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Domain.Aggregates.BuyerAggregate;
+﻿using Domain.Aggregates.BuyerAggregate;
 using Domain.Aggregates.OrderAggregate;
 using Fake.Auditing;
 using Fake.DomainDrivenDesign.Repositories;

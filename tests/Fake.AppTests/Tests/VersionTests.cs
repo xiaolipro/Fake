@@ -23,10 +23,10 @@ public abstract class VersionTests<TStartupModule> : AppTestBase<TStartupModule>
     [Fact]
     public async Task 脏读不会被更新()
     {
-        var order = await OrderRepository.First(x => x.Id == AppTestDataBuilder.OrderId);
+        var order = await OrderRepository.FirstAsync(x => x.Id == AppTestDataBuilder.OrderId);
         order.SetDescription("hello");
 
-        var order2 = await OrderRepository.First(x => x.Id == AppTestDataBuilder.OrderId);
+        var order2 = await OrderRepository.FirstAsync(x => x.Id == AppTestDataBuilder.OrderId);
         order2.SetDescription("ok");
         await OrderRepository.UpdateAsync(order);
         //And updating my old entity throws exception!
@@ -39,9 +39,9 @@ public abstract class VersionTests<TStartupModule> : AppTestBase<TStartupModule>
     [Fact]
     public async Task 脏读更新会抛异常()
     {
-        var order = await OrderRepository.First(x => x.Id == AppTestDataBuilder.OrderId);
+        var order = await OrderRepository.FirstAsync(x => x.Id == AppTestDataBuilder.OrderId);
 
-        var order2 = await OrderRepository.First(x => x.Id == AppTestDataBuilder.OrderId);
+        var order2 = await OrderRepository.FirstAsync(x => x.Id == AppTestDataBuilder.OrderId);
         order2.SetDescription("hello2");
         await OrderRepository.UpdateAsync(order2);
 
@@ -55,9 +55,9 @@ public abstract class VersionTests<TStartupModule> : AppTestBase<TStartupModule>
     [Fact]
     public async Task 脏读软删除不会被并发更新限制()
     {
-        var order = await OrderRepository.First(x => x.Id == AppTestDataBuilder.OrderId);
+        var order = await OrderRepository.FirstAsync(x => x.Id == AppTestDataBuilder.OrderId);
 
-        var order2 = await OrderRepository.First(x => x.Id == AppTestDataBuilder.OrderId);
+        var order2 = await OrderRepository.FirstAsync(x => x.Id == AppTestDataBuilder.OrderId);
         order2.SetDescription("hello2");
         await OrderRepository.UpdateAsync(order2);
 

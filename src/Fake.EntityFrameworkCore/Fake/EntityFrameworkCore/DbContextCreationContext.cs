@@ -7,26 +7,21 @@ using Microsoft.Extensions.Configuration;
 
 namespace Fake.EntityFrameworkCore;
 
-public class DbContextCreationContext
+public class DbContextCreationContext(string connectionString)
 {
-    public static DbContextCreationContext Current => _current.Value;
-    
-    private static readonly AsyncLocal<DbContextCreationContext> _current = new AsyncLocal<DbContextCreationContext>();
+    public static DbContextCreationContext? Current => LocalContext.Value;
 
-    public string ConnectionString { get; }
+    private static readonly AsyncLocal<DbContextCreationContext?> LocalContext = new();
 
-    public DbConnection ExistingConnection { get; internal set; }
+    public string ConnectionString { get; } = connectionString;
 
-    public DbContextCreationContext(string connectionString)
-    {
-        ConnectionString = connectionString;
-    }
-    
+    public DbConnection? ExistingConnection { get; internal set; }
+
     public static IDisposable Use(DbContextCreationContext context)
     {
         var previousValue = Current;
-        _current.Value = context;
-        return new DisposableWrapper(() => _current.Value = previousValue);
+        LocalContext.Value = context;
+        return new DisposableWrapper(() => LocalContext.Value = previousValue);
     }
 
 
@@ -36,7 +31,7 @@ public class DbContextCreationContext
         if (Current != null) return Current;
 
         var connectionStringName = ConnectionStringNameAttribute.GetConnStringName<TDbContext>();
-        var connectionString = configuration.GetConnectionString(connectionStringName);
+        var connectionString = configuration.GetConnectionString(connectionStringName)!;
         return new DbContextCreationContext(connectionString);
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Fake;
-using JetBrains.Annotations;
 
 namespace System;
 
@@ -32,7 +31,7 @@ public static class FakeStringExtensions
     /// <summary>
     /// 表示此字符串 不是 null或空字符串或空白格。
     /// </summary>
-    public static bool IsNotNullOrWhiteSpace([CanBeNull] this string? str)
+    public static bool IsNotNullOrWhiteSpace(this string? str)
     {
         return !string.IsNullOrWhiteSpace(str);
     }
@@ -116,9 +115,9 @@ public static class FakeStringExtensions
     /// <returns></returns>
     public static string? Truncate(this string? str, int len)
     {
-        ThrowHelper.ThrowIfNull(str, nameof(str));
+        if (str.IsNullOrEmpty()) return str;
 
-        if (str.Length < len) len = str.Length;
+        if (str!.Length < len) len = str.Length;
 
         return str.Substring(0, len);
     }
@@ -137,7 +136,7 @@ public static class FakeStringExtensions
 
         if (maxLen - suffix.Length <= 0) return str.Truncate(maxLen);
 
-        if (str.Length <= maxLen) return str;
+        if (str!.Length <= maxLen) return str;
         return str.Truncate(maxLen - suffix.Length) + suffix;
     }
 }

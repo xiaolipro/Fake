@@ -26,6 +26,6 @@ public class FakeJsonValueConverter<TPropertyType> : ValueConverter<TPropertyTyp
             {
                 new ObjectToInferredTypesConverter()
             }
-        });
+        })!;
     }
 }

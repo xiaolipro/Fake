@@ -77,8 +77,7 @@ public class Order : FullAuditedAggregate<Guid, Guid>
     public void AddOrderItem(int productId, string productName, decimal unitPrice, decimal discount, string pictureUrl,
         int units = 1)
     {
-        var existingOrderForProduct = _orderItems.Where(o => o.ProductId == productId)
-            .SingleOrDefault();
+        var existingOrderForProduct = _orderItems.SingleOrDefault(o => o.ProductId == productId);
 
         if (existingOrderForProduct != null)
         {

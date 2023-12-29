@@ -36,7 +36,7 @@ public abstract class RepositoryBase<TEntity> : IRepository<TEntity>
         bool isInclude = true,
         CancellationToken cancellationToken = default);
 
-    public async Task<TEntity> First(Expression<Func<TEntity, bool>>? predicate = null, bool isInclude = true,
+    public async Task<TEntity> FirstAsync(Expression<Func<TEntity, bool>>? predicate = null, bool isInclude = true,
         CancellationToken cancellationToken = default)
     {
         var res = await FirstOrDefaultAsync(predicate, isInclude, cancellationToken);

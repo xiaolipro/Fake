@@ -41,7 +41,7 @@ public class AuditingManager : IAuditingManager
         var scope = _ambientScopeProvider.BeginScope(AuditingContextKey, value);
 
         Debug.Assert(Current != null, nameof(Current) + " != null");
-        return new AuditLogSaveHandle(this, scope, Current.Log, Stopwatch.StartNew());
+        return new AuditLogSaveHandle(this, scope, Current!.Log, Stopwatch.StartNew());
     }
 
     protected virtual async Task SaveAsync(AuditLogSaveHandle saveHandle)

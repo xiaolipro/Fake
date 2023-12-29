@@ -32,7 +32,7 @@ public class FakeClock : IFakeClock
         };
     }
 
-    public virtual string NormalizeAsString(DateTime datetime)
+    public virtual string? NormalizeAsString(DateTime datetime)
     {
         return Normalize(datetime).ToString(_options.DateTimeFormat);
     }

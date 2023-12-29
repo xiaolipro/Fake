@@ -7,15 +7,8 @@ using Fake.Timing;
 
 namespace Fake.EntityFrameworkCore.Interceptors;
 
-public class FakeCommandFormatter : ICommandFormatter
+public class FakeCommandFormatter(IFakeClock clock) : ICommandFormatter
 {
-    private readonly IFakeClock _clock;
-
-    public FakeCommandFormatter(IFakeClock clock)
-    {
-        _clock = clock;
-    }
-
     public string Format(DbCommand command)
     {
         if (command.Parameters.Count == 0)
@@ -35,15 +28,15 @@ public class FakeCommandFormatter : ICommandFormatter
         return formattedCommand.ToString();
     }
 
-    private string GetParameterValueWrapper(IDataParameter parameter, string parameterValue)
+    private string? GetParameterValueWrapper(IDataParameter parameter, string? parameterValue)
     {
         if (parameter.Value is string or char or Guid or DateTime) return $"'{parameterValue}'";
         return parameterValue;
     }
 
-    public virtual string GetParameterValue(IDataParameter parameter)
+    public virtual string? GetParameterValue(IDataParameter parameter)
     {
-        object value = parameter.Value;
+        var value = parameter.Value;
         if (value == null || value == DBNull.Value)
         {
             return null;
@@ -56,14 +49,14 @@ public class FakeCommandFormatter : ICommandFormatter
 
         if (value is DateTime datetime)
         {
-            return _clock.NormalizeAsString(datetime);
+            return clock.NormalizeAsString(datetime);
         }
 
         // todo: bool在postgresql表达是0,1
-        
+
         if (value.GetType().IsEnum)
         {
-            return Convert.ChangeType(value, Enum.GetUnderlyingType(value.GetType()))!.ToString();
+            return Convert.ChangeType(value, Enum.GetUnderlyingType(value.GetType())).ToString();
         }
 
         return Convert.ToString(value, CultureInfo.InvariantCulture);

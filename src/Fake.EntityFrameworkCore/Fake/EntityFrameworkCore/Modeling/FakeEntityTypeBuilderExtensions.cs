@@ -1,7 +1,7 @@
 ﻿using System;
 using Fake.Data;
 using Fake.DomainDrivenDesign.Entities.Auditing;
-using Fake.EntityFrameworkCore.ValueComparers;
+using Fake.EntityFrameworkCore.ValueCompares;
 using Fake.EntityFrameworkCore.ValueConverters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -46,7 +46,7 @@ public static class FakeEntityTypeBuilderExtensions
             builder.Property(nameof(IHasCreator<TUserId>.CreatorId))
                 .HasColumnName(nameof(IHasCreator<TUserId>.CreatorId))
                 .IsRequired();
-            
+
             builder.Property(nameof(IHasCreationTime.CreationTime))
                 .HasColumnName(nameof(IHasCreationTime.CreationTime))
                 .IsRequired();
@@ -79,9 +79,10 @@ public static class FakeEntityTypeBuilderExtensions
                 .IsRequired()
                 .HasDefaultValue(false)
                 .HasColumnName(nameof(ISoftDelete.IsDeleted));
-            
+
             builder.Ignore(nameof(ISoftDelete.HardDeleted));
         }
+
         return builder;
     }
 }
