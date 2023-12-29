@@ -29,14 +29,6 @@ public static class FakeStringExtensions
     }
 
     /// <summary>
-    /// 表示此字符串 不是 null或空字符串或空白格。
-    /// </summary>
-    public static bool IsNotNullOrWhiteSpace(this string? str)
-    {
-        return !string.IsNullOrWhiteSpace(str);
-    }
-
-    /// <summary>
     /// 表示字符串 存在于 该<see cref="Enumerable"/>实例中，
     /// 内部使用Enumerable.Contains。
     /// </summary>
@@ -57,7 +49,7 @@ public static class FakeStringExtensions
     /// <param name="comparisonType"></param>
     /// <returns>追加后的结果</returns>
     /// <exception cref="ArgumentNullException">str is null</exception>
-    public static string EndsWithOrAppend(this string str, string end,
+    public static string EndsWithAppend(this string str, string end,
         StringComparison comparisonType = StringComparison.Ordinal)
     {
         ThrowHelper.ThrowIfNull(str, nameof(str));
@@ -68,15 +60,6 @@ public static class FakeStringExtensions
         return str + end;
     }
 
-    public static bool NotBeEndsWith(this string str, string start,
-        StringComparison comparisonType = StringComparison.Ordinal)
-    {
-        ThrowHelper.ThrowIfNull(str, nameof(str));
-        ThrowHelper.ThrowIfNull(start, nameof(start));
-
-        return !str.EndsWith(start, comparisonType);
-    }
-
     /// <summary>
     /// 如果str不是以start开始，则在句首追加start
     /// </summary>
@@ -85,7 +68,7 @@ public static class FakeStringExtensions
     /// <param name="comparisonType"></param>
     /// <returns>追加后的结果</returns>
     /// <exception cref="ArgumentNullException">str is null</exception>
-    public static string StartsWithOrAppend(this string str, string start,
+    public static string StartsWithAppend(this string str, string start,
         StringComparison comparisonType = StringComparison.Ordinal)
     {
         ThrowHelper.ThrowIfNull(str, nameof(str));
@@ -95,17 +78,6 @@ public static class FakeStringExtensions
 
         return start + str;
     }
-
-
-    public static bool NotBeStartsWith(this string str, string start,
-        StringComparison comparisonType = StringComparison.Ordinal)
-    {
-        ThrowHelper.ThrowIfNull(str, nameof(str));
-        ThrowHelper.ThrowIfNull(start, nameof(start));
-
-        return !str.StartsWith(start, comparisonType);
-    }
-
 
     /// <summary>
     /// 截取给定长度子串，如果给定长度超出原字符串，则返回原字符串

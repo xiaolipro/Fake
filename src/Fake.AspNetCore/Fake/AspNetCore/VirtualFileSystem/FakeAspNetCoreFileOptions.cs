@@ -5,5 +5,5 @@ public class FakeAspNetCoreFileOptions
     /// <summary>
     /// aspnetcore文件根目录
     /// </summary>
-    public string WebRootFilePath { get; set; }
+    public string WebRootFilePath { get; set; } = "wwwroot";
 }

@@ -17,10 +17,11 @@ public static class FakeHostExtensions
     public static IHost MigrateDbContext<TContext>(this IHost host, Action<TContext, IServiceProvider> seeder)
         where TContext : DbContext
     {
+        ArgumentNullException.ThrowIfNull(seeder);
         var underK8S = host.IsInKubernetes();
 
         using var scope = host.Services.CreateScope();
-        
+
         var services = scope.ServiceProvider;
         var logger = services.GetRequiredService<ILogger<TContext>>();
         var context = services.GetService<TContext>();
@@ -31,7 +32,7 @@ public static class FakeHostExtensions
                 typeof(TContext).Name);
 
             // todo: 网络回退？
-            InvokeSeeder(seeder, context, services);
+            InvokeSeeder(seeder!, context, services);
 
             logger.LogInformation("Migrated database associated with context {DbContextName}",
                 typeof(TContext).Name);

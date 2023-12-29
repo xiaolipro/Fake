@@ -3,16 +3,11 @@ using Microsoft.Extensions.Options;
 
 namespace Fake.Timing;
 
-public class FakeClock : IFakeClock
+public class FakeClock(IOptions<FakeClockOptions> options) : IFakeClock
 {
-    private readonly FakeClockOptions _options;
+    private readonly FakeClockOptions _options = options.Value;
 
-    private readonly AsyncLocal<Stopwatch?> _stopwatch = new AsyncLocal<Stopwatch?>();
-
-    public FakeClock(IOptions<FakeClockOptions> options)
-    {
-        _options = options.Value;
-    }
+    private readonly AsyncLocal<Stopwatch?> _stopwatch = new();
 
     public virtual DateTime Now => _options.Kind == DateTimeKind.Utc ? DateTime.UtcNow : DateTime.Now;
     public virtual DateTimeKind Kind => _options.Kind;
@@ -32,7 +27,7 @@ public class FakeClock : IFakeClock
         };
     }
 
-    public virtual string? NormalizeAsString(DateTime datetime)
+    public virtual string NormalizeAsString(DateTime datetime)
     {
         return Normalize(datetime).ToString(_options.DateTimeFormat);
     }

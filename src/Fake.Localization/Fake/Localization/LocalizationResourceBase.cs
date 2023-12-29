@@ -5,20 +5,20 @@ using Microsoft.Extensions.Localization;
 
 namespace Fake.Localization;
 
-public abstract class AbstractLocalizationResource
+public abstract class LocalizationResourceBase
 {
-    public string? ResourceName { get; }
-    public string? DefaultCultureName { get; set; }
+    public string ResourceName { get; }
 
     /// <summary>
     /// 继承的资源
     /// </summary>
-    public List<string?> BaseResourceNames { get; }
+    public List<string> BaseResourceNames { get; }
 
+    public string? DefaultCultureName { get; set; }
     public List<ILocalizationResourceContributor> Contributors { get; }
 
-    public AbstractLocalizationResource(
-        string? resourceName,
+    public LocalizationResourceBase(
+        string resourceName,
         string? defaultCultureName = null)
     {
         ThrowHelper.ThrowIfNull(resourceName, nameof(resourceName));
@@ -30,8 +30,8 @@ public abstract class AbstractLocalizationResource
     }
 
     public void Fill(
-        string? cultureName,
-        Dictionary<string, LocalizedString?> dictionary)
+        string cultureName,
+        Dictionary<string, LocalizedString> dictionary)
     {
         foreach (var contributor in Contributors)
         {
@@ -39,7 +39,7 @@ public abstract class AbstractLocalizationResource
         }
     }
 
-    public LocalizedString? GetOrNull(string? cultureName, string name)
+    public LocalizedString? GetOrNull(string cultureName, string name)
     {
         // 后者优先
         foreach (var contributor in Contributors.Select(x => x).Reverse())

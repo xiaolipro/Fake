@@ -5,66 +5,57 @@ using Microsoft.Extensions.FileProviders;
 
 namespace Fake.VirtualFileSystem.Embedded;
 
-public class FakeEmbeddedFileInfo: IFileInfo
+public class EmbeddedFileInfo(
+    Assembly assembly,
+    string resourcePath,
+    string virtualPath,
+    string name,
+    DateTimeOffset lastModified)
+    : IFileInfo
 {
+    public bool Exists => true;
+
     /// <summary>
     /// 虚拟路径
     /// </summary>
-    public string VirtualPath { get; }
-    public string PhysicalPath => null;
-    
-    public string Name { get; }
-    public DateTimeOffset LastModified { get; }
-    
-    public bool Exists => true;
+    public string VirtualPath { get; } = virtualPath;
+
+    public string? PhysicalPath => null;
+
+    public string Name { get; } = name;
+    public DateTimeOffset LastModified { get; } = lastModified;
+
 
     private long? _length;
+
     public long Length
     {
         get
         {
             if (_length.HasValue) return _length.Value;
 
-            using var stream = _assembly.GetManifestResourceStream(_resourcePath);
-            return stream?.Length?? 0;
+            using var stream = assembly.GetManifestResourceStream(resourcePath);
+            return stream!.Length;
         }
     }
 
     public bool IsDirectory => false;
-    
-    private readonly Assembly _assembly;
-    private readonly string _resourcePath;
-    
-    public FakeEmbeddedFileInfo(
-        Assembly assembly,
-        string resourcePath,
-        string virtualPath,
-        string name,
-        DateTimeOffset lastModified)
-    {
-        _assembly = assembly;
-        _resourcePath = resourcePath;
 
-        VirtualPath = virtualPath;
-        Name = name;
-        LastModified = lastModified;
-    }
-    
     public Stream CreateReadStream()
     {
-        var stream = _assembly.GetManifestResourceStream(_resourcePath);
+        var stream = assembly.GetManifestResourceStream(resourcePath);
 
         if (!_length.HasValue && stream != null)
         {
             _length = stream.Length;
         }
 
-        return stream;
+        return stream!;
     }
 
 
     public override string ToString()
     {
-        return $"[{nameof(FakeEmbeddedFileInfo)}] {Name} ({this.VirtualPath})";
+        return $"[{nameof(EmbeddedFileInfo)}] {Name} ({this.VirtualPath})";
     }
 }

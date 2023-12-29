@@ -31,17 +31,6 @@ public class FakeAuditingModule : FakeModule
         context.Services.Configure<FakeAuditingOptions>(options =>
         {
             options.ApplicationName = context.Services.GetApplicationName();
-            options.IsEnabledLog = true;
-            options.IsEnabledActionLog = true;
-            options.IsEnabledExceptionLog = true;
-            options.IsEnabledGetRequestLog = true;
-            options.AllowAnonymous = true;
-            options.EntityChangeOptions = new EntityChangeOptions
-            {
-                IsEnabled = true,
-                ValueMaxLength = 256,
-                IgnoreProperties = new List<string> { "Id" }
-            };
         });
 
         context.Services.AddSingleton(typeof(IAuditingHelper), typeof(AuditingHelper));

@@ -11,19 +11,19 @@ public class FakeEmbeddedFileProvider : AbstractInMemoryFileProvider
 {
     protected virtual Assembly Assembly { get; }
 
-    protected virtual string Root { get; }
+    protected virtual string? Root { get; }
 
-    protected override IDictionary<string, IFileInfo?> Files => _fileDic.Value;
-    private readonly Lazy<Dictionary<string, IFileInfo?>> _fileDic;
+    protected override IDictionary<string, IFileInfo> Files => _files.Value;
+    private readonly Lazy<Dictionary<string, IFileInfo>> _files;
 
-    public FakeEmbeddedFileProvider(Assembly assembly, string root = null)
+    public FakeEmbeddedFileProvider(Assembly assembly, string? root = null)
     {
         ThrowHelper.ThrowIfNull(assembly, nameof(assembly));
 
         Assembly = assembly;
         Root = root?.Trim('/').Replace("/", ".");
 
-        _fileDic = new Lazy<Dictionary<string, IFileInfo?>>(
+        _files = new Lazy<Dictionary<string, IFileInfo>>(
             () =>
             {
                 var fileDic = new Dictionary<string, IFileInfo>(StringComparer.OrdinalIgnoreCase);
@@ -35,26 +35,26 @@ public class FakeEmbeddedFileProvider : AbstractInMemoryFileProvider
     }
 
 
-    public virtual void AddFiles(Dictionary<string, IFileInfo> fileDic)
+    public virtual void AddFiles(Dictionary<string, IFileInfo> files)
     {
         var lastModificationTime = GetLastModificationTime();
 
         foreach (var resourcePath in Assembly.GetManifestResourceNames())
         {
-            if (Root.IsNotNullOrWhiteSpace() && !resourcePath.StartsWith(Root))
+            if (!Root.IsNullOrEmpty() && !resourcePath.StartsWith(Root!))
             {
                 continue;
             }
 
             // 资产名称a.b.c->目录层级/a/b/c
-            var fullPath = ConvertToRelativePath(resourcePath);
+            var fullPath = ConvertToRelativePath(resourcePath).StartsWithAppend("/");
 
             // 添加虚拟目录
-            AddVirtualDirectoriesRecursively(fileDic, fullPath.Substring(0, fullPath.LastIndexOf('/')),
+            AddVirtualDirectoriesRecursively(files, fullPath.Substring(0, fullPath.LastIndexOf('/')),
                 lastModificationTime);
 
             // 添加虚拟文件
-            fileDic[fullPath] = new FakeEmbeddedFileInfo(
+            files[fullPath] = new EmbeddedFileInfo(
                 Assembly,
                 resourcePath,
                 fullPath,
@@ -88,32 +88,32 @@ public class FakeEmbeddedFileProvider : AbstractInMemoryFileProvider
 
     private string ConvertToRelativePath(string resourcePath)
     {
-        if (Root.IsNotNullOrWhiteSpace())
+        if (!Root.IsNullOrEmpty())
         {
-            resourcePath = resourcePath.Substring(Root.Length + 1);
+            resourcePath = resourcePath.Substring(Root!.Length + 1);
         }
 
-        var pathParts = resourcePath.Split('.');
-        if (pathParts.Length <= 2)
+        var paths = resourcePath.Split('.');
+        if (paths.Length <= 2)
         {
             return resourcePath;
         }
 
         // a.b.c.txt => a/b/c.txt
-        var folder = pathParts.Take(pathParts.Length - 2).JoinAsString("/");
-        var fileName = pathParts.Skip(pathParts.Length - 2).JoinAsString(".");
+        var folder = paths.Take(paths.Length - 2).JoinAsString("/");
+        var fileName = paths.Skip(paths.Length - 2).JoinAsString(".");
         return folder + "/" + fileName;
     }
 
-    private static void AddVirtualDirectoriesRecursively(Dictionary<string, IFileInfo> fileDic, string directoryPath,
+    private static void AddVirtualDirectoriesRecursively(Dictionary<string, IFileInfo> files, string directoryPath,
         DateTimeOffset lastModificationTime)
     {
-        if (fileDic.ContainsKey(directoryPath))
+        if (files.ContainsKey(directoryPath))
         {
             return;
         }
 
-        fileDic[directoryPath] = new FakeEmbeddedDirectoryFileInfo(
+        files[directoryPath] = new VirtualDirectoryFileInfo(
             directoryPath,
             CalculateFileName(directoryPath),
             lastModificationTime
@@ -121,7 +121,7 @@ public class FakeEmbeddedFileProvider : AbstractInMemoryFileProvider
 
         if (directoryPath.Contains("/"))
         {
-            AddVirtualDirectoriesRecursively(fileDic, directoryPath.Substring(0, directoryPath.LastIndexOf('/')),
+            AddVirtualDirectoriesRecursively(files, directoryPath.Substring(0, directoryPath.LastIndexOf('/')),
                 lastModificationTime);
         }
     }

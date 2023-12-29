@@ -1,25 +1,26 @@
-﻿using Fake.Collections;
+﻿using System;
+using Fake.Collections;
 using Fake.Localization.Contributors;
 
 namespace Fake.Localization;
 
 public class FakeLocalizationOptions
 {
-    public FakeLocalizationOptions()
-    {
-        GlobalContributors = new TypeList<ILocalizationResourceContributor>();
-        Resources = new LocalizationResourceDictionary();
-    }
-
     /// <summary>
     /// 本地化资源字典
     /// </summary>
-    public LocalizationResourceDictionary Resources { get; }
+    public LocalizationResourceDictionary Resources { get; } = new();
+
+    /// <summary>
+    /// 默认资源类型
+    /// </summary>
+    public Type? DefaultResourceType { get; set; }
 
     /// <summary>
     /// 1.先从全局贡献者获取（倒序）
     /// </summary>
-    public ITypeList<ILocalizationResourceContributor> GlobalContributors { get; }
+    public ITypeList<ILocalizationResourceContributor> GlobalContributors { get; } =
+        new TypeList<ILocalizationResourceContributor>();
 
     /// <summary>
     /// 2.如果指定culture找不到，尝试从parent culture找
@@ -32,7 +33,7 @@ public class FakeLocalizationOptions
     public bool TryGetFromDefaultCulture { get; set; }
 
     /// <summary>
-    /// 默认culture，优先级低于<see cref="AbstractLocalizationResource"/>
+    /// 默认culture，优先级低于<see cref="LocalizationResourceBase"/>
     /// </summary>
-    public string? DefaultCulture { get; set; }
+    public string DefaultCulture { get; set; } = "zh";
 }

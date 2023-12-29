@@ -6,11 +6,11 @@ namespace Fake.VirtualFileSystem;
 
 public abstract class AbstractInMemoryFileProvider : IFileProvider
 {
-    protected abstract IDictionary<string, IFileInfo?> Files { get; }
+    protected abstract IDictionary<string, IFileInfo> Files { get; }
 
     public virtual IFileInfo GetFileInfo(string subpath)
     {
-        if (subpath == null) return new NotFoundFileInfo("");
+        if (subpath.IsNullOrEmpty()) return new NotFoundFileInfo("");
 
         var file = Files.GetOrDefault(subpath.Trim('/'));
 

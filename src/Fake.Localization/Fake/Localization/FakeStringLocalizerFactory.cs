@@ -9,51 +9,54 @@ using Microsoft.Extensions.Options;
 
 namespace Fake.Localization;
 
-public class FakeStringLocalizerFactory : IStringLocalizerFactory, IFakeStringLocalizerFactory
+public class FakeStringLocalizerFactory(
+    IOptions<FakeLocalizationOptions> options,
+    ResourceManagerStringLocalizerFactory innerFactory,
+    IServiceProvider serviceProvider)
+    : IFakeStringLocalizerFactory
 {
-    private readonly ResourceManagerStringLocalizerFactory _innerFactory;
-    private readonly IServiceProvider _serviceProvider;
-    private readonly FakeLocalizationOptions _options;
+    private readonly FakeLocalizationOptions _options = options.Value;
 
-    private readonly Dictionary<string?, IStringLocalizer> _localizerCache;
+    private readonly Dictionary<string, IStringLocalizer> _localizerCache = new();
 
     // 工厂模式，巧用锁存
-    private readonly SemaphoreSlim _semaphore;
-
-    public FakeStringLocalizerFactory(IOptions<FakeLocalizationOptions> options,
-        ResourceManagerStringLocalizerFactory innerFactory, IServiceProvider serviceProvider)
-    {
-        _innerFactory = innerFactory;
-        _serviceProvider = serviceProvider;
-        _options = options.Value;
-        _localizerCache = new Dictionary<string?, IStringLocalizer>();
-        _semaphore = new SemaphoreSlim(1, 1);
-    }
+    private readonly SemaphoreSlim _semaphore = new(1, 1);
 
     public IStringLocalizer Create(Type resourceType)
     {
         var resource = _options.Resources.GetOrDefault(resourceType);
 
-        if (resource == null) return _innerFactory.Create(resourceType);
+        if (resource == null) return innerFactory.Create(resourceType);
 
         return CreateStringLocalizer(resource, true);
     }
 
     public IStringLocalizer Create(string baseName, string location)
     {
-        return _innerFactory.Create(baseName, location);
+        return innerFactory.Create(baseName, location);
     }
 
-    public IStringLocalizer CreateByResourceName(string resourceName)
+    public IStringLocalizer? CreateDefaultOrNull()
+    {
+        if (_options.DefaultResourceType == null)
+        {
+            return null;
+        }
+
+        return Create(_options.DefaultResourceType);
+    }
+
+    public IStringLocalizer? CreateByResourceNameOrNull(string resourceName)
     {
         var resource = _options.Resources.GetOrDefault(resourceName);
 
+        if (resource == null) return null;
         return CreateStringLocalizer(resource, true);
     }
 
-    private IStringLocalizer CreateStringLocalizer(AbstractLocalizationResource resource, bool latched)
+    private IStringLocalizer CreateStringLocalizer(LocalizationResourceBase resource, bool latched)
     {
-        string? resourceResourceName = resource.ResourceName;
+        string resourceResourceName = resource.ResourceName;
 
         if (_localizerCache.TryGetValue(resourceResourceName, out var localizer))
         {
@@ -77,14 +80,14 @@ public class FakeStringLocalizerFactory : IStringLocalizerFactory, IFakeStringLo
         }
     }
 
-    private IStringLocalizer CreateStringLocalizer(AbstractLocalizationResource resource)
+    private IStringLocalizer CreateStringLocalizer(LocalizationResourceBase resource)
     {
         foreach (var contributor in _options.GlobalContributors)
         {
             resource.Contributors.Add(ReflectionHelper.CreateInstance<ILocalizationResourceContributor>(contributor));
         }
 
-        var context = new LocalizationResourceInitializationContext(resource, _serviceProvider);
+        var context = new LocalizationResourceInitializationContext(resource, serviceProvider);
 
         foreach (var contributor in resource.Contributors)
         {
@@ -101,6 +104,6 @@ public class FakeStringLocalizerFactory : IStringLocalizerFactory, IFakeStringLo
             .Where(x => x != null)
             .ToList();
 
-        return new InMemoryStringLocalizer(resource, inheritsLocalizer, _options);
+        return new InMemoryStringLocalizer(resource, inheritsLocalizer!, _options);
     }
 }

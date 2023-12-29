@@ -5,7 +5,7 @@ using Fake.Modularity;
 
 namespace Fake.Localization;
 
-public class LocalizationResource : AbstractLocalizationResource
+public class LocalizationResource : LocalizationResourceBase
 {
     public Type ResourceType { get; }
 

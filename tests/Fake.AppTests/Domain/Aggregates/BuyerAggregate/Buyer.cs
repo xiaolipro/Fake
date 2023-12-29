@@ -21,7 +21,7 @@ public class Buyer : AggregateRoot<Guid>
     public Buyer(Guid identity, string name) : this()
     {
         IdentityGuid = identity;
-        Name = name.IsNotNullOrWhiteSpace() ? name : throw new ArgumentNullException(nameof(name));
+        Name = !name.IsNullOrWhiteSpace() ? name : throw new ArgumentNullException(nameof(name));
     }
 
     public PaymentMethod AddPaymentMethod(

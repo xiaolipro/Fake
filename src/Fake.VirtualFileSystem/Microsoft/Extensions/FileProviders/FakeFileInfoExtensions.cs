@@ -6,11 +6,11 @@ namespace Microsoft.Extensions.FileProviders;
 
 public static class FakeFileInfoExtensions
 {
-    public static string GetVirtualOrPhysicalPathOrNull(this IFileInfo? fileInfo)
+    public static string? GetVirtualOrPhysicalPathOrNull(this IFileInfo fileInfo)
     {
         ThrowHelper.ThrowIfNull(fileInfo, nameof(fileInfo));
 
-        if (fileInfo is FakeEmbeddedFileInfo embeddedResourceFileInfo)
+        if (fileInfo is EmbeddedFileInfo embeddedResourceFileInfo)
         {
             return embeddedResourceFileInfo.VirtualPath;
         }

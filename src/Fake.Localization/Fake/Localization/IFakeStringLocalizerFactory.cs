@@ -2,7 +2,9 @@ using Microsoft.Extensions.Localization;
 
 namespace Fake.Localization;
 
-public interface IFakeStringLocalizerFactory
+public interface IFakeStringLocalizerFactory : IStringLocalizerFactory
 {
-    IStringLocalizer CreateByResourceName(string resourceName);
+    IStringLocalizer? CreateDefaultOrNull();
+
+    IStringLocalizer? CreateByResourceNameOrNull(string resourceName);
 }

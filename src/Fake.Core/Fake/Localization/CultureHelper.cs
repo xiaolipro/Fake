@@ -26,10 +26,10 @@ public static class CultureHelper
     /// </summary>
     /// <param name="cultureName"></param>
     /// <returns></returns>
-    public static string? GetParentCultureName(string? cultureName)
+    public static string GetParentCultureName(string? cultureName)
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(cultureName, nameof(cultureName));
-        
+
         return new CultureInfo(cultureName).Parent.Name;
     }
 }

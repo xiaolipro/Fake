@@ -24,7 +24,7 @@ public interface IFakeClock
     /// </summary>
     /// <param name="datetime"></param>
     /// <returns></returns>
-    string? NormalizeAsString(DateTime datetime);
+    string NormalizeAsString(DateTime datetime);
 
     /// <summary>
     /// 度量动作执行时间

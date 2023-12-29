@@ -16,18 +16,18 @@ public interface ILocalizedStringContainer
     /// <summary>
     /// 文化
     /// </summary>
-    string? CultureName { get; }
+    string CultureName { get; }
 
     /// <summary>
     /// 查字典
     /// </summary>
     /// <param name="name"></param>
     /// <returns></returns>
-    LocalizedString? GetLocalizedStringOrDefault(string name);
+    LocalizedString? GetLocalizedStringOrNull(string name);
 
     /// <summary>
-    /// 填充字典
+    /// 填充容器
     /// </summary>
     /// <param name="dictionary"></param>
-    void Fill(Dictionary<string, LocalizedString?> dictionary);
+    void Fill(Dictionary<string, LocalizedString> dictionary);
 }

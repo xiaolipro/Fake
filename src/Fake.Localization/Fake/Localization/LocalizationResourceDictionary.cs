@@ -6,16 +6,16 @@ namespace Fake.Localization;
 /// <summary>
 /// 本地化资源字典 资源名称：资源
 /// </summary>
-public class LocalizationResourceDictionary : Dictionary<string, AbstractLocalizationResource>
+public class LocalizationResourceDictionary : Dictionary<string, LocalizationResourceBase>
 {
-    private readonly Dictionary<Type, AbstractLocalizationResource?> _resourcesByTypes = new();
+    private readonly Dictionary<Type, LocalizationResourceBase?> _resourcesByTypes = new();
 
-    public LocalizationResource? Add<TLocalizationResource>(string? defaultCultureName = null)
+    public LocalizationResource Add<TLocalizationResource>(string? defaultCultureName = null)
     {
         return Add(typeof(TLocalizationResource), defaultCultureName);
     }
 
-    public LocalizationResource? Add(Type resourceType, string? defaultCultureName = null)
+    public LocalizationResource Add(Type resourceType, string? defaultCultureName = null)
     {
         var resourceName = LocalizationResourceNameAttribute.GetName(resourceType);
         if (ContainsKey(resourceName))
@@ -31,7 +31,7 @@ public class LocalizationResourceDictionary : Dictionary<string, AbstractLocaliz
         return resource;
     }
 
-    public NonTypedLocalizationResource Add(string? resourceName, string? defaultCultureName = null)
+    public NonTypedLocalizationResource Add(string resourceName, string? defaultCultureName = null)
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(resourceName, nameof(resourceName));
 
@@ -47,7 +47,7 @@ public class LocalizationResourceDictionary : Dictionary<string, AbstractLocaliz
         return resource;
     }
 
-    public AbstractLocalizationResource Get<TResource>()
+    public LocalizationResourceBase Get<TResource>()
     {
         var resourceType = typeof(TResource);
 
@@ -60,7 +60,7 @@ public class LocalizationResourceDictionary : Dictionary<string, AbstractLocaliz
         return resource;
     }
 
-    public AbstractLocalizationResource Get(string resourceName)
+    public LocalizationResourceBase Get(string resourceName)
     {
         var resource = this.GetOrDefault(resourceName);
         if (resource == null)
@@ -71,7 +71,7 @@ public class LocalizationResourceDictionary : Dictionary<string, AbstractLocaliz
         return resource;
     }
 
-    public AbstractLocalizationResource? GetOrDefault(Type resourceType)
+    public LocalizationResourceBase? GetOrDefault(Type resourceType)
     {
         return _resourcesByTypes.GetOrDefault(resourceType);
     }

@@ -46,11 +46,7 @@ public class FakeCoreModule : FakeModule
     private void ConfigureClock(ServiceConfigurationContext context)
     {
         context.Services.AddTransient<IFakeClock, FakeClock>();
-        context.Services.Configure<FakeClockOptions>(options =>
-        {
-            options.Kind = DateTimeKind.Unspecified;
-            options.DateTimeFormat = "yyyy-MM-dd HH:mm:ss";
-        });
+        context.Services.Configure<FakeClockOptions>(_ => { });
     }
 
     private void ConfigureSystemTextJson(ServiceConfigurationContext context)
@@ -101,13 +97,6 @@ public class FakeCoreModule : FakeModule
         context.Services.AddSingleton<SnowflakeIdGenerator>();
         context.Services.AddSingleton<LongIdGeneratorBase, SnowflakeIdGenerator>();
         context.Services.AddSingleton<IWorkerProvider, DefaultWorkerProvider>();
-        context.Services.Configure<SnowflakeIdGeneratorOptions>(options =>
-        {
-            options.StartTime = new DateTime(2022, 1, 1);
-            // tips: ms精度41位可用34年
-            options.TimestampType = TimestampType.Milliseconds;
-            options.SequenceBits = 12;
-            options.WorkerIdBits = 10;
-        });
+        context.Services.Configure<SnowflakeIdGeneratorOptions>(_ => { });
     }
 }

@@ -12,32 +12,26 @@ namespace Fake.VirtualFileSystem;
 /// </summary>
 public class DynamicFileProvider : AbstractInMemoryFileProvider, IDynamicFileProvider
 {
-    private readonly ConcurrentDictionary<string, IFileInfo?> _dynamicFiles;
-    protected override IDictionary<string, IFileInfo?> Files => _dynamicFiles;
-    protected ConcurrentDictionary<string, ChangeTokenInfo> FilePathTokenPairs { get; }
+    private readonly ConcurrentDictionary<string, IFileInfo> _dynamicFiles = new();
+    protected override IDictionary<string, IFileInfo> Files => _dynamicFiles;
 
-    public DynamicFileProvider()
-    {
-        _dynamicFiles = new ConcurrentDictionary<string, IFileInfo?>();
-        // 路径忽略大小写
-        FilePathTokenPairs = new ConcurrentDictionary<string, ChangeTokenInfo>(StringComparer.OrdinalIgnoreCase);
-    }
+    protected ConcurrentDictionary<string, ChangeTokenInfo> FilePathTokenPairs { get; } =
+        new(StringComparer.OrdinalIgnoreCase); // 路径忽略大小写
 
-
-    public bool AddOrUpdate(IFileInfo? fileInfo)
+    public bool AddOrUpdate(IFileInfo fileInfo)
     {
         var path = fileInfo.GetVirtualOrPhysicalPathOrNull();
         if (path == null) return false;
         _dynamicFiles.AddOrUpdate(path, fileInfo, (_, _) => fileInfo);
 
-        return RemoveChangeTokenInfo(path);
+        return ReportChange(path);
     }
 
     public bool Delete(string path)
     {
         if (!_dynamicFiles.TryRemove(path, out _)) return false;
 
-        return RemoveChangeTokenInfo(path);
+        return ReportChange(path);
     }
 
     public override IChangeToken Watch(string filter)
@@ -61,7 +55,7 @@ public class DynamicFileProvider : AbstractInMemoryFileProvider, IDynamicFilePro
         return tokenInfo.ChangeToken;
     }
 
-    private bool RemoveChangeTokenInfo(string path)
+    private bool ReportChange(string path)
     {
         if (!FilePathTokenPairs.TryRemove(path, out var tokenInfo))
         {
@@ -73,18 +67,12 @@ public class DynamicFileProvider : AbstractInMemoryFileProvider, IDynamicFilePro
     }
 
 
-    protected struct ChangeTokenInfo
+    protected readonly struct ChangeTokenInfo(
+        CancellationTokenSource tokenSource,
+        CancellationChangeToken changeToken)
     {
-        public ChangeTokenInfo(
-            CancellationTokenSource tokenSource,
-            CancellationChangeToken changeToken)
-        {
-            TokenSource = tokenSource;
-            ChangeToken = changeToken;
-        }
+        public CancellationTokenSource TokenSource { get; } = tokenSource;
 
-        public CancellationTokenSource TokenSource { get; }
-
-        public CancellationChangeToken ChangeToken { get; }
+        public CancellationChangeToken ChangeToken { get; } = changeToken;
     }
 }

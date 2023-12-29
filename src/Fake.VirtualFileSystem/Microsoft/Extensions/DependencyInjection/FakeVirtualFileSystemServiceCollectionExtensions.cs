@@ -6,7 +6,8 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public static class FakeVirtualFileSystemServiceCollectionExtensions
 {
-    public static IServiceCollection AddFakeVirtualFileSystem<TFakeModule>(this IServiceCollection services, string root = null)
+    public static IServiceCollection AddFakeVirtualFileSystem<TFakeModule>(this IServiceCollection services,
+        string? root = null)
         where TFakeModule : FakeModule
     {
         if (services == null)
@@ -14,10 +15,7 @@ public static class FakeVirtualFileSystemServiceCollectionExtensions
             throw new ArgumentNullException(nameof(services));
         }
 
-        services.Configure<FakeVirtualFileSystemOptions>(options =>
-        {
-            options.FileProviders.Add<TFakeModule>(root);
-        });
+        services.Configure<FakeVirtualFileSystemOptions>(options => { options.FileProviders.Add<TFakeModule>(root); });
 
         return services;
     }

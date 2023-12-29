@@ -2,6 +2,4 @@
 
 namespace Fake.Localization;
 
-public interface IFakeStringLocalizer : IStringLocalizer
-{
-}
+public interface IFakeStringLocalizer : IStringLocalizer;

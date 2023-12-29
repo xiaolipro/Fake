@@ -12,7 +12,7 @@ public interface IDynamicFileProvider : IFileProvider
     /// </summary>
     /// <param name="fileInfo"></param>
     /// <returns></returns>
-    bool AddOrUpdate(IFileInfo? fileInfo);
+    bool AddOrUpdate(IFileInfo fileInfo);
 
     /// <summary>
     /// 删除文件

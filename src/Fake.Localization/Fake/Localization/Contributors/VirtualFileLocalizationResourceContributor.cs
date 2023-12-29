@@ -9,39 +9,34 @@ using Microsoft.Extensions.Primitives;
 
 namespace Fake.Localization.Contributors;
 
-public abstract class AbstractVirtualFileLocalizationResourceContributor : ILocalizationResourceContributor
+public abstract class VirtualFileLocalizationResourceContributorBase(string virtualPath)
+    : ILocalizationResourceContributor
 {
-    private readonly string _virtualPath;
-    private IVirtualFileProvider _virtualFileProvider;
+    private IVirtualFileProvider _virtualFileProvider = default!;
 
     // culture : localized string container
-    private volatile Dictionary<string?, ILocalizedStringContainer?> _localizedStringContainers;
+    private volatile Dictionary<string, ILocalizedStringContainer>? _localizedStringContainers;
     private bool _subscribedForChanges;
     private readonly object _syncObj = new();
-
-    public AbstractVirtualFileLocalizationResourceContributor(string virtualPath)
-    {
-        _virtualPath = virtualPath;
-    }
 
     public virtual void Initialize(LocalizationResourceInitializationContext context)
     {
         _virtualFileProvider = context.ServiceProvider.GetRequiredService<IVirtualFileProvider>();
     }
 
-    public virtual LocalizedString? GetOrNull(string? cultureName, string name)
+    public virtual LocalizedString? GetOrNull(string cultureName, string name)
     {
-        return GetLocalizedStringContainers().GetOrDefault(cultureName)?.GetLocalizedStringOrDefault(name);
+        return GetLocalizedStringContainers().GetOrDefault(cultureName)?.GetLocalizedStringOrNull(name);
     }
 
-    public virtual void Fill(string? cultureName, Dictionary<string, LocalizedString?> dictionary)
+    public virtual void Fill(string cultureName, Dictionary<string, LocalizedString> dictionary)
     {
         var localizedStringContainer = GetLocalizedStringContainers().GetOrDefault(cultureName);
 
         localizedStringContainer?.Fill(dictionary);
     }
 
-    public virtual Task FillAsync(string? cultureName, Dictionary<string, LocalizedString?> dictionary)
+    public virtual Task FillAsync(string cultureName, Dictionary<string, LocalizedString> dictionary)
     {
         var localizedStringContainer = GetLocalizedStringContainers().GetOrDefault(cultureName);
 
@@ -50,14 +45,14 @@ public abstract class AbstractVirtualFileLocalizationResourceContributor : ILoca
         return Task.CompletedTask;
     }
 
-    public virtual Task<IEnumerable<string?>> GetSupportedCulturesAsync()
+    public virtual Task<IEnumerable<string>> GetSupportedCulturesAsync()
     {
         var cultures = GetLocalizedStringContainers().Keys;
 
         return Task.FromResult<IEnumerable<string>>(cultures);
     }
 
-    private Dictionary<string?, ILocalizedStringContainer?> GetLocalizedStringContainers()
+    private Dictionary<string, ILocalizedStringContainer> GetLocalizedStringContainers()
     {
         if (_localizedStringContainers != null) return _localizedStringContainers;
 
@@ -70,7 +65,7 @@ public abstract class AbstractVirtualFileLocalizationResourceContributor : ILoca
 
         if (_subscribedForChanges) return _localizedStringContainers;
 
-        var filter = _virtualPath.EndsWithOrAppend("/") + "*.*";
+        var filter = virtualPath.EndsWithAppend("/") + "*.*";
 
         // 订阅change事件
         void ChangeTokenConsumer()
@@ -86,18 +81,17 @@ public abstract class AbstractVirtualFileLocalizationResourceContributor : ILoca
     }
 
 
-    private Dictionary<string?, ILocalizedStringContainer?> CreateLocalizedStringContainers()
+    private Dictionary<string, ILocalizedStringContainer> CreateLocalizedStringContainers()
     {
-        var localizedStringContainers = new Dictionary<string?, ILocalizedStringContainer?>();
+        var localizedStringContainers = new Dictionary<string, ILocalizedStringContainer>();
 
-        foreach (var file in _virtualFileProvider.GetDirectoryContents(_virtualPath))
+        foreach (var file in _virtualFileProvider.GetDirectoryContents(virtualPath))
         {
-            if (file.IsDirectory) continue;
+            if (file.IsDirectory || !CanParse(file)) continue;
 
-            if (!CanParse(file)) continue;
+            ILocalizedStringContainer container;
+            var path = file.GetVirtualOrPhysicalPathOrNull()!;
 
-            ILocalizedStringContainer? container;
-            var path = file.GetVirtualOrPhysicalPathOrNull();
             using (var stream = file.CreateReadStream())
             {
                 var fileContent = stream.ReadAsUTF8String();
@@ -128,5 +122,5 @@ public abstract class AbstractVirtualFileLocalizationResourceContributor : ILoca
     /// <param name="content"></param>
     /// <param name="path"></param>
     /// <returns></returns>
-    protected abstract ILocalizedStringContainer? CreateLocalizedStringContainer(string content, string path);
+    protected abstract ILocalizedStringContainer CreateLocalizedStringContainer(string content, string path);
 }

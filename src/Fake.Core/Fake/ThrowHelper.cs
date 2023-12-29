@@ -22,7 +22,7 @@ public static class ThrowHelper
         string? value,
         [InvokerParameterName] string? parameterName = null)
     {
-        if (value.IsNotNullOrWhiteSpace()) return value!;
+        if (!value.IsNullOrWhiteSpace()) return value!;
         throw new ArgumentException($"{parameterName}不能是null，empty或white space", parameterName);
     }
 

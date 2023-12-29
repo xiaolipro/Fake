@@ -40,7 +40,7 @@ public class FakeAspNetCoreModule : FakeModule
         context.Services.AddAuthorization();
 
         context.Services.AddSingleton<IAspNetCoreFileProvider, AspNetCoreFileProvider>();
-        context.Services.Configure<FakeAspNetCoreFileOptions>(options => { options.WebRootFilePath = "wwwroot"; });
+        context.Services.Configure<FakeAspNetCoreFileOptions>(_ => { });
     }
 
 
