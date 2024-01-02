@@ -4,7 +4,7 @@ using Microsoft.Extensions.FileProviders;
 
 namespace Fake.VirtualFileSystem;
 
-public class VirtualDirectoryFileInfo(
+public class VirtualDirectoryInfo(
     string physicalPath,
     string name,
     DateTimeOffset lastModified)

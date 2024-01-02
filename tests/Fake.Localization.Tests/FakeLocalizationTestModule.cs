@@ -18,9 +18,6 @@ public class FakeLocalizationTestModule : FakeModule
 
         context.Services.Configure<FakeLocalizationOptions>(options =>
         {
-            options.TryGetFromParentCulture = true;
-            options.TryGetFromDefaultCulture = true;
-
             options.Resources.Add<LocalizationTestResource>("zh")
                 .LoadVirtualJson("/Resources");
 

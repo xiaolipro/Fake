@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using Fake.Collections;
 using Fake.Localization.Contributors;
 
@@ -17,23 +18,23 @@ public class FakeLocalizationOptions
     public Type? DefaultResourceType { get; set; }
 
     /// <summary>
-    /// 1.先从全局贡献者获取（倒序）
+    /// 本地化贡献者（倒序）
     /// </summary>
     public ITypeList<ILocalizationResourceContributor> GlobalContributors { get; } =
         new TypeList<ILocalizationResourceContributor>();
 
     /// <summary>
-    /// 2.如果指定culture找不到，尝试从parent culture找
+    /// 默认culture
     /// </summary>
-    public bool TryGetFromParentCulture { get; set; }
+    public string DefaultCulture { get; set; } = CultureInfo.CurrentUICulture.Name;
 
     /// <summary>
-    /// 3.如果parent culture也找不到，尝试从default culture找
+    /// 尝试用默认culture的parent culture找
     /// </summary>
-    public bool TryGetFromDefaultCulture { get; set; }
+    public bool TryGetFromParentCulture { get; set; } = false;
 
     /// <summary>
-    /// 默认culture，优先级低于<see cref="LocalizationResourceBase"/>
+    /// 尝试从本地化资源default culture找
     /// </summary>
-    public string DefaultCulture { get; set; } = "zh";
+    public bool TryGetFromDefaultCulture { get; set; } = true;
 }
