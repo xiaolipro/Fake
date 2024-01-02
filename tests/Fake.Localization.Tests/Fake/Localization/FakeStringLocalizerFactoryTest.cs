@@ -43,7 +43,7 @@ public sealed class FakeStringLocalizerFactoryTest : FakeApplicationTest<FakeLoc
     [Fact]
     public void 没有给定资源类型的也能支持()
     {
-        var localizer = _localizerFactory.CreateByResourceName("LocalizationTestCountryNames");
+        var localizer = _localizerFactory.CreateByResourceNameOrNull("LocalizationTestCountryNames");
 
         localizer.ShouldNotBeNull();
         localizer["USA"].Value.ShouldBe("美利坚");

@@ -12,26 +12,26 @@ public class InMemoryStringLocalizer(
     FakeLocalizationOptions options)
     : IFakeStringLocalizer
 {
-    public virtual LocalizedString this[string name] => GetLocalizedString(name, CultureInfo.CurrentCulture.Name);
+    public virtual LocalizedString this[string name] => GetLocalizedString(name);
 
     public virtual LocalizedString this[string name, params object[] arguments] =>
-        GetLocalizedStringFormatted(name, CultureInfo.CurrentCulture.Name, arguments);
+        GetLocalizedStringFormatted(name, arguments);
 
     public IEnumerable<LocalizedString> GetAllStrings(bool includeParentCultures)
     {
-        return GetAllStrings(CultureInfo.CurrentCulture.Name, includeParentCultures);
+        return GetAllStrings(CultureInfo.CurrentUICulture.Name, includeParentCultures);
     }
 
-    protected virtual LocalizedString GetLocalizedStringFormatted(string name, string cultureName,
-        params object[] arguments)
+    protected virtual LocalizedString GetLocalizedStringFormatted(string name, params object[] arguments)
     {
-        var localizedString = GetLocalizedString(name, cultureName);
+        var localizedString = GetLocalizedString(name);
         return new LocalizedString(name, string.Format(localizedString.Value, arguments),
             localizedString.ResourceNotFound, localizedString.SearchedLocation);
     }
 
-    protected virtual LocalizedString GetLocalizedString(string name, string cultureName)
+    protected virtual LocalizedString GetLocalizedString(string name)
     {
+        var cultureName = options.DefaultCulture;
         var localizedString = resource.GetOrNull(cultureName, name);
         if (localizedString != null) return localizedString;
 
@@ -46,16 +46,15 @@ public class InMemoryStringLocalizer(
 
         if (options.TryGetFromDefaultCulture)
         {
-            var defaultCulture = resource.DefaultCultureName ?? options.DefaultCulture;
-            if (!defaultCulture.IsNullOrWhiteSpace())
+            var defaultCulture = resource.DefaultCultureName;
+            if (!defaultCulture.IsNullOrWhiteSpace() && defaultCulture != cultureName)
             {
-                localizedString = resource.GetOrNull(defaultCulture, name);
+                localizedString = resource.GetOrNull(defaultCulture!, name);
                 if (localizedString != null) return localizedString;
             }
         }
 
-
-        // 如果还找不到，那就去父类去找
+        // 如果还找不到，那就去继承资源找
         foreach (var stringLocalizer in inheritsLocalizer)
         {
             using (CultureHelper.UseCulture(cultureName))

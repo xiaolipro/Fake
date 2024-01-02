@@ -65,7 +65,7 @@ public abstract class VirtualFileLocalizationResourceContributorBase(string virt
 
         if (_subscribedForChanges) return _localizedStringContainers;
 
-        var filter = virtualPath.EndsWithAppend("/") + "*.*";
+        var filter = virtualPath.EnsureEndsWith("/") + "*.*";
 
         // 订阅change事件
         void ChangeTokenConsumer()

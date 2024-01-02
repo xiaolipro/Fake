@@ -7,10 +7,7 @@ using Microsoft.Extensions.Primitives;
 
 namespace Fake.VirtualFileSystem;
 
-/// <summary>
-/// 当前实现仅支持文件监视，不支持目录或通配符监视。
-/// </summary>
-public class DynamicFileProvider : AbstractInMemoryFileProvider, IDynamicFileProvider
+public class DynamicFileProviderBase : InMemoryFileProviderBase, IDynamicFileProvider
 {
     private readonly ConcurrentDictionary<string, IFileInfo> _dynamicFiles = new();
     protected override IDictionary<string, IFileInfo> Files => _dynamicFiles;
@@ -22,7 +19,7 @@ public class DynamicFileProvider : AbstractInMemoryFileProvider, IDynamicFilePro
     {
         var path = fileInfo.GetVirtualOrPhysicalPathOrNull();
         if (path == null) return false;
-        _dynamicFiles.AddOrUpdate(path, fileInfo, (_, _) => fileInfo);
+        _dynamicFiles.AddOrUpdate(path.EnsureStartWith("/"), fileInfo, (_, _) => fileInfo);
 
         return ReportChange(path);
     }
@@ -36,7 +33,7 @@ public class DynamicFileProvider : AbstractInMemoryFileProvider, IDynamicFilePro
 
     public override IChangeToken Watch(string filter)
     {
-        // TODO：不支持目录和通配符
+        // tips：当前实现仅支持文件监视，不支持目录或通配符监视。
         return GetOrAddChangeToken(filter);
     }
 

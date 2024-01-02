@@ -39,6 +39,6 @@ public class VirtualFileProviderList : List<IFileProvider>
                 ? new ManifestEmbeddedFileProvider(assembly)
                 : new ManifestEmbeddedFileProvider(assembly, root);
 
-        return new FakeEmbeddedFileProvider(assembly, root);
+        return new FakeEmbeddedFileProviderBase(assembly, root);
     }
 }

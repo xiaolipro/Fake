@@ -7,7 +7,7 @@ using Microsoft.Extensions.FileProviders;
 
 namespace Fake.VirtualFileSystem.Embedded;
 
-public class FakeEmbeddedFileProvider : AbstractInMemoryFileProvider
+public class FakeEmbeddedFileProviderBase : InMemoryFileProviderBase
 {
     protected virtual Assembly Assembly { get; }
 
@@ -16,7 +16,7 @@ public class FakeEmbeddedFileProvider : AbstractInMemoryFileProvider
     protected override IDictionary<string, IFileInfo> Files => _files.Value;
     private readonly Lazy<Dictionary<string, IFileInfo>> _files;
 
-    public FakeEmbeddedFileProvider(Assembly assembly, string? root = null)
+    public FakeEmbeddedFileProviderBase(Assembly assembly, string? root = null)
     {
         ThrowHelper.ThrowIfNull(assembly, nameof(assembly));
 
@@ -47,7 +47,7 @@ public class FakeEmbeddedFileProvider : AbstractInMemoryFileProvider
             }
 
             // 资产名称a.b.c->目录层级/a/b/c
-            var fullPath = ConvertToRelativePath(resourcePath).StartsWithAppend("/");
+            var fullPath = ConvertToRelativePath(resourcePath).EnsureStartWith("/");
 
             // 添加虚拟目录
             AddVirtualDirectoriesRecursively(files, fullPath.Substring(0, fullPath.LastIndexOf('/')),
@@ -58,7 +58,7 @@ public class FakeEmbeddedFileProvider : AbstractInMemoryFileProvider
                 Assembly,
                 resourcePath,
                 fullPath,
-                CalculateFileName(fullPath),
+                Path.GetFileName(fullPath),
                 lastModificationTime
             );
         }
@@ -113,9 +113,9 @@ public class FakeEmbeddedFileProvider : AbstractInMemoryFileProvider
             return;
         }
 
-        files[directoryPath] = new VirtualDirectoryFileInfo(
+        files[directoryPath] = new VirtualDirectoryInfo(
             directoryPath,
-            CalculateFileName(directoryPath),
+            Path.GetFileName(directoryPath),
             lastModificationTime
         );
 
@@ -124,16 +124,5 @@ public class FakeEmbeddedFileProvider : AbstractInMemoryFileProvider
             AddVirtualDirectoriesRecursively(files, directoryPath.Substring(0, directoryPath.LastIndexOf('/')),
                 lastModificationTime);
         }
-    }
-
-
-    private static string CalculateFileName(string filePath)
-    {
-        if (!filePath.Contains("/"))
-        {
-            return filePath;
-        }
-
-        return filePath.Substring(filePath.LastIndexOf("/", StringComparison.Ordinal) + 1);
     }
 }

@@ -6,16 +6,20 @@ using Microsoft.Extensions.Primitives;
 
 namespace Fake.VirtualFileSystem;
 
-public class VirtualFileProvider: IVirtualFileProvider
+/// <summary>
+/// 虚拟文件供应商提供两类文件：嵌入资源文件和动态内存文件
+/// </summary>
+public class VirtualFileProvider : IVirtualFileProvider
 {
     private readonly FakeVirtualFileSystemOptions _options;
     private readonly CompositeFileProvider _compositeFileProvider;
 
-    public VirtualFileProvider(IOptions<FakeVirtualFileSystemOptions> options,IDynamicFileProvider dynamicFileProvider)
+    public VirtualFileProvider(IOptions<FakeVirtualFileSystemOptions> options, IDynamicFileProvider dynamicFileProvider)
     {
         _options = options.Value;
         _compositeFileProvider = CreateCompositeFileProvider(dynamicFileProvider);
     }
+
     public IFileInfo GetFileInfo(string subpath)
     {
         return _compositeFileProvider.GetFileInfo(subpath);
@@ -35,7 +39,7 @@ public class VirtualFileProvider: IVirtualFileProvider
     private CompositeFileProvider CreateCompositeFileProvider(IDynamicFileProvider dynamicFileProvider)
     {
         var allVirtualFileProviders = new List<IFileProvider>();
-        
+
         allVirtualFileProviders.Add(dynamicFileProvider);
 
         // Notes：

@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Primitives;
 
 namespace Fake.VirtualFileSystem;
 
-public abstract class AbstractInMemoryFileProvider : IFileProvider
+public abstract class InMemoryFileProviderBase : IFileProvider
 {
     protected abstract IDictionary<string, IFileInfo> Files { get; }
 
@@ -12,7 +13,7 @@ public abstract class AbstractInMemoryFileProvider : IFileProvider
     {
         if (subpath.IsNullOrEmpty()) return new NotFoundFileInfo("");
 
-        var file = Files.GetOrDefault(subpath.Trim('/'));
+        var file = Files.GetOrDefault(subpath.EnsureStartWith("/"));
 
         if (file == null) return new NotFoundFileInfo(subpath);
 
@@ -29,7 +30,7 @@ public abstract class AbstractInMemoryFileProvider : IFileProvider
 
         var files = new List<IFileInfo>();
 
-        var directoryPath = subpath.Trim('/');
+        var directoryPath = subpath.EnsureStartWith("/");
 
         foreach (var fileInfo in Files.Values)
         {
@@ -49,7 +50,7 @@ public abstract class AbstractInMemoryFileProvider : IFileProvider
             files.Add(fileInfo);
         }
 
-        return new DirectoryContents(files);
+        return new VirtualDirectoryContents(files);
     }
 
     public virtual IChangeToken Watch(string filter)

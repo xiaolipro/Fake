@@ -10,7 +10,7 @@ public static class FakeStringLocalizerFactoryExtensions
         return localizerFactory.As<IFakeStringLocalizerFactory>()?.CreateDefaultOrNull();
     }
 
-    public static IStringLocalizer? CreateByResourceName(this IStringLocalizerFactory localizerFactory,
+    public static IStringLocalizer? CreateByResourceNameOrNull(this IStringLocalizerFactory localizerFactory,
         string resourceName)
     {
         return localizerFactory.As<IFakeStringLocalizerFactory>()?.CreateByResourceNameOrNull(resourceName);

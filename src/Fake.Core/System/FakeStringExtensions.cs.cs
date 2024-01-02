@@ -1,4 +1,5 @@
-﻿using Fake;
+﻿using System.Text;
+using Fake;
 
 namespace System;
 
@@ -8,14 +9,6 @@ public static class FakeStringExtensions
     /// 表示此字符串 是 null或空字符串。
     /// </summary>
     public static bool IsNullOrEmpty(this string? str)
-    {
-        return string.IsNullOrEmpty(str);
-    }
-
-    /// <summary>
-    /// 表示此字符串 不是 null或空字符串。
-    /// </summary>
-    public static bool NotBeNullOrEmpty(this string str)
     {
         return string.IsNullOrEmpty(str);
     }
@@ -49,7 +42,7 @@ public static class FakeStringExtensions
     /// <param name="comparisonType"></param>
     /// <returns>追加后的结果</returns>
     /// <exception cref="ArgumentNullException">str is null</exception>
-    public static string EndsWithAppend(this string str, string end,
+    public static string EnsureEndsWith(this string str, string end,
         StringComparison comparisonType = StringComparison.Ordinal)
     {
         ThrowHelper.ThrowIfNull(str, nameof(str));
@@ -68,7 +61,7 @@ public static class FakeStringExtensions
     /// <param name="comparisonType"></param>
     /// <returns>追加后的结果</returns>
     /// <exception cref="ArgumentNullException">str is null</exception>
-    public static string StartsWithAppend(this string str, string start,
+    public static string EnsureStartWith(this string str, string start,
         StringComparison comparisonType = StringComparison.Ordinal)
     {
         ThrowHelper.ThrowIfNull(str, nameof(str));
@@ -110,5 +103,13 @@ public static class FakeStringExtensions
 
         if (str!.Length <= maxLen) return str;
         return str.Truncate(maxLen - suffix.Length) + suffix;
+    }
+
+    public static byte[] ToBytes(this string str, Encoding encoding)
+    {
+        ThrowHelper.ThrowIfNull(str, nameof(str));
+        ThrowHelper.ThrowIfNull(encoding, nameof(encoding));
+
+        return encoding.GetBytes(str);
     }
 }
