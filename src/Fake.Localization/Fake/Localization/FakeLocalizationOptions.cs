@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using Fake.Collections;
 using Fake.Localization.Contributors;
 
@@ -22,11 +21,6 @@ public class FakeLocalizationOptions
     /// </summary>
     public ITypeList<ILocalizationResourceContributor> GlobalContributors { get; } =
         new TypeList<ILocalizationResourceContributor>();
-
-    /// <summary>
-    /// 默认culture
-    /// </summary>
-    public string DefaultCulture { get; set; } = CultureInfo.CurrentUICulture.Name;
 
     /// <summary>
     /// 尝试用默认culture的parent culture找

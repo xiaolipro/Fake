@@ -1,4 +1,5 @@
-﻿using Fake.Testing;
+﻿using Fake.Localization.Resources;
+using Fake.Testing;
 using Localization;
 using Microsoft.Extensions.Localization;
 using Shouldly;
@@ -20,5 +21,23 @@ public sealed class FakeStringLocalizerTest : FakeApplicationTest<FakeLocalizati
     public void 可以正常本地化(string key, string value)
     {
         _localizer[key].Value.ShouldBe(value);
+    }
+
+    [Fact]
+    public void 可以切换文化()
+    {
+        using (CultureHelper.UseCulture("en"))
+        {
+            _localizer["Hi", "xx"].Value.ShouldBe("Hello xx");
+        }
+
+        _localizer["Hi", "xx"].Value.ShouldBe("你好");
+    }
+
+    [Fact]
+    public void 本地化资源可以继承()
+    {
+        _localizer[LocalizationTestValidationResource.ThisFieldIsRequired].Value.ShouldBe("此字段是必填字段");
+        _localizer[FakeLocalizationResource.DefaultLanguage].Value.ShouldBe("默认语言");
     }
 }

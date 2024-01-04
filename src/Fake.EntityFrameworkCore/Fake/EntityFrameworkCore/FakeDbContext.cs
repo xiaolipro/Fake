@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Linq.Expressions;
@@ -71,7 +72,7 @@ public abstract class FakeDbContext<TDbContext>(DbContextOptions<TDbContext> opt
 
             await BeforeSaveChangesAsync();
             var res = await base.SaveChangesAsync(cancellationToken);
-            PublishDomainEvents();
+            await PublishDomainEventsAsync();
 
             if (changes != null)
             {
@@ -91,7 +92,7 @@ public abstract class FakeDbContext<TDbContext>(DbContextOptions<TDbContext> opt
         }
     }
 
-    private void PublishDomainEvents()
+    private async Task PublishDomainEventsAsync()
     {
         var domainEntities = base.ChangeTracker.Entries<Entity>()
             .Where(x => x.Entity.DomainEvents != null && x.Entity.DomainEvents.Any())
@@ -104,7 +105,7 @@ public abstract class FakeDbContext<TDbContext>(DbContextOptions<TDbContext> opt
 
         domainEntities.ForEach(entity => entity.Entity.ClearDomainEvents());
 
-        domainEvents.ForEach(@event => EventPublisher.Publish(@event));
+        await domainEvents.ForEachAsync(@event => EventPublisher.PublishAsync(@event));
     }
 
     protected virtual Task BeforeSaveChangesAsync()

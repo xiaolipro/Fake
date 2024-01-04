@@ -2,6 +2,6 @@
   "culture": "en",
   "texts": {
     "ThisFieldIsRequired": "This field is required",
-    "MaxLenghtErrorMessage": "This field can be maximum of '{0}' chars"
+    "MaxLengthErrorMessage": "This field can be maximum of '{0}' chars"
   }
 }

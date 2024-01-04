@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Fake.EventBus.Events;
 
 namespace Fake.EventBus;
@@ -11,5 +12,5 @@ public interface IEventPublisher
     /// 发布事件
     /// </summary>
     /// <param name="event">事件</param>
-    void Publish(IEvent @event);
+    Task PublishAsync(IEvent @event);
 }

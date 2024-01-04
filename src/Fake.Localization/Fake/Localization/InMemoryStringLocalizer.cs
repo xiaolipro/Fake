@@ -31,7 +31,7 @@ public class InMemoryStringLocalizer(
 
     protected virtual LocalizedString GetLocalizedString(string name)
     {
-        var cultureName = options.DefaultCulture;
+        var cultureName = CultureInfo.CurrentUICulture.Name;
         var localizedString = resource.GetOrNull(cultureName, name);
         if (localizedString != null) return localizedString;
 

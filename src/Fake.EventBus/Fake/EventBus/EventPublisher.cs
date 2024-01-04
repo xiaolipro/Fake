@@ -9,19 +9,11 @@ using Fake.Helpers;
 
 namespace Fake.EventBus;
 
-public class EventPublisher : IEventPublisher
+public class EventPublisher(IServiceProvider serviceProvider) : IEventPublisher
 {
-    private readonly IServiceProvider _serviceProvider;
+    private readonly ConcurrentDictionary<Type, EventHandlerWrapper> _eventHandlers = new();
 
-    private readonly ConcurrentDictionary<Type, EventHandlerWrapper> _eventHandlers;
-
-    public EventPublisher(IServiceProvider serviceProvider)
-    {
-        _serviceProvider = serviceProvider;
-        _eventHandlers = new ConcurrentDictionary<Type, EventHandlerWrapper>();
-    }
-
-    public void Publish(IEvent @event)
+    public async Task PublishAsync(IEvent @event)
     {
         ThrowHelper.ThrowIfNull(@event, nameof(@event));
 
@@ -39,7 +31,7 @@ public class EventPublisher : IEventPublisher
         });
 
 
-        eventHandler.Handle(@event, _serviceProvider, PublishCore, default);
+        await eventHandler.Handle(@event, serviceProvider, PublishCore, default);
     }
 
     protected virtual async Task PublishCore(IEnumerable<EventHandlerExecutor> eventHandlerExecutors, IEvent @event,

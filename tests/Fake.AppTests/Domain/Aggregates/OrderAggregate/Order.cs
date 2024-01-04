@@ -21,6 +21,7 @@ public class Order : FullAuditedAggregate<Guid, Guid>
     private Guid? _buyerId;
 
     public OrderStatus OrderStatus { get; private set; }
+    private int _orderStatusId;
 
     private string _description;
 
@@ -58,7 +59,7 @@ public class Order : FullAuditedAggregate<Guid, Guid>
     {
         _buyerId = buyerId;
         _paymentMethodId = paymentMethodId;
-        OrderStatus = OrderStatus.Submitted;
+        _orderStatusId = OrderStatus.Submitted.Id;
         Address = address;
 
         // Add the OrderStarterDomainEvent to the domain events collection 
@@ -111,31 +112,31 @@ public class Order : FullAuditedAggregate<Guid, Guid>
 
     public void SetAwaitingValidationStatus()
     {
-        if (OrderStatus == OrderStatus.Submitted)
+        if (_orderStatusId == OrderStatus.Submitted.Id)
         {
             AddDomainEvent(new OrderStatusChangedToAwaitingValidationDomainEvent(Id, _orderItems));
-            OrderStatus = OrderStatus.AwaitingValidation;
+            _orderStatusId = OrderStatus.AwaitingValidation.Id;
         }
     }
 
     public void SetStockConfirmedStatus()
     {
-        if (OrderStatus == OrderStatus.AwaitingValidation)
+        if (_orderStatusId == OrderStatus.AwaitingValidation.Id)
         {
             AddDomainEvent(new OrderStatusChangedToStockConfirmedDomainEvent(Id));
 
-            OrderStatus = OrderStatus.StockConfirmed;
+            _orderStatusId = OrderStatus.StockConfirmed.Id;
             _description = "All the items were confirmed with available stock.";
         }
     }
 
     public void SetPaidStatus()
     {
-        if (OrderStatus == OrderStatus.StockConfirmed)
+        if (_orderStatusId == OrderStatus.StockConfirmed.Id)
         {
             AddDomainEvent(new OrderStatusChangedToPaidDomainEvent(Id, OrderItems));
 
-            OrderStatus = OrderStatus.Paid;
+            _orderStatusId = OrderStatus.Paid.Id;
             _description =
                 "The payment was performed at a simulated \"American Bank checking bank account ending on XX35071\"";
         }
@@ -143,34 +144,34 @@ public class Order : FullAuditedAggregate<Guid, Guid>
 
     public void SetShippedStatus()
     {
-        if (OrderStatus != OrderStatus.Paid)
+        if (_orderStatusId != OrderStatus.Paid.Id)
         {
             StatusChangeException(OrderStatus.Shipped);
         }
 
-        OrderStatus = OrderStatus.Shipped;
+        _orderStatusId = OrderStatus.Shipped.Id;
         _description = "The order was shipped.";
         AddDomainEvent(new OrderShippedDomainEvent(this));
     }
 
     public void SetCancelledStatus()
     {
-        if (OrderStatus == OrderStatus.Paid ||
-            OrderStatus == OrderStatus.Shipped)
+        if (_orderStatusId == OrderStatus.Paid.Id ||
+            _orderStatusId == OrderStatus.Shipped.Id)
         {
             StatusChangeException(OrderStatus.Cancelled);
         }
 
-        OrderStatus = OrderStatus.Cancelled;
+        _orderStatusId = OrderStatus.Cancelled.Id;
         _description = $"The order was cancelled.";
         AddDomainEvent(new OrderCancelledDomainEvent(this));
     }
 
     public void SetCancelledStatusWhenStockIsRejected(IEnumerable<int> orderStockRejectedItems)
     {
-        if (OrderStatus == OrderStatus.AwaitingValidation)
+        if (_orderStatusId == OrderStatus.AwaitingValidation.Id)
         {
-            OrderStatus = OrderStatus.Cancelled;
+            _orderStatusId = OrderStatus.Cancelled.Id;
 
             var itemsStockRejectedProductNames = OrderItems
                 .Where(c => orderStockRejectedItems.Contains(c.ProductId))

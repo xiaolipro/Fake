@@ -32,15 +32,6 @@ public sealed class FakeStringLocalizerFactoryTest : FakeApplicationTest<FakeLoc
     }
 
     [Fact]
-    public void 本地化资源可以继承()
-    {
-        var localizer = _localizerFactory.Create(typeof(LocalizationTestResource));
-
-        localizer["ThisFieldIsRequired"].Value.ShouldBe("此字段是必填字段");
-        localizer["DefaultLanguage"].Value.ShouldBe("默认语言");
-    }
-
-    [Fact]
     public void 没有给定资源类型的也能支持()
     {
         var localizer = _localizerFactory.CreateByResourceNameOrNull("LocalizationTestCountryNames");
