@@ -1,32 +1,19 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Domain.Aggregates.BuyerAggregate;
+﻿using Domain.Aggregates.BuyerAggregate;
 using Domain.Events;
-using Fake.DomainDrivenDesign.Repositories;
 using Fake.EventBus.Events;
-using Fake.UnitOfWork;
-using Microsoft.Extensions.Logging;
 
 namespace Application.DomainEventHandlers.OrderStartedEvent;
 
-public class ValidateOrAddBuyerAggregateWhenOrderStartedDomainEventHandler : IEventHandler<OrderStartedDomainEvent>
+public class ValidateOrAddBuyerAggregateWhenOrderStartedDomainEventHandler(
+    ILogger<ValidateOrAddBuyerAggregateWhenOrderStartedDomainEventHandler> logger,
+    IBuyerRepository buyerRepository)
+    : IEventHandler<OrderStartedDomainEvent>
 {
-    private readonly ILogger<ValidateOrAddBuyerAggregateWhenOrderStartedDomainEventHandler> _logger;
-    private readonly IRepository<Buyer> _buyerRepository;
+    public int Order { get; set; }
 
-    public ValidateOrAddBuyerAggregateWhenOrderStartedDomainEventHandler(
-        ILogger<ValidateOrAddBuyerAggregateWhenOrderStartedDomainEventHandler> logger,
-        IBuyerRepository buyerRepository)
+    public async Task HandleAsync(OrderStartedDomainEvent orderStartedEvent, CancellationToken cancellationToken)
     {
-        _logger = logger;
-        _buyerRepository = buyerRepository;
-    }
-
-    public async Task Handle(OrderStartedDomainEvent orderStartedEvent, CancellationToken cancellationToken)
-    {
-        var buyer = await _buyerRepository.FirstOrDefaultAsync(x => x.IdentityGuid == orderStartedEvent.UserId,
+        var buyer = await buyerRepository.FirstOrDefaultAsync(x => x.IdentityGuid == orderStartedEvent.UserId,
             cancellationToken: cancellationToken);
         bool buyerOriginallyExisted = buyer != null;
 
@@ -44,10 +31,10 @@ public class ValidateOrAddBuyerAggregateWhenOrderStartedDomainEventHandler : IEv
             orderStartedEvent.Order.Id);
 
         var buyerUpdated = buyerOriginallyExisted
-            ? await _buyerRepository.UpdateAsync(buyer, true, cancellationToken: cancellationToken)
-            : await _buyerRepository.InsertAsync(buyer,true, cancellationToken: cancellationToken);
+            ? await buyerRepository.UpdateAsync(buyer, true, cancellationToken: cancellationToken)
+            : await buyerRepository.InsertAsync(buyer, true, cancellationToken: cancellationToken);
 
-        _logger.LogTrace("Buyer {BuyerId} and related payment method were validated or updated for orderId: {OrderId}.",
+        logger.LogTrace("Buyer {BuyerId} and related payment method were validated or updated for orderId: {OrderId}",
             buyerUpdated.Id, orderStartedEvent.Order.Id);
     }
 }

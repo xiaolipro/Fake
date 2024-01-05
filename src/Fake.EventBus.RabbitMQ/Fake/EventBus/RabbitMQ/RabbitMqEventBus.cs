@@ -231,7 +231,7 @@ namespace Fake.EventBus.RabbitMQ
 
                     var handle = typeof(IEventHandler<>)
                         .MakeGenericType(eventType)
-                        .GetMethod(nameof(IEventHandler<IEvent>.Handle));
+                        .GetMethod(nameof(IEventHandler<IEvent>.HandleAsync));
 
                     var integrationEvent = JsonSerializer.Deserialize(message, eventType,
                         new JsonSerializerOptions { PropertyNameCaseInsensitive = true });

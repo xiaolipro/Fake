@@ -2,19 +2,22 @@
 
 namespace Fake.EventBus.Events;
 
-public abstract class EventBase:IEvent
+public abstract class EventBase : IEvent
 {
-    public Guid Id { get; }
+    /// <summary>
+    /// 事件Id
+    /// </summary>
+    public Guid Id { get; } = Guid.NewGuid();
 
-    public int Order { get; set; }
-    
-    public DateTime CreationTime { get; }
-        
-    public EventBase()
-    {
-        Id = Guid.NewGuid();
-        CreationTime = DateTime.UtcNow;
-    }
+    /// <summary>
+    /// 执行顺序（升序）
+    /// </summary>
+    public virtual int Order { get; set; }
+
+    /// <summary>
+    /// 事件创建时间
+    /// </summary>
+    public virtual DateTime CreationTime { get; } = DateTime.UtcNow;
 
     public override string ToString()
     {

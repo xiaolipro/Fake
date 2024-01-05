@@ -23,8 +23,10 @@ public class EventHandlerWrapperImpl<TEvent> : EventHandlerWrapper where TEvent 
     {
         var handlers = serviceProvider
             .GetServices<IEventHandler<TEvent>>()
+            .OrderBy(handler => handler.Order)
             .Select(handler =>
-                new EventHandlerExecutor(handler, (theEvent, theToken) => handler.Handle((TEvent)theEvent, theToken)));
+                new EventHandlerExecutor(handler,
+                    (theEvent, theToken) => handler.HandleAsync((TEvent)theEvent, theToken)));
 
         return publish(handlers, @event, cancellationToken);
     }

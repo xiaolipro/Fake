@@ -107,7 +107,7 @@ public class LocalEventBus : IEventBus
 
             var handle = typeof(IEventHandler<>)
                 .MakeGenericType(eventType)
-                .GetMethod(nameof(IEventHandler<IEvent>.Handle));
+                .GetMethod(nameof(IEventHandler<IEvent>.HandleAsync));
 
             // see：https://stackoverflow.com/questions/22645024/when-would-i-use-task-yield
             await Task.Yield();
