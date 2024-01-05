@@ -32,7 +32,7 @@ namespace Fake.EventBus.Subscriptions
 
         public SubscriptionInfo(Type eventType, Type handlerType)
         {
-            EventName = nameof(eventType);
+            EventName = eventType.Name;
             EventType = eventType;
             HandlerType = handlerType;
         }

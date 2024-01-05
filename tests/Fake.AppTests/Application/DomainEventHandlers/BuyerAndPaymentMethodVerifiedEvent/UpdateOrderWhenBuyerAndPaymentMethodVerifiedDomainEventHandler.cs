@@ -25,7 +25,7 @@ public class
         orderToUpdate!.SetBuyerId(buyerPaymentMethodVerifiedEvent.Buyer.Id);
         orderToUpdate.SetPaymentId(buyerPaymentMethodVerifiedEvent.Payment.Id);
 
-        logger.LogTrace(
+        logger.LogDebug(
             "Order with Id: {OrderId} has been successfully updated with a payment method {PaymentMethod} ({Id})",
             buyerPaymentMethodVerifiedEvent.OrderId, nameof(buyerPaymentMethodVerifiedEvent.Payment),
             buyerPaymentMethodVerifiedEvent.Payment.Id);

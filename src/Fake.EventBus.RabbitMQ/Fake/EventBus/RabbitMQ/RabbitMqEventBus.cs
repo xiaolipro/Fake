@@ -60,15 +60,15 @@ namespace Fake.EventBus.RabbitMQ
         }
 
 
-        public void Publish(IEvent @event)
+        public Task PublishAsync(IEvent @event)
         {
             var eventName = @event.GetType().Name;
 
-            _logger.LogTrace("创建定义RabbitMQ通道以发布事件: {EventId}（{EventName}）", @event.Id, eventName);
+            _logger.LogDebug("创建定义RabbitMQ通道以发布事件: {EventId}（{EventName}）", @event.Id, eventName);
 
             using var channel = _rabbitMqConnector.CreateChannel(_eventBusOptions.ConnectionName);
 
-            _logger.LogTrace("定义RabbitMQ Direct交换机（{ExchangeName}）以发布事件：{EventId}（{EventName}）", _brokerName,
+            _logger.LogDebug("定义RabbitMQ Direct交换机（{ExchangeName}）以发布事件：{EventId}（{EventName}）", _brokerName,
                 @event.Id, eventName);
 
             channel.ExchangeDeclare(exchange: _brokerName, ExchangeType.Direct);
@@ -84,6 +84,8 @@ namespace Fake.EventBus.RabbitMQ
             _logger.LogInformation("发布事件到RabbitMQ: {EventId}（{EventName}）", @event.Id, eventName);
             channel.BasicPublish(exchange: _brokerName, routingKey: eventName, mandatory: true,
                 basicProperties: properties, body: body);
+
+            return Task.CompletedTask;
         }
 
         public void Subscribe<TEvent, THandler>() where TEvent : IEvent
@@ -219,7 +221,7 @@ namespace Fake.EventBus.RabbitMQ
                     var handler = _serviceProvider.GetRequiredService(subscriptionInfo.HandlerType)
                         .To<IDynamicEventHandler>();
 
-                    _logger.LogTrace("正在处理动态集成事件: {EventName}", eventName);
+                    _logger.LogDebug("正在处理动态集成事件: {EventName}", eventName);
 
                     Debug.Assert(handler != null, nameof(handler) + " != null");
                     await handler!.Handle(message);
@@ -238,7 +240,7 @@ namespace Fake.EventBus.RabbitMQ
 
                     // see：https://stackoverflow.com/questions/22645024/when-would-i-use-task-yield
                     await Task.Yield();
-                    _logger.LogTrace("正在处理集成事件: {EventName}", eventName);
+                    _logger.LogDebug("正在处理集成事件: {EventName}", eventName);
                     handle?.Invoke(handler, new[] { integrationEvent });
                 }
             }
@@ -250,7 +252,7 @@ namespace Fake.EventBus.RabbitMQ
         /// <returns></returns>
         private IModel CreateConsumerChannel()
         {
-            _logger.LogTrace("创建RabbitMQ消费者通道");
+            _logger.LogDebug("创建RabbitMQ消费者通道");
 
             _rabbitMqConnector.KeepAlive(_eventBusOptions.ConnectionName);
 
@@ -267,7 +269,7 @@ namespace Fake.EventBus.RabbitMQ
                 string dlxQueueName = "DLX." + _subscriptionQueueName;
                 string dlxRouteKey = dlxQueueName;
 
-                _logger.LogTrace("创建RabbitMQ死信交换DLX");
+                _logger.LogDebug("创建RabbitMQ死信交换DLX");
                 using (var deadLetterChannel = _rabbitMqConnector.CreateChannel(_eventBusOptions.ConnectionName))
                 {
                     // 声明死信交换机
@@ -328,7 +330,7 @@ namespace Fake.EventBus.RabbitMQ
         /// </summary>
         private void StartBasicConsume()
         {
-            _logger.LogTrace("开启RabbitMQ消费通道的基础消费");
+            _logger.LogDebug("开启RabbitMQ消费通道的基础消费");
 
             if (_consumerChannel.IsClosed)
             {

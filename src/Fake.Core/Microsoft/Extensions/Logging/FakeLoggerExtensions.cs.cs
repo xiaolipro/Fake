@@ -37,14 +37,14 @@ public static class FakeLoggerExtensions
         {
             return;
         }
-        
+
         var dataBuilder = new StringBuilder();
         dataBuilder.AppendLine("---------- Exception Data ----------");
         foreach (var key in exception.Data.Keys)
         {
             dataBuilder.AppendLine($"{key} = {exception.Data[key]}");
         }
-        
+
         logger.LogWithLevel(logLevel, dataBuilder.ToString());
     }
 
@@ -54,7 +54,7 @@ public static class FakeLoggerExtensions
         {
             logger.LogWithLevel(logLevel, "Code:" + exceptionWithErrorCode.Code);
         }
-        
+
         if (exception is IHasErrorDetails exceptionWithErrorDetails)
         {
             logger.LogWithLevel(logLevel, "Details:" + exceptionWithErrorDetails.Details);
@@ -69,7 +69,8 @@ public static class FakeLoggerExtensions
     /// <param name="logLevel"></param>
     /// <param name="message"></param>
     /// <param name="exception"></param>
-    public static void LogExceptionWithLevel(this ILogger logger, LogLevel logLevel, string message, Exception exception)
+    public static void LogExceptionWithLevel(this ILogger logger, LogLevel logLevel, string message,
+        Exception exception)
     {
         switch (logLevel)
         {
@@ -91,7 +92,7 @@ public static class FakeLoggerExtensions
             case LogLevel.Trace:
             case LogLevel.None:
             default: // LogLevel.Trace || LogLevel.None
-                logger.LogTrace(exception, message);
+                logger.LogDebug(exception, message);
                 break;
         }
     }
@@ -124,7 +125,7 @@ public static class FakeLoggerExtensions
             case LogLevel.Trace:
             case LogLevel.None:
             default: // LogLevel.Trace || LogLevel.None
-                logger.LogTrace(message);
+                logger.LogDebug(message);
                 break;
         }
     }

@@ -13,21 +13,21 @@ namespace Fake.EventBus;
 public class LocalEventBus : IEventBus
 {
     private readonly ILogger<LocalEventBus> _logger;
-    private readonly IServiceProvider _serviceProvider;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly ISubscriptionsManager _subscriptionsManager;
 
     private readonly Channel<IEvent> _channel; // 事件存储源
 
-
     public LocalEventBus(ILogger<LocalEventBus> logger,
-        IServiceProvider serviceProvider,
-        ISubscriptionsManager subscriptionsManager)
+        IServiceScopeFactory serviceScopeFactory,
+        ISubscriptionsManager subscriptionsManager,
+        IOptions<LocalEventBusOptions> options)
     {
         _logger = logger;
-        _serviceProvider = serviceProvider;
+        _serviceScopeFactory = serviceScopeFactory;
         _subscriptionsManager = subscriptionsManager;
-        var eventBusOptions = serviceProvider.GetRequiredService<IOptions<LocalEventBusOptions>>().Value;
 
+        var eventBusOptions = options.Value;
         var channelOptions = new BoundedChannelOptions(eventBusOptions.Capacity)
         {
             FullMode = eventBusOptions.FullMode
@@ -38,9 +38,9 @@ public class LocalEventBus : IEventBus
     }
 
 
-    public void Publish(IEvent @event)
+    public Task PublishAsync(IEvent @event)
     {
-        _channel.Writer.WriteAsync(@event);
+        return _channel.Writer.WriteAsync(@event).AsTask();
     }
 
     public void Subscribe<TEvent, THandler>() where TEvent : IEvent where THandler : IEventHandler<TEvent>
@@ -64,9 +64,9 @@ public class LocalEventBus : IEventBus
                     // May throw ChannelClosedException if the parent channel's writer signals complete.
                     // Note. This code will throw an exception if the channel is closed.
                     // Details see: https://learn.microsoft.com/en-us/dotnet/core/extensions/channels
-                    var @event = await _channel.Reader.ReadAsync();
+                    var @event = await _channel.Reader.ReadAsync(CancellationToken.None);
 
-                    await Processing(@event);
+                    await ProcessingAsync(@event, CancellationToken.None);
                 }
                 // ReSharper disable once FunctionNeverReturns
             }, CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default);
@@ -82,7 +82,7 @@ public class LocalEventBus : IEventBus
         _subscriptionsManager.RemoveSubscription<TEvent, THandler>();
     }
 
-    private async Task Processing(IEvent @event)
+    private async Task ProcessingAsync(IEvent @event, CancellationToken cancellationToken)
     {
         string eventName = @event.GetType().GetName();
         // 空订阅
@@ -95,10 +95,11 @@ public class LocalEventBus : IEventBus
         var subscriptionInfos = _subscriptionsManager.GetSubscriptionInfos(eventName);
 
         // 广播
+        using var scope = _serviceScopeFactory.CreateScope();
         foreach (var subscriptionInfo in subscriptionInfos)
         {
             var eventType = _subscriptionsManager.GetEventTypeByName(eventName);
-            var handler = _serviceProvider.GetService(subscriptionInfo.HandlerType);
+            var handler = scope.ServiceProvider.GetService(subscriptionInfo.HandlerType);
             if (handler == null)
             {
                 _logger.LogWarning("{EventHandlerName}没有实现`IIntegrationEventHandler`", nameof(handler));
@@ -111,8 +112,8 @@ public class LocalEventBus : IEventBus
 
             // see：https://stackoverflow.com/questions/22645024/when-would-i-use-task-yield
             await Task.Yield();
-            _logger.LogTrace("正在处理集成事件: {EventName}", eventName);
-            handle?.Invoke(handler, new object[] { @event });
+            _logger.LogDebug("正在处理集成事件: {EventName}", eventName);
+            handle?.Invoke(handler, new object[] { @event, cancellationToken });
         }
     }
 }

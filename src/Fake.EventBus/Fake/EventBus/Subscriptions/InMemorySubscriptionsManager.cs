@@ -11,16 +11,10 @@ namespace Fake.EventBus.Subscriptions
     public class InMemorySubscriptionsManager : ISubscriptionsManager
     {
         // 数据格式：{事件名称:[订阅信息]}
-        private readonly Dictionary<string, List<SubscriptionInfo>> _subscriptions;
+        private readonly Dictionary<string, List<SubscriptionInfo>> _subscriptions = new();
 
         // 事件类型列表（不包含动态事件）
-        private readonly List<Type> _eventTypes;
-
-        public InMemorySubscriptionsManager()
-        {
-            _subscriptions = new Dictionary<string, List<SubscriptionInfo>>();
-            _eventTypes = new List<Type>();
-        }
+        private readonly List<Type> _eventTypes = new();
 
         #region implements
 

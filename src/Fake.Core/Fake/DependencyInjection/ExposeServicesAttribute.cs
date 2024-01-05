@@ -17,17 +17,12 @@ public class ExposeServicesAttribute : Attribute, IExposedServiceTypesProvider
     /// 例如CustomA:ICustomA,IA，那么暴露ICustomA和IA
     /// </para>
     /// </remarks>
-    public bool ExposeInterface { get; set; }
+    public bool ExposeInterface { get; set; } = true;
 
     /// <summary>
     /// 暴露自身
     /// </summary>
-    public bool ExposeSelf { get; set; }
-
-    /// <summary>
-    /// 如果没有任何要暴露的服务，则暴露自身
-    /// </summary>
-    public bool ExposeSelfIfEmpty { get; set; }
+    public bool ExposeSelf { get; set; } = true;
 
     public ExposeServicesAttribute(params Type[] exposedServiceTypes)
     {
@@ -48,11 +43,6 @@ public class ExposeServicesAttribute : Attribute, IExposedServiceTypesProvider
         }
 
         if (ExposeSelf)
-        {
-            exposedServiceTypes.TryAdd(targetType);
-        }
-
-        if (exposedServiceTypes.Count == 0 && ExposeSelfIfEmpty)
         {
             exposedServiceTypes.TryAdd(targetType);
         }
