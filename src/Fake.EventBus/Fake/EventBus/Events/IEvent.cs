@@ -13,9 +13,9 @@ public interface IEvent
     public Guid Id { get; }
 
     /// <summary>
-    /// 排序
+    /// 执行顺序
     /// </summary>
-    public int Order { get; set; }
+    long Order { get; }
 
     /// <summary>
     /// 创建时间

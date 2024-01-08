@@ -2,18 +2,12 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Fake.UnitOfWork;
 
-public class UnitOfWorkManager : IUnitOfWorkManager
+public class UnitOfWorkManager(
+    IAmbientUnitOfWorkProvider ambientUnitOfWorkProvider,
+    IServiceScopeFactory serviceScopeFactory)
+    : IUnitOfWorkManager
 {
-    private readonly IAmbientUnitOfWorkProvider _ambientUnitOfWorkProvider;
-    private readonly IServiceScopeFactory _serviceScopeFactory;
-    public IUnitOfWork? Current => _ambientUnitOfWorkProvider.GetCurrentByChecking();
-
-    public UnitOfWorkManager(IAmbientUnitOfWorkProvider ambientUnitOfWorkProvider,
-        IServiceScopeFactory serviceScopeFactory)
-    {
-        _ambientUnitOfWorkProvider = ambientUnitOfWorkProvider;
-        _serviceScopeFactory = serviceScopeFactory;
-    }
+    public IUnitOfWork? Current => ambientUnitOfWorkProvider.GetCurrentByChecking();
 
     public IUnitOfWork Begin(UnitOfWorkAttribute? attribute)
     {
@@ -32,7 +26,7 @@ public class UnitOfWorkManager : IUnitOfWorkManager
 
     private IUnitOfWork CreateNewUnitOfWork()
     {
-        var scope = _serviceScopeFactory.CreateScope();
+        var scope = serviceScopeFactory.CreateScope();
         try
         {
             var outerUow = Current;
@@ -41,13 +35,13 @@ public class UnitOfWorkManager : IUnitOfWorkManager
 
             unitOfWork.SetOuter(outerUow);
 
-            _ambientUnitOfWorkProvider.SetUnitOfWork(unitOfWork);
+            ambientUnitOfWorkProvider.SetUnitOfWork(unitOfWork);
 
             var localScope = scope; // 将scope拷贝到局部变量
             unitOfWork.Disposed += (_, _) =>
             {
                 // 重定向到外层工作单元
-                _ambientUnitOfWorkProvider.SetUnitOfWork(outerUow);
+                ambientUnitOfWorkProvider.SetUnitOfWork(outerUow);
                 localScope.Dispose();
             };
 

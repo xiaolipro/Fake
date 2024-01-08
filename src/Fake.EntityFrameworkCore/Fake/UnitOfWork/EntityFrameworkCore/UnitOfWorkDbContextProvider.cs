@@ -25,8 +25,9 @@ public class UnitOfWorkDbContextProvider<TDbContext>(
     : IDbContextProvider<TDbContext>
     where TDbContext : FakeDbContext<TDbContext>
 {
-    public ILogger<UnitOfWorkDbContextProvider<TDbContext>> Logger = NullLogger<UnitOfWorkDbContextProvider<TDbContext>>
-        .Instance;
+    public readonly ILogger<UnitOfWorkDbContextProvider<TDbContext>> Logger =
+        NullLogger<UnitOfWorkDbContextProvider<TDbContext>>
+            .Instance;
 
     private const string TransactionsNotSupportedErrorMessage = "当前数据库不支持事务！";
 
@@ -36,7 +37,7 @@ public class UnitOfWorkDbContextProvider<TDbContext>(
 
         if (unitOfWork == null)
         {
-            throw new FakeException("UnitOfWorkDbContext必须在工作单元内创建！");
+            throw new FakeException($"{typeof(TDbContext).Name}必须在工作单元内创建！");
         }
 
         var targetDbContextType = typeof(TDbContext);

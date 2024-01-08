@@ -22,7 +22,7 @@ public class UnitOfWorkActionTest : FakeApplicationTest<FakeUnitOfWorkModule>
 
         using (var uow = _unitOfWorkManager.Begin())
         {
-            uow.OnCompleted(_ =>
+            uow.OnCompleted(() =>
             {
                 completed = true;
                 return Task.CompletedTask;
@@ -49,7 +49,7 @@ public class UnitOfWorkActionTest : FakeApplicationTest<FakeUnitOfWorkModule>
         {
             using (var uow = _unitOfWorkManager.Begin())
             {
-                uow.OnCompleted(_ =>
+                uow.OnCompleted(() =>
                 {
                     completed = true;
                     return Task.CompletedTask;
@@ -76,7 +76,7 @@ public class UnitOfWorkActionTest : FakeApplicationTest<FakeUnitOfWorkModule>
 
         using (var uow = _unitOfWorkManager.Begin())
         {
-            uow.OnCompleted(_ =>
+            uow.OnCompleted(() =>
             {
                 completed = true;
                 return Task.CompletedTask;
@@ -125,7 +125,7 @@ public class UnitOfWorkActionTest : FakeApplicationTest<FakeUnitOfWorkModule>
         {
             using (var childUow = _unitOfWorkManager.Begin())
             {
-                childUow.OnCompleted(_ =>
+                childUow.OnCompleted(() =>
                 {
                     completed = true;
                     return Task.CompletedTask;

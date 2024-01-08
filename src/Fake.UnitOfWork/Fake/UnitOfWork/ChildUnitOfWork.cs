@@ -87,7 +87,7 @@ public class ChildUnitOfWork : IUnitOfWork
         return Task.CompletedTask;
     }
 
-    public void OnCompleted(Func<IUnitOfWork, Task> func)
+    public void OnCompleted(Func<Task> func)
     {
         _parent.OnCompleted(func);
     }

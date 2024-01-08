@@ -12,7 +12,7 @@ public abstract class EventBase : IEvent
     /// <summary>
     /// 执行顺序（升序）
     /// </summary>
-    public virtual int Order { get; set; }
+    public virtual long Order => 1;
 
     /// <summary>
     /// 事件创建时间

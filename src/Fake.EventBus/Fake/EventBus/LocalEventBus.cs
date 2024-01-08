@@ -102,7 +102,7 @@ public class LocalEventBus : IEventBus
             var handler = scope.ServiceProvider.GetService(subscriptionInfo.HandlerType);
             if (handler == null)
             {
-                _logger.LogWarning("{EventHandlerName}没有实现`IIntegrationEventHandler`", nameof(handler));
+                _logger.LogWarning("{EventHandlerName}必须实现`IIntegrationEventHandler`", nameof(handler));
                 continue;
             }
 

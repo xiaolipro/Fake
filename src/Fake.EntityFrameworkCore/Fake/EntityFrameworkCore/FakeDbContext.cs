@@ -92,7 +92,7 @@ public abstract class FakeDbContext<TDbContext>(DbContextOptions<TDbContext> opt
         }
     }
 
-    private async Task PublishDomainEventsAsync()
+    private Task PublishDomainEventsAsync()
     {
         var domainEntities = base.ChangeTracker.Entries<Entity>()
             .Where(x => x.Entity.DomainEvents != null && x.Entity.DomainEvents.Any())
@@ -105,7 +105,7 @@ public abstract class FakeDbContext<TDbContext>(DbContextOptions<TDbContext> opt
 
         domainEntities.ForEach(entity => entity.Entity.ClearDomainEvents());
 
-        await domainEvents.ForEachAsync(@event => EventPublisher.PublishAsync(@event));
+        return domainEvents.ForEachAsync(@event => EventPublisher.PublishAsync(@event));
     }
 
     protected virtual Task BeforeSaveChangesAsync()
@@ -200,7 +200,6 @@ public abstract class FakeDbContext<TDbContext>(DbContextOptions<TDbContext> opt
         // 只要有一个属性被修改了，且值不由数据库生成
         if (entry.Properties.Any(p => p is { IsModified: true, Metadata.ValueGenerated: ValueGenerated.Never }))
         {
-            // AuditPropertySetter.SetVersionNumProperty(entry.Entity);
             AuditPropertySetter.SetModificationProperties(entry.Entity);
         }
     }
@@ -275,10 +274,9 @@ public abstract class FakeDbContext<TDbContext>(DbContextOptions<TDbContext> opt
 
         if (!typeof(TEntity).IsAssignableTo(typeof(IEntity))) return;
 
-        // TODO: 这里被迫选用一个用户类型事实上UserId类型是可以自定义的
         modelBuilder.Entity<TEntity>()
-            .TryConfigureCreator<Guid>()
-            .TryConfigureModifier<Guid>()
+            .TryConfigureCreator<Any>()
+            .TryConfigureModifier<Any>()
             .TryConfigureSoftDelete()
             .TryConfigureExtraProperties()
             .TryConfigureVersionNum();

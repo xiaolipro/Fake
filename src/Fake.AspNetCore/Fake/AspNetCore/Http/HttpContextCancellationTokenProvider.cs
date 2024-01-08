@@ -4,23 +4,17 @@ using Microsoft.AspNetCore.Http;
 
 namespace Fake.AspNetCore.Http;
 
-public class HttpContextCancellationTokenProvider : CancellationTokenProviderBase
+public class HttpContextCancellationTokenProvider(
+    IAmbientScopeProvider<CancellationToken> ambientScopeProvider,
+    IHttpContextAccessor httpContextAccessor)
+    : CancellationTokenProviderBase(ambientScopeProvider)
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
-
-    public HttpContextCancellationTokenProvider(IAmbientScopeProvider<CancellationToken> ambientScopeProvider,
-        IHttpContextAccessor httpContextAccessor
-    ) : base(ambientScopeProvider)
-    {
-        _httpContextAccessor = httpContextAccessor;
-    }
-
     public override CancellationToken Token
     {
         get
         {
             if (CurrentToken == default) return CurrentToken;
-            return _httpContextAccessor.HttpContext?.RequestAborted ?? CancellationToken.None;
+            return httpContextAccessor.HttpContext?.RequestAborted ?? CancellationToken.None;
         }
     }
 }

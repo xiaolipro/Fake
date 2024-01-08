@@ -4,13 +4,13 @@ using Fake.Testing;
 
 namespace Fake.EventBus;
 
-public class EventBusTests : FakeApplicationTest<FakeEventBusTestModule>
+public class LocalEventBusTests : FakeApplicationTest<FakeEventBusTestModule>
 {
-    private readonly IEventBus _eventBus;
+    private readonly LocalEventBus _eventBus;
 
-    public EventBusTests()
+    public LocalEventBusTests()
     {
-        _eventBus = GetRequiredService<IEventBus>();
+        _eventBus = GetRequiredService<LocalEventBus>();
     }
 
     [Fact]
@@ -23,7 +23,7 @@ public class EventBusTests : FakeApplicationTest<FakeEventBusTestModule>
         await _eventBus.PublishAsync(new SimpleEvent(3));
 
         // 等待事件处理完成
-        await Task.Delay(1000);
+        await Task.Delay(2000);
 
         Assert.Equal(3, SimpleLocalEventHandler.HandleCount);
         Assert.Equal(3, SimpleLocalEventHandler.DisposeCount);

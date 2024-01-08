@@ -13,7 +13,7 @@ public class EventPublisher(IServiceProvider serviceProvider) : IEventPublisher
 {
     private readonly ConcurrentDictionary<Type, EventHandlerWrapper> _eventHandlers = new();
 
-    public async Task PublishAsync(IEvent @event)
+    public Task PublishAsync(IEvent @event)
     {
         ThrowHelper.ThrowIfNull(@event, nameof(@event));
 
@@ -31,7 +31,7 @@ public class EventPublisher(IServiceProvider serviceProvider) : IEventPublisher
         });
 
 
-        await eventHandler.Handle(@event, serviceProvider, PublishCore, default);
+        return eventHandler.Handle(@event, serviceProvider, PublishCore, default);
     }
 
     protected virtual async Task PublishCore(IEnumerable<EventHandlerExecutor> eventHandlerExecutors, IEvent @event,

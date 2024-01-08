@@ -9,42 +9,31 @@ using Microsoft.Extensions.Options;
 
 namespace Fake.UnitOfWork;
 
-public class UnitOfWork : IUnitOfWork
+public class UnitOfWork(
+    ILogger<UnitOfWork> logger,
+    IServiceProvider serviceProvider,
+    IOptions<FakeUnitOfWorkOptions> options)
+    : IUnitOfWork
 {
-    public Guid Id { get; }
-    public IServiceProvider ServiceProvider { get; }
+    public Guid Id { get; } = Guid.NewGuid();
+    public IServiceProvider ServiceProvider { get; } = serviceProvider;
     public UnitOfWorkContext Context { get; private set; } = default!;
     public bool IsDisposed { get; private set; }
     public bool IsCompleted { get; private set; }
     public IUnitOfWork? Outer { get; private set; }
 
-    protected List<Func<IUnitOfWork, Task>> CompletedTasks { get; }
     public event EventHandler<UnitOfWorkFailedEventArgs>? Failed;
     public event EventHandler<UnitOfWorkEventArgs>? Disposed;
 
-    private readonly Dictionary<string, IDatabaseApi> _databaseApiDic;
-    private readonly Dictionary<string, ITransactionApi> _transactionApiDic;
+    private readonly Dictionary<string, IDatabaseApi> _databaseApiDic = new();
+    private readonly Dictionary<string, ITransactionApi> _transactionApiDic = new();
 
-    private readonly ILogger<UnitOfWork> _logger;
-    private readonly FakeUnitOfWorkOptions _options;
+    private readonly FakeUnitOfWorkOptions _options = options.Value;
+    private List<Func<Task>> CompletedHandlers { get; } = new();
+    private List<Func<Task>> SaveChangedHandlers { get; } = new();
 
     private Exception? _exception;
     private bool _isCompleting, _isRollBacked;
-
-    public UnitOfWork(IServiceProvider serviceProvider, ILogger<UnitOfWork> logger,
-        IOptions<FakeUnitOfWorkOptions> options)
-    {
-        ServiceProvider = serviceProvider;
-        _logger = logger;
-        _options = options.Value;
-
-        Id = Guid.NewGuid();
-
-        CompletedTasks = new List<Func<IUnitOfWork, Task>>();
-
-        _databaseApiDic = new Dictionary<string, IDatabaseApi>();
-        _transactionApiDic = new Dictionary<string, ITransactionApi>();
-    }
 
     /// <summary>
     /// 初始化工作单元上下文
@@ -75,7 +64,7 @@ public class UnitOfWork : IUnitOfWork
     {
         if (_isRollBacked)
         {
-            _logger.LogWithLevel(LogLevel.Warning, $"{this}正在尝试{nameof(SaveChangesAsync)}一个已经回滚过的事务");
+            logger.LogWarning("{This}正在尝试{SaveChanges}一个已经回滚过的事务", this, nameof(SaveChangesAsync));
             return;
         }
 
@@ -89,11 +78,13 @@ public class UnitOfWork : IUnitOfWork
                 }
                 catch (Exception e)
                 {
-                    _logger.LogException(e);
+                    logger.LogException(e);
                     throw;
                 }
             }
         }
+
+        await OnSaveChangedAsync();
     }
 
     public bool HasHasChanges()
@@ -111,7 +102,7 @@ public class UnitOfWork : IUnitOfWork
                 }
                 catch (Exception e)
                 {
-                    _logger.LogException(e);
+                    logger.LogException(e);
                     throw;
                 }
             }
@@ -124,7 +115,7 @@ public class UnitOfWork : IUnitOfWork
     {
         if (_isRollBacked)
         {
-            _logger.LogWithLevel(LogLevel.Warning, $"{this}正在尝试{nameof(RollbackAsync)}一个已经回滚过的事务");
+            logger.LogWithLevel(LogLevel.Warning, $"{this}正在尝试{nameof(RollbackAsync)}一个已经回滚过的事务");
             return;
         }
 
@@ -141,7 +132,7 @@ public class UnitOfWork : IUnitOfWork
                 }
                 catch (Exception e)
                 {
-                    _logger.LogException(e);
+                    logger.LogException(e);
                     throw;
                 }
             }
@@ -152,7 +143,7 @@ public class UnitOfWork : IUnitOfWork
     {
         if (_isRollBacked)
         {
-            _logger.LogWithLevel(LogLevel.Warning, $"{this}正在尝试{nameof(CompleteAsync)}一个已经回滚过的事务");
+            logger.LogWithLevel(LogLevel.Warning, $"{this}正在尝试{nameof(CompleteAsync)}一个已经回滚过的事务");
             return;
         }
 
@@ -169,9 +160,9 @@ public class UnitOfWork : IUnitOfWork
             await SaveChangesAsync(cancellationToken);
 
             await CommitTransactionsAsync(cancellationToken);
-
             IsCompleted = true;
-            await HandleCompletedTasksAsync();
+
+            await OnCompletedAsync();
         }
         catch (Exception ex)
         {
@@ -193,17 +184,29 @@ public class UnitOfWork : IUnitOfWork
         Failed?.Invoke(this, new UnitOfWorkFailedEventArgs(this, _exception, _isRollBacked));
     }
 
-    public virtual void OnCompleted(Func<IUnitOfWork, Task> func)
+    public virtual void OnSaveChanged(Func<Task> func)
     {
-        CompletedTasks.Add(func);
+        SaveChangedHandlers.Add(func);
     }
 
-    protected virtual async Task HandleCompletedTasksAsync()
+    private async Task OnSaveChangedAsync()
     {
-        CompletedTasks.Reverse();
-        foreach (var task in CompletedTasks)
+        foreach (var handler in SaveChangedHandlers)
         {
-            await task.Invoke(this);
+            await handler.Invoke();
+        }
+    }
+
+    public virtual void OnCompleted(Func<Task> func)
+    {
+        CompletedHandlers.Add(func);
+    }
+
+    protected virtual async Task OnCompletedAsync()
+    {
+        foreach (var handler in CompletedHandlers)
+        {
+            await handler.Invoke();
         }
     }
 
@@ -302,7 +305,7 @@ public class UnitOfWork : IUnitOfWork
             }
             catch (Exception e)
             {
-                _logger.LogException(e);
+                logger.LogException(e);
             }
         }
 

@@ -47,10 +47,10 @@ public interface IUnitOfWork : IDatabaseApiContainer, ITransactionApiContainer, 
     Task CompleteAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// 事务提交后执行
+    /// 事务提交执行
     /// </summary>
     /// <param name="func"></param>
-    void OnCompleted(Func<IUnitOfWork, Task> func);
+    void OnCompleted(Func<Task> func);
 
     /// <summary>
     /// 工作单元销毁触发该事件，但早于Disposed event

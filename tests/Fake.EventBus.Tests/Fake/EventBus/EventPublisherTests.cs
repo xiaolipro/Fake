@@ -20,12 +20,15 @@ public class EventPublisherTests : FakeApplicationTest<FakeEventBusTestModule>
     {
         _publisher.PublishAsync(new SimpleEvent(2));
         Num.ShouldBe(2);
+
+        _publisher.PublishAsync(new SimpleEvent(3));
+        Num.ShouldBe(9);
     }
 }
 
 public class SimpleEvent(int i) : EventBase
 {
-    public override int Order { get; set; } = 1;
+    public override long Order => 1;
     public int Value { get; } = i;
 }
 
