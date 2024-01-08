@@ -8,6 +8,7 @@ public class LocalEventBusTests : FakeApplicationTest<FakeEventBusTestModule>
 
     public LocalEventBusTests()
     {
+        SimpleLocalEventHandler.Init();
         _eventBus = GetRequiredService<LocalEventBus>();
     }
 
@@ -15,8 +16,10 @@ public class LocalEventBusTests : FakeApplicationTest<FakeEventBusTestModule>
     public async Task 发布本地事件无须订阅()
     {
         await _eventBus.PublishAsync(new SimpleEvent(1));
+        await _eventBus.PublishAsync(new SimpleEvent(1));
+        await _eventBus.PublishAsync(new SimpleEvent(1));
 
-        Assert.Equal(1, SimpleLocalEventHandler.HandleCount);
+        Assert.Equal(3, SimpleLocalEventHandler.HandleCount);
     }
 
 
