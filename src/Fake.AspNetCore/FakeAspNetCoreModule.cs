@@ -1,5 +1,4 @@
-﻿using Fake.AspNetCore;
-using Fake.AspNetCore.Auditing;
+﻿using Fake.AspNetCore.Auditing;
 using Fake.AspNetCore.ExceptionHandling;
 using Fake.AspNetCore.Http;
 using Fake.AspNetCore.Security.Claims;
@@ -13,6 +12,9 @@ using Fake.VirtualFileSystem;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
+
+// ReSharper disable once CheckNamespace
+namespace Fake.AspNetCore;
 
 [DependsOn(
     typeof(FakeIdentityModule),
