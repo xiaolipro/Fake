@@ -10,10 +10,9 @@ using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Fake.EntityFrameworkCore.IntegrationEventLog;
 
-public class IntegrationEventLogService : IIntegrationEventLogService
+public class IntegrationEventLogService(IntegrationEventLogContext integrationEventLogContext)
+    : IIntegrationEventLogService
 {
-    private readonly IntegrationEventLogContext _integrationEventLogContext;
-
     private static readonly List<Type> EventTypes =
         Assembly.Load(Assembly.GetEntryAssembly()?.FullName ?? string.Empty)
             .GetTypes()
@@ -22,16 +21,11 @@ public class IntegrationEventLogService : IIntegrationEventLogService
 
     private volatile bool _disposedValue;
 
-    public IntegrationEventLogService(IntegrationEventLogContext integrationEventLogContext)
-    {
-        _integrationEventLogContext = integrationEventLogContext;
-    }
-
     public async Task<IEnumerable<IntegrationEventLogEntry>> RetrieveEventLogsPendingToPublishAsync(Guid transactionId)
     {
         var tid = transactionId.ToString();
 
-        var result = await _integrationEventLogContext.IntegrationEventLogs
+        var result = await integrationEventLogContext.IntegrationEventLogs
             .Where(e => e.TransactionId == tid && e.State == EventStateEnum.NotPublished).ToListAsync();
 
         if (result.Any())
@@ -45,16 +39,16 @@ public class IntegrationEventLogService : IIntegrationEventLogService
         return new List<IntegrationEventLogEntry>();
     }
 
-    public Task SaveEventAsync(IEvent @event, IDbContextTransaction? transaction = null)
+    public Task SaveEventAsync(EventBase @event, IDbContextTransaction? transaction = null)
     {
         //if (transaction == null) throw new ArgumentNullException(nameof(transaction));
 
         var eventLogEntry = new IntegrationEventLogEntry(@event, transaction?.TransactionId ?? default);
 
-        _integrationEventLogContext.Database.UseTransaction(transaction?.GetDbTransaction());
-        _integrationEventLogContext.IntegrationEventLogs.Add(eventLogEntry);
+        integrationEventLogContext.Database.UseTransaction(transaction?.GetDbTransaction());
+        integrationEventLogContext.IntegrationEventLogs.Add(eventLogEntry);
 
-        return _integrationEventLogContext.SaveChangesAsync();
+        return integrationEventLogContext.SaveChangesAsync();
     }
 
     public Task MarkEventAsPublishedAsync(Guid eventId)
@@ -74,15 +68,15 @@ public class IntegrationEventLogService : IIntegrationEventLogService
 
     private Task UpdateEventStatus(Guid eventId, EventStateEnum status)
     {
-        var eventLogEntry = _integrationEventLogContext.IntegrationEventLogs.Single(ie => ie.EventId == eventId);
+        var eventLogEntry = integrationEventLogContext.IntegrationEventLogs.Single(ie => ie.EventId == eventId);
         eventLogEntry.UpdateEventStatus(status);
 
         if (status == EventStateEnum.InProgress)
             eventLogEntry.TimesSentIncr();
 
-        _integrationEventLogContext.IntegrationEventLogs.Update(eventLogEntry);
+        integrationEventLogContext.IntegrationEventLogs.Update(eventLogEntry);
 
-        return _integrationEventLogContext.SaveChangesAsync();
+        return integrationEventLogContext.SaveChangesAsync();
     }
 
     protected virtual void Dispose(bool disposing)
@@ -91,7 +85,7 @@ public class IntegrationEventLogService : IIntegrationEventLogService
         {
             if (disposing)
             {
-                _integrationEventLogContext.Dispose();
+                integrationEventLogContext.Dispose();
             }
 
 

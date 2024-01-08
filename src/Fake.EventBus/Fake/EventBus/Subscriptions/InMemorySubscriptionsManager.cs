@@ -31,7 +31,7 @@ namespace Fake.EventBus.Subscriptions
         }
 
         public void AddSubscription<TEvent, THandler>()
-            where TEvent : IEvent
+            where TEvent : EventBase
             where THandler : IEventHandler<TEvent>
         {
             var subscription = SubscriptionInfo.Typed(typeof(TEvent), typeof(THandler));
@@ -52,7 +52,7 @@ namespace Fake.EventBus.Subscriptions
         }
 
         public void RemoveSubscription<TEvent, THandler>()
-            where TEvent : IEvent
+            where TEvent : EventBase
             where THandler : IEventHandler<TEvent>
         {
             string eventName = GetEventName<TEvent>();
@@ -64,16 +64,16 @@ namespace Fake.EventBus.Subscriptions
 
         public IEnumerable<SubscriptionInfo> GetSubscriptionInfos(string eventName) => _subscriptions[eventName];
 
-        public IEnumerable<SubscriptionInfo?> GetSubscriptionInfos<TEvent>() where TEvent : IEvent
+        public IEnumerable<SubscriptionInfo?> GetSubscriptionInfos<TEvent>() where TEvent : EventBase
             => GetSubscriptionInfos(GetEventName<TEvent>());
 
-        public bool HasSubscriptions<TEvent>() where TEvent : IEvent
+        public bool HasSubscriptions<TEvent>() where TEvent : EventBase
             => HasSubscriptions(GetEventName<TEvent>());
 
         public bool HasSubscriptions(string eventName)
             => _subscriptions.ContainsKey(eventName);
 
-        public string GetEventName<TEvent>() where TEvent : IEvent
+        public string GetEventName<TEvent>() where TEvent : EventBase
             => typeof(TEvent).Name;
 
         public Type? GetEventTypeByName(string eventName)

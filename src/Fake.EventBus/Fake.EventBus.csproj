@@ -16,8 +16,4 @@
       <Folder Include="Fake" />
     </ItemGroup>
 
-    <ItemGroup>
-      <PackageReference Include="System.Threading.Channels" Version="$(MicrosoftPackageVersion)" />
-    </ItemGroup>
-
 </Project>

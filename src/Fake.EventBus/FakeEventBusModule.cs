@@ -11,11 +11,7 @@ public class FakeEventBusModule : FakeModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
-        context.Services.AddSingleton<IEventPublisher, EventPublisher>();
-
         context.Services.AddSingleton<LocalEventBus>();
-        context.Services.Configure<LocalEventBusOptions>(_ => { });
-
         context.Services.AddSingleton<IEventBus, LocalEventBus>();
         context.Services.AddSingleton<ISubscriptionsManager, InMemorySubscriptionsManager>();
     }

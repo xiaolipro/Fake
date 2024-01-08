@@ -36,7 +36,7 @@ namespace Fake.EventBus.Subscriptions
         /// <typeparam name="TEvent">事件</typeparam>
         /// <typeparam name="THandler">处理者</typeparam>
         void AddSubscription<TEvent, THandler>()
-            where TEvent : IEvent
+            where TEvent : EventBase
             where THandler : IEventHandler<TEvent>;
 
         #endregion
@@ -58,7 +58,7 @@ namespace Fake.EventBus.Subscriptions
         /// <typeparam name="TEvent"></typeparam>
         /// <typeparam name="THandler"></typeparam>
         void RemoveSubscription<TEvent, THandler>()
-            where TEvent : IEvent
+            where TEvent : EventBase
             where THandler : IEventHandler<TEvent>;
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace Fake.EventBus.Subscriptions
         /// </summary>
         /// <typeparam name="TEvent">事件类型</typeparam>
         /// <returns></returns>
-        IEnumerable<SubscriptionInfo?> GetSubscriptionInfos<TEvent>() where TEvent : IEvent;
+        IEnumerable<SubscriptionInfo?> GetSubscriptionInfos<TEvent>() where TEvent : EventBase;
 
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace Fake.EventBus.Subscriptions
         /// </summary>
         /// <typeparam name="TEvent">事件类型</typeparam>
         /// <returns></returns>
-        bool HasSubscriptions<TEvent>() where TEvent : IEvent;
+        bool HasSubscriptions<TEvent>() where TEvent : EventBase;
 
         /// <summary>
         /// 此事件是否有订阅
@@ -101,7 +101,7 @@ namespace Fake.EventBus.Subscriptions
         bool HasSubscriptions(string eventName);
 
 
-        string GetEventName<TEvent>() where TEvent : IEvent;
+        string GetEventName<TEvent>() where TEvent : EventBase;
 
         Type? GetEventTypeByName(string eventName);
 

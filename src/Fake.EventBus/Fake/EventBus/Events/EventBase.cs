@@ -2,7 +2,7 @@
 
 namespace Fake.EventBus.Events;
 
-public abstract class EventBase : IEvent
+public abstract class EventBase
 {
     /// <summary>
     /// 事件Id
@@ -10,7 +10,7 @@ public abstract class EventBase : IEvent
     public Guid Id { get; } = Guid.NewGuid();
 
     /// <summary>
-    /// 执行顺序（升序）
+    /// 发布顺序（升序）
     /// </summary>
     public virtual long Order => 1;
 

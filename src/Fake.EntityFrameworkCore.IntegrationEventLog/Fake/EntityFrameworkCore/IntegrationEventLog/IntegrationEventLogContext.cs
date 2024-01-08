@@ -5,7 +5,7 @@ namespace Fake.EntityFrameworkCore.IntegrationEventLog;
 
 public class IntegrationEventLogContext : FakeDbContext<IntegrationEventLogContext>
 {
-    public DbSet<IntegrationEventLogEntry> IntegrationEventLogs { get; set; }
+    public DbSet<IntegrationEventLogEntry> IntegrationEventLogs { get; set; } = null!;
 
     public IntegrationEventLogContext(DbContextOptions<IntegrationEventLogContext> options) : base(options)
     {

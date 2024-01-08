@@ -42,7 +42,7 @@ public abstract class FakeDbContext<TDbContext>(DbContextOptions<TDbContext> opt
     protected IFakeClock FakeClock => ServiceProvider.GetRequiredService<IFakeClock>();
     protected GuidGeneratorBase GuidGenerator => ServiceProvider.GetRequiredService<GuidGeneratorBase>();
     protected LongIdGeneratorBase LongIdGenerator => ServiceProvider.GetRequiredService<LongIdGeneratorBase>();
-    protected IEventPublisher EventPublisher => ServiceProvider.GetRequiredService<IEventPublisher>();
+    protected LocalEventBus LocalEventBus => ServiceProvider.GetRequiredService<LocalEventBus>();
     protected IAuditPropertySetter AuditPropertySetter => ServiceProvider.GetRequiredService<IAuditPropertySetter>();
     protected IEntityChangeHelper EntityChangeHelper => ServiceProvider.GetRequiredService<IEntityChangeHelper>();
     protected IDataFilter DataFilter => ServiceProvider.GetRequiredService<IDataFilter>();
@@ -105,7 +105,7 @@ public abstract class FakeDbContext<TDbContext>(DbContextOptions<TDbContext> opt
 
         domainEntities.ForEach(entity => entity.Entity.ClearDomainEvents());
 
-        return domainEvents.ForEachAsync(@event => EventPublisher.PublishAsync(@event));
+        return domainEvents.ForEachAsync(@event => LocalEventBus.PublishAsync(@event));
     }
 
     protected virtual Task BeforeSaveChangesAsync()

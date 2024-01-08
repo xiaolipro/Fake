@@ -12,7 +12,7 @@ public class IntegrationEventLogEntry
     {
     }
 
-    public IntegrationEventLogEntry(IEvent @event, Guid transactionId)
+    public IntegrationEventLogEntry(EventBase @event, Guid transactionId)
     {
         EventId = @event.Id;
         CreationTime = @event.CreationTime;
@@ -53,12 +53,12 @@ public class IntegrationEventLogEntry
     public string TransactionId { get; private set; }
 
     [NotMapped] public string EventTypeShortName => EventTypeName.Split('.').Last();
-    [NotMapped] public IEvent? IntegrationEvent { get; private set; }
+    [NotMapped] public EventBase? IntegrationEvent { get; private set; }
 
 
     public IntegrationEventLogEntry DeserializeJsonContent(Type type)
     {
-        IntegrationEvent = JsonSerializer.Deserialize(Content, type)?.As<IEvent>();
+        IntegrationEvent = JsonSerializer.Deserialize(Content, type)?.As<EventBase>();
         return this;
     }
 

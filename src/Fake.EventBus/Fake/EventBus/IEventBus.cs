@@ -12,7 +12,7 @@ public interface IEventBus
     /// 发布事件
     /// </summary>
     /// <param name="event">事件</param>
-    Task PublishAsync(IEvent @event);
+    Task PublishAsync(EventBase @event);
 
     /// <summary>
     /// 订阅事件
@@ -20,7 +20,7 @@ public interface IEventBus
     /// <typeparam name="TEvent">事件</typeparam>
     /// <typeparam name="THandler">事件处理者</typeparam>
     void Subscribe<TEvent, THandler>()
-        where TEvent : IEvent
+        where TEvent : EventBase
         where THandler : IEventHandler<TEvent>;
 
     /// <summary>
@@ -29,6 +29,6 @@ public interface IEventBus
     /// <typeparam name="TEvent">事件</typeparam>
     /// <typeparam name="THandler">事件处理者</typeparam>
     void Unsubscribe<TEvent, THandler>()
-        where TEvent : IEvent
+        where TEvent : EventBase
         where THandler : IEventHandler<TEvent>;
 }

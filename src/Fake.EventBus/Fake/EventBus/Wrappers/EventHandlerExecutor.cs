@@ -5,8 +5,8 @@ using Fake.EventBus.Events;
 
 namespace Fake.EventBus.Wrappers;
 
-public record EventHandlerExecutor(object HandlerInstance, Func<IEvent, CancellationToken, Task> HandlerCallback)
+public record EventHandlerExecutor(object HandlerInstance, Func<EventBase, CancellationToken, Task> HandlerCallback)
 {
     public object HandlerInstance { get; } = HandlerInstance;
-    public Func<IEvent, CancellationToken, Task> HandlerCallback { get; } = HandlerCallback;
+    public Func<EventBase, CancellationToken, Task> HandlerCallback { get; } = HandlerCallback;
 }
