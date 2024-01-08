@@ -5,13 +5,6 @@ namespace Fake.DependencyInjection;
 
 public class DependencyInjectionTests
 {
-    private readonly ITestOutputHelper _testOutputHelper;
-
-    public DependencyInjectionTests(ITestOutputHelper testOutputHelper)
-    {
-        _testOutputHelper = testOutputHelper;
-    }
-
     [Fact]
     public void 默认会注册自己和按命名约定的接口()
     {
@@ -21,18 +14,15 @@ public class DependencyInjectionTests
         a.ShouldNotBeNull();
 
         var c = application.ServiceProvider.GetService<MyA>();
-        c.ShouldBeNull();
+        c.ShouldNotBeNull();
     }
 
     [Fact]
     public void ExposeServices强行暴露没有按命名约定的接口()
     {
-        using (var application = FakeApplicationFactory.Create<IndependentModule>())
-        {
-            application.InitializeApplication();
-
-            application.ServiceProvider.GetService<IB>().ShouldNotBeNull();
-        }
+        using var application = FakeApplicationFactory.Create<IndependentModule>();
+        application.InitializeApplication();
+        application.ServiceProvider.GetService<IB>().ShouldNotBeNull();
     }
 
     [Fact]

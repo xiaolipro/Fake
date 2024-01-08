@@ -3,10 +3,8 @@ using System.Reflection;
 
 namespace Fake.DependencyInjection;
 
-public class ExposeServicesAttribute : Attribute, IExposedServiceTypesProvider
+public class ExposeServicesAttribute(params Type[] exposedServiceTypes) : Attribute, IExposedServiceTypesProvider
 {
-    public Type[] ExposedServiceTypes { get; }
-
     /// <summary>
     /// 暴露按照约定命名的接口
     /// </summary>
@@ -24,30 +22,24 @@ public class ExposeServicesAttribute : Attribute, IExposedServiceTypesProvider
     /// </summary>
     public bool ExposeSelf { get; set; } = true;
 
-    public ExposeServicesAttribute(params Type[] exposedServiceTypes)
+
+    public Type[] GetExposedServiceTypes(Type implementType)
     {
-        ExposedServiceTypes = exposedServiceTypes;
-    }
-
-
-    public Type[] GetExposedServiceTypes(Type targetType)
-    {
-        List<Type> exposedServiceTypes = ExposedServiceTypes.ToList();
-
+        var res = new List<Type>(exposedServiceTypes);
         if (ExposeInterface)
         {
-            foreach (var type in GetConventionalNamingServiceTypes(targetType))
+            foreach (var type in GetConventionalNamingServiceTypes(implementType))
             {
-                exposedServiceTypes.TryAdd(type);
+                res.TryAdd(type);
             }
         }
 
         if (ExposeSelf)
         {
-            exposedServiceTypes.TryAdd(targetType);
+            res.TryAdd(implementType);
         }
 
-        return exposedServiceTypes.ToArray();
+        return res.ToArray();
     }
 
     private static List<Type> GetConventionalNamingServiceTypes(Type targetType)
@@ -74,9 +66,9 @@ public class ExposeServicesAttribute : Attribute, IExposedServiceTypesProvider
             }
 
             //TODO：为什么这里暴露了泛型，仍然获取不了服务
-            // if (targetType.IsGenericType)
+            // if (implementType.IsGenericType)
             // {
-            //     if (targetType.Name.Substring(0, targetType.Name.IndexOf('`')).EndsWith(interfaceName.ToString()))
+            //     if (implementType.Name.Substring(0, implementType.Name.IndexOf('`')).EndsWith(interfaceName.ToString()))
             //     {
             //         serviceTypes.Add(@interface);
             //         continue;

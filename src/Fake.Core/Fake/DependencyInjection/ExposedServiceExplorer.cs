@@ -2,7 +2,11 @@ namespace Fake.DependencyInjection;
 
 public static class ExposedServiceExplorer
 {
-    private static readonly ExposeServicesAttribute DefaultExposeServicesAttribute = new();
+    private static readonly ExposeServicesAttribute DefaultExposeServicesAttribute = new()
+    {
+        ExposeInterface = true,
+        ExposeSelf = true
+    };
 
     public static List<Type> GetExposedServiceTypes(Type type)
     {

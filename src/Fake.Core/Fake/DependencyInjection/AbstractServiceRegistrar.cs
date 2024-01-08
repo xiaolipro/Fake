@@ -7,8 +7,8 @@ public abstract class AbstractServiceRegistrar : IServiceRegistrar
 {
     public virtual void RegisterAssembly(IServiceCollection services, Assembly assembly)
     {
-        var types = AssemblyHelper
-            .GetAllTypes(assembly)
+        var types = ReflectionHelper
+            .GetAssemblyAllTypes(assembly)
             .Where(
                 //TODO：泛型为什么跳过？
                 // type => type is { IsClass: true, IsAbstract: false }
@@ -58,7 +58,7 @@ public abstract class AbstractServiceRegistrar : IServiceRegistrar
     /// <param name="type">给定类型</param>
     /// <param name="attribute">依赖注入的配置</param>
     /// <returns></returns>
-    protected virtual ServiceLifetime? GetLifeTimeOrNull(Type type, DependencyAttribute attribute)
+    protected virtual ServiceLifetime? GetLifeTimeOrNull(Type type, DependencyAttribute? attribute)
     {
         return attribute?.Lifetime ?? GetServiceLifetimeFromClassHierarchy(type);
     }

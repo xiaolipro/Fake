@@ -11,7 +11,7 @@ public interface IExposedServiceTypesProvider
     /// <summary>
     /// 获取需要暴露的服务
     /// </summary>
-    /// <param name="targetType"></param>
+    /// <param name="implementType"></param>
     /// <returns></returns>
-    Type[] GetExposedServiceTypes(Type targetType);
+    Type[] GetExposedServiceTypes(Type implementType);
 }

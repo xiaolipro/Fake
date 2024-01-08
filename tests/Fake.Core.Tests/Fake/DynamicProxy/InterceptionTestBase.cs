@@ -1,5 +1,4 @@
-﻿using Fake.DependencyInjection;
-using Fake.Modularity;
+﻿using Fake.Modularity;
 using Fake.Testing;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -8,11 +7,6 @@ namespace Fake.DynamicProxy;
 public abstract class InterceptionTestBase<TStartupModule> : FakeApplicationTest<TStartupModule>
     where TStartupModule : FakeModule
 {
-    protected override void BeforeAddFakeApplication(IServiceCollection services)
-    {
-        ExposedServiceExplorer.SetDefaultExposeServicesAttribute(options => { options.ExposeSelf = false; });
-    }
-
     [Fact]
     public async Task 拦截异步方法()
     {

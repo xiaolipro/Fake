@@ -6,8 +6,8 @@ namespace Fake.Helpers;
 
 public static class ReflectionHelper
 {
-    private static readonly ConcurrentDictionary<string, PropertyInfo?> CachedPropertiesDic =
-        new ConcurrentDictionary<string, PropertyInfo?>();
+    private static readonly ConcurrentDictionary<string, PropertyInfo?> PropertiesCaches = new();
+    private static readonly ConcurrentDictionary<Assembly, IReadOnlyList<Type>> AssemblyCaches = new();
 
     /// <summary>
     /// 尝试为给定对象的属性赋值
@@ -23,7 +23,7 @@ public static class ReflectionHelper
 
         var cacheKey = $"{obj.GetType().FullName}-{propertySelector}-{ignoreAttributeTypes.JoinAsString("-")}";
 
-        var propertyInfo = CachedPropertiesDic.GetOrAdd(cacheKey, _ =>
+        var propertyInfo = PropertiesCaches.GetOrAdd(cacheKey, _ =>
         {
             // 必须从字段或属性上读取
             if (propertySelector.Body.NodeType != ExpressionType.MemberAccess) return null;
@@ -101,5 +101,17 @@ public static class ReflectionHelper
         if ((object)member == null)
             throw new ArgumentNullException(nameof(member));
         throw new ArgumentOutOfRangeException(nameof(member));
+    }
+
+    public static IReadOnlyList<Type> GetAssemblyAllTypes(Assembly assembly)
+    {
+        try
+        {
+            return AssemblyCaches.GetOrAdd(assembly, _ => assembly.GetTypes());
+        }
+        catch (ReflectionTypeLoadException ex)
+        {
+            return ex.Types;
+        }
     }
 }
