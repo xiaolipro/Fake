@@ -20,11 +20,11 @@ public class AutoMapperServiceRegistrar : DefaultServiceRegistrar
     protected override bool IsSkipServiceRegistration(Type type)
     {
         return !type.GetInterfaces()
-                   .Any(x => x.IsGenericType && _openTypes.Contains(x.GetGenericTypeDefinition())) 
+                   .Any(x => x.IsGenericType && _openTypes.Contains(x.GetGenericTypeDefinition()))
                || base.IsSkipServiceRegistration(type);
     }
 
-    protected override ServiceLifetime? GetLifeTimeOrNull(Type type, DependencyAttribute attribute)
+    protected override ServiceLifetime? GetLifeTimeOrNull(Type type, DependencyAttribute? attribute)
     {
         return ServiceLifetime.Transient;
     }

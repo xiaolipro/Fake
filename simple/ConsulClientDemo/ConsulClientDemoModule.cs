@@ -1,7 +1,6 @@
-﻿using Fake.Consul;
+﻿using Fake.AspNetCore;
+using Fake.Consul;
 using Fake.Modularity;
-
-namespace ConsulClientDemo;
 
 [DependsOn(typeof(FakeAspNetCoreModule))]
 [DependsOn(typeof(FakeConsulModule))]

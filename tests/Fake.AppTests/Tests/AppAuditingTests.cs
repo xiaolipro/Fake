@@ -17,7 +17,7 @@ public abstract class AppAuditingTests<TStartupModule> : AppTestBase<TStartupMod
 
     public AppAuditingTests()
     {
-        OrderRepository = GetRequiredService<IRepository<Order>>();
+        OrderRepository = ServiceProvider.GetRequiredService<IRepository<Order>>();
     }
 
     protected override void AfterAddFakeApplication(IServiceCollection services)

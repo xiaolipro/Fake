@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using Fake.Modularity;
 using Fake.Testing;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Primitives;
 using Shouldly;
@@ -14,7 +15,7 @@ public class DynamicFileProviderBaseTests : FakeApplicationTest<DynamicFileTestM
 
     public DynamicFileProviderBaseTests()
     {
-        _dynamicFileProvider = GetRequiredService<IDynamicFileProvider>();
+        _dynamicFileProvider = ServiceProvider.GetRequiredService<IDynamicFileProvider>();
     }
 
     [Fact]

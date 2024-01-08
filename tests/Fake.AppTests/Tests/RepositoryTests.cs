@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Domain.Aggregates.OrderAggregate;
+﻿using Domain.Aggregates.OrderAggregate;
 using Fake.DomainDrivenDesign.Repositories;
 using Fake.Modularity;
 using Shouldly;
@@ -13,7 +12,7 @@ public abstract class RepositoryTests<TStartupModule> : AppTestBase<TStartupModu
 
     protected RepositoryTests()
     {
-        OrderRepository = GetRequiredService<IRepository<Order>>();
+        OrderRepository = ServiceProvider.GetRequiredService<IRepository<Order>>();
     }
 
     [Fact]

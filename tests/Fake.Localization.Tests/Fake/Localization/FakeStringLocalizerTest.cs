@@ -1,6 +1,7 @@
 ﻿using Fake.Localization.Resources;
 using Fake.Testing;
 using Localization;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using Shouldly;
 using Xunit;
@@ -13,7 +14,7 @@ public sealed class FakeStringLocalizerTest : FakeApplicationTest<FakeLocalizati
 
     public FakeStringLocalizerTest()
     {
-        _localizer = GetRequiredService<IStringLocalizer<LocalizationTestResource>>();
+        _localizer = ServiceProvider.GetRequiredService<IStringLocalizer<LocalizationTestResource>>();
     }
 
     [Theory]

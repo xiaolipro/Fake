@@ -10,14 +10,9 @@ public abstract class EventBase
     public Guid Id { get; } = Guid.NewGuid();
 
     /// <summary>
-    /// 发布顺序（升序）
-    /// </summary>
-    public virtual long Order => 1;
-
-    /// <summary>
     /// 事件创建时间
     /// </summary>
-    public virtual DateTime CreationTime { get; } = DateTime.UtcNow;
+    public virtual DateTime CreationTime { get; } = DateTime.Now;
 
     public override string ToString()
     {

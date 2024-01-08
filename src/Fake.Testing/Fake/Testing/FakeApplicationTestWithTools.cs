@@ -1,5 +1,6 @@
 ﻿using Fake.Modularity;
 using Fake.Timing;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Fake.Testing;
 
@@ -10,6 +11,6 @@ public abstract class FakeApplicationTestWithTools<TStartupModule> : FakeApplica
 
     public FakeApplicationTestWithTools()
     {
-        FakeClock = GetRequiredService<IFakeClock>();
+        FakeClock = ServiceProvider.GetRequiredService<IFakeClock>();
     }
 }

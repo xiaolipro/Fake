@@ -179,7 +179,7 @@ public class FakeApplication : IFakeApplication
 
     public virtual void Dispose()
     {
-        Shutdown();
+        // Shutdown();
     }
 
     public void InitializeApplication(IServiceProvider? serviceProvider = null)

@@ -16,8 +16,8 @@ public abstract class UowTests<TStartupModule> : AppTestBase<TStartupModule>
 
     protected UowTests()
     {
-        OrderRepository = GetRequiredService<IRepository<Order>>();
-        UowManager = GetRequiredService<IUnitOfWorkManager>();
+        OrderRepository = ServiceProvider.GetRequiredService<IRepository<Order>>();
+        UowManager = ServiceProvider.GetRequiredService<IUnitOfWorkManager>();
     }
 
 

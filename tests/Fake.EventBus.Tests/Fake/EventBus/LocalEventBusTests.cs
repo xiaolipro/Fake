@@ -1,4 +1,6 @@
-﻿using Fake.Testing;
+﻿using Fake.DependencyInjection;
+using Fake.Testing;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Fake.EventBus;
 
@@ -9,7 +11,7 @@ public class LocalEventBusTests : FakeApplicationTest<FakeEventBusTestModule>
     public LocalEventBusTests()
     {
         SimpleLocalEventHandler.Init();
-        _eventBus = GetRequiredService<LocalEventBus>();
+        _eventBus = ServiceProvider.GetRequiredService<LocalEventBus>();
     }
 
     [Fact]
@@ -30,5 +32,19 @@ public class LocalEventBusTests : FakeApplicationTest<FakeEventBusTestModule>
         await _eventBus.PublishAsync(new SimpleEvent(1));
 
         Assert.Equal(2, SimpleLocalEventHandler.DisposedCount);
+    }
+
+    [Fact]
+    void dd()
+    {
+        ServiceProvider.GetRequiredService<LocalEventBus>();
+    }
+}
+
+public class DD : IScopedDependency, IDisposable
+{
+    public void Dispose()
+    {
+        // TODO release managed resources here
     }
 }

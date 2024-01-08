@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using Fake;
+﻿using Fake;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -61,34 +60,32 @@ public static class FakeServiceCollectionCommonExtensions
     {
         ThrowHelper.ThrowIfNull(services, nameof(services));
 
-        // 通过服务商工厂创建服务商
-        foreach (var service in services)
+        var factoryInterfaceType = services.FirstOrDefault(x =>
+            x.ImplementationInstance?.GetType().GetInterfaces()
+                .Where(t => t.IsGenericType)
+                .Select(t => t.GetGenericTypeDefinition())
+                .Contains(typeof(IServiceProviderFactory<>)
+                ) ?? false)?.ServiceType;
+
+        if (factoryInterfaceType == null)
         {
-            var factoryInterfaceType = service.ImplementationInstance?
-                .GetType()
-                .GetTypeInfo()
-                .GetInterfaces()
-                .FirstOrDefault(t =>
-                    t.IsGenericType && t.GetGenericTypeDefinition() == typeof(IServiceProviderFactory<>));
-
-            if (factoryInterfaceType == null) continue;
-
-            var containerBuilderType = factoryInterfaceType.GenericTypeArguments[0];
-            var serviceProvider = typeof(FakeServiceCollectionCommonExtensions)
-                .GetMethods()
-                .Single(m => m.Name == nameof(BuildServiceProviderFromFactory) && m.IsGenericMethod)
-                .MakeGenericMethod(containerBuilderType)
-                .Invoke(null, new object[] { services, null! });
-
-            return serviceProvider.To<IServiceProvider>();
+            // 如果没有第三方IOC容器则使用默认的
+            return services.BuildServiceProvider();
         }
 
-        // 如果没有第三方IOC容器则使用默认的
-        return services.BuildServiceProvider();
+        // 通过服务商工厂创建服务商
+        var containerBuilderType = factoryInterfaceType.GenericTypeArguments[0];
+        var serviceProvider = typeof(FakeServiceCollectionCommonExtensions)
+            .GetMethods()
+            .Single(m => m.Name == nameof(BuildServiceProviderFromFactory) && m.IsGenericMethod)
+            .MakeGenericMethod(containerBuilderType)
+            .Invoke(null, new object[] { services, null! });
+
+        return serviceProvider.To<IServiceProvider>();
     }
 
     public static IServiceProvider BuildServiceProviderFromFactory<TContainerBuilder>(
-        this ServiceCollection services, Action<TContainerBuilder> containerBuildAction)
+        this ServiceCollection services, Action<TContainerBuilder>? containerBuildAction = null)
         where TContainerBuilder : notnull
     {
         ThrowHelper.ThrowIfNull(services, nameof(services));

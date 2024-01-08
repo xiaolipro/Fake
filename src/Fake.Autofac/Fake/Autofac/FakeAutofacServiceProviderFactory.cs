@@ -5,20 +5,13 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Fake.Autofac;
 
-public class FakeAutofacServiceProviderFactory: IServiceProviderFactory<ContainerBuilder>
+public class FakeAutofacServiceProviderFactory(ContainerBuilder builder) : IServiceProviderFactory<ContainerBuilder>
 {
-    private readonly ContainerBuilder _builder;
-
-    public FakeAutofacServiceProviderFactory(ContainerBuilder builder)
-    {
-        _builder = builder;
-    }
-    
     public ContainerBuilder CreateBuilder(IServiceCollection services)
     {
-        _builder.Populate(services);
+        builder.Populate(services);
 
-        return _builder;
+        return builder;
     }
 
     public IServiceProvider CreateServiceProvider(ContainerBuilder containerBuilder)

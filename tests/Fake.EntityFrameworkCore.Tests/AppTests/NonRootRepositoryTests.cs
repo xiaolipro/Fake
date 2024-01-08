@@ -13,8 +13,8 @@ public class NonRootRepositoryTests : AppTestBase<FakeEntityFrameworkCoreTestMod
 
     public NonRootRepositoryTests()
     {
-        _orderQueries = GetRequiredService<IOrderQueries>();
-        _orderRepository = GetRequiredService<IOrderRepository>();
+        _orderQueries = ServiceProvider.GetRequiredService<IOrderQueries>();
+        _orderRepository = ServiceProvider.GetRequiredService<IOrderRepository>();
     }
 
     protected override void BeforeAddFakeApplication(IServiceCollection services)

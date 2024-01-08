@@ -28,7 +28,7 @@ public abstract class DependencyInjectionTestBase : FakeApplicationTest<Dependen
             singletonService = transientService.SingletonService;
         }
 
-        Assert.Equal(singletonService, GetRequiredService<MySingletonService>());
+        Assert.Equal(singletonService, ServiceProvider.GetRequiredService<MySingletonService>());
 
         singletonService.ResolveTransient();
 
@@ -42,10 +42,14 @@ public abstract class DependencyInjectionTestBase : FakeApplicationTest<Dependen
     [Fact]
     public void 属性注入必须public且具有set()
     {
-        GetRequiredService<ServiceWithPropertyInject>().PropertyInjectedServiceWithPublicSet.ShouldNotBeNull();
-        GetRequiredService<ServiceWithPropertyInject>().PropertyInjectedServiceWithPrivateSet.ShouldBeNull();
-        GetRequiredService<ServiceWithPropertyInject>().PropertyInjectedServiceWithProtectedSet.ShouldBeNull();
-        GetRequiredService<ServiceWithPropertyInject>().PropertyInjectedServiceWithInternalSet.ShouldBeNull();
+        ServiceProvider.GetRequiredService<ServiceWithPropertyInject>().PropertyInjectedServiceWithPublicSet
+            .ShouldNotBeNull();
+        ServiceProvider.GetRequiredService<ServiceWithPropertyInject>().PropertyInjectedServiceWithPrivateSet
+            .ShouldBeNull();
+        ServiceProvider.GetRequiredService<ServiceWithPropertyInject>().PropertyInjectedServiceWithProtectedSet
+            .ShouldBeNull();
+        ServiceProvider.GetRequiredService<ServiceWithPropertyInject>().PropertyInjectedServiceWithInternalSet
+            .ShouldBeNull();
         ServiceWithPropertyInject.StaticPropertyInjectedServiceWithPublicSet.ShouldBeNull();
     }
 

@@ -100,7 +100,6 @@ public abstract class FakeDbContext<TDbContext>(DbContextOptions<TDbContext> opt
 
         var domainEvents = domainEntities
             .SelectMany(x => x.Entity.DomainEvents ?? [])
-            .OrderBy(x => x.Order)
             .ToList();
 
         domainEntities.ForEach(entity => entity.Entity.ClearDomainEvents());

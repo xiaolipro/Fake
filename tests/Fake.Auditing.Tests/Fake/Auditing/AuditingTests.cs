@@ -20,8 +20,8 @@ public class AuditingTests : FakeApplicationTest<FakeAuditingTestModule>
     [Fact]
     public async Task 打了Audited特性的可以审计()
     {
-        var myAuditedObject1 = GetRequiredService<MyAuditedObject1>();
-        var auditingManager = GetRequiredService<IAuditingManager>();
+        var myAuditedObject1 = ServiceProvider.GetRequiredService<MyAuditedObject1>();
+        var auditingManager = ServiceProvider.GetRequiredService<IAuditingManager>();
         using (var scope = auditingManager.BeginScope())
         {
             await myAuditedObject1.DoItAsync(new InputObject { Value1 = "forty-two", Value2 = 42 });

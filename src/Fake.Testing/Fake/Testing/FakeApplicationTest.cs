@@ -4,14 +4,12 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Fake.Testing;
 
-public abstract class FakeApplicationTest<TStartupModule> : FakeTestServiceProvider, IDisposable
+public abstract class FakeApplicationTest<TStartupModule> : IDisposable
     where TStartupModule : IFakeModule
 {
     protected IFakeApplication Application { get; set; }
 
-    protected IServiceProvider RootServiceProvider { get; set; }
-
-    protected IServiceScope TestServiceScope { get; set; }
+    protected IServiceProvider ServiceProvider { get; set; }
 
 
     protected FakeApplicationTest()
@@ -28,11 +26,8 @@ public abstract class FakeApplicationTest<TStartupModule> : FakeTestServiceProvi
         Application = application;
         AfterAddFakeApplication(services);
 
-        RootServiceProvider = CreateServiceProvider(services);
-        TestServiceScope = RootServiceProvider!.CreateScope();
-
-        application.InitializeApplication(TestServiceScope.ServiceProvider);
-        ServiceProvider = Application.ServiceProvider;
+        ServiceProvider = CreateServiceProvider(services);
+        application.InitializeApplication(ServiceProvider);
     }
 
     protected virtual IServiceCollection CreateServiceCollection()
@@ -55,13 +50,12 @@ public abstract class FakeApplicationTest<TStartupModule> : FakeTestServiceProvi
 
     protected virtual IServiceProvider CreateServiceProvider(IServiceCollection services)
     {
-        return services.BuildServiceProviderFromFactory();
+        return services.BuildServiceProviderFromFactory().CreateScope().ServiceProvider;
     }
 
     public void Dispose()
     {
         Application?.Shutdown();
-        TestServiceScope?.Dispose();
         Application?.Dispose();
     }
 }

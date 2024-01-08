@@ -2,6 +2,7 @@
 using Fake.Authorization.Services;
 using Fake.Identity.Security.Claims;
 using Fake.IdGenerators.GuidGenerator;
+using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 using Xunit;
 
@@ -15,9 +16,9 @@ public class AuthorizationTests : AuthorizationTestBase
 
     public AuthorizationTests()
     {
-        _simpleAService = GetRequiredService<SimpleAService>();
-        _simpleBService = GetRequiredService<SimpleBService>();
-        _currentPrincipalAccessor = GetRequiredService<ICurrentPrincipalAccessor>();
+        _simpleAService = ServiceProvider.GetRequiredService<SimpleAService>();
+        _simpleBService = ServiceProvider.GetRequiredService<SimpleBService>();
+        _currentPrincipalAccessor = ServiceProvider.GetRequiredService<ICurrentPrincipalAccessor>();
     }
 
 

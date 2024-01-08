@@ -2,6 +2,7 @@
 using Fake;
 using Fake.EntityFrameworkCore.IntegrationEventLog;
 using Fake.Testing;
+using Microsoft.Extensions.DependencyInjection;
 
 public class
     ApplicationEventHandlerTests : FakeApplicationTestWithTools<FakeEntityFrameworkCoreIntegrationEventLogTestModule>
@@ -15,7 +16,7 @@ public class
 
     public ApplicationEventHandlerTests()
     {
-        _integrationEventLogService = GetRequiredService<IIntegrationEventLogService>();
+        _integrationEventLogService = ServiceProvider.GetRequiredService<IIntegrationEventLogService>();
     }
 
     [Fact]

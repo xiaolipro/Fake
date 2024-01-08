@@ -1,8 +1,7 @@
-﻿using Fake.Auditing;
+﻿using Fake.AspNetCore;
+using Fake.Auditing;
 using Fake.Autofac;
 using Fake.Modularity;
-
-namespace SimpleWebDemo;
 
 [DependsOn(typeof(FakeAuditingModule), typeof(FakeAutofacModule))]
 [DependsOn(typeof(FakeAspNetCoreModule))]

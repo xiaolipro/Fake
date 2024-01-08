@@ -1,5 +1,3 @@
-using ConsulClientDemo;
-
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddFakeApplication<ConsulClientDemoModule>();
 builder.Configuration.AddConfigurationFromConsul();

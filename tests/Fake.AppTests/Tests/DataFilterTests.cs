@@ -16,8 +16,8 @@ public abstract class DataFilterTests<TStartupModule> : AppTestBase<TStartupModu
 
     public DataFilterTests()
     {
-        OrderRepository = GetRequiredService<IRepository<Order>>();
-        SoftDeleteDataFilter = GetRequiredService<IDataFilter<ISoftDelete>>();
+        OrderRepository = ServiceProvider.GetRequiredService<IRepository<Order>>();
+        SoftDeleteDataFilter = ServiceProvider.GetRequiredService<IDataFilter<ISoftDelete>>();
     }
 
     [Fact]
