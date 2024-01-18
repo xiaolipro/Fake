@@ -5,6 +5,10 @@ namespace Fake.DynamicProxy;
 
 public class SimpleAsyncInterceptor : IFakeInterceptor, ITransientDependency
 {
+    public SimpleAsyncInterceptor()
+    {
+    }
+
     public async Task InterceptAsync(IFakeMethodInvocation invocation)
     {
         await Task.Delay(5);

@@ -49,4 +49,14 @@ public abstract class DisableClassInterceptionTestBase<TStartupModule> : FakeApp
         interfaceTarget.Logs[0].ShouldBe("SimpleAsyncInterceptor_InterceptAsync_BeforeInvocation"); // +2
         interfaceTarget.Logs.Count.ShouldBe(11); // +2
     }
+
+    [Fact]
+    public void 禁用类拦截器不影响接口拦截2()
+    {
+        // Arrange
+        var interfaceTarget = ServiceProvider.GetService<ISimpleInterceptionTarget>();
+        // Assert
+        interfaceTarget.Logs.Count.ShouldBe(2);
+        interfaceTarget.Logs.Count.ShouldBe(4);
+    }
 }

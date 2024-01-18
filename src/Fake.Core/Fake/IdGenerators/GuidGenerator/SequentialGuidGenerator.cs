@@ -6,16 +6,9 @@ namespace Fake.IdGenerators.GuidGenerator;
 /// 有序guid生成器
 /// take from https://github.com/jhtodd/SequentialGuid/blob/master/SequentialGuid/Classes/SequentialGuid.cs
 /// </summary>
-public class SequentialGuidGenerator : GuidGeneratorBase
+public class SequentialGuidGenerator(SequentialGuidType sequentialGuidType) : GuidGeneratorBase
 {
-    private readonly SequentialGuidType _sequentialGuidType;
     private static readonly RandomNumberGenerator RandomNumberGenerator = RandomNumberGenerator.Create();
-
-    public SequentialGuidGenerator(SequentialGuidType sequentialGuidType)
-    {
-        _sequentialGuidType = sequentialGuidType;
-    }
-
 
     /// <summary>
     /// 生成有序guid
@@ -38,13 +31,12 @@ public class SequentialGuidGenerator : GuidGeneratorBase
     {
         var guidBytes = new byte[16];
 
-        switch (_sequentialGuidType)
+        switch (sequentialGuidType)
         {
             case SequentialGuidType.SequentialAsString:
                 // 6字节时间戳+10字节随机数
                 Buffer.BlockCopy(timestampBytes, 2, guidBytes, 0, 6);
                 Buffer.BlockCopy(randomBytes, 0, guidBytes, 6, 10);
-
 
                 // 如果格式化为string，我们必须补偿这样一个事实：.NET将Data1和Data2块分别视为Int32和Int16。
                 // 这意味着它在小端系统上切换顺序。所以，我们必须再次逆转。
@@ -66,7 +58,7 @@ public class SequentialGuidGenerator : GuidGeneratorBase
                 Buffer.BlockCopy(timestampBytes, 2, guidBytes, 10, 6);
                 break;
             default:
-                throw new NotSupportedException($"不支持的有序Guid类型 {_sequentialGuidType}");
+                throw new NotSupportedException($"不支持的有序Guid类型 {sequentialGuidType}");
         }
 
         return new Guid(guidBytes);

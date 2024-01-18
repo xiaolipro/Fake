@@ -3,12 +3,7 @@
 public class DefaultWorkerProvider : IWorkerProvider
 {
     private const string WorkerIdKey = "Fake_WorkerId";
-    private readonly int _workerId;
-
-    public DefaultWorkerProvider()
-    {
-        _workerId = GetEnvironmentVariable(WorkerIdKey) ?? 0;
-    }
+    private readonly int _workerId = GetEnvironmentVariable(WorkerIdKey) ?? 0;
 
     public Task<int> GetWorkerIdAsync()
     {

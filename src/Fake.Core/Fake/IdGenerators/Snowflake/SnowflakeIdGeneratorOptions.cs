@@ -11,6 +11,7 @@ public class SnowflakeIdGeneratorOptions
 
     /// <summary>
     /// 时间戳类型
+    /// tips: ms精度41位可用34年
     /// </summary>
     public TimestampType TimestampType { get; set; } = TimestampType.Milliseconds;
 
