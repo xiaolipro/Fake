@@ -1,7 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
     <Import Project="../../common.props" />
     <Import Project="../../configureawait.props" />
-    
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <WarningsAsErrors>Nullable</WarningsAsErrors>
+        <PackageId>Fake.AspNetCore</PackageId>
+        <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
+    </PropertyGroup>
     <ItemGroup>
         <ProjectReference Include="..\..\tests\Fake.VirtualFileSytem.Tests\Fake.VirtualFileSytem.Tests.csproj"/>
         <ProjectReference Include="..\Fake.Auditing\Fake.Auditing.csproj"/>
@@ -9,9 +16,6 @@
         <ProjectReference Include="..\Fake.Core\Fake.Core.csproj"/>
         <ProjectReference Include="..\Fake.Identity\Fake.Identity.csproj"/>
         <ProjectReference Include="..\Fake.UnitOfWork\Fake.UnitOfWork.csproj"/>
-    </ItemGroup>
-    <ItemGroup>
-        <None Remove="Properties\launchSettings.json"/>
     </ItemGroup>
 
 </Project>
