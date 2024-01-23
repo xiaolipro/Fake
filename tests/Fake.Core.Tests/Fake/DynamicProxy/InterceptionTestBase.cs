@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Fake.DynamicProxy;
 
-public abstract class InterceptionTestBase<TStartupModule> : FakeApplicationTest<TStartupModule>
+public abstract class InterceptionTestBase<TStartupModule> : ApplicationTest<TStartupModule>
     where TStartupModule : FakeModule
 {
     [Fact]

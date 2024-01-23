@@ -4,12 +4,12 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Fake.Testing;
 
-public abstract class FakeApplicationTestWithTools<TStartupModule> : FakeApplicationTest<TStartupModule>
+public abstract class ApplicationTestWithTools<TStartupModule> : ApplicationTest<TStartupModule>
     where TStartupModule : IFakeModule
 {
     protected IFakeClock FakeClock { get; }
 
-    public FakeApplicationTestWithTools()
+    public ApplicationTestWithTools()
     {
         FakeClock = ServiceProvider.GetRequiredService<IFakeClock>();
     }

@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Fake.Auditing;
 
-public class AuditingTests : FakeApplicationTest<FakeAuditingTestModule>
+public class AuditingTests : ApplicationTest<FakeAuditingTestModule>
 {
     protected IAuditingStore AuditingStore;
 

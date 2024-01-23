@@ -7,14 +7,10 @@ using Microsoft.Extensions.Options;
 
 namespace Fake.AspNetCore.ExceptionHandling;
 
-public class DefaultHttpExceptionStatusCodeFinder : IHttpExceptionStatusCodeFinder
+public class DefaultHttpExceptionStatusCodeFinder(IOptions<FakeHttpExceptionStatusOptions> options)
+    : IHttpExceptionStatusCodeFinder
 {
-    private readonly FakeHttpExceptionStatusOptions _options;
-
-    public DefaultHttpExceptionStatusCodeFinder(IOptions<FakeHttpExceptionStatusOptions> options)
-    {
-        _options = options.Value;
-    }
+    private readonly FakeHttpExceptionStatusOptions _options = options.Value;
 
     public virtual HttpStatusCode Find(HttpContext httpContext, Exception exception)
     {
@@ -23,7 +19,7 @@ public class DefaultHttpExceptionStatusCodeFinder : IHttpExceptionStatusCodeFind
             var code = exceptionWithErrorCode.Code;
             if (!code.IsNullOrWhiteSpace())
             {
-                if (_options.ErrorCodeToHttpStatusCodeMappings.TryGetValue(code, out var statusCode))
+                if (_options.ErrorCodeToHttpStatusCodeMappings.TryGetValue(code!, out var statusCode))
                 {
                     return statusCode;
                 }

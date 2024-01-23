@@ -8,12 +8,12 @@ public class RemoteServiceValidationErrorModel
     /// <summary>
     /// 验证错误消息
     /// </summary>
-    public string Message { get; set; }
+    public string? Message { get; set; }
 
     /// <summary>
     /// 相关成员 (fields/properties).
     /// </summary>
-    public string[] Members { get; set; }
+    public string[] Members { get; set; } = [];
 
     public RemoteServiceValidationErrorModel()
     {

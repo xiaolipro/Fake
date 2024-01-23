@@ -9,7 +9,7 @@ using Microsoft.Net.Http.Headers;
 
 namespace Fake.AspNetCore.Testing;
 
-public class FakeAspNetCoreIntegrationTestWithTools<TStartupModule> : FakeAspNetCoreIntegrationTest<TStartupModule>
+public class AspNetCoreIntegrationTestWithTools<TStartupModule> : AspNetCoreIntegrationTest<TStartupModule>
     where TStartupModule : class, IFakeModule
 {
     protected virtual async Task<T?> GetResponseAsync<T>(string url,

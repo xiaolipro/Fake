@@ -4,11 +4,11 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Fake.Json;
 
-public class FakeJsonSerializerTests : FakeJsonTestBase
+public class JsonSerializerTests : JsonTestBase
 {
     private readonly IFakeJsonSerializer _jsonSerializer;
 
-    public FakeJsonSerializerTests()
+    public JsonSerializerTests()
     {
         _jsonSerializer = ServiceProvider.GetRequiredService<IFakeJsonSerializer>();
     }

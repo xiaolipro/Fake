@@ -6,12 +6,12 @@ using Microsoft.Extensions.Options;
 
 namespace Fake.Json.SystemTextJson.Converters;
 
-public class FakeDateTimeConverter : JsonConverter<DateTime>
+public class DateTimeConverter : JsonConverter<DateTime>
 {
     private readonly IFakeClock _clock;
     private readonly FakeJsonSerializerOptions _serializerOptions;
 
-    public FakeDateTimeConverter(IFakeClock fakeClock, IOptions<FakeJsonSerializerOptions> options)
+    public DateTimeConverter(IFakeClock fakeClock, IOptions<FakeJsonSerializerOptions> options)
     {
         _clock = fakeClock;
         _serializerOptions = options.Value;

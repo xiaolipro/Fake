@@ -4,15 +4,12 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Fake.Testing;
 
-public abstract class FakeApplicationTest<TStartupModule> : IDisposable
+public abstract class ApplicationTest<TStartupModule> : TestServiceProviderAccessor, IDisposable
     where TStartupModule : IFakeModule
 {
-    protected IFakeApplication Application { get; set; }
+    protected IFakeApplication Application { get; set; } = null!;
 
-    protected IServiceProvider ServiceProvider { get; set; }
-
-
-    protected FakeApplicationTest()
+    protected ApplicationTest()
     {
         InitApplication();
     }
@@ -55,7 +52,7 @@ public abstract class FakeApplicationTest<TStartupModule> : IDisposable
 
     public void Dispose()
     {
-        Application?.Shutdown();
-        Application?.Dispose();
+        Application.Shutdown();
+        Application.Dispose();
     }
 }

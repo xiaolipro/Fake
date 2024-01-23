@@ -18,7 +18,7 @@ public class FakeLocalizationModule : FakeModule
         context.Services.TryAddTransient(typeof(IStringLocalizer<>), typeof(StringLocalizer<>));
 
         // 替换ASPNETCORE原生的IStringLocalizerFactory实现
-        context.Services.Replace(ServiceDescriptor.Singleton<IStringLocalizerFactory, FakeStringLocalizerFactory>());
+        context.Services.Replace(ServiceDescriptor.Singleton<IStringLocalizerFactory, StringLocalizerFactory>());
         context.Services.AddSingleton<ResourceManagerStringLocalizerFactory>();
 
         context.Services.Configure<FakeVirtualFileSystemOptions>(options =>

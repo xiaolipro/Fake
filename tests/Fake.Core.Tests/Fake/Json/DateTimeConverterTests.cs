@@ -2,11 +2,11 @@
 
 namespace Fake.Json;
 
-public class FakeDateTimeConverterTests:FakeJsonTestBase
+public class DateTimeConverterTests : JsonTestBase
 {
     private readonly IFakeJsonSerializer _jsonSerializer;
 
-    public FakeDateTimeConverterTests()
+    public DateTimeConverterTests()
     {
         _jsonSerializer = ServiceProvider.GetRequiredService<IFakeJsonSerializer>();
     }
@@ -19,7 +19,7 @@ public class FakeDateTimeConverterTests:FakeJsonTestBase
             options.OutputDateTimeFormat = "yyyy-MM-dd HH:mm";
         });
     }
-    
+
     [Fact]
     void 序列化()
     {
@@ -32,8 +32,8 @@ public class FakeDateTimeConverterTests:FakeJsonTestBase
 
         json.ShouldBe("{\"value\":\"2021-01-01 01:01\"}");
     }
-    
-    
+
+
     [Fact]
     void 反序列化()
     {
@@ -42,14 +42,14 @@ public class FakeDateTimeConverterTests:FakeJsonTestBase
         var datetime = _jsonSerializer.Deserialize<DatetimeClass>(json);
 
         datetime.Value.ShouldBe(new DateTime(2021, 1, 1, 1, 1, 1));
-        
+
         json = "{\"value\":\"2021-01-01T01:01:01\"}";
 
         datetime = _jsonSerializer.Deserialize<DatetimeClass>(json);
 
         datetime.Value.ShouldBe(new DateTime(2021, 1, 1, 1, 1, 1));
     }
-    
+
     [Fact]
     void 可空datetime反序列化()
     {
@@ -58,20 +58,20 @@ public class FakeDateTimeConverterTests:FakeJsonTestBase
         var datetime = _jsonSerializer.Deserialize<NullableDatetimeClass>(json);
 
         datetime.Value.ShouldBe(new DateTime(2021, 1, 1, 1, 1, 1));
-        
+
         json = "{\"value\":\"2021-01-01T01:01:01\"}";
 
         datetime = _jsonSerializer.Deserialize<NullableDatetimeClass>(json);
 
         datetime.Value.ShouldBe(new DateTime(2021, 1, 1, 1, 1, 1));
-        
+
         json = "{\"value\":null}";
 
         datetime = _jsonSerializer.Deserialize<NullableDatetimeClass>(json);
 
         datetime.Value.ShouldBeNull();
     }
-    
+
     [Fact]
     void 可空datetime序列化()
     {
@@ -83,7 +83,7 @@ public class FakeDateTimeConverterTests:FakeJsonTestBase
         var json = _jsonSerializer.Serialize(datetime);
 
         json.ShouldBe("{\"value\":\"2021-01-01 01:01\"}");
-        
+
         datetime = new NullableDatetimeClass
         {
             Value = new DateTime(2021, 1, 1, 1, 1, 1)
@@ -92,7 +92,7 @@ public class FakeDateTimeConverterTests:FakeJsonTestBase
         json = _jsonSerializer.Serialize(datetime);
 
         json.ShouldBe("{\"value\":\"2021-01-01 01:01\"}");
-        
+
         datetime = new NullableDatetimeClass
         {
             Value = null
@@ -108,8 +108,8 @@ public class FakeDateTimeConverterTests:FakeJsonTestBase
     {
         public DateTime Value { get; set; }
     }
-    
-    
+
+
     class NullableDatetimeClass
     {
         public DateTime? Value { get; set; }

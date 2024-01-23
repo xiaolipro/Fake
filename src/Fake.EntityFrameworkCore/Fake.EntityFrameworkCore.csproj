@@ -2,6 +2,10 @@
 
     <Import Project="../../common.props" />
     <Import Project="../../configureawait.props" />
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+    </PropertyGroup>
     
     <ItemGroup>
         <ProjectReference Include="..\Fake.DomainDrivenDesign\Fake.DomainDrivenDesign.csproj" />

@@ -6,11 +6,11 @@ using Microsoft.Extensions.Options;
 
 namespace Fake.Json.SystemTextJson.Converters;
 
-public class FakeBooleanConverter : JsonConverter<bool>
+public class BooleanConverter : JsonConverter<bool>
 {
     private readonly FakeJsonSerializerOptions _options;
 
-    public FakeBooleanConverter(IOptions<FakeJsonSerializerOptions> options)
+    public BooleanConverter(IOptions<FakeJsonSerializerOptions> options)
     {
         _options = options.Value;
     }

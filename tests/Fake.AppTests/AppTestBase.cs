@@ -3,7 +3,7 @@ using Fake.Modularity;
 using Fake.Testing;
 using Fake.UnitOfWork;
 
-public abstract class AppTestBase<TStartupModule> : FakeApplicationTestWithTools<TStartupModule>
+public abstract class AppTestBase<TStartupModule> : ApplicationTestWithTools<TStartupModule>
     where TStartupModule : IFakeModule
 {
     protected override void SetApplicationCreationOptions(FakeApplicationCreationOptions options)

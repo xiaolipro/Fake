@@ -1,14 +1,12 @@
-﻿using Fake.Testing;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace Fake.Timing;
 
-public class FakeClockTest : FakeClockTestBase
+public class ClockTest : ClockTestBase
 {
     private readonly IFakeClock _fakeClock;
 
-    public FakeClockTest()
+    public ClockTest()
     {
         _fakeClock = ServiceProvider.GetRequiredService<IFakeClock>();
     }
@@ -16,22 +14,16 @@ public class FakeClockTest : FakeClockTestBase
     [Fact]
     void 测试计时器()
     {
-        var time = _fakeClock.MeasureExecutionTime(() =>
-        {
-            Thread.Sleep(3000);
-        });
-        
+        var time = _fakeClock.MeasureExecutionTime(() => { Thread.Sleep(3000); });
+
         Assert.True(time.Seconds is >= 3 and < 4);
     }
-    
+
     [Fact]
     async Task 测试异步计时器()
     {
-        var time = await _fakeClock.MeasureExecutionTimeAsync(async () =>
-        {
-            await Task.Delay(3000);
-        });
-        
+        var time = await _fakeClock.MeasureExecutionTimeAsync(async () => { await Task.Delay(3000); });
+
         Assert.True(time.Seconds is >= 3 and < 4);
     }
 
@@ -49,7 +41,7 @@ public class FakeClockTest : FakeClockTestBase
 
         await Task.WhenAll(tasks);
     }
-    
+
     [Fact]
     async Task 并发测试异步计时器()
     {

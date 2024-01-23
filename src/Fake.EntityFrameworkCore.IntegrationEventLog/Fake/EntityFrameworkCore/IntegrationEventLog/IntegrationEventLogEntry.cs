@@ -6,51 +6,36 @@ using Fake.EventBus.Events;
 
 namespace Fake.EntityFrameworkCore.IntegrationEventLog;
 
-public class IntegrationEventLogEntry
+public class IntegrationEventLogEntry(EventBase @event, Guid transactionId)
 {
-    private IntegrationEventLogEntry()
-    {
-    }
+    public Guid EventId { get; private set; } = @event.Id;
 
-    public IntegrationEventLogEntry(EventBase @event, Guid transactionId)
-    {
-        EventId = @event.Id;
-        CreationTime = @event.CreationTime;
-        EventTypeName = @event.GetType().FullName ?? String.Empty;
-        Content = JsonSerializer.Serialize(@event);
-        State = EventStateEnum.NotPublished;
-        TimesSent = 0;
-        TransactionId = transactionId.ToString();
-    }
-
-    public Guid EventId { get; private set; }
-
-    public string EventTypeName { get; private set; }
+    public string EventTypeName { get; private set; } = @event.GetType().FullName ?? String.Empty;
 
     /// <summary>
     /// 事件状态
     /// </summary>
-    public EventStateEnum State { get; private set; }
+    public EventStateEnum State { get; private set; } = EventStateEnum.NotPublished;
 
     /// <summary>
     /// 发送次数
     /// </summary>
-    public int TimesSent { get; private set; }
+    public int TimesSent { get; private set; } = 0;
 
     /// <summary>
     /// 事件创建时间
     /// </summary>
-    public DateTime CreationTime { get; private set; }
+    public DateTime CreationTime { get; private set; } = @event.CreationTime;
 
     /// <summary>
     /// 发送内容
     /// </summary>
-    public string Content { get; private set; }
+    public string Content { get; private set; } = JsonSerializer.Serialize(@event);
 
     /// <summary>
     /// 事务Id
     /// </summary>
-    public string TransactionId { get; private set; }
+    public string TransactionId { get; private set; } = transactionId.ToString();
 
     [NotMapped] public string EventTypeShortName => EventTypeName.Split('.').Last();
     [NotMapped] public EventBase? IntegrationEvent { get; private set; }

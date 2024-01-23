@@ -1,11 +1,10 @@
-﻿using System;
-using Fake.ObjectMapping.Models;
+﻿using Fake.ObjectMapping.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 
 namespace Fake.ObjectMapping;
 
-public class ObjectMapperTest: FakeObjectMappingTestBase
+public class ObjectMapperTest : ObjectMappingTestBase
 {
     private readonly IObjectMapper _objectMapper;
 
@@ -13,7 +12,7 @@ public class ObjectMapperTest: FakeObjectMappingTestBase
     {
         _objectMapper = ServiceProvider.GetRequiredService<IObjectMapper>();
     }
-    
+
     [Fact]
     void 优先使用特定的映射器()
     {
@@ -21,17 +20,17 @@ public class ObjectMapperTest: FakeObjectMappingTestBase
         var dto = _objectMapper.Map<MyEntity, SimpleEntity>(entity);
         dto.Number.ShouldBe(2);
     }
-    
+
     [Fact]
     void 不传目标实例则创建新对象()
     {
         var entity = new MyEntity() { Id = Guid.NewGuid(), Number = 1 };
-        var res = _objectMapper.Map<MyEntity,SimpleEntity>(entity);
+        var res = _objectMapper.Map<MyEntity, SimpleEntity>(entity);
         res.Id.ShouldBe(entity.Id);
         res.Number.ShouldBe(2);
     }
-    
-    
+
+
     [Fact]
     void 传目标实例则不创建新对象()
     {

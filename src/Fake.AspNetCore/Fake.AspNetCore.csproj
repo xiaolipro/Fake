@@ -4,10 +4,6 @@
 
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
-        <Nullable>enable</Nullable>
-        <WarningsAsErrors>Nullable</WarningsAsErrors>
-        <PackageId>Fake.AspNetCore</PackageId>
-        <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
     </PropertyGroup>
     <ItemGroup>
         <ProjectReference Include="..\..\tests\Fake.VirtualFileSytem.Tests\Fake.VirtualFileSytem.Tests.csproj"/>

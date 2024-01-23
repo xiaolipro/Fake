@@ -2,7 +2,7 @@
 
 namespace Fake.Json;
 
-public abstract class FakeJsonTestBase : FakeApplicationTest<FakeCoreModule>
+public abstract class JsonTestBase : ApplicationTest<FakeCoreModule>
 {
     protected override void SetApplicationCreationOptions(FakeApplicationCreationOptions options)
     {

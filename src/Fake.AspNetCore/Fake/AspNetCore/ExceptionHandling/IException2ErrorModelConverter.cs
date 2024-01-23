@@ -14,5 +14,5 @@ public interface IException2ErrorModelConverter
     /// <param name="exception"></param>
     /// <param name="options"></param>
     /// <returns></returns>
-    RemoteServiceErrorModel Convert(Exception exception, Action<FakeExceptionHandlingOptions> options = null);
+    RemoteServiceErrorModel Convert(Exception exception, Action<FakeExceptionHandlingOptions>? options = null);
 }

@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Fake.UnitOfWork;
 
-public class UnitOfWorkScopeTest : FakeApplicationTest<FakeUnitOfWorkModule>
+public class UnitOfWorkScopeTest : ApplicationTest<FakeUnitOfWorkModule>
 {
     private readonly IUnitOfWorkManager _unitOfWorkManager;
 

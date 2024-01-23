@@ -3,16 +3,16 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Fake.Testing;
 
-public abstract class FakeTestServiceProvider : IServiceProviderAccessor
+public abstract class TestServiceProviderAccessor
 {
-    public IServiceProvider ServiceProvider { get; protected set; } = null!;
+    protected IServiceProvider ServiceProvider { get; set; } = default!;
 
     protected T? GetService<T>()
     {
         return ServiceProvider.GetService<T>();
     }
 
-    protected T GetRequiredService<T>()
+    protected T GetRequiredService<T>() where T : notnull
     {
         return ServiceProvider.GetRequiredService<T>();
     }

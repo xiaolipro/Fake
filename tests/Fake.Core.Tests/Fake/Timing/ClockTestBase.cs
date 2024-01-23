@@ -2,7 +2,7 @@
 
 namespace Fake.Timing;
 
-public class FakeClockTestBase : FakeApplicationTest<FakeCoreModule>
+public class ClockTestBase : ApplicationTest<FakeCoreModule>
 {
     protected override void SetApplicationCreationOptions(FakeApplicationCreationOptions options) =>
         options.UseAutofac();

@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Fake.IdGenerators;
 
-public class SnowflakeIdGeneratorTests : FakeApplicationTestWithTools<FakeCoreTestModule>
+public class SnowflakeIdGeneratorTests : ApplicationTestWithTools<FakeCoreTestModule>
 {
     private readonly ITestOutputHelper _testOutputHelper;
     private readonly SnowflakeIdGenerator _longIdGenerator;

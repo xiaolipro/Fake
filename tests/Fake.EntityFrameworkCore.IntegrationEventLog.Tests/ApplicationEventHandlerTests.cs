@@ -5,7 +5,7 @@ using Fake.Testing;
 using Microsoft.Extensions.DependencyInjection;
 
 public class
-    ApplicationEventHandlerTests : FakeApplicationTestWithTools<FakeEntityFrameworkCoreIntegrationEventLogTestModule>
+    ApplicationEventHandlerTests : ApplicationTestWithTools<FakeEntityFrameworkCoreIntegrationEventLogTestModule>
 {
     private readonly IIntegrationEventLogService _integrationEventLogService;
 

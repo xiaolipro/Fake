@@ -45,16 +45,16 @@ public class FakeCoreModule : FakeModule
 
     private void ConfigureClock(ServiceConfigurationContext context)
     {
-        context.Services.AddTransient<IFakeClock, FakeClock>();
+        context.Services.AddTransient<IFakeClock, Clock>();
         context.Services.Configure<FakeClockOptions>(_ => { });
     }
 
     private void ConfigureSystemTextJson(ServiceConfigurationContext context)
     {
         context.Services.AddTransient<IFakeJsonSerializer, FakeSystemTextJsonSerializer>();
-        context.Services.AddTransient<FakeDateTimeConverter>();
-        context.Services.AddTransient<FakeBooleanConverter>();
-        context.Services.AddTransient<FakeLongConverter>();
+        context.Services.AddTransient<DateTimeConverter>();
+        context.Services.AddTransient<BooleanConverter>();
+        context.Services.AddTransient<LongConverter>();
         context.Services.AddTransient<FakeDefaultJsonTypeInfoResolver>();
         context.Services.AddOptions<FakeSystemTextJsonModifiersOptions>()
             .Configure<IServiceProvider>((option, provider) =>
@@ -78,9 +78,9 @@ public class FakeCoreModule : FakeModule
                 options.ReadCommentHandling = JsonCommentHandling.Skip;
                 options.AllowTrailingCommas = true;
 
-                options.Converters.Add(provider.GetRequiredService<FakeDateTimeConverter>());
-                options.Converters.Add(provider.GetRequiredService<FakeLongConverter>());
-                options.Converters.Add(provider.GetRequiredService<FakeBooleanConverter>());
+                options.Converters.Add(provider.GetRequiredService<DateTimeConverter>());
+                options.Converters.Add(provider.GetRequiredService<LongConverter>());
+                options.Converters.Add(provider.GetRequiredService<BooleanConverter>());
                 options.Converters.Add(new ObjectToInferredTypesConverter());
 
                 options.TypeInfoResolver = provider.GetRequiredService<FakeDefaultJsonTypeInfoResolver>();

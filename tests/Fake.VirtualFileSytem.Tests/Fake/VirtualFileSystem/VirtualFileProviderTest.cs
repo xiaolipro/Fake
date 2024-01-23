@@ -6,7 +6,7 @@ using Xunit;
 
 namespace Fake.VirtualFileSystem;
 
-public class VirtualFileProviderTest : FakeApplicationTest<FakeVirtualFileSystemTestModule>
+public class VirtualFileProviderTest : ApplicationTest<FakeVirtualFileSystemTestModule>
 {
     private readonly IVirtualFileProvider _virtualFileProvider;
 

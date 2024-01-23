@@ -3,15 +3,8 @@ using System.Threading.Tasks;
 
 namespace Fake.Authorization.Permissions;
 
-public class PermissionChecker : IPermissionChecker
+public class PermissionChecker(IPermissionRecordStore permissionRecordStore) : IPermissionChecker
 {
-    private readonly IPermissionRecordStore _permissionRecordStore;
-
-    public PermissionChecker(IPermissionRecordStore permissionRecordStore)
-    {
-        _permissionRecordStore = permissionRecordStore;
-    }
-
     public async Task<bool> IsGrantedAsync(ClaimsPrincipal claimsPrincipal, PermissionRequirement requirement)
     {
         ThrowHelper.ThrowIfNull(requirement.Permissions);
@@ -35,7 +28,7 @@ public class PermissionChecker : IPermissionChecker
     {
         ThrowHelper.ThrowIfNull(permission);
 
-        var record = await _permissionRecordStore.GetOrNullAsync(permission);
+        var record = await permissionRecordStore.GetOrNullAsync(permission);
 
         if (record == null) return false;
 

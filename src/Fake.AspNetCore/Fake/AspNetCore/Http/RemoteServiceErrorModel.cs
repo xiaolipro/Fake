@@ -18,7 +18,7 @@ public class RemoteServiceErrorModel
     /// <summary>
     /// 异常消息
     /// </summary>
-    public string Message { get; set; }
+    public string? Message { get; set; }
 
     /// <summary>
     /// 异常明细

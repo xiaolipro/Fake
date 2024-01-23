@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Fake.ObjectMapping.Mapster;
 
-public class MapsterTest : FakeApplicationTest<FakeObjectMappingMapsterTestModule>
+public class MapsterTest : ApplicationTest<FakeObjectMappingMapsterTestModule>
 {
     private readonly IObjectMapper _objectMapper;
     public MapsterTest() => _objectMapper = ServiceProvider.GetRequiredService<IObjectMapper>();

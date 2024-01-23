@@ -1,12 +1,16 @@
 <Project>
   <PropertyGroup>
-    <LangVersion>latest</LangVersion>
     <RootNamespace/>
-    <Nullable>enable</Nullable>
-    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
     <IsPackable>true</IsPackable>
     <OutputType>Library</OutputType>
+    <PackRelease>true</PackRelease>
+    <Nullable>enable</Nullable>
+    <WarningsAsErrors>Nullable</WarningsAsErrors>
     <NoWarn>$(NoWarn);CS1591;CS0436;NU1803</NoWarn>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>

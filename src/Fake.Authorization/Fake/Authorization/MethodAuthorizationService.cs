@@ -7,20 +7,12 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Fake.Authorization;
 
-public class MethodAuthorizationService : IMethodAuthorizationService
+public class MethodAuthorizationService(
+    ICurrentPrincipalAccessor currentPrincipalAccessor,
+    IAuthorizationService authorizationService,
+    IAuthorizationPolicyProvider authorizationPolicyProvider)
+    : IMethodAuthorizationService
 {
-    private readonly ICurrentPrincipalAccessor _currentPrincipalAccessor;
-    private readonly IAuthorizationService _authorizationService;
-    private readonly IAuthorizationPolicyProvider _authorizationPolicyProvider;
-
-    public MethodAuthorizationService(ICurrentPrincipalAccessor currentPrincipalAccessor,
-        IAuthorizationService authorizationService, IAuthorizationPolicyProvider authorizationPolicyProvider)
-    {
-        _currentPrincipalAccessor = currentPrincipalAccessor;
-        _authorizationService = authorizationService;
-        _authorizationPolicyProvider = authorizationPolicyProvider;
-    }
-
     public async Task<bool> IsGrantedAsync(MethodInfo invocationMethod)
     {
         if (AllowAnonymous(invocationMethod))
@@ -29,14 +21,19 @@ public class MethodAuthorizationService : IMethodAuthorizationService
         }
 
         var authorizeData = GetAuthorizationDataAttributes(invocationMethod);
-        var policy = await AuthorizationPolicy.CombineAsync(_authorizationPolicyProvider, authorizeData);
+        var policy = await AuthorizationPolicy.CombineAsync(authorizationPolicyProvider, authorizeData);
         if (policy == null)
         {
             return true;
         }
 
-        var res = await _authorizationService.AuthorizeAsync(
-            _currentPrincipalAccessor.Principal,
+        if (currentPrincipalAccessor.Principal == null)
+        {
+            return false;
+        }
+
+        var res = await authorizationService.AuthorizeAsync(
+            currentPrincipalAccessor.Principal,
             null,
             policy
         );

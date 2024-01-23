@@ -6,7 +6,7 @@ using Shouldly;
 
 namespace Fake.ObjectMapping.AutoMapper;
 
-public class AutoMapperValidateTest : FakeApplicationTest<FakeObjectMappingAutoMapperTestModule>
+public class AutoMapperValidateTest : ApplicationTest<FakeObjectMappingAutoMapperTestModule>
 {
     private readonly IObjectMapper _objectMapper;
 

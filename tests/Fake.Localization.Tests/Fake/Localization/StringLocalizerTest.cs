@@ -8,11 +8,11 @@ using Xunit;
 
 namespace Fake.Localization;
 
-public sealed class FakeStringLocalizerTest : FakeApplicationTest<FakeLocalizationTestModule>
+public sealed class StringLocalizerTest : ApplicationTest<FakeLocalizationTestModule>
 {
     private readonly IStringLocalizer<LocalizationTestResource> _localizer;
 
-    public FakeStringLocalizerTest()
+    public StringLocalizerTest()
     {
         _localizer = ServiceProvider.GetRequiredService<IStringLocalizer<LocalizationTestResource>>();
     }

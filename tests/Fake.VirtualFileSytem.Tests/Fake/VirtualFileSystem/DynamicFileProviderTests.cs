@@ -9,7 +9,7 @@ using Xunit;
 
 namespace Fake.VirtualFileSystem;
 
-public class DynamicFileProviderBaseTests : FakeApplicationTest<DynamicFileTestModule>
+public class DynamicFileProviderBaseTests : ApplicationTest<DynamicFileTestModule>
 {
     private readonly IDynamicFileProvider _dynamicFileProvider;
 

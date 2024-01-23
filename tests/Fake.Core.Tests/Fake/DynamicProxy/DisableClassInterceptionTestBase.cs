@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Fake.DynamicProxy;
 
-public abstract class DisableClassInterceptionTestBase<TStartupModule> : FakeApplicationTest<TStartupModule>
+public abstract class DisableClassInterceptionTestBase<TStartupModule> : ApplicationTest<TStartupModule>
     where TStartupModule : FakeModule
 {
     protected override void BeforeAddFakeApplication(IServiceCollection services)

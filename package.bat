@@ -17,7 +17,8 @@ if "%api_key%"=="" (
 
 for /D %%d in (*) do (
     cd %%d
-    dotnet pack --output ../../packages --version-suffix %package_version%
+    echo dotnet pack --output ../../packages --version-suffix %package_version%
+    dotnet pack -c Debug --output ../../packages --version-suffix %package_version%
     cd ..
 )
 

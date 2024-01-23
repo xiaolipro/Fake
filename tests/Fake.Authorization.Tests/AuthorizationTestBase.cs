@@ -6,7 +6,7 @@ using Fake.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 
-public class AuthorizationTestBase : FakeApplicationTest<FakeAuthorizationTestModule>
+public class AuthorizationTestBase : ApplicationTest<FakeAuthorizationTestModule>
 {
     protected override void AfterAddFakeApplication(IServiceCollection services)
     {

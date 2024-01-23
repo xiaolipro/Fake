@@ -2,11 +2,11 @@
 
 namespace Fake.Json;
 
-public class FakeBooleanConverterTests : FakeJsonTestBase
+public class BooleanConverterTests : JsonTestBase
 {
     private readonly IFakeJsonSerializer _jsonSerializer;
 
-    public FakeBooleanConverterTests()
+    public BooleanConverterTests()
     {
         _jsonSerializer = ServiceProvider.GetRequiredService<IFakeJsonSerializer>();
     }

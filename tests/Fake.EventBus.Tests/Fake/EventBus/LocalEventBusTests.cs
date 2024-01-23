@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Fake.EventBus;
 
-public class LocalEventBusTests : FakeApplicationTest<FakeEventBusTestModule>
+public class LocalEventBusTests : ApplicationTest<FakeEventBusTestModule>
 {
     private readonly LocalEventBus _eventBus;
 

@@ -10,7 +10,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace Fake.AspNetCore.Testing;
 
-public abstract class FakeAspNetCoreIntegrationTest<TStartupModule> : FakeTestServiceProvider, IDisposable
+public abstract class AspNetCoreIntegrationTest<TStartupModule> : TestServiceProviderAccessor, IDisposable
     where TStartupModule : class, IFakeModule
 {
     protected TestServer Server { get; }
@@ -19,7 +19,7 @@ public abstract class FakeAspNetCoreIntegrationTest<TStartupModule> : FakeTestSe
 
     private readonly IHost _host;
 
-    protected FakeAspNetCoreIntegrationTest()
+    protected AspNetCoreIntegrationTest()
     {
         var builder = CreateHostBuilder();
 

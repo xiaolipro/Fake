@@ -6,11 +6,11 @@ using Microsoft.Extensions.Options;
 
 namespace Fake.Json.SystemTextJson.Converters;
 
-public class FakeLongConverter : JsonConverter<long>
+public class LongConverter : JsonConverter<long>
 {
     private readonly FakeJsonSerializerOptions _options;
 
-    public FakeLongConverter(IOptions<FakeJsonSerializerOptions> options)
+    public LongConverter(IOptions<FakeJsonSerializerOptions> options)
     {
         _options = options.Value;
     }

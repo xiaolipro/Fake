@@ -2,4 +2,4 @@
 
 namespace Fake.AspNetCore;
 
-public class AspNetCoreTestBase : FakeAspNetCoreIntegrationTestWithTools<FakeAspNetCoreTestModule>;
+public class AspNetCoreTestBase : AspNetCoreIntegrationTestWithTools<FakeAspNetCoreTestModule>;
