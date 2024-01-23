@@ -5,7 +5,6 @@ cd %~dp0
 cd src
 
 set nuget_source=https://api.nuget.org/v3/index.json
-set package_version=8.0.0-preview.240122
 set api_key=%1
 
 if "%api_key%"=="" (
@@ -17,15 +16,15 @@ if "%api_key%"=="" (
 
 for /D %%d in (*) do (
     cd %%d
-    echo dotnet pack --output ../../packages --version-suffix %package_version%
-    dotnet pack -c Debug --output ../../packages --version-suffix %package_version%
+    echo dotnet pack --output ../../packages
+    dotnet pack -c Debug --output ../../packages
     cd ..
 )
 
-set /p confirmPush=是否推送 %package_version% 到 %nuget_source% ? (yes/no): 
+set /p confirmPush=是否推送到 %nuget_source% ? (yes/no): 
 if /i "%confirmPush%"=="yes" (
     cd ../packages
-    for %%f in (*%package_version%.nupkg) do (
+    for %%f in (*.nupkg) do (
         echo dotnet nuget push %%f --source %nuget_source% -k %api_key%
         dotnet nuget push %%f --source %nuget_source% -k %api_key%
     )
