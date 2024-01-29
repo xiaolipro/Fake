@@ -33,12 +33,6 @@ public class LocalEventBusTests : ApplicationTest<FakeEventBusTestModule>
 
         Assert.Equal(2, SimpleLocalEventHandler.DisposedCount);
     }
-
-    [Fact]
-    void dd()
-    {
-        ServiceProvider.GetRequiredService<LocalEventBus>();
-    }
 }
 
 public class DD : IScopedDependency, IDisposable

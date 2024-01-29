@@ -18,7 +18,5 @@ public class SimpleWebDemoModule : FakeModule
 
     public override void ConfigureApplication(ApplicationConfigureContext context)
     {
-        var a = 0;
-        var b = 10 / a;
     }
 }

@@ -2,6 +2,9 @@
 
     <Import Project="..\..\common.test.props"/>
 
+    <PropertyGroup>
+        <EnablePreviewFeatures>true</EnablePreviewFeatures>
+    </PropertyGroup>
     <ItemGroup>
       <ProjectReference Include="..\..\src\Fake.AspNetCore\Fake.AspNetCore.csproj" />
       <ProjectReference Include="..\..\src\Fake.Auditing\Fake.Auditing.csproj" />
