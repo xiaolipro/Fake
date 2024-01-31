@@ -5,6 +5,9 @@ namespace Fake.RabbitMQ;
 
 public class FakeRabbitMqOptions
 {
+    /// <summary>
+    /// RabbitMQ默认连接
+    /// </summary>
     public string DefaultConnectionName { get; set; } = "Default";
 
     public Dictionary<string, ConnectionFactory> Connections { get; set; }

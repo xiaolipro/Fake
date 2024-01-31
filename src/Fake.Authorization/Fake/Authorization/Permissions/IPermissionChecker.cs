@@ -1,9 +1,9 @@
-﻿using System.Security.Claims;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace Fake.Authorization.Permissions;
 
 public interface IPermissionChecker
 {
-    Task<bool> IsGrantedAsync(ClaimsPrincipal claimsPrincipal, PermissionRequirement requirement);
+    Task<bool> IsGrantedAsync(params string[] permissions);
+    Task<bool> IsGrantedAsync(PermissionRequirement requirement);
 }

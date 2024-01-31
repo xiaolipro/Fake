@@ -3,22 +3,21 @@ using Fake.DynamicProxy;
 
 namespace Fake.DependencyInjection;
 
-public class OnServiceRegistrationContext
+public class OnServiceRegistrationContext(Type serviceType, Type implementationType)
 {
     /// <summary>
     /// 服务拦截器
     /// </summary>
-    public virtual ITypeList<IFakeInterceptor> Interceptors { get; }
+    public virtual ITypeList<IFakeInterceptor> Interceptors { get; } = new TypeList<IFakeInterceptor>();
 
-    public virtual Type ServiceType { get; }
+    /// <summary>
+    /// 服务类型
+    /// </summary>
+    public virtual Type ServiceType { get; } = ThrowHelper.ThrowIfNull(serviceType, nameof(serviceType));
 
-    public virtual Type ImplementationType { get; }
-
-    public OnServiceRegistrationContext(Type serviceType, Type implementationType)
-    {
-        ServiceType = ThrowHelper.ThrowIfNull(serviceType, nameof(serviceType));
-        ImplementationType = ThrowHelper.ThrowIfNull(implementationType, nameof(implementationType));
-
-        Interceptors = new TypeList<IFakeInterceptor>();
-    }
+    /// <summary>
+    /// 实现类型
+    /// </summary>
+    public virtual Type ImplementationType { get; } =
+        ThrowHelper.ThrowIfNull(implementationType, nameof(implementationType));
 }

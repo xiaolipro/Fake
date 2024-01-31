@@ -16,7 +16,7 @@ public class FakeAuthorizationModule : FakeModule
     {
         context.Services.OnRegistered(registrationContext =>
         {
-            // 这里只是较粗粒度的判断，需不需要为类型生成拦截器，并非最终的拦截
+            // 这里只是较粗粒度的判断，需不需要为类型添加拦截器，并非最终的拦截
             if (ShouldIntercept(registrationContext.ImplementationType))
             {
                 registrationContext.Interceptors.TryAdd<AuthorizationInterceptor>();
@@ -28,6 +28,8 @@ public class FakeAuthorizationModule : FakeModule
     {
         context.Services.AddAuthorizationCore();
 
+        context.Services.AddSingleton<IAuthorizationHandler, PermissionRequirementHandle>();
+
         context.Services.AddFakeVirtualFileSystem<FakeAuthorizationModule>("/Fake/Authorization");
 
         context.Services.Configure<FakeLocalizationOptions>(options =>
@@ -38,7 +40,7 @@ public class FakeAuthorizationModule : FakeModule
         });
 
         context.Services.AddTransient<AuthorizationInterceptor>();
-        context.Services.AddTransient<IMethodAuthorizationService, MethodAuthorizationService>();
+        context.Services.AddTransient<IMethodAuthorizationService, PolicyAuthorizationService>();
         context.Services.AddTransient<IPermissionChecker, PermissionChecker>();
         context.Services.AddSingleton<IPermissionRecordStore, PermissionRecordStore>();
     }

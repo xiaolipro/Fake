@@ -5,19 +5,12 @@ namespace Fake.Authorization;
 /// <summary>
 /// 权限Requirement
 /// </summary>
-public class PermissionRequirement : IAuthorizationRequirement
+public class PermissionRequirement(bool requiresAll = true, params string[] permissions) : IAuthorizationRequirement
 {
-    public bool RequiresAll { get; }
-    public string[] Permissions { get; }
+    public bool RequiresAll { get; } = requiresAll;
+    public string[] Permissions { get; } = permissions;
 
-    public PermissionRequirement(params string[] permissions)
+    public PermissionRequirement(params string[] permissions) : this(false, permissions)
     {
-        Permissions = permissions;
-    }
-
-    public PermissionRequirement(bool requiresAll = true, params string[] permissions)
-    {
-        RequiresAll = requiresAll;
-        Permissions = permissions;
     }
 }

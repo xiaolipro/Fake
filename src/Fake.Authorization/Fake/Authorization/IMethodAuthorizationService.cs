@@ -1,9 +1,13 @@
-﻿using System.Reflection;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace Fake.Authorization;
 
 public interface IMethodAuthorizationService
 {
-    Task<bool> IsGrantedAsync(MethodInfo invocationMethod);
+    /// <summary>
+    /// 检验是否有权限访问
+    /// </summary>
+    /// <param name="context"></param>
+    /// <returns></returns>
+    Task CheckAsync(MethodAuthorizationContext context);
 }

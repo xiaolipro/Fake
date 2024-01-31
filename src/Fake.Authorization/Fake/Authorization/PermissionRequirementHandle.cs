@@ -4,20 +4,13 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Fake.Authorization;
 
-public class PermissionRequirementHandle : AuthorizationHandler<PermissionRequirement>
+public class PermissionRequirementHandle(IPermissionChecker permissionChecker)
+    : AuthorizationHandler<PermissionRequirement>
 {
-    private readonly IPermissionChecker _permissionChecker;
-
-    public PermissionRequirementHandle(IPermissionChecker permissionChecker)
-    {
-        _permissionChecker = permissionChecker;
-    }
-
     protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context,
         PermissionRequirement requirement)
     {
-        var claimsPrincipal = context.User;
-        var isGranted = await _permissionChecker.IsGrantedAsync(claimsPrincipal, requirement);
+        var isGranted = await permissionChecker.IsGrantedAsync(requirement);
         if (isGranted) context.Succeed(requirement);
     }
 }

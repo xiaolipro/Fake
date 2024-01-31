@@ -1,8 +1,5 @@
-﻿using Fake.Modularity;
-using Fake.RabbitMQ;
-using Microsoft.Extensions.DependencyInjection;
+﻿// ReSharper disable once CheckNamespace
 
-// ReSharper disable once CheckNamespace
 namespace Fake.EventBus.RabbitMQ;
 
 [DependsOn(typeof(FakeRabbitMqModule))]
@@ -12,7 +9,7 @@ public class FakeEventBusRabbitMqModule : FakeModule
     {
         var configuration = context.Services.GetConfiguration();
         context.Services.Configure<RabbitMqEventBusOptions>(configuration.GetSection("RabbitMQ:EventBus"));
-        
+
         context.Services.AddSingleton<IEventBus, RabbitMqEventBus>();
     }
 }

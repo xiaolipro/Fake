@@ -1,27 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
-using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
-using Fake.EventBus.Events;
-using Fake.EventBus.Subscriptions;
-using Fake.RabbitMQ;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
-
-namespace Fake.EventBus.RabbitMQ;
+﻿namespace Fake.EventBus.RabbitMQ;
 
 /// <summary>
 /// 基于RabbitMessageQueue实现的事件总线
 /// </summary> 
 /// <remarks>
 /// <para>路由模式，直连交换机，以事件名称作为routeKey</para>
-/// <para>一个客户端对应一个队列（以客户端命名），一个队列一个指定消费者通道</para>
+/// <para>一个客户端独享一个消费者通道</para>
 /// </remarks>
 public class RabbitMqEventBus : IDynamicEventBus, IDisposable
 {
@@ -308,7 +292,7 @@ public class RabbitMqEventBus : IDynamicEventBus, IDisposable
         // 当通道调用的回调中发生异常时发出信号
         consumerChannel.CallbackException += (_, args) =>
         {
-            _logger.LogWarning(args.Exception, "重新创建RabbitMQ消费者通道");
+            _logger.LogWarning(args.Exception, "消费者通道发生异常，正在重新创建");
 
             // 销毁原有通道，重新创建
             _consumerChannel.Dispose();
@@ -337,6 +321,7 @@ public class RabbitMqEventBus : IDynamicEventBus, IDisposable
         var consumer = new AsyncEventingBasicConsumer(_consumerChannel);
         consumer.Received += OnReceived;
 
+        // 手动ack
         _consumerChannel.BasicConsume(queue: _subscriptionQueueName, autoAck: false, consumer: consumer);
     }
 
