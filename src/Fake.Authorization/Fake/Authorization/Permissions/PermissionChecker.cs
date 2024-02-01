@@ -1,11 +1,9 @@
-using System.Security.Claims;
-using System.Threading.Tasks;
 using Fake.Identity.Security.Claims;
 
 namespace Fake.Authorization.Permissions;
 
 public class PermissionChecker(
-    IPermissionRecordStore permissionRecordStore,
+    IPermissionManager permissionManager,
     ICurrentPrincipalAccessor currentPrincipalAccessor) : IPermissionChecker
 {
     public async Task<bool> IsGrantedAsync(PermissionRequirement requirement)
@@ -49,7 +47,7 @@ public class PermissionChecker(
     {
         ThrowHelper.ThrowIfNull(permission);
 
-        var record = await permissionRecordStore.GetOrNullAsync(permission);
+        var record = await permissionManager.GetOrNullAsync(permission);
 
         return record != null;
     }

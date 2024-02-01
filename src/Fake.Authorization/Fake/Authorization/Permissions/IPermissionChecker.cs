@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace Fake.Authorization.Permissions;
+﻿namespace Fake.Authorization.Permissions;
 
 public interface IPermissionChecker
 {

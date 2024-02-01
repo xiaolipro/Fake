@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-
-namespace Fake.Authorization;
+﻿namespace Fake.Authorization;
 
 /// <summary>
 /// 权限Requirement

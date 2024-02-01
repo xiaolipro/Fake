@@ -6,12 +6,13 @@ using Fake.Authorization.Permissions;
 using Fake.DynamicProxy;
 using Fake.Identity;
 using Fake.Localization;
-using Microsoft.AspNetCore.Authorization;
 
 [DependsOn(typeof(FakeLocalizationModule))]
 [DependsOn(typeof(FakeIdentityModule))]
 public class FakeAuthorizationModule : FakeModule
 {
+    public override bool SkipServiceRegistration => true;
+
     public override void PreConfigureServices(ServiceConfigurationContext context)
     {
         context.Services.OnRegistered(registrationContext =>
@@ -28,6 +29,7 @@ public class FakeAuthorizationModule : FakeModule
     {
         context.Services.AddAuthorizationCore();
 
+        context.Services.AddTransient<IAuthorizationPolicyProvider, FakeAuthorizationPolicyProvider>();
         context.Services.AddSingleton<IAuthorizationHandler, PermissionRequirementHandle>();
 
         context.Services.AddFakeVirtualFileSystem<FakeAuthorizationModule>("/Fake/Authorization");
@@ -40,9 +42,8 @@ public class FakeAuthorizationModule : FakeModule
         });
 
         context.Services.AddTransient<AuthorizationInterceptor>();
-        context.Services.AddTransient<IMethodAuthorizationService, PolicyAuthorizationService>();
         context.Services.AddTransient<IPermissionChecker, PermissionChecker>();
-        context.Services.AddSingleton<IPermissionRecordStore, PermissionRecordStore>();
+        context.Services.AddSingleton<IPermissionManager, PermissionManager>();
     }
 
     private static bool ShouldIntercept(Type type)

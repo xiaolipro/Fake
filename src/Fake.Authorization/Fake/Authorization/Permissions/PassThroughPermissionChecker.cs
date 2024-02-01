@@ -1,6 +1,3 @@
-using System.Security.Claims;
-using System.Threading.Tasks;
-
 namespace Fake.Authorization.Permissions;
 
 /// <summary>
@@ -8,7 +5,12 @@ namespace Fake.Authorization.Permissions;
 /// </summary>
 public class PassThroughPermissionChecker : IPermissionChecker
 {
-    public Task<bool> IsGrantedAsync(ClaimsPrincipal claimsPrincipal, PermissionRequirement requirement)
+    public Task<bool> IsGrantedAsync(params string[] permissions)
+    {
+        return Task.FromResult(true);
+    }
+
+    public Task<bool> IsGrantedAsync(PermissionRequirement requirement)
     {
         return Task.FromResult(true);
     }

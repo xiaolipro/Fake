@@ -20,7 +20,7 @@ public class StringLocalizerFactory(
     private readonly Dictionary<string, IStringLocalizer> _localizerCache = new();
 
     // 工厂模式，巧用锁存
-    private readonly SemaphoreSlim _semaphore = new(1, 1);
+    private static readonly SemaphoreSlim Semaphore = new(1, 1);
 
     public IStringLocalizer Create(Type resourceType)
     {
@@ -68,7 +68,7 @@ public class StringLocalizerFactory(
             return _localizerCache.GetOrAdd(resourceResourceName, _ => CreateStringLocalizer(resource));
         }
 
-        using (_semaphore.Begin())
+        using (Semaphore.Lock())
         {
             // DCL
             if (_localizerCache.TryGetValue(resourceResourceName, out localizer))

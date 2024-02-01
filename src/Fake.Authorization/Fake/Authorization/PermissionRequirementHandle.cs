@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-using Fake.Authorization.Permissions;
-using Microsoft.AspNetCore.Authorization;
+﻿using Fake.Authorization.Permissions;
 
 namespace Fake.Authorization;
 
