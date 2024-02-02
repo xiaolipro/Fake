@@ -25,7 +25,7 @@ public class Permission
 
     public bool IsEnabled { get; set; }
 
-    private Permission(string name, LocalizedString? displayName = null, bool isEnabled = true)
+    public Permission(string name, LocalizedString? displayName = null, bool isEnabled = true)
     {
         Name = name;
         DisplayName = displayName ?? new LocalizedString(name, name);
@@ -33,9 +33,12 @@ public class Permission
         _children = new List<Permission>();
     }
 
-    public virtual void AddChild(Permission child)
+    public virtual void AddChild(string name, LocalizedString? displayName = null, bool isEnabled = true)
     {
-        child.Parent = this;
+        var child = new Permission($"{this.Name}.{name}", displayName, isEnabled)
+        {
+            Parent = this
+        };
         _children.Add(child);
     }
 }
