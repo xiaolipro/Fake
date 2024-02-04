@@ -53,4 +53,9 @@ public class AuthorizationTests : AuthorizationTestBase
         await _simpleAService.ProtectedAsync();
         await _simpleBService.ProtectedByClassAsync();
     }
+
+    [Fact]
+    async Task 基于Policy的授权()
+    {
+    }
 }

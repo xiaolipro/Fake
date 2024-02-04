@@ -1,6 +1,8 @@
-﻿namespace Fake.Authorization.Permissions;
+﻿using Fake.DependencyInjection;
 
-public class PermissionProvider : IPermissionProvider
+namespace Fake.Authorization.Permissions;
+
+public class PermissionProvider : IPermissionProvider, ITransientDependency
 {
     public Task<List<Permission>> GetPermissionsAsync()
     {
