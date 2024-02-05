@@ -23,7 +23,11 @@ $ dotnet restore
 - [x] 依赖注入
   - [x] 自动注入
   - [x] 属性注入
-- [ ] 权限系统
+- [x] 授权
+  - [x] 基于Roles-RBAC
+  - [x] 基于Schemes-自定义认证
+  - [x] 基于Policy-动态策略
+  - [ ] 根据endpoint自动生成policy
 - [x] 审计日志
   - [x] 请求审计
   - [x] 方法审计

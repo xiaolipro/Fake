@@ -6,36 +6,56 @@ using Fake.EventBus.Events;
 
 namespace Fake.EntityFrameworkCore.IntegrationEventLog;
 
-public class IntegrationEventLogEntry(EventBase @event, Guid transactionId)
+public class IntegrationEventLogEntry
 {
-    public Guid EventId { get; private set; } = @event.Id;
+    private IntegrationEventLogEntry()
+    {
+    }
 
-    public string EventTypeName { get; private set; } = @event.GetType().FullName ?? String.Empty;
+    public IntegrationEventLogEntry(EventBase @event, Guid transactionId)
+    {
+        EventId = @event.Id;
+        CreationTime = @event.CreationTime;
+        EventTypeName = @event.GetType().FullName ?? String.Empty;
+        Content = JsonSerializer.Serialize(@event);
+        State = EventStateEnum.NotPublished;
+        TimesSent = 0;
+        TransactionId = transactionId.ToString();
+    }
+
+    public IntegrationEventLogEntry(string transactionId)
+    {
+        TransactionId = transactionId;
+    }
+
+    public Guid EventId { get; private set; }
+
+    public string EventTypeName { get; private set; } = default!;
 
     /// <summary>
     /// 事件状态
     /// </summary>
-    public EventStateEnum State { get; private set; } = EventStateEnum.NotPublished;
+    public EventStateEnum State { get; private set; }
 
     /// <summary>
     /// 发送次数
     /// </summary>
-    public int TimesSent { get; private set; } = 0;
+    public int TimesSent { get; private set; }
 
     /// <summary>
     /// 事件创建时间
     /// </summary>
-    public DateTime CreationTime { get; private set; } = @event.CreationTime;
+    public DateTime CreationTime { get; private set; }
 
     /// <summary>
     /// 发送内容
     /// </summary>
-    public string Content { get; private set; } = JsonSerializer.Serialize(@event);
+    public string Content { get; private set; } = default!;
 
     /// <summary>
     /// 事务Id
     /// </summary>
-    public string TransactionId { get; private set; } = transactionId.ToString();
+    public string TransactionId { get; private set; } = default!;
 
     [NotMapped] public string EventTypeShortName => EventTypeName.Split('.').Last();
     [NotMapped] public EventBase? IntegrationEvent { get; private set; }

@@ -30,6 +30,7 @@ public class IntegrationEventLogContext : FakeDbContext<IntegrationEventLogConte
             .IsRequired();
 
         builder.Property(e => e.Content)
+            .HasMaxLength(-1)
             .IsRequired();
 
         builder.Property(e => e.CreationTime)
