@@ -2,6 +2,6 @@
 
 public interface IPermissionChecker
 {
-    Task<bool> IsGrantedAsync(params string[] permissions);
-    Task<bool> IsGrantedAsync(PermissionRequirement requirement);
+    Task<bool> IsGrantedAsync(params string[] permissionNames);
+    Task<bool> IsGrantedAsync(ClaimsPrincipal? user, PermissionDto permission);
 }

@@ -22,8 +22,8 @@ public class AuthorizationInterceptor(
         if (PassThroughAuthorization(method)) return;
 
         var authorizeData = GetAuthorizationDataAttributes(method);
-        var policy = await AuthorizationPolicy.CombineAsync(authorizationPolicyProvider, authorizeData);
 
+        var policy = await AuthorizationPolicy.CombineAsync(authorizationPolicyProvider, authorizeData);
         if (policy == null) return;
 
         if (currentPrincipalAccessor.Principal == null) return;
@@ -37,7 +37,7 @@ public class AuthorizationInterceptor(
 
         if (!res.Succeeded)
         {
-            throw new FakeAuthorizationException(FakeAuthorizationResource.GivenPolicyHasNotGranted);
+            throw new FakeAuthorizationException(code: FakeAuthorizationResource.GivenPolicyHasNotGranted);
         }
     }
 

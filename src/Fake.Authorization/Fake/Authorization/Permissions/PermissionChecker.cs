@@ -1,54 +1,49 @@
+using Fake.Authorization.Permissions.Contributors;
 using Fake.Identity.Security.Claims;
 
 namespace Fake.Authorization.Permissions;
 
 public class PermissionChecker(
+    ICurrentPrincipalAccessor principalAccessor,
     IPermissionManager permissionManager,
-    ICurrentPrincipalAccessor currentPrincipalAccessor) : IPermissionChecker
+    IEnumerable<IPermissionCheckContributor> contributors)
+    : IPermissionChecker
 {
-    public async Task<bool> IsGrantedAsync(PermissionRequirement requirement)
+    public async Task<bool> IsGrantedAsync(params string[] permissionNames)
     {
-        ThrowHelper.ThrowIfNull(requirement.Permissions);
-
-        foreach (var permission in requirement.Permissions)
+        var permissions = new List<PermissionDto>();
+        foreach (var permissionName in permissionNames)
         {
-            var isGranted = await IsGrantedAsync(currentPrincipalAccessor.Principal, permission);
-            switch (isGranted)
+            var permission = await permissionManager.GetOrNullAsync(permissionName);
+            if (permission == null)
             {
-                case true when !requirement.RequiresAll:
-                    return true;
-                case false:
-                    return false;
+                return false;
+            }
+
+            permissions.Add(permission);
+        }
+
+        foreach (var contributor in contributors)
+        {
+            if (await contributor.IsGrantedAsync(principalAccessor.Principal, permissions.ToArray()))
+            {
+                return true;
             }
         }
 
-        return true;
+        return false;
     }
 
-    public async Task<bool> IsGrantedAsync(params string[] permissions)
+    public async Task<bool> IsGrantedAsync(ClaimsPrincipal? user, PermissionDto permission)
     {
-        return await IsGrantedAsync(currentPrincipalAccessor.Principal, permissions);
-    }
-
-    public async Task<bool> IsGrantedAsync(ClaimsPrincipal? claimsPrincipal, string[] permissions)
-    {
-        ThrowHelper.ThrowIfNull(permissions);
-
-        foreach (var permission in permissions)
+        foreach (var contributor in contributors)
         {
-            var isGranted = await IsGrantedAsync(claimsPrincipal, permission);
-            if (isGranted == false) return false;
+            if (await contributor.IsGrantedAsync(user, permission))
+            {
+                return true;
+            }
         }
 
-        return true;
-    }
-
-    public async Task<bool> IsGrantedAsync(ClaimsPrincipal? claimsPrincipal, string permission)
-    {
-        ThrowHelper.ThrowIfNull(permission);
-
-        var record = await permissionManager.GetOrNullAsync(permission);
-
-        return record != null;
+        return false;
     }
 }

@@ -3,12 +3,7 @@
 /// <summary>
 /// 权限Requirement
 /// </summary>
-public class PermissionRequirement(bool requiresAll = true, params string[] permissions) : IAuthorizationRequirement
+public class PermissionRequirement(string permissionName) : IAuthorizationRequirement
 {
-    public bool RequiresAll { get; } = requiresAll;
-    public string[] Permissions { get; } = permissions;
-
-    public PermissionRequirement(params string[] permissions) : this(false, permissions)
-    {
-    }
+    public string PermissionName { get; } = ThrowHelper.ThrowIfNull(permissionName, nameof(permissionName));
 }

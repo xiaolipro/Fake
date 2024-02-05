@@ -3,6 +3,7 @@ using System.Linq;
 using Fake.Authorization;
 using Fake.Authorization.Localization;
 using Fake.Authorization.Permissions;
+using Fake.Authorization.Permissions.Contributors;
 using Fake.DynamicProxy;
 using Fake.Identity;
 using Fake.Localization;
@@ -29,8 +30,8 @@ public class FakeAuthorizationModule : FakeModule
     {
         context.Services.AddAuthorizationCore();
 
-        context.Services.AddTransient<IAuthorizationPolicyProvider, FakeAuthorizationPolicyProvider>();
         context.Services.AddSingleton<IAuthorizationHandler, PermissionRequirementHandle>();
+        context.Services.AddTransient<IAuthorizationPolicyProvider, FakeAuthorizationPolicyProvider>();
 
         context.Services.AddFakeVirtualFileSystem<FakeAuthorizationModule>("/Fake/Authorization");
 
@@ -42,8 +43,11 @@ public class FakeAuthorizationModule : FakeModule
         });
 
         context.Services.AddTransient<AuthorizationInterceptor>();
-        context.Services.AddTransient<IPermissionChecker, PermissionChecker>();
         context.Services.AddSingleton<IPermissionManager, PermissionManager>();
+        context.Services.AddSingleton<IPermissionStore, NullPermissionStore>();
+        context.Services.AddTransient<IPermissionChecker, PermissionChecker>();
+        context.Services.AddTransient<IPermissionCheckContributor, RolePermissionCheckContributor>();
+        context.Services.AddTransient<IPermissionCheckContributor, UserPermissionCheckContributor>();
     }
 
     private static bool ShouldIntercept(Type type)

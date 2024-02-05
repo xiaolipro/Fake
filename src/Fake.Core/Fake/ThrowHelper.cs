@@ -30,4 +30,16 @@ public static class ThrowHelper
     {
         throw new InvalidOperationException(message ?? "没有匹配的项");
     }
+
+    [ContractAnnotation("value:null => halt")]
+    public static ICollection<T> ThrowIfNullOrEmpty<T>(ICollection<T>? value,
+        [InvokerParameterName] [NotNull] string parameterName)
+    {
+        if (value == null || value.Count <= 0)
+        {
+            throw new ArgumentException(parameterName + " can not be null or empty!", parameterName);
+        }
+
+        return value;
+    }
 }

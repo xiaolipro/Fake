@@ -3,16 +3,16 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Fake.Authorization.Services;
 
-public class UserService : ITransientDependency
+[Authorize]
+public class SimpleBService : ITransientDependency
 {
-    [Authorize("user.create")]
-    public virtual Task<int> CreateAsync()
+    public virtual Task<int> ProtectedByClassAsync()
     {
         return Task.FromResult(42);
     }
 
-    [Authorize("user.delete")]
-    public virtual Task<int> DeleteAsync()
+    [AllowAnonymous]
+    public virtual Task<int> AnonymousAsync()
     {
         return Task.FromResult(42);
     }

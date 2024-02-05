@@ -10,10 +10,11 @@ public class FakeAuthorizationPolicyProvider(
 {
     public override async Task<AuthorizationPolicy?> GetPolicyAsync(string policyName)
     {
+        // global defined policy
         var policy = await base.GetPolicyAsync(policyName);
-        if (policy is null) return null;
+        if (policy != null) return policy;
 
-        // policyName is permission name
+        // map form permission: policyName is permission name
         var permission = await permissionManager.GetOrNullAsync(policyName);
 
         if (permission == null) return null;

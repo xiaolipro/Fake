@@ -2,7 +2,7 @@
 
 public interface IPermissionManager
 {
-    Task<Permission?> GetOrNullAsync(string name);
+    Task<PermissionDto?> GetOrNullAsync(string permissionName);
 
-    Task<IReadOnlyList<Permission>> GetPermissionsAsync();
+    Task<IReadOnlyList<PermissionDto>> GetPermissionsAsync();
 }

@@ -1,4 +1,3 @@
-﻿using System.Threading.Tasks;
 using Fake.DependencyInjection;
 using Microsoft.AspNetCore.Authorization;
 
@@ -13,21 +12,6 @@ public class SimpleAService : ITransientDependency
     }
 
     public virtual Task<int> NormalAsync()
-    {
-        return Task.FromResult(42);
-    }
-}
-
-[Authorize]
-public class SimpleBService : ITransientDependency
-{
-    public virtual Task<int> ProtectedByClassAsync()
-    {
-        return Task.FromResult(42);
-    }
-
-    [AllowAnonymous]
-    public virtual Task<int> AnonymousAsync()
     {
         return Task.FromResult(42);
     }

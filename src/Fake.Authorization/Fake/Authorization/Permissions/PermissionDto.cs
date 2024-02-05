@@ -3,17 +3,17 @@ using Microsoft.Extensions.Localization;
 
 namespace Fake.Authorization.Permissions;
 
-public class Permission
+public class PermissionDto
 {
     /// <summary>
     /// 权限名称
     /// </summary>
     public string Name { get; }
 
-    public Permission? Parent { get; set; }
+    public PermissionDto? Parent { get; set; }
 
-    public IReadOnlyList<Permission> Children => _children.ToImmutableList();
-    private readonly List<Permission> _children;
+    public IReadOnlyList<PermissionDto> Children => _children.ToImmutableList();
+    private readonly List<PermissionDto> _children;
 
     public LocalizedString DisplayName
     {
@@ -25,17 +25,17 @@ public class Permission
 
     public bool IsEnabled { get; set; }
 
-    public Permission(string name, LocalizedString? displayName = null, bool isEnabled = true)
+    public PermissionDto(string name, LocalizedString? displayName = null, bool isEnabled = true)
     {
         Name = name;
         DisplayName = displayName ?? new LocalizedString(name, name);
         IsEnabled = isEnabled;
-        _children = new List<Permission>();
+        _children = new List<PermissionDto>();
     }
 
     public virtual void AddChild(string name, LocalizedString? displayName = null, bool isEnabled = true)
     {
-        var child = new Permission($"{this.Name}.{name}", displayName, isEnabled)
+        var child = new PermissionDto($"{this.Name}.{name}", displayName, isEnabled)
         {
             Parent = this
         };

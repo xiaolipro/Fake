@@ -13,6 +13,8 @@ public class CurrentUser : ICurrentUser
     public string? UserId => FindClaimValueOrNull(ClaimTypes.NameIdentifier);
     public string? UserName => FindClaimValueOrNull(ClaimTypes.Name);
 
+    public string? UserRole => FindClaimValueOrNull(ClaimTypes.Role);
+
     public CurrentUser(ICurrentPrincipalAccessor currentPrincipalAccessor)
     {
         _currentPrincipalAccessor = currentPrincipalAccessor;

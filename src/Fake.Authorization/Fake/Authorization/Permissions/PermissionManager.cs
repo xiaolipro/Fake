@@ -3,18 +3,18 @@ using System.Threading;
 
 namespace Fake.Authorization.Permissions;
 
-public class PermissionManager(IEnumerable<IPermissionProvider> permissionProviders) : IPermissionManager
+public class PermissionManager(IEnumerable<IPermissionDefiner> permissionProviders) : IPermissionManager
 {
-    private Dictionary<string, Permission>? _permissions;
+    private Dictionary<string, PermissionDto>? _permissions;
     private static readonly SemaphoreSlim SemaphoreSlim = new(1, 1);
 
-    public async Task<Permission?> GetOrNullAsync(string name)
+    public async Task<PermissionDto?> GetOrNullAsync(string permissionName)
     {
         await EnsureInitialized();
-        return _permissions!.GetOrDefault(name);
+        return _permissions!.GetOrDefault(permissionName);
     }
 
-    public async Task<IReadOnlyList<Permission>> GetPermissionsAsync()
+    public async Task<IReadOnlyList<PermissionDto>> GetPermissionsAsync()
     {
         await EnsureInitialized();
         return _permissions!.Values.ToImmutableList();
@@ -26,7 +26,7 @@ public class PermissionManager(IEnumerable<IPermissionProvider> permissionProvid
         {
             if (_permissions != null) return;
 
-            _permissions = new Dictionary<string, Permission>();
+            _permissions = new Dictionary<string, PermissionDto>();
 
             foreach (var permissionProvider in permissionProviders)
             {
@@ -41,17 +41,17 @@ public class PermissionManager(IEnumerable<IPermissionProvider> permissionProvid
     }
 
     protected virtual void AddPermissionRecursively(
-        Dictionary<string, Permission> permissions,
-        Permission permission)
+        Dictionary<string, PermissionDto> permissions,
+        PermissionDto permissionDto)
     {
-        if (permissions.ContainsKey(permission.Name))
+        if (permissions.ContainsKey(permissionDto.Name))
         {
-            throw new FakeException("Duplicate permission name: " + permission.Name);
+            throw new FakeException("Duplicate permissionDto name: " + permissionDto.Name);
         }
 
-        permissions[permission.Name] = permission;
+        permissions[permissionDto.Name] = permissionDto;
 
-        foreach (var child in permission.Children)
+        foreach (var child in permissionDto.Children)
         {
             AddPermissionRecursively(permissions, child);
         }
