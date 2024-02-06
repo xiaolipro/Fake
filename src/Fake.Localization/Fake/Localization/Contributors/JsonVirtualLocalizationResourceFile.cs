@@ -5,10 +5,5 @@ namespace Fake.Localization.Contributors;
 public class JsonVirtualLocalizationResourceFile
 {
     public string? Culture { get; set; }
-    public Dictionary<string, string> Texts { get; set; }
-
-    public JsonVirtualLocalizationResourceFile()
-    {
-        Texts = new Dictionary<string, string>();
-    }
+    public Dictionary<string, string> Texts { get; set; } = new();
 }
