@@ -6,7 +6,6 @@ using Fake.AspNetCore.VirtualFileSystem;
 using Fake.Auditing;
 using Fake.Modularity;
 using Fake.Security.Claims;
-using Fake.UnitOfWork;
 using Fake.VirtualFileSystem;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,9 +15,7 @@ using Microsoft.Extensions.FileProviders;
 namespace Fake.AspNetCore;
 
 [DependsOn(
-    typeof(FakeSecurityModule),
     typeof(FakeAuditingModule),
-    typeof(FakeUnitOfWorkModule),
     typeof(FakeVirtualFileSystemModule))]
 public class FakeAspNetCoreModule : FakeModule
 {

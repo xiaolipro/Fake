@@ -6,12 +6,8 @@
         <TargetFramework>net8.0</TargetFramework>
     </PropertyGroup>
     <ItemGroup>
-        <ProjectReference Include="..\..\tests\Fake.VirtualFileSytem.Tests\Fake.VirtualFileSytem.Tests.csproj"/>
         <ProjectReference Include="..\Fake.Auditing\Fake.Auditing.csproj"/>
         <ProjectReference Include="..\Fake.Authorization\Fake.Authorization.csproj"/>
-        <ProjectReference Include="..\Fake.Core\Fake.Core.csproj"/>
-        <ProjectReference Include="..\Fake.Security\Fake.Security.csproj"/>
-        <ProjectReference Include="..\Fake.UnitOfWork\Fake.UnitOfWork.csproj"/>
     </ItemGroup>
 
 </Project>
