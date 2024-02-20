@@ -1,5 +1,5 @@
 using Fake.Authorization.Permissions.Contributors;
-using Fake.Identity.Security.Claims;
+using Fake.Security.Claims;
 
 namespace Fake.Authorization.Permissions;
 

@@ -1,6 +1,6 @@
 using Fake.Collections;
 
-namespace Fake.Identity.Security.Claims;
+namespace Fake.Security.Claims;
 
 public class FakeClaimsPrincipalFactoryOptions
 {

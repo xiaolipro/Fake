@@ -2,8 +2,8 @@
 using Domain.Aggregates.BuyerAggregate;
 using Domain.Aggregates.OrderAggregate;
 using Fake.DomainDrivenDesign.Repositories;
-using Fake.Identity.Users;
 using Fake.Modularity;
+using Fake.Users;
 using NSubstitute;
 using Shouldly;
 using Xunit;

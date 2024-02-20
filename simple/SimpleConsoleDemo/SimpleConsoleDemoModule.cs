@@ -1,6 +1,5 @@
 ﻿using Fake.Auditing;
 using Fake.Autofac;
-using Fake.Identity;
 using Fake.Modularity;
 using Microsoft.Extensions.DependencyInjection;
 

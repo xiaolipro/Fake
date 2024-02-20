@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Linq;
-using Fake.Authorization;
 using Fake.Authorization.Localization;
 using Fake.Authorization.Permissions;
 using Fake.Authorization.Permissions.Contributors;
 using Fake.DynamicProxy;
-using Fake.Identity;
 using Fake.Localization;
 
+// ReSharper disable once CheckNamespace
+namespace Fake.Authorization;
+
 [DependsOn(typeof(FakeLocalizationModule))]
-[DependsOn(typeof(FakeIdentityModule))]
+[DependsOn(typeof(FakeSecurityModule))]
 public class FakeAuthorizationModule : FakeModule
 {
     public override bool SkipServiceRegistration => true;

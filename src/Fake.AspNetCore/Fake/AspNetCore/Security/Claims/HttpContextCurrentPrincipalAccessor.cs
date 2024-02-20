@@ -1,5 +1,5 @@
 ﻿using System.Security.Claims;
-using Fake.Identity.Security.Claims;
+using Fake.Security.Claims;
 using Microsoft.AspNetCore.Http;
 
 namespace Fake.AspNetCore.Security.Claims;

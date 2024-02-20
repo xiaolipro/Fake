@@ -1,4 +1,5 @@
 ﻿using Fake.AspNetCore;
+using Fake.AspNetCore.Testing;
 using Fake.Autofac;
 using Fake.Modularity;
 using Fake.VirtualFileSystem;

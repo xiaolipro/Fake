@@ -1,32 +1,94 @@
-using System.Net;
-using System.Net.Quic;
+using System.Text;
+using Microsoft.AspNetCore.Routing.Internal;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddFakeApplication<SimpleWebDemoModule>();
 var app = builder.Build();
 app.InitializeApplication();
 
-var log = app.Services.GetRequiredService<ILogger<Program>>();
-if (QuicConnection.IsSupported)
-{
-    using var client = new HttpClient
-    {
-        DefaultRequestVersion = HttpVersion.Version30,
-        DefaultVersionPolicy = HttpVersionPolicy.RequestVersionExact
-    };
-
-    HttpResponseMessage resp = await client.GetAsync("https://cloudflare-quic.com/");
-    string body = await resp.Content.ReadAsStringAsync();
-
-    Console.WriteLine(
-        $"status: {resp.StatusCode}, version: {resp.Version}, " +
-        $"body: {body.Substring(0, Math.Min(100, body.Length))}");
-}
-else
-{
-    log.LogInformation("QUIC is not supported.");
-}
-
 app.UseStaticFiles();
-app.MapGet("/", () => "Hello World!");
+
+byte[] plainTextPayload = Encoding.UTF8.GetBytes("Plain text!");
+
+app.UseRouting();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapGet("/hello", () => "Hello World!");
+
+    endpoints.MapGet(
+        "/",
+        (httpContext) =>
+        {
+            var dataSource = httpContext.RequestServices.GetRequiredService<EndpointDataSource>();
+
+            var sb = new StringBuilder();
+            sb.AppendLine("Endpoints:");
+            foreach (var endpoint in dataSource.Endpoints.OfType<RouteEndpoint>()
+                         .OrderBy(e => e.RoutePattern.RawText, StringComparer.OrdinalIgnoreCase))
+            {
+                sb.AppendLine(FormattableString.Invariant($"- {endpoint.RoutePattern.RawText}"));
+                foreach (var metadata in endpoint.Metadata)
+                {
+                    sb.AppendLine("    " + metadata);
+                }
+            }
+
+            var response = httpContext.Response;
+            response.StatusCode = 200;
+            response.ContentType = "text/plain";
+            return response.WriteAsync(sb.ToString());
+        });
+    endpoints.MapGet(
+        "/plaintext",
+        (httpContext) =>
+        {
+            var response = httpContext.Response;
+            var payloadLength = plainTextPayload.Length;
+            response.StatusCode = 200;
+            response.ContentType = "text/plain";
+            response.ContentLength = payloadLength;
+            return response.Body.WriteAsync(plainTextPayload, 0, payloadLength);
+        });
+    endpoints.MapGet(
+        "/graph",
+        (httpContext) =>
+        {
+            using (var writer = new StreamWriter(Console.OpenStandardOutput(), Encoding.UTF8, 1024, leaveOpen: true))
+            {
+                var graphWriter = httpContext.RequestServices.GetRequiredService<DfaGraphWriter>();
+                var dataSource = httpContext.RequestServices.GetRequiredService<EndpointDataSource>();
+                graphWriter.Write(dataSource, writer);
+            }
+
+            return Task.CompletedTask;
+        }).WithDisplayName("DFA Graph");
+
+    endpoints.MapGet("/attributes", HandlerWithAttributes);
+
+    endpoints.Map("/getwithattributes", Handler);
+});
+
 app.Run();
+
+[Authorize]
+Task HandlerWithAttributes(HttpContext context)
+{
+    return context.Response.WriteAsync("I have ann authorize attribute");
+}
+
+[HttpGet]
+Task Handler(HttpContext context)
+{
+    return context.Response.WriteAsync("I have a method metadata attribute");
+}
+
+class AuthorizeAttribute : Attribute
+{
+}
+
+class HttpGetAttribute : Attribute, IHttpMethodMetadata
+{
+    public bool AcceptCorsPreflight => false;
+
+    public IReadOnlyList<string> HttpMethods { get; } = new List<string> { "GET" };
+}

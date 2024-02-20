@@ -2,7 +2,7 @@
 using System.Reflection;
 using Fake.Authorization.Localization;
 using Fake.DynamicProxy;
-using Fake.Identity.Security.Claims;
+using Fake.Security.Claims;
 
 namespace Fake.Authorization;
 

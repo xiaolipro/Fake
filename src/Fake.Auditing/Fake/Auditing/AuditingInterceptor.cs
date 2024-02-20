@@ -5,8 +5,8 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Fake.DynamicProxy;
-using Fake.Identity.Users;
 using Fake.UnitOfWork;
+using Fake.Users;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 

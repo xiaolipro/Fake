@@ -4,9 +4,8 @@ using Fake.AspNetCore.Http;
 using Fake.AspNetCore.Security.Claims;
 using Fake.AspNetCore.VirtualFileSystem;
 using Fake.Auditing;
-using Fake.Identity;
-using Fake.Identity.Security.Claims;
 using Fake.Modularity;
+using Fake.Security.Claims;
 using Fake.UnitOfWork;
 using Fake.VirtualFileSystem;
 using Microsoft.AspNetCore.Builder;
@@ -17,7 +16,7 @@ using Microsoft.Extensions.FileProviders;
 namespace Fake.AspNetCore;
 
 [DependsOn(
-    typeof(FakeIdentityModule),
+    typeof(FakeSecurityModule),
     typeof(FakeAuditingModule),
     typeof(FakeUnitOfWorkModule),
     typeof(FakeVirtualFileSystemModule))]

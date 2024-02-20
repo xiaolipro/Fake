@@ -3,10 +3,10 @@ using System.Threading;
 
 namespace Fake.Authorization.Permissions;
 
-public class PermissionManager(IEnumerable<IPermissionDefiner> permissionProviders) : IPermissionManager
+public class PermissionManager(IEnumerable<IPermissionDefiner> permissionDefiners) : IPermissionManager
 {
     private Dictionary<string, PermissionDto>? _permissions;
-    private static readonly SemaphoreSlim SemaphoreSlim = new(1, 1);
+    private static readonly SemaphoreSlim Lock = new(1, 1);
 
     public async Task<PermissionDto?> GetOrNullAsync(string permissionName)
     {
@@ -22,15 +22,15 @@ public class PermissionManager(IEnumerable<IPermissionDefiner> permissionProvide
 
     protected virtual async Task EnsureInitialized()
     {
-        using (SemaphoreSlim.Lock())
+        using (Lock.BeginScope())
         {
             if (_permissions != null) return;
 
             _permissions = new Dictionary<string, PermissionDto>();
 
-            foreach (var permissionProvider in permissionProviders)
+            foreach (var permissionDefiner in permissionDefiners)
             {
-                var permissions = await permissionProvider.GetPermissionsAsync();
+                var permissions = await permissionDefiner.DefineAsync();
 
                 foreach (var permission in permissions)
                 {

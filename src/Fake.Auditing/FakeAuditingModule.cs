@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Fake.DynamicProxy;
-using Fake.Identity;
 using Fake.Modularity;
 using Fake.UnitOfWork;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 // ReSharper disable once CheckNamespace
 namespace Fake.Auditing;
 
-[DependsOn(typeof(FakeIdentityModule))]
+[DependsOn(typeof(FakeSecurityModule))]
 [DependsOn(typeof(FakeUnitOfWorkModule))]
 public class FakeAuditingModule : FakeModule
 {

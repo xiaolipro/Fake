@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace Fake.Identity.Security.Claims;
+namespace Fake.Security.Claims;
 
 public interface IFakeClaimsPrincipalContributor
 {

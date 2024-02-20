@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using Fake.Identity.Security.Claims;
-using Fake.Identity.Users;
 using Fake.Modularity;
+using Fake.Security.Claims;
+using Fake.Users;
 using Microsoft.Extensions.DependencyInjection;
 
 // ReSharper disable once CheckNamespace
-namespace Fake.Identity;
+namespace Fake;
 
-public class FakeIdentityModule : FakeModule
+public class FakeSecurityModule : FakeModule
 {
     public override void PostConfigureServices(ServiceConfigurationContext context)
     {

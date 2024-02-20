@@ -1,7 +1,7 @@
 ﻿using System.Security.Claims;
 using Fake.Authorization.Services;
-using Fake.Identity.Security.Claims;
 using Fake.IdGenerators.GuidGenerator;
+using Fake.Security.Claims;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 using Xunit;

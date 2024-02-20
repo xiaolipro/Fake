@@ -1,4 +1,6 @@
-﻿namespace Fake.Identity.Users;
+﻿using System.Security.Claims;
+
+namespace Fake.Users;
 
 public interface ICurrentUser
 {
@@ -15,4 +17,6 @@ public interface ICurrentUser
     /// </summary>
 
     public string? UserName { get; }
+
+    Claim? FindClaimOrNull(string claimType);
 }

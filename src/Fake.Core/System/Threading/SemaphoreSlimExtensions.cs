@@ -11,7 +11,7 @@ public static class SemaphoreSlimExtensions
     /// <param name="millisecondsTimeout">默认无期限等待</param>
     /// <param name="cancellationToken">取消令牌</param>
     /// <returns></returns>
-    public static IDisposable Lock(this SemaphoreSlim semaphoreSlim, int millisecondsTimeout = -1,
+    public static IDisposable BeginScope(this SemaphoreSlim semaphoreSlim, int millisecondsTimeout = -1,
         CancellationToken cancellationToken = default)
     {
         var successfully = semaphoreSlim.Wait(millisecondsTimeout, cancellationToken); // -1

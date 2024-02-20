@@ -1,7 +1,7 @@
 ﻿using Fake.Helpers;
-using Fake.Identity.Users;
 using Fake.IdGenerators.GuidGenerator;
 using Fake.Timing;
+using Fake.Users;
 
 namespace Fake.DomainDrivenDesign.Entities.Auditing;
 

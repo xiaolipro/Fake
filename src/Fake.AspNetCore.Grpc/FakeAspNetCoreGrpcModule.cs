@@ -1,6 +1,9 @@
 ﻿using Fake.Modularity;
 
-public class FakeAspNetCoreGrpcModule:FakeModule
+// ReSharper disable once CheckNamespace
+namespace Fake.AspNetCore.Grpc;
+
+public class FakeAspNetCoreGrpcModule : FakeModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {

@@ -2,7 +2,7 @@ using System;
 using System.Security.Claims;
 using System.Threading;
 
-namespace Fake.Identity.Security.Claims;
+namespace Fake.Security.Claims;
 
 public abstract class AbstractCurrentPrincipalAccessor : ICurrentPrincipalAccessor
 {

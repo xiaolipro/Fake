@@ -54,7 +54,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleConsoleDemo", "simple
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fake.UnitOfWork", "src\Fake.UnitOfWork\Fake.UnitOfWork.csproj", "{F2F8DDE9-F6B2-4415-9306-607F7CE45588}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fake.Identity", "src\Fake.Identity\Fake.Identity.csproj", "{94E5CFBE-436F-4639-B103-31C607EAF441}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fake.Security", "src\Fake.Security\Fake.Security.csproj", "{94E5CFBE-436F-4639-B103-31C607EAF441}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fake.EntityFrameworkCore", "src\Fake.EntityFrameworkCore\Fake.EntityFrameworkCore.csproj", "{507825BD-B352-4646-85EA-A893CF3221CF}"
 EndProject

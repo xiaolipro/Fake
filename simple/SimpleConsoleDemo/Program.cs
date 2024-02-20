@@ -2,7 +2,7 @@
 using Fake;
 using Fake.Auditing;
 using Fake.DependencyInjection;
-using Fake.Identity.Security.Claims;
+using Fake.Security.Claims;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace SimpleConsoleDemo;

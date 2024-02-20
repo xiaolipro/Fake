@@ -2,7 +2,7 @@
 using System.Security.Claims;
 using System.Threading;
 
-namespace Fake.Identity.Security.Claims;
+namespace Fake.Security.Claims;
 
 /// <summary>
 /// 基于Thread访问ClaimsPrincipal

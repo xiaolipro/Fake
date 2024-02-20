@@ -68,7 +68,7 @@ public class StringLocalizerFactory(
             return _localizerCache.GetOrAdd(resourceResourceName, _ => CreateStringLocalizer(resource));
         }
 
-        using (Semaphore.Lock())
+        using (Semaphore.BeginScope())
         {
             // DCL
             if (_localizerCache.TryGetValue(resourceResourceName, out localizer))

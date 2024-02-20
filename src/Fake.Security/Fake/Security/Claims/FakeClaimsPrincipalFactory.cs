@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace Fake.Identity.Security.Claims;
+namespace Fake.Security.Claims;
 
 public class FakeClaimsPrincipalFactory : IFakeClaimsPrincipalFactory
 {

@@ -1,7 +1,7 @@
 using System;
 using System.Security.Claims;
 
-namespace Fake.Identity.Security.Claims;
+namespace Fake.Security.Claims;
 
 public class FakeClaimsPrincipalContributorContext
 {

@@ -1,7 +1,7 @@
 ﻿using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace Fake.Identity.Security.Claims;
+namespace Fake.Security.Claims;
 
 public interface IFakeClaimsPrincipalFactory
 {
