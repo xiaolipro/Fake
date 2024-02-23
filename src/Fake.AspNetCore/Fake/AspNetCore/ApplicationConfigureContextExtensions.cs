@@ -1,4 +1,5 @@
-﻿using Fake.DependencyInjection;
+﻿using System;
+using Fake.DependencyInjection;
 using Fake.Modularity;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -14,7 +15,17 @@ public static class ApplicationConfigureContextExtensions
     {
         // 在加载FakeAspNetCoreModule模块ConfigureServices时
         var app = context.ServiceProvider.GetRequiredService<ObjectAccessor<IApplicationBuilder>>().Value;
-        ThrowHelper.ThrowIfNull(app, nameof(app), "请检查host是否是web host");
+        ThrowHelper.ThrowIfNull(app, nameof(app),
+            $"请检查是否调用{nameof(FakeApplicationBuilderExtensions.InitializeApplication)}");
+        return app!;
+    }
+
+    public static WebApplication GetWebApplication(this ApplicationConfigureContext context)
+    {
+        // 在加载FakeAspNetCoreModule模块ConfigureServices时
+        var app = context.ServiceProvider.GetRequiredService<ObjectAccessor<IApplicationBuilder>>().Value
+            ?.As<WebApplication>();
+        ThrowHelper.ThrowIfNull(app, nameof(app), $"请检查host是否是通过{nameof(WebApplication)}创建");
         return app!;
     }
 

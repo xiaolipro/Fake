@@ -2,7 +2,7 @@ using System.Text;
 using Microsoft.AspNetCore.Routing.Internal;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddFakeApplication<SimpleWebDemoModule>();
+builder.Services.AddApplication<SimpleWebDemoModule>();
 var app = builder.Build();
 app.InitializeApplication();
 

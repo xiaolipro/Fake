@@ -48,7 +48,7 @@ public abstract class AspNetCoreIntegrationTest<TStartupModule> : TestServicePro
         builder.Services
             .AddScoped<IHostLifetime, FakeNoopHostLifetime>()
             .AddScoped<IServer, TestServer>()
-            .AddFakeApplication<TStartupModule>();
+            .AddApplication<TStartupModule>();
         builder.Host
             .UseAutofac()
             .ConfigureServices(ConfigureServices);

@@ -18,5 +18,7 @@ public class SimpleWebDemoModule : FakeModule
 
     public override void ConfigureApplication(ApplicationConfigureContext context)
     {
+        var app = context.GetWebApplication();
+        app.MapGet("/s", () => "Hello World!");
     }
 }

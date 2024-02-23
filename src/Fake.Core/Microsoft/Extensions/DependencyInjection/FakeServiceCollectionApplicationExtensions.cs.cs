@@ -5,7 +5,7 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public static class FakeServiceCollectionApplicationExtensions
 {
-    public static FakeApplication AddFakeApplication<TStartupModule>(
+    public static FakeApplication AddApplication<TStartupModule>(
         this IServiceCollection services,
         Action<FakeApplicationCreationOptions>? optionsAction = null)
         where TStartupModule : IFakeModule
@@ -13,7 +13,7 @@ public static class FakeServiceCollectionApplicationExtensions
         return FakeApplicationFactory.Create<TStartupModule>(services, optionsAction);
     }
 
-    public static FakeApplication AddFakeApplication(
+    public static FakeApplication AddApplication(
         this IServiceCollection services,
         Type startupModuleType,
         Action<FakeApplicationCreationOptions>? optionsAction = null)

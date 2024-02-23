@@ -3,7 +3,7 @@ using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddConfigurationFromConsul();
-builder.Services.AddFakeApplication<ConsulServerDemoModule>();
+builder.Services.AddApplication<ConsulServerDemoModule>();
 var app = builder.Build();
 app.InitializeApplication();
 app.MapGet("/say", () => "Hello World!");

@@ -4,7 +4,7 @@
     <LangVersion>latest</LangVersion>
     <IsPackable>true</IsPackable>
     <OutputType>Library</OutputType>
-    <Version>8.0.0-preview.240123</Version>
+    <Version>8.0.0-preview.3</Version>
     <Nullable>enable</Nullable>
     <WarningsAsErrors>Nullable</WarningsAsErrors>
     <NoWarn>$(NoWarn);CS1591;CS0436;NU1803</NoWarn>

@@ -23,7 +23,7 @@ public static class FakeIHostBuilderExtensions
                 services.AddScoped<IHostLifetime, FakeNoopHostLifetime>();
                 services.AddScoped<IServer, TestServer>();
 
-                services.AddFakeApplication<TStartupModule>();
+                services.AddApplication<TStartupModule>();
             });
 
             configure?.Invoke(webBuilder);

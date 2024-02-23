@@ -19,7 +19,7 @@ public abstract class ApplicationTest<TStartupModule> : TestServiceProviderAcces
         var services = CreateServiceCollection();
 
         BeforeAddFakeApplication(services);
-        var application = services.AddFakeApplication<TStartupModule>(SetApplicationCreationOptions);
+        var application = services.AddApplication<TStartupModule>(SetApplicationCreationOptions);
         Application = application;
         AfterAddFakeApplication(services);
 

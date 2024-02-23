@@ -1,5 +1,5 @@
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddFakeApplication<ConsulClientDemoModule>();
+builder.Services.AddApplication<ConsulClientDemoModule>();
 builder.Configuration.AddConfigurationFromConsul();
 var app = builder.Build();
 app.InitializeApplication();
