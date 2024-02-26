@@ -11,7 +11,13 @@ public static class FakeApplicationBuilderExtensions
     {
         ThrowHelper.ThrowIfNull(app, nameof(app));
 
-        app.ApplicationServices.GetRequiredService<ObjectAccessor<IApplicationBuilder>>().Value = app;
+        var applicationBuilderAccessor = app.ApplicationServices.GetService<ObjectAccessor<IApplicationBuilder>>();
+        if (applicationBuilderAccessor == null)
+        {
+            throw new FakeException("请检查是否依赖FakeAspNetCoreModule模块");
+        }
+
+        applicationBuilderAccessor.Value = app;
 
         var application = app.ApplicationServices.GetRequiredService<FakeApplication>();
 
