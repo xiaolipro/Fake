@@ -1,12 +1,11 @@
-﻿#nullable enable
-namespace Fake.DomainDrivenDesign.Entities.Auditing;
+﻿namespace Fake.DomainDrivenDesign.Entities.Auditing;
 
-public abstract class FullAuditedAggregate<TKey, TUserId> : AggregateRoot<TKey>, IFullAuditedEntity<TUserId>
+[Serializable]
+public abstract class FullAuditedAggregate<TKey> : AggregateRoot<TKey>, IFullAuditedEntity
 {
-    public TUserId? CreatorId { get; set; }
-    public DateTime CreationTime { get; set; }
-    public TUserId? LastModifierId { get; set; }
-    public DateTime? LastModificationTime { get; set; }
-    public bool IsDeleted { get; set; }
-    public bool HardDeleted { get; set; }
+    public virtual Guid? CreateUserId { get; set; }
+    public virtual DateTime CreateTime { get; set; }
+    public virtual Guid? UpdateUserId { get; set; }
+    public virtual DateTime? UpdateTime { get; set; }
+    public virtual bool IsDeleted { get; set; }
 }

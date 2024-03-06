@@ -9,38 +9,31 @@ public class DefaultAuditPropertySetter(ICurrentUser currentUser, IFakeClock fak
 {
     public void SetCreationProperties(object targetObject)
     {
-        if (targetObject is IHasCreationTime objectWithCreationTime)
+        if (targetObject is IHasCreateTime objectWithCreationTime)
         {
-            if (objectWithCreationTime.CreationTime == default)
+            if (objectWithCreationTime.CreateTime == default)
             {
-                ReflectionHelper.TrySetProperty(objectWithCreationTime, x => x.CreationTime, () => fakeClock.Now);
+                ReflectionHelper.TrySetProperty(objectWithCreationTime, x => x.CreateTime, () => fakeClock.Now);
             }
         }
 
-        if (targetObject is IHasCreator<Guid> objectWithGuidCreator)
+        if (targetObject is IHasCreateUserId { CreateUserId: null } objectWithCreator)
         {
-            if (objectWithGuidCreator.CreatorId == default && Guid.TryParse(currentUser.UserId, out var userIdAsGuid))
-            {
-                ReflectionHelper.TrySetProperty(objectWithGuidCreator, x => x.CreatorId, () => userIdAsGuid);
-            }
+            ReflectionHelper.TrySetProperty(objectWithCreator, x => x.CreateUserId, () => currentUser.Id);
         }
     }
 
     public void SetModificationProperties(object targetObject)
     {
-        if (targetObject is IHasModificationTime objectWithModificationTime)
+        if (targetObject is IHasUpdateTime objectWithModificationTime)
         {
-            ReflectionHelper.TrySetProperty(objectWithModificationTime, x => x.LastModificationTime,
+            ReflectionHelper.TrySetProperty(objectWithModificationTime, x => x.UpdateTime,
                 () => fakeClock.Now);
         }
 
-        if (targetObject is IHasModifier<Guid> objectWithGuidModifier)
+        if (targetObject is IHasUpdateUserId { UpdateUserId: null } objectWithModifier)
         {
-            if (objectWithGuidModifier.LastModifierId == default &&
-                Guid.TryParse(currentUser.UserId, out var userIdAsGuid))
-            {
-                ReflectionHelper.TrySetProperty(objectWithGuidModifier, x => x.LastModifierId, () => userIdAsGuid);
-            }
+            ReflectionHelper.TrySetProperty(objectWithModifier, x => x.UpdateUserId, () => currentUser.Id);
         }
     }
 

@@ -256,9 +256,9 @@ public class EntityChangeHelper : IEntityChangeHelper
         switch (entityChange.ChangeType)
         {
             case EntityChangeType.Created:
-                return (entity as IHasCreationTime)?.CreationTime ?? Clock.Now;
+                return (entity as IHasCreateTime)?.CreateTime ?? Clock.Now;
             case EntityChangeType.Updated:
-                return (entity as IHasModificationTime)?.LastModificationTime ?? Clock.Now;
+                return (entity as IHasUpdateTime)?.UpdateTime ?? Clock.Now;
             default:
                 throw new FakeException($"Unknown {nameof(EntityChangeInfo)}: {entityChange}");
         }

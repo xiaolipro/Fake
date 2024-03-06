@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System;
+using System.Security.Claims;
 
 namespace Fake.Users;
 
@@ -10,7 +11,7 @@ public interface ICurrentUser
     /// 用户唯一标识
     /// </summary>
 
-    public string? UserId { get; }
+    public Guid? Id { get; }
 
     /// <summary>
     /// 获取当前用户的名称。

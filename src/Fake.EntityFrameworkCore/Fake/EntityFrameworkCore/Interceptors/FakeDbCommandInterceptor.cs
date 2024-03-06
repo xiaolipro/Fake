@@ -38,7 +38,7 @@ public class FakeDbCommandInterceptor : IDbCommandInterceptor
         var sb = new StringBuilder();
 
         sb.AppendLine($"DbCommand LOG: [ReaderExecuting]");
-        // sb.AppendLine($"- UserName - UserId      : {UserName} - {UserId}");
+        // sb.AppendLine($"- UserName - Id      : {UserName} - {Id}");
         // sb.AppendLine($"- ClientIpAddress        : {ClientIpAddress}");
         sb.AppendLine($"- ExecutionDuration      : {_stopwatch.ElapsedMilliseconds} ms");
         sb.AppendLine($"  {_commandFormatter.Format(command)}");

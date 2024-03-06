@@ -3,4 +3,4 @@
 /// <summary>
 /// 开放泛型参数占位符
 /// </summary>
-public sealed class Any;
+public abstract class Any;

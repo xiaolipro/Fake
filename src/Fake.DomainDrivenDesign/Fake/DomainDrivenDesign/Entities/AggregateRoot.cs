@@ -6,7 +6,7 @@ namespace Fake.DomainDrivenDesign.Entities;
 [Serializable]
 public abstract class AggregateRoot : Entity, IAggregateRoot, IHasVersionNum
 {
-    public string VersionNum { get; set; }
+    public virtual string VersionNum { get; set; }
 
     protected AggregateRoot()
     {

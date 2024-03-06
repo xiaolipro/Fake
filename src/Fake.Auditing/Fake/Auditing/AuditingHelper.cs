@@ -62,7 +62,7 @@ public class AuditingHelper : IAuditingHelper
         var auditLog = new AuditLogInfo()
         {
             ApplicationName = FakeAuditingOptions.ApplicationName,
-            UserId = CurrentUser.UserId,
+            UserId = CurrentUser.Id,
             UserName = CurrentUser.UserName,
             ExecutionTime = FakeClock.Now,
         };

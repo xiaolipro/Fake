@@ -21,7 +21,7 @@ public abstract class DataFilterTests<TStartupModule> : AppTestBase<TStartupModu
     }
 
     [Fact]
-    public async Task 禁用软删审计()
+    public async Task 禁用软删过滤()
     {
         await SoftDeleteAsync();
 
@@ -35,34 +35,17 @@ public abstract class DataFilterTests<TStartupModule> : AppTestBase<TStartupModu
         order2.ShouldBeNull();
     }
 
-    [Fact]
-    public async Task 软删下的物理删()
-    {
-        var order = await OrderRepository.FirstOrDefaultAsync(x => x.Id == AppTestDataBuilder.OrderId);
-        order.ShouldNotBeNull();
-        order.CreationTime.ShouldBeLessThanOrEqualTo(FakeClock.Now);
-        order.LastModifierId.ShouldBe(Guid.Empty);
-        order.HardDeleted = true;
-        await OrderRepository.DeleteAsync(order);
-
-        using (SoftDeleteDataFilter.Disable())
-        {
-            var order2 = await OrderRepository.FirstOrDefaultAsync(x => x.Id == AppTestDataBuilder.OrderId);
-            order2.ShouldBeNull();
-        }
-    }
-
     private async Task SoftDeleteAsync()
     {
         var order = await OrderRepository.FirstOrDefaultAsync(x => x.Id == AppTestDataBuilder.OrderId);
         order.ShouldNotBeNull();
-        order.CreationTime.ShouldBeLessThanOrEqualTo(FakeClock.Now);
-        order.LastModifierId.ShouldBe(Guid.Empty);
+        order.CreateTime.ShouldBeLessThanOrEqualTo(FakeClock.Now);
+        order.UpdateUserId.ShouldBeNull();
         await OrderRepository.DeleteAsync(order);
 
         order.IsDeleted.ShouldBe(true);
-        order.LastModifierId.ShouldBe(Guid.Empty);
-        Debug.Assert(order.LastModificationTime != null, "order.LastModificationTime != null");
-        order.LastModificationTime.Value.ShouldBeLessThanOrEqualTo(FakeClock.Now);
+        order.UpdateUserId.ShouldBeNull();
+        Debug.Assert(order.UpdateTime != null, "order.UpdateTime != null");
+        order.UpdateTime.Value.ShouldBeLessThanOrEqualTo(FakeClock.Now);
     }
 }

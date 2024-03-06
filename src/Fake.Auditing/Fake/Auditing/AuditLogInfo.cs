@@ -10,7 +10,7 @@ public class AuditLogInfo
 {
     public string? ApplicationName { get; set; }
 
-    public string? UserId { get; set; }
+    public Guid? UserId { get; set; }
 
     public string? UserName { get; set; }
 
@@ -46,7 +46,7 @@ public class AuditLogInfo
         var sb = new StringBuilder();
 
         sb.AppendLine($"AUDIT LOG: [{HttpStatusCode?.ToString() ?? "---"}: {HttpMethod ?? "-------",-7}] {Url}");
-        sb.AppendLine($"- UserName - UserId      : {UserName} - {UserId}");
+        sb.AppendLine($"- UserName - Id      : {UserName} - {UserId}");
         sb.AppendLine($"- ClientIpAddress        : {ClientIpAddress}");
         sb.AppendLine($"- ExecutionDuration      : {ExecutionDuration} ms");
 

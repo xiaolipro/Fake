@@ -23,7 +23,7 @@ public abstract class AppAuditingTests<TStartupModule> : AppTestBase<TStartupMod
     protected override void AfterAddFakeApplication(IServiceCollection services)
     {
         var currentUser = Substitute.For<ICurrentUser>();
-        currentUser.UserId.Returns(_ => CurrentUserId.ToString());
+        currentUser.Id.Returns(_ => CurrentUserId);
 
         services.AddSingleton(currentUser);
     }
@@ -52,44 +52,36 @@ public abstract class AppAuditingTests<TStartupModule> : AppTestBase<TStartupMod
         order = await OrderRepository.FirstOrDefaultAsync(x => x.Id == order.Id);
 
         order.ShouldNotBeNull();
-        order.CreationTime.ShouldBeLessThanOrEqualTo(FakeClock.Now);
-        order.CreatorId.ShouldBe(CurrentUserId);
+        order.CreateTime.ShouldBeLessThanOrEqualTo(FakeClock.Now);
+        order.CreateUserId.ShouldBe(CurrentUserId);
     }
 
-    [Theory]
-    [InlineData(null)]
-    [InlineData("4b2790fc-3f51-43d5-88a1-a92d96a9e6ea")]
-    public async Task 修改审计(string currentUserId)
+    [Fact]
+    public async Task 修改审计()
     {
-        Guid.TryParse(currentUserId, out CurrentUserId);
-
         var order = await OrderRepository.FirstOrDefaultAsync(x => x.Id == AppTestDataBuilder.OrderId);
-        order!.LastModifierId.ShouldBe(Guid.Empty);
+        order!.UpdateUserId.ShouldBe(Guid.Empty);
 
         order.SetCancelledStatus();
         order = await OrderRepository.UpdateAsync(order);
 
-        order.LastModifierId.ShouldBe(CurrentUserId);
-        Debug.Assert(order.LastModificationTime != null, "order.LastModificationTime != null");
-        order.LastModificationTime.Value.ShouldBeLessThanOrEqualTo(FakeClock.Now);
+        order.UpdateUserId.ShouldBe(CurrentUserId);
+        Debug.Assert(order.UpdateTime != null, "order.UpdateTime != null");
+        order.UpdateTime.Value.ShouldBeLessThanOrEqualTo(FakeClock.Now);
     }
 
-    [Theory]
-    [InlineData("4b2790fc-3f51-43d5-88a1-a92d96a9e6ea")]
-    public async Task 软删审计(string currentUserId)
+    [Fact]
+    public async Task 软删审计()
     {
-        Guid.TryParse(currentUserId, out CurrentUserId);
-
         var order = await OrderRepository.FirstOrDefaultAsync(x => x.Id == AppTestDataBuilder.OrderId);
         order.ShouldNotBeNull();
-        order.CreationTime.ShouldBeLessThanOrEqualTo(FakeClock.Now);
-        order.LastModifierId.ShouldBe(Guid.Empty);
+        order.CreateTime.ShouldBeLessThanOrEqualTo(FakeClock.Now);
+        order.UpdateUserId.ShouldBe(Guid.Empty);
         await OrderRepository.DeleteAsync(order);
-
         order.IsDeleted.ShouldBe(true);
-        order.LastModifierId.ShouldBe(CurrentUserId);
-        Debug.Assert(order.LastModificationTime != null, "order.LastModificationTime != null");
-        order.LastModificationTime.Value.ShouldBeLessThanOrEqualTo(FakeClock.Now);
+        order.UpdateUserId.ShouldBe(CurrentUserId);
+        Debug.Assert(order.UpdateTime != null, "order.UpdateTime != null");
+        order.UpdateTime.Value.ShouldBeLessThanOrEqualTo(FakeClock.Now);
 
         order = await OrderRepository.FirstOrDefaultAsync(x => x.Id == AppTestDataBuilder.OrderId);
         order.ShouldBeNull();

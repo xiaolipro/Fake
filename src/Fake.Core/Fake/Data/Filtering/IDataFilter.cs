@@ -2,14 +2,14 @@
 
 public interface IDataFilter
 {
-    IDisposable Enable<TFilter>() where TFilter : ICanDataFilter;
+    IDisposable Enable<TFilter>() where TFilter : ICanFilter;
 
-    IDisposable Disable<TFilter>() where TFilter : ICanDataFilter;
+    IDisposable Disable<TFilter>() where TFilter : ICanFilter;
 
-    bool IsEnabled<TFilter>() where TFilter : ICanDataFilter;
+    bool IsEnabled<TFilter>() where TFilter : ICanFilter;
 }
 
-public interface IDataFilter<TFilter> where TFilter : ICanDataFilter
+public interface IDataFilter<TFilter> where TFilter : ICanFilter
 {
     IDisposable Enable();
 

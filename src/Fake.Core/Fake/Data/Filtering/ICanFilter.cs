@@ -3,4 +3,4 @@
 /// <summary>
 /// 表示能够被DataFilter支持
 /// </summary>
-public interface ICanDataFilter;
+public interface ICanFilter;

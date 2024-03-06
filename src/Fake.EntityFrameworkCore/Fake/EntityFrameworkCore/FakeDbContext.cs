@@ -185,11 +185,8 @@ public abstract class FakeDbContext<TDbContext>(DbContextOptions<TDbContext> opt
     {
         if (entry.Entity is not ISoftDelete entityWithSoftDelete) return;
 
-        if (entityWithSoftDelete.HardDeleted) return;
-
         // tips: 这里必須重置entity状态，设置完修改审计后转会到EntityState.Modified
         entry.Reload();
-
         ReflectionHelper.TrySetProperty(entityWithSoftDelete, x => x.IsDeleted, () => true);
         AuditPropertySetter.SetModificationProperties(entry.Entity);
     }
@@ -235,7 +232,7 @@ public abstract class FakeDbContext<TDbContext>(DbContextOptions<TDbContext> opt
 
     protected virtual bool ShouldSetId(EntityEntry entry)
     {
-        if (entry.Entity is not IEntity<Any> entity) return false;
+        if (entry.Entity is not IEntity entity) return false;
 
         if (!entity.IsTransient) return false;
 
@@ -274,8 +271,8 @@ public abstract class FakeDbContext<TDbContext>(DbContextOptions<TDbContext> opt
         if (!typeof(TEntity).IsAssignableTo(typeof(IEntity))) return;
 
         modelBuilder.Entity<TEntity>()
-            .TryConfigureCreator<Any>()
-            .TryConfigureModifier<Any>()
+            .TryConfigureCreator()
+            .TryConfigureModifier()
             .TryConfigureSoftDelete()
             .TryConfigureExtraProperties()
             .TryConfigureVersionNum();

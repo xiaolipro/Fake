@@ -1,9 +1,9 @@
 namespace Fake.DomainDrivenDesign.Entities.Auditing;
 
-public interface IHasCreationTime
+public interface IHasCreateTime
 {
     /// <summary>
     /// 创建时间
     /// </summary>
-    DateTime CreationTime { get; }
+    DateTime CreateTime { get; }
 }

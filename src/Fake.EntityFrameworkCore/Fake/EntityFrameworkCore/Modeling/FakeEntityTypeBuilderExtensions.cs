@@ -39,32 +39,30 @@ public static class FakeEntityTypeBuilderExtensions
         return builder;
     }
 
-    public static EntityTypeBuilder TryConfigureCreator<TUserId>(this EntityTypeBuilder builder)
+    public static EntityTypeBuilder TryConfigureCreator(this EntityTypeBuilder builder)
     {
-        if (builder.Metadata.ClrType.IsAssignableTo(typeof(IHasCreator<>)))
+        if (builder.Metadata.ClrType.IsAssignableTo(typeof(IHasCreateUserId)))
         {
-            builder.Property(nameof(IHasCreator<TUserId>.CreatorId))
-                .HasColumnName(nameof(IHasCreator<TUserId>.CreatorId))
-                .IsRequired();
+            builder.Property(nameof(IHasCreateUserId.CreateUserId))
+                .HasColumnName(nameof(IHasCreateUserId.CreateUserId));
 
-            builder.Property(nameof(IHasCreationTime.CreationTime))
-                .HasColumnName(nameof(IHasCreationTime.CreationTime))
+            builder.Property(nameof(IHasCreateTime.CreateTime))
+                .HasColumnName(nameof(IHasCreateTime.CreateTime))
                 .IsRequired();
         }
 
         return builder;
     }
 
-    public static EntityTypeBuilder TryConfigureModifier<TUserId>(this EntityTypeBuilder builder)
+    public static EntityTypeBuilder TryConfigureModifier(this EntityTypeBuilder builder)
     {
-        if (builder.Metadata.ClrType.IsAssignableTo<IHasModifier<TUserId>>())
+        if (builder.Metadata.ClrType.IsAssignableTo<IHasUpdateUserId>())
         {
-            builder.Property(nameof(IHasModifier<TUserId>.LastModifierId))
-                .HasColumnName(nameof(IHasModifier<TUserId>.LastModifierId))
-                .IsRequired();
+            builder.Property(nameof(IHasUpdateUserId.UpdateUserId))
+                .HasColumnName(nameof(IHasUpdateUserId.UpdateUserId));
 
-            builder.Property(nameof(IHasModificationTime.LastModificationTime))
-                .HasColumnName(nameof(IHasModificationTime.LastModificationTime))
+            builder.Property(nameof(IHasUpdateTime.UpdateTime))
+                .HasColumnName(nameof(IHasUpdateTime.UpdateTime))
                 .IsRequired();
         }
 
@@ -79,8 +77,6 @@ public static class FakeEntityTypeBuilderExtensions
                 .IsRequired()
                 .HasDefaultValue(false)
                 .HasColumnName(nameof(ISoftDelete.IsDeleted));
-
-            builder.Ignore(nameof(ISoftDelete.HardDeleted));
         }
 
         return builder;

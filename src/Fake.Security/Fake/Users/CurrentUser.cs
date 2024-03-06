@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Security.Claims;
 using Fake.Security.Claims;
@@ -9,10 +10,10 @@ public class CurrentUser(ICurrentPrincipalAccessor currentPrincipalAccessor) : I
     /*
      * see: public virtual bool IsAuthenticated => !string.IsNullOrEmpty(this.m_authenticationType);
      */
-    public bool IsAuthenticated => currentPrincipalAccessor.Principal?.Identity.IsAuthenticated ?? false;
-    public string? UserId => this.FindClaimValueOrNull(ClaimTypes.NameIdentifier);
-    public string? UserName => this.FindClaimValueOrNull(ClaimTypes.Name);
-    public string? Roles => this.FindClaimValueOrNull(ClaimTypes.Role);
+    public virtual bool IsAuthenticated => currentPrincipalAccessor.Principal?.Identity.IsAuthenticated ?? false;
+    public virtual Guid? Id => currentPrincipalAccessor.Principal?.FindUserId();
+    public virtual string? UserName => this.FindClaimValueOrNull(ClaimTypes.Name);
+    public virtual string? Roles => this.FindClaimValueOrNull(ClaimTypes.Role);
 
     public virtual Claim? FindClaimOrNull(string claimType)
     {

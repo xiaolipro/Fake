@@ -7,17 +7,17 @@ public class DataFilter(IServiceProvider serviceProvider) : IDataFilter
 {
     private readonly ConcurrentDictionary<Type, object> _filters = new();
 
-    public IDisposable Enable<TFilter>() where TFilter : ICanDataFilter
+    public IDisposable Enable<TFilter>() where TFilter : ICanFilter
     {
         return GetFilter<TFilter>().Enable();
     }
 
-    public IDisposable Disable<TFilter>() where TFilter : ICanDataFilter
+    public IDisposable Disable<TFilter>() where TFilter : ICanFilter
     {
         return GetFilter<TFilter>().Disable();
     }
 
-    public bool IsEnabled<TFilter>() where TFilter : ICanDataFilter
+    public bool IsEnabled<TFilter>() where TFilter : ICanFilter
     {
         return GetFilter<TFilter>().IsEnabled;
     }
@@ -28,7 +28,7 @@ public class DataFilter(IServiceProvider serviceProvider) : IDataFilter
     /// <typeparam name="TFilter"></typeparam>
     /// <returns></returns>
     private IDataFilter<TFilter> GetFilter<TFilter>()
-        where TFilter : ICanDataFilter
+        where TFilter : ICanFilter
     {
         var filter = _filters.GetOrAdd(
             typeof(TFilter),
@@ -38,7 +38,7 @@ public class DataFilter(IServiceProvider serviceProvider) : IDataFilter
 }
 
 public class DataFilter<TFilter>(IOptions<FakeDataFilterOptions> options) : IDataFilter<TFilter>
-    where TFilter : ICanDataFilter
+    where TFilter : ICanFilter
 {
     public bool IsEnabled
     {
