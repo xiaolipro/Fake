@@ -13,7 +13,7 @@ public class OrderQueries : EfCoreRootlessRepository<OrderingContext>, IOrderQue
         var res = context.Database.SqlQuery<OrderSummary>(
                 @$"SELECT o.[Id] as ordernumber,o.[CreateTime] as [date],o.[OrderStatus] as [status], SUM(oi.units*oi.unitprice) as total
                FROM orders o
-               LEFT JOIN orderitems oi ON  o.Id = oi.orderid 
+               LEFT JOIN orderitems oi ON  o.Id = oi.orderid
                Where o.[Id] = {orderId}
                GROUP BY o.[Id], o.[CreateTime], o.[OrderStatus] 
                ORDER BY o.[Id]")

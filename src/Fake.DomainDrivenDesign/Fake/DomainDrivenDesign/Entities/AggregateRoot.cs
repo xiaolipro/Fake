@@ -1,12 +1,13 @@
-﻿using Fake.DomainDrivenDesign.Entities.Auditing;
+﻿using Fake.Auditing;
+using Fake.DomainDrivenDesign.Entities.Auditing;
 using Fake.IdGenerators.GuidGenerator;
 
 namespace Fake.DomainDrivenDesign.Entities;
 
 [Serializable]
-public abstract class AggregateRoot : Entity, IAggregateRoot, IHasVersionNum
+public abstract class AggregateRoot : BasicAggregateRoot, IHasVersionNum
 {
-    public virtual string VersionNum { get; set; }
+    [DisableAuditing] public virtual string VersionNum { get; set; }
 
     protected AggregateRoot()
     {
@@ -15,12 +16,7 @@ public abstract class AggregateRoot : Entity, IAggregateRoot, IHasVersionNum
 }
 
 [Serializable]
-public abstract class AggregateRoot<TKey> : Entity<TKey>, IAggregateRoot<TKey>, IHasVersionNum
+public abstract class AggregateRoot<TKey> : BasicAggregateRoot<TKey>, IHasVersionNum
 {
-    public string VersionNum { get; set; }
-
-    protected AggregateRoot()
-    {
-        VersionNum = SimpleGuidGenerator.Instance.GenerateAsString();
-    }
+    [DisableAuditing] public string VersionNum { get; set; } = SimpleGuidGenerator.Instance.GenerateAsString();
 }

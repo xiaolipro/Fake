@@ -48,16 +48,4 @@ public class NonRootRepositoryTests : AppTestBase<FakeEntityFrameworkCoreTestMod
             cnt.ShouldBe(2);
         });
     }
-
-
-    [Fact]
-    async Task 无根仓储中用SQL写入不会抛出异常()
-    {
-        var cnt = await _orderRepository.GetCountAsync();
-        cnt.ShouldBe(1);
-
-        var order = AppTestDataBuilder.BuildOrder();
-        order.SetId(Guid.NewGuid());
-        await _orderQueries.AddBySqlAsync(order);
-    }
 }

@@ -2,6 +2,7 @@
 
 namespace Fake.EventBus.Events;
 
+[Serializable]
 public abstract class EventBase
 {
     /// <summary>

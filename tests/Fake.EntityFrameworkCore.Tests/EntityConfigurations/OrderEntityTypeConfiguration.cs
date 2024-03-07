@@ -18,31 +18,28 @@ class OrderEntityTypeConfiguration : IEntityTypeConfiguration<Order>
             .OwnsOne(o => o.Address);
 
         orderConfiguration
-            .Property<Guid?>("_buyerId")
+            .Property(x => x.BuyerId)
             .UsePropertyAccessMode(PropertyAccessMode.Field)
-            .HasColumnName("BuyerId")
             .IsRequired(false);
 
         orderConfiguration
-            .Property<DateTime>("_orderDate")
+            .Property(x => x.OrderDate)
             .UsePropertyAccessMode(PropertyAccessMode.Field)
-            .HasColumnName("OrderDate")
             .IsRequired();
 
         orderConfiguration
             .Property(x => x.OrderStatus)
+            .UsePropertyAccessMode(PropertyAccessMode.Field)
             .IsRequired();
 
         orderConfiguration
-            .Property<Guid?>("_paymentMethodId")
+            .Property(x => x.PaymentMethodId)
             .UsePropertyAccessMode(PropertyAccessMode.Field)
-            .HasColumnName("PaymentMethodId")
             .IsRequired(false);
 
         orderConfiguration
-            .Property<string>("_description")
+            .Property(x => x.Description)
             .UsePropertyAccessMode(PropertyAccessMode.Field)
-            .HasColumnName("Description")
             .IsRequired(false);
 
         var navigation = orderConfiguration.Metadata.FindNavigation(nameof(Order.OrderItems));
@@ -53,13 +50,13 @@ class OrderEntityTypeConfiguration : IEntityTypeConfiguration<Order>
 
         orderConfiguration.HasOne<PaymentMethod>()
             .WithMany()
-            .HasForeignKey("_paymentMethodId")
+            .HasForeignKey(x => x.PaymentMethodId)
             .IsRequired(false)
             .OnDelete(DeleteBehavior.Restrict);
 
         orderConfiguration.HasOne<Buyer>()
             .WithMany()
             .IsRequired(false)
-            .HasForeignKey("_buyerId");
+            .HasForeignKey(x => x.BuyerId);
     }
 }

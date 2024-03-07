@@ -22,7 +22,6 @@ public class OrderingContext : FakeDbContext<OrderingContext>
         modelBuilder.ApplyConfiguration(new OrderEntityTypeConfiguration());
         modelBuilder.ApplyConfiguration(new OrderItemEntityTypeConfiguration());
         modelBuilder.ApplyConfiguration(new BuyerEntityTypeConfiguration());
-
         base.OnModelCreating(modelBuilder);
     }
 }

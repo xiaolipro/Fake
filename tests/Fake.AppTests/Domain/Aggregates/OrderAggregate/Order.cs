@@ -12,23 +12,20 @@ public class Order : FullAuditedAggregate<Guid>
     // DDD Patterns comment
     // Using private fields, allowed since EF Core 1.1, is a much better encapsulation
     // aligned with DDD Aggregates and DomainDrivenDesign Entities (Instead of properties and property collections)
-    private DateTime _orderDate;
+    public DateTime OrderDate { get; private set; }
 
     // Address is a Value Object pattern example persisted as EF Core 2.0 owned entity
     public Address Address { get; private set; }
 
-    public Guid? GetBuyerId => _buyerId;
-    private Guid? _buyerId;
+    public Guid? BuyerId { get; private set; }
 
     public OrderStatus OrderStatus { get; private set; }
 
-    private string _description;
+    public string Description { get; private set; }
 
 
     // Draft orders have this set to true. Currently we don't check anywhere the draft status of an Order, but we could do it if needed
-#pragma warning disable CS0414
-    private bool _isDraft;
-#pragma warning restore CS0414
+    public bool IsDraft { get; private set; }
 
     // DDD Patterns comment
     // Using a private collection field, better for DDD Aggregate's encapsulation
@@ -37,28 +34,29 @@ public class Order : FullAuditedAggregate<Guid>
     private readonly List<OrderItem> _orderItems;
     public IReadOnlyCollection<OrderItem> OrderItems => _orderItems;
 
-    private Guid? _paymentMethodId;
+    public Guid? PaymentMethodId { get; private set; }
 
     public static Order NewDraft()
     {
         var order = new Order();
-        order._isDraft = true;
+        order.IsDraft = true;
         return order;
     }
 
     protected Order()
     {
         _orderItems = new List<OrderItem>();
-        _isDraft = false;
+        IsDraft = false;
     }
 
     public Order(Guid userId, string userName, Address address, CardType cardType, string cardNumber,
         string cardSecurityNumber,
         string cardHolderName, DateTime cardExpiration, Guid? buyerId = null, Guid? paymentMethodId = null) : this()
     {
-        _buyerId = buyerId;
-        _paymentMethodId = paymentMethodId;
+        BuyerId = buyerId;
+        PaymentMethodId = paymentMethodId;
         OrderStatus = OrderStatus.Submitted;
+        OrderDate = DateTime.UtcNow;
         Address = address;
 
         // Add the OrderStarterDomainEvent to the domain events collection 
@@ -101,12 +99,12 @@ public class Order : FullAuditedAggregate<Guid>
 
     public void SetPaymentId(Guid id)
     {
-        _paymentMethodId = id;
+        PaymentMethodId = id;
     }
 
     public void SetBuyerId(Guid id)
     {
-        _buyerId = id;
+        BuyerId = id;
     }
 
     public void SetAwaitingValidationStatus()
@@ -125,7 +123,7 @@ public class Order : FullAuditedAggregate<Guid>
             AddDomainEvent(new OrderStatusChangedToStockConfirmedDomainEvent(Id));
 
             OrderStatus = OrderStatus.StockConfirmed;
-            _description = "All the items were confirmed with available stock.";
+            Description = "All the items were confirmed with available stock.";
         }
     }
 
@@ -136,7 +134,7 @@ public class Order : FullAuditedAggregate<Guid>
             AddDomainEvent(new OrderStatusChangedToPaidDomainEvent(Id, OrderItems));
 
             OrderStatus = OrderStatus.Paid;
-            _description =
+            Description =
                 "The payment was performed at a simulated \"American Bank checking bank account ending on XX35071\"";
         }
     }
@@ -149,7 +147,7 @@ public class Order : FullAuditedAggregate<Guid>
         }
 
         OrderStatus = OrderStatus.Shipped;
-        _description = "The order was shipped.";
+        Description = "The order was shipped.";
         AddDomainEvent(new OrderShippedDomainEvent(this));
     }
 
@@ -162,7 +160,7 @@ public class Order : FullAuditedAggregate<Guid>
         }
 
         OrderStatus = OrderStatus.Cancelled;
-        _description = $"The order was cancelled.";
+        Description = $"The order was cancelled.";
         AddDomainEvent(new OrderCancelledDomainEvent(this));
     }
 
@@ -177,14 +175,14 @@ public class Order : FullAuditedAggregate<Guid>
                 .Select(c => c.GetOrderItemProductName());
 
             var itemsStockRejectedDescription = string.Join(", ", itemsStockRejectedProductNames);
-            _description = $"The product items don't have stock: ({itemsStockRejectedDescription}).";
+            Description = $"The product items don't have stock: ({itemsStockRejectedDescription}).";
         }
     }
 
     private void StatusChangeException(OrderStatus orderStatusToChange)
     {
         throw new DomainException(
-            $"Is not possible to change the order status from {OrderStatus.Name} to {orderStatusToChange.Name}.");
+            $"Is not possible to change the order status from {OrderStatus} to {orderStatusToChange}.");
     }
 
     public decimal GetTotal()
@@ -194,6 +192,6 @@ public class Order : FullAuditedAggregate<Guid>
 
     public void SetDescription(string description)
     {
-        _description = description;
+        Description = description;
     }
 }

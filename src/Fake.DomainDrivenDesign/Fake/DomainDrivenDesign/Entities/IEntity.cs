@@ -1,12 +1,10 @@
-﻿using Fake.DomainDrivenDesign.Events;
-
-namespace Fake.DomainDrivenDesign.Entities;
+﻿namespace Fake.DomainDrivenDesign.Entities;
 
 /// <summary>
 /// 实体顶层抽象
 /// 支持复合索引，单主键建议使用<see cref="IEntity{TKey}"/>
 /// </summary>
-public interface IEntity : IHasDomainEvent
+public interface IEntity
 {
     /// <summary>
     /// 获取所有主键

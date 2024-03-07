@@ -50,11 +50,16 @@ public class FakeEntityFrameworkCoreTestModule : FakeModule
 
         using (orderingContext)
         {
-            AsyncHelper.RunSync(async () =>
-            {
-                await orderingContext.Database.EnsureCreatedAsync();
-                await orderingContext.Database.MigrateAsync();
-            });
+            AsyncHelper.RunSync(() => SeedAsync(orderingContext));
         }
+    }
+
+
+    private async Task SeedAsync(OrderingContext context)
+    {
+        await context.Database.EnsureCreatedAsync();
+        await context.Database.MigrateAsync();
+
+        await context.SaveChangesAsync();
     }
 }

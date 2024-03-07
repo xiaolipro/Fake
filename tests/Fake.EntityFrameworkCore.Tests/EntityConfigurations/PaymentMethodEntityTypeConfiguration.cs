@@ -13,8 +13,6 @@ class PaymentMethodEntityTypeConfiguration
 
         paymentConfiguration.HasKey(b => b.Id);
 
-        paymentConfiguration.Ignore(b => b.DomainEvents);
-
         paymentConfiguration.Property<Guid>("BuyerId")
             .IsRequired();
 
@@ -48,6 +46,7 @@ class PaymentMethodEntityTypeConfiguration
 
         paymentConfiguration
             .Property(x => x.CardType)
+            .UsePropertyAccessMode(PropertyAccessMode.Field)
             .IsRequired();
     }
 }
