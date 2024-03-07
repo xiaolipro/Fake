@@ -6,18 +6,14 @@ namespace Fake.DomainDrivenDesign;
 /// <summary>
 /// 枚举基类
 /// </summary>
-public abstract class Enumeration : IComparable
+public abstract class Enumeration(string name, int value, string? description = null) : IComparable
 {
-    public int Id { get; }
-    public string Name { get; private set; }
+    public int Value { get; } = value;
+    public string Name { get; } = name;
+
+    public string? Description { get; } = description;
 
     private static readonly ConcurrentDictionary<Type, IEnumerable<object>> Cache = new();
-
-    protected Enumeration(int id, string name)
-    {
-        Id = id;
-        Name = name;
-    }
 
     public override bool Equals(object? obj)
     {
@@ -25,7 +21,7 @@ public abstract class Enumeration : IComparable
 
         if (GetType() != obj.GetType()) return false;
 
-        return Id == enumeration.Id;
+        return Value == enumeration.Value;
     }
 
     public static bool operator ==(Enumeration obj1, Enumeration? obj2)
@@ -40,7 +36,7 @@ public abstract class Enumeration : IComparable
 
     public override int GetHashCode()
     {
-        return Id.GetHashCode();
+        return Value.GetHashCode();
     }
 
     public override string ToString()
@@ -51,7 +47,7 @@ public abstract class Enumeration : IComparable
     public int CompareTo(object obj)
     {
         var enumeration = obj as Enumeration;
-        return Id.CompareTo(enumeration?.Id);
+        return Value.CompareTo(enumeration?.Value);
     }
 
     #region Utils
@@ -69,12 +65,12 @@ public abstract class Enumeration : IComparable
 
     public static T FromValue<T>(int value) where T : Enumeration
     {
-        return Parse<T, int>(value, "value", x => x.Id == value);
+        return Parse<T, int>(value, "value", x => x.Value == value);
     }
 
-    public static T FromDisplayName<T>(string displayName) where T : Enumeration
+    public static T FromName<T>(string displayName) where T : Enumeration
     {
-        return Parse<T, string>(displayName, "display name", x => x.Name == displayName);
+        return Parse<T, string>(displayName, "name", x => x.Name == displayName);
     }
 
 
