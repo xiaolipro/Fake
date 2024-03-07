@@ -1,7 +1,6 @@
 ﻿using Domain.Aggregates.BuyerAggregate;
 using Domain.Aggregates.OrderAggregate;
 using Domain.Repositories;
-using Fake.DomainDrivenDesign;
 using Fake.DomainDrivenDesign.Repositories;
 using Fake.DomainDrivenDesign.Repositories.EntityFrameWorkCore;
 using Fake.EntityFrameworkCore;
@@ -60,18 +59,6 @@ public class FakeEntityFrameworkCoreTestModule : FakeModule
     {
         await context.Database.EnsureCreatedAsync();
         await context.Database.MigrateAsync();
-
-        if (context.CardTypes.IsEmpty())
-        {
-            var cardTypes = Enumeration.GetAll<CardType>();
-            context.CardTypes.AddRange(cardTypes);
-        }
-
-        if (context.OrderStatus.IsEmpty())
-        {
-            var orderStatus = Enumeration.GetAll<OrderStatus>();
-            context.OrderStatus.AddRange(orderStatus);
-        }
 
         await context.SaveChangesAsync();
     }

@@ -37,8 +37,6 @@ public class OrderRepository : EfCoreEfCoreRepository<OrderingContext, Order>, I
         {
             await context.Entry(order)
                 .Collection(i => i.OrderItems).LoadAsync();
-            await context.Entry(order)
-                .Reference(i => i.OrderStatus).LoadAsync();
         }
 
         return order;

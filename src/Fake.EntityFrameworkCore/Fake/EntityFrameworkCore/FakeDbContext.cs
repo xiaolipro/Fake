@@ -12,6 +12,7 @@ using Fake.DependencyInjection;
 using Fake.DomainDrivenDesign;
 using Fake.DomainDrivenDesign.Entities;
 using Fake.DomainDrivenDesign.Entities.Auditing;
+using Fake.DomainDrivenDesign.Events;
 using Fake.EntityFrameworkCore.Auditing;
 using Fake.EntityFrameworkCore.Modeling;
 using Fake.EntityFrameworkCore.ValueConverters;
@@ -53,12 +54,13 @@ public abstract class FakeDbContext<TDbContext>(DbContextOptions<TDbContext> opt
 
         TrySetDatabaseProvider(modelBuilder);
 
+        modelBuilder.Ignore<DomainEvent>();
+
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())
         {
-            entityType.AddIgnored(nameof(IEntity.DomainEvents));
             ConfigureBasePropertiesMethodInfo
                 .MakeGenericMethod(entityType.ClrType)
-                .Invoke(this, new object[] { modelBuilder, entityType });
+                .Invoke(this, [modelBuilder, entityType]);
 
             ConfigureValueConverter(modelBuilder, entityType);
         }
@@ -72,6 +74,7 @@ public abstract class FakeDbContext<TDbContext>(DbContextOptions<TDbContext> opt
 
             await BeforeSaveChangesAsync();
             var res = await base.SaveChangesAsync(cancellationToken);
+
             await PublishDomainEventsAsync();
 
             if (changes != null)
@@ -94,15 +97,16 @@ public abstract class FakeDbContext<TDbContext>(DbContextOptions<TDbContext> opt
 
     private Task PublishDomainEventsAsync()
     {
-        var domainEntities = base.ChangeTracker.Entries<Entity>()
-            .Where(x => x.Entity.DomainEvents != null && x.Entity.DomainEvents.Any())
-            .ToList();
-
-        var domainEvents = domainEntities
-            .SelectMany(x => x.Entity.DomainEvents ?? [])
-            .ToList();
-
-        domainEntities.ForEach(entity => entity.Entity.ClearDomainEvents());
+        var domainEvents = new List<DomainEvent>();
+        foreach (var entry in base.ChangeTracker.Entries<Entity>())
+        {
+            if (entry.Entity is IHasDomainEvent { DomainEvents: not null } hasDomainEvent &&
+                hasDomainEvent.DomainEvents.Count != 0)
+            {
+                domainEvents.AddRange(hasDomainEvent.DomainEvents);
+                hasDomainEvent.ClearDomainEvents();
+            }
+        }
 
         return domainEvents.ForEachAsync(@event => LocalEventBus.PublishAsync(@event));
     }

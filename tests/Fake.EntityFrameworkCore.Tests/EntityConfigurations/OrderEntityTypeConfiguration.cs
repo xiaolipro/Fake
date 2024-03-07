@@ -15,37 +15,31 @@ class OrderEntityTypeConfiguration : IEntityTypeConfiguration<Order>
 
         //Address value object persisted as owned entity type supported since EF Core 2.0
         orderConfiguration
-            .OwnsOne<Address>(o => o.Address);
+            .OwnsOne(o => o.Address);
 
         orderConfiguration
-            .Property<Guid?>("_buyerId")
+            .Property(x => x.BuyerId)
             .UsePropertyAccessMode(PropertyAccessMode.Field)
-            .HasColumnName("BuyerId")
             .IsRequired(false);
 
         orderConfiguration
-            .Property<DateTime>("_orderDate")
+            .Property(x => x.OrderDate)
             .UsePropertyAccessMode(PropertyAccessMode.Field)
-            .HasColumnName("OrderDate")
             .IsRequired();
 
         orderConfiguration
-            .Property<int>("_orderStatusId")
-            // .HasField("_orderStatusId")
+            .Property(x => x.OrderStatus)
             .UsePropertyAccessMode(PropertyAccessMode.Field)
-            .HasColumnName("OrderStatusId")
             .IsRequired();
 
         orderConfiguration
-            .Property<Guid?>("_paymentMethodId")
+            .Property(x => x.PaymentMethodId)
             .UsePropertyAccessMode(PropertyAccessMode.Field)
-            .HasColumnName("PaymentMethodId")
             .IsRequired(false);
 
         orderConfiguration
-            .Property<string>("_description")
+            .Property(x => x.Description)
             .UsePropertyAccessMode(PropertyAccessMode.Field)
-            .HasColumnName("Description")
             .IsRequired(false);
 
         var navigation = orderConfiguration.Metadata.FindNavigation(nameof(Order.OrderItems));
@@ -56,17 +50,13 @@ class OrderEntityTypeConfiguration : IEntityTypeConfiguration<Order>
 
         orderConfiguration.HasOne<PaymentMethod>()
             .WithMany()
-            .HasForeignKey("_paymentMethodId")
+            .HasForeignKey(x => x.PaymentMethodId)
             .IsRequired(false)
             .OnDelete(DeleteBehavior.Restrict);
 
         orderConfiguration.HasOne<Buyer>()
             .WithMany()
             .IsRequired(false)
-            .HasForeignKey("_buyerId");
-
-        orderConfiguration.HasOne(o => o.OrderStatus)
-            .WithMany()
-            .HasForeignKey("_orderStatusId");
+            .HasForeignKey(x => x.BuyerId);
     }
 }

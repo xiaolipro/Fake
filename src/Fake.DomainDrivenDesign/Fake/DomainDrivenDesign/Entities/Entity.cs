@@ -1,9 +1,7 @@
-﻿using Fake.DomainDrivenDesign.Events;
-
-namespace Fake.DomainDrivenDesign.Entities;
+﻿namespace Fake.DomainDrivenDesign.Entities;
 
 [Serializable]
-public abstract class Entity : HasDomainEvent, IEntity
+public abstract class Entity : IEntity
 {
     public abstract object[] GetKeys();
 
