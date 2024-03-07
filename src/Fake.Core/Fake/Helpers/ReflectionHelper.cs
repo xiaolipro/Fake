@@ -75,12 +75,13 @@ public static class ReflectionHelper
     /// 获取类型实例
     /// </summary>
     /// <param name="type"></param>
+    /// <param name="args"></param>
     /// <typeparam name="TInstance"></typeparam>
     /// <returns></returns>
-    public static TInstance CreateInstance<TInstance>(Type type) where TInstance : class
+    public static TInstance CreateInstance<TInstance>(Type type, params object?[] args) where TInstance : class
     {
         //TODO: 可以优化
-        return Activator.CreateInstance(type).To<TInstance>();
+        return Activator.CreateInstance(type, args).To<TInstance>();
     }
 
     /// <summary>

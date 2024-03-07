@@ -3,12 +3,13 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Fake.EntityFrameworkCore.ValueConverters;
 
-public class FakeEnumerationValueConverter : ValueConverter<Enumeration, int>
+public class FakeEnumerationValueConverter<TEnumeration> : ValueConverter<TEnumeration, int>
+    where TEnumeration : Enumeration
 {
     public FakeEnumerationValueConverter(ConverterMappingHints? mappingHints = null)
         : base(
-            x => x.Id,
-            x => Enumeration.FromValue<Enumeration>(x),
+            x => x.Value,
+            x => Enumeration.FromValue<TEnumeration>(x),
             mappingHints)
     {
     }

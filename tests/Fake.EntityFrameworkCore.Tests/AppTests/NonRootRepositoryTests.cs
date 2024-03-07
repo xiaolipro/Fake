@@ -28,7 +28,7 @@ public class NonRootRepositoryTests : AppTestBase<FakeEntityFrameworkCoreTestMod
         var orders = await _orderQueries.GetOrderSummaryAsync(AppTestDataBuilder.OrderId);
         orders.Count.ShouldBe(1);
         orders.First().date.ShouldBeLessThanOrEqualTo(FakeClock.Now);
-        orders[0].status.ShouldBe(OrderStatus.Submitted.Name);
+        orders[0].status.ShouldBe(OrderStatus.Submitted);
         orders[0].total.ShouldBe(20.4);
     }
 

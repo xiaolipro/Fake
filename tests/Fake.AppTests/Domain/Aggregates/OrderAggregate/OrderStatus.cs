@@ -2,16 +2,12 @@
 
 namespace Domain.Aggregates.OrderAggregate;
 
-public class OrderStatus : Enumeration
+public class OrderStatus(string name, int value) : Enumeration(name, value)
 {
-    public static OrderStatus Submitted = new OrderStatus(1, nameof(Submitted).ToLowerInvariant());
-    public static OrderStatus AwaitingValidation = new OrderStatus(2, nameof(AwaitingValidation).ToLowerInvariant());
-    public static OrderStatus StockConfirmed = new OrderStatus(3, nameof(StockConfirmed).ToLowerInvariant());
-    public static OrderStatus Paid = new OrderStatus(4, nameof(Paid).ToLowerInvariant());
-    public static OrderStatus Shipped = new OrderStatus(5, nameof(Shipped).ToLowerInvariant());
-    public static OrderStatus Cancelled = new OrderStatus(6, nameof(Cancelled).ToLowerInvariant());
-
-    public OrderStatus(int id, string name) : base(id, name)
-    {
-    }
+    public static OrderStatus Submitted = new OrderStatus(nameof(Submitted).ToLowerInvariant(), 1);
+    public static OrderStatus AwaitingValidation = new OrderStatus(nameof(AwaitingValidation).ToLowerInvariant(), 2);
+    public static OrderStatus StockConfirmed = new OrderStatus(nameof(StockConfirmed).ToLowerInvariant(), 3);
+    public static OrderStatus Paid = new OrderStatus(nameof(Paid).ToLowerInvariant(), 4);
+    public static OrderStatus Shipped = new OrderStatus(nameof(Shipped).ToLowerInvariant(), 5);
+    public static OrderStatus Cancelled = new OrderStatus(nameof(Cancelled).ToLowerInvariant(), 6);
 }

@@ -25,6 +25,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Fake.EntityFrameworkCore;
 
@@ -49,8 +50,6 @@ public abstract class FakeDbContext<TDbContext>(DbContextOptions<TDbContext> opt
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        base.OnModelCreating(modelBuilder);
-
         TrySetDatabaseProvider(modelBuilder);
 
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())
@@ -58,10 +57,12 @@ public abstract class FakeDbContext<TDbContext>(DbContextOptions<TDbContext> opt
             entityType.AddIgnored(nameof(IEntity.DomainEvents));
             ConfigureBasePropertiesMethodInfo
                 .MakeGenericMethod(entityType.ClrType)
-                .Invoke(this, new object[] { modelBuilder, entityType });
+                .Invoke(this, [modelBuilder, entityType]);
 
             ConfigureValueConverter(modelBuilder, entityType);
         }
+
+        base.OnModelCreating(modelBuilder);
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
@@ -294,7 +295,10 @@ public abstract class FakeDbContext<TDbContext>(DbContextOptions<TDbContext> opt
         foreach (var property in properties.Where(p =>
                      p.PropertyInfo?.PropertyType.IsAssignableTo<Enumeration>() ?? false))
         {
-            modelBuilder.Entity(entityType).Property(property.Name).HasConversion(new FakeEnumerationValueConverter());
+            var propertyType = property.PropertyInfo!.PropertyType;
+            var converterType = typeof(FakeEnumerationValueConverter<>).MakeGenericType(propertyType);
+            var converterInstance = ReflectionHelper.CreateInstance<ValueConverter>(converterType, [null]);
+            modelBuilder.Entity(entityType).Property(property.Name).HasConversion(converterInstance);
         }
 
         if (!entityType.IsDefined(typeof(DisableClockNormalizationAttribute)))

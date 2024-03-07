@@ -47,13 +47,7 @@ class PaymentMethodEntityTypeConfiguration
             .IsRequired();
 
         paymentConfiguration
-            .Property<int>("_cardTypeId")
-            .UsePropertyAccessMode(PropertyAccessMode.Field)
-            .HasColumnName("CardTypeId")
+            .Property(x => x.CardType)
             .IsRequired();
-
-        paymentConfiguration.HasOne(p => p.CardType)
-            .WithMany()
-            .HasForeignKey("_cardTypeId");
     }
 }

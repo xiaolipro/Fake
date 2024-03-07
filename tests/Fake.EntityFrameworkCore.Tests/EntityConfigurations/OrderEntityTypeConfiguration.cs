@@ -15,7 +15,7 @@ class OrderEntityTypeConfiguration : IEntityTypeConfiguration<Order>
 
         //Address value object persisted as owned entity type supported since EF Core 2.0
         orderConfiguration
-            .OwnsOne<Address>(o => o.Address);
+            .OwnsOne(o => o.Address);
 
         orderConfiguration
             .Property<Guid?>("_buyerId")
@@ -30,10 +30,7 @@ class OrderEntityTypeConfiguration : IEntityTypeConfiguration<Order>
             .IsRequired();
 
         orderConfiguration
-            .Property<int>("_orderStatusId")
-            // .HasField("_orderStatusId")
-            .UsePropertyAccessMode(PropertyAccessMode.Field)
-            .HasColumnName("OrderStatusId")
+            .Property(x => x.OrderStatus)
             .IsRequired();
 
         orderConfiguration
@@ -64,9 +61,5 @@ class OrderEntityTypeConfiguration : IEntityTypeConfiguration<Order>
             .WithMany()
             .IsRequired(false)
             .HasForeignKey("_buyerId");
-
-        orderConfiguration.HasOne(o => o.OrderStatus)
-            .WithMany()
-            .HasForeignKey("_orderStatusId");
     }
 }
