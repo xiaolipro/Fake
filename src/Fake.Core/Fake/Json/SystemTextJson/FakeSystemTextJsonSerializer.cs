@@ -36,7 +36,7 @@ public class FakeSystemTextJsonSerializer : IFakeJsonSerializer
         }
     }
 
-    public object? Deserialize(Type type, string jsonString, bool camelCase = true)
+    public object? Deserialize(string jsonString, Type type, bool camelCase = true)
     {
         try
         {
