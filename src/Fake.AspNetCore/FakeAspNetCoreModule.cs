@@ -4,6 +4,7 @@ using Fake.AspNetCore.Http;
 using Fake.AspNetCore.Security.Claims;
 using Fake.AspNetCore.VirtualFileSystem;
 using Fake.Auditing;
+using Fake.Authorization;
 using Fake.Modularity;
 using Fake.Security.Claims;
 using Fake.VirtualFileSystem;
@@ -16,7 +17,9 @@ namespace Fake.AspNetCore;
 
 [DependsOn(
     typeof(FakeAuditingModule),
-    typeof(FakeVirtualFileSystemModule))]
+    typeof(FakeVirtualFileSystemModule),
+    typeof(FakeAuthorizationModule)
+)]
 public class FakeAspNetCoreModule : FakeModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)

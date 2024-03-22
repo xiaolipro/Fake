@@ -1,9 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <Import Project="..\..\common.test.props" />
-    <PropertyGroup>
-        <ImplicitUsings>true</ImplicitUsings>
-    </PropertyGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\..\src\Fake.Core\Fake.Core.csproj" />
@@ -12,9 +9,4 @@
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(MicrosoftNETTestSdkPackageVersion)" />
         <ProjectReference Include="..\Fake.AppTests\Fake.AppTests.csproj" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Fake\Timing\" />
-    </ItemGroup>
-
 </Project>
