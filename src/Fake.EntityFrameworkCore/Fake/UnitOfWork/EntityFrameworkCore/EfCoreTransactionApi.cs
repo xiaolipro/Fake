@@ -37,10 +37,11 @@ public class EfCoreTransactionApi : ITransactionApi, ISupportRollback
             // 关系型数据库如果使用相同连接，则会共享事务，不需要重复提交
             if (IsRelationalTransactionManagerAndSharedConnection(dbContext)) continue;
 
-            await dbContext.Database.CommitTransactionAsync(CancellationTokenProvider.Token);
+            await dbContext.Database.CommitTransactionAsync(
+                CancellationTokenProvider.FallbackToProvider(cancellationToken));
         }
 
-        await DbContextTransaction.CommitAsync(CancellationTokenProvider.Token);
+        await DbContextTransaction.CommitAsync(CancellationTokenProvider.FallbackToProvider(cancellationToken));
     }
 
     public async Task RollbackAsync(CancellationToken cancellationToken)

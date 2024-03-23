@@ -8,10 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Fake.Core\Fake.Core.csproj"/>
-    </ItemGroup>
-
-    <ItemGroup>
         <PackageReference Include="FreeRedis" Version="1.2.14"/>
     </ItemGroup>
 

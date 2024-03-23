@@ -1,4 +1,5 @@
-﻿using Fake.DomainDrivenDesign;
+﻿using Fake.Data;
+using Fake.DomainDrivenDesign;
 using Fake.EntityFrameworkCore.Auditing;
 using Fake.EntityFrameworkCore.Interceptors;
 using Fake.Modularity;

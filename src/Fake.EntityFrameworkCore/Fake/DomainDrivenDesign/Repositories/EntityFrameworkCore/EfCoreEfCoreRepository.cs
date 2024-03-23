@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Fake.Data;
 using Fake.DomainDrivenDesign.Entities;
 using Fake.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;

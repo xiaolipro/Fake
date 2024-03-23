@@ -1,11 +1,7 @@
-﻿using System;
-using System.Data.Common;
-using System.Threading;
-using Fake.Data;
-using Microsoft.EntityFrameworkCore;
+﻿using System.Data.Common;
 using Microsoft.Extensions.Configuration;
 
-namespace Fake.EntityFrameworkCore;
+namespace Fake.Data;
 
 public class DbContextCreationContext(string connectionString)
 {
@@ -15,7 +11,7 @@ public class DbContextCreationContext(string connectionString)
 
     public string ConnectionString { get; } = connectionString;
 
-    public DbConnection? ExistingConnection { get; internal set; }
+    public DbConnection? ExistingConnection { get; set; }
 
     public static IDisposable Use(DbContextCreationContext context)
     {
@@ -26,7 +22,7 @@ public class DbContextCreationContext(string connectionString)
 
 
     public static DbContextCreationContext GetCreationContext<TDbContext>(IConfiguration configuration)
-        where TDbContext : DbContext
+        where TDbContext : class
     {
         if (Current != null) return Current;
 

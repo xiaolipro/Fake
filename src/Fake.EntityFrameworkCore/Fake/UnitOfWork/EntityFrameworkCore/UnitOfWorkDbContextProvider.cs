@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using Fake.Data;
 using Fake.EntityFrameworkCore;
 using Fake.Threading;
 using Microsoft.EntityFrameworkCore;
