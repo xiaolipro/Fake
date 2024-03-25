@@ -1,17 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
-using Fake.Data;
 using Fake.Data.Filtering;
 using Fake.DependencyInjection;
-using Fake.DomainDrivenDesign;
-using Fake.DomainDrivenDesign.Entities;
-using Fake.DomainDrivenDesign.Entities.Auditing;
 using Fake.DomainDrivenDesign.Events;
 using Fake.EntityFrameworkCore.Auditing;
 using Fake.EntityFrameworkCore.Modeling;
@@ -20,13 +11,8 @@ using Fake.EventBus;
 using Fake.Helpers;
 using Fake.IdGenerators;
 using Fake.IdGenerators.GuidGenerator;
-using Fake.Timing;
 using Fake.UnitOfWork;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Fake.EntityFrameworkCore;
 
@@ -54,9 +40,9 @@ public abstract class FakeDbContext<TDbContext>(DbContextOptions<TDbContext> opt
         TrySetDatabaseProvider(modelBuilder);
 
         modelBuilder.Ignore<DomainEvent>();
-
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())
         {
+            entityType.AddIgnored(nameof(IHasDomainEvent.DomainEvents));
             ConfigureBasePropertiesMethodInfo
                 .MakeGenericMethod(entityType.ClrType)
                 .Invoke(this, [modelBuilder, entityType]);
@@ -96,7 +82,7 @@ public abstract class FakeDbContext<TDbContext>(DbContextOptions<TDbContext> opt
         }
     }
 
-    private Task PublishDomainEventsAsync()
+    protected virtual Task PublishDomainEventsAsync()
     {
         var domainEvents = new List<DomainEvent>();
         foreach (var entry in base.ChangeTracker.Entries<Entity>())

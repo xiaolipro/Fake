@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using Fake.Auditing;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
+﻿using Fake.Auditing;
 
 namespace Fake.EntityFrameworkCore.Auditing;
 

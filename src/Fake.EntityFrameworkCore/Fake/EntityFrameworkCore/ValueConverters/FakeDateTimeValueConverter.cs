@@ -1,8 +1,4 @@
-﻿using System;
-using Fake.Timing;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-
-namespace Fake.EntityFrameworkCore.ValueConverters;
+﻿namespace Fake.EntityFrameworkCore.ValueConverters;
 
 public class FakeDateTimeValueConverter : ValueConverter<DateTime, DateTime>
 {

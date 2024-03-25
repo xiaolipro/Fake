@@ -1,11 +1,10 @@
-﻿using System.Threading.Tasks;
-using Fake.DomainDrivenDesign.Entities;
-using SqlSugar;
+﻿using Fake.SqlSugarCore;
 
 namespace Fake.DomainDrivenDesign.Repositories.SqlSugarCore;
 
-public interface ISqlSugarRepository<TEntity> : IRepository<TEntity>
+public interface ISqlSugarRepository<TDbContext, TEntity> : IRepository<TEntity>
+    where TDbContext : SugarDbContext
     where TEntity : class, IAggregateRoot
 {
-    Task<ISqlSugarClient> GetDbContextAsync();
+    Task<TDbContext> GetDbContextAsync();
 }

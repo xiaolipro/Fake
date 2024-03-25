@@ -1,9 +1,4 @@
-﻿using System;
-using System.Linq;
-using Fake.Data;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-
-namespace Fake.EntityFrameworkCore.ValueCompares;
+﻿namespace Fake.EntityFrameworkCore.ValueCompares;
 
 public class ExtraPropertyDictionaryValueComparer() : ValueComparer<ExtraPropertyDictionary>(
     (d1, d2) => Compare(d1, d2),

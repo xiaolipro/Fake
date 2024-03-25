@@ -1,7 +1,4 @@
-﻿using Fake.DomainDrivenDesign;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-
-namespace Fake.EntityFrameworkCore.ValueConverters;
+﻿namespace Fake.EntityFrameworkCore.ValueConverters;
 
 public class FakeEnumerationValueConverter<TEnumeration> : ValueConverter<TEnumeration, int>
     where TEnumeration : Enumeration

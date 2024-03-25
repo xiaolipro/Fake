@@ -1,6 +1,5 @@
 ﻿using System.Text.Json;
 using Fake.Json.SystemTextJson.Converters;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Fake.EntityFrameworkCore.ValueConverters;
 

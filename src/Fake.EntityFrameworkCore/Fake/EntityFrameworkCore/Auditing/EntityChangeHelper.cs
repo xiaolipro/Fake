@@ -1,14 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Fake.Auditing;
-using Fake.Data;
-using Fake.DomainDrivenDesign.Entities;
-using Fake.DomainDrivenDesign.Entities.Auditing;
+﻿using Fake.Auditing;
 using Fake.Json;
-using Fake.Timing;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Options;
 
 namespace Fake.EntityFrameworkCore.Auditing;

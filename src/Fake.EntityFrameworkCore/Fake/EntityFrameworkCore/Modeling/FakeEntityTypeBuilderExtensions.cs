@@ -1,9 +1,5 @@
-﻿using System;
-using Fake.Data;
-using Fake.DomainDrivenDesign.Entities.Auditing;
-using Fake.EntityFrameworkCore.ValueCompares;
+﻿using Fake.EntityFrameworkCore.ValueCompares;
 using Fake.EntityFrameworkCore.ValueConverters;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Fake.EntityFrameworkCore.Modeling;

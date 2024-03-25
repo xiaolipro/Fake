@@ -1,9 +1,5 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using Fake.Data;
-using Fake.DependencyInjection;
+﻿using Fake.DependencyInjection;
 using Fake.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
 
 namespace Fake.DomainDrivenDesign.Repositories.EntityFrameWorkCore;
 

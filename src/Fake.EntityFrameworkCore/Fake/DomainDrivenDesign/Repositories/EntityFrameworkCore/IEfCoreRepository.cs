@@ -1,8 +1,3 @@
-using System.Threading;
-using System.Threading.Tasks;
-using Fake.DomainDrivenDesign.Entities;
-using Microsoft.EntityFrameworkCore;
-
 namespace Fake.DomainDrivenDesign.Repositories.EntityFrameWorkCore;
 
 public interface IEfCoreRepository<TDbContext, TEntity> : IRepository<TEntity>

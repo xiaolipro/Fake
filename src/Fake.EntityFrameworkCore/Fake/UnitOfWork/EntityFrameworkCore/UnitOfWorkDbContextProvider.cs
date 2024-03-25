@@ -1,11 +1,6 @@
-﻿using System;
-using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
-using Fake.Data;
+﻿using System.Diagnostics;
 using Fake.EntityFrameworkCore;
 using Fake.Threading;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;

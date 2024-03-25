@@ -1,12 +1,9 @@
 ﻿using System.Diagnostics;
 using System.Threading;
-using System.Threading.Tasks;
-using Fake.Data;
 using Fake.SqlSugarCore;
 using Fake.Threading;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Fake.UnitOfWork.SqlSugarCore;

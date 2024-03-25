@@ -16,7 +16,7 @@ public class UnitOfWorkContext : ICloneable
     public IsolationLevel IsolationLevel { get; set; }
 
     /// <summary>
-    /// 超时时间
+    /// 超时时间ms
     /// </summary>
     public int Timeout { get; set; }
 

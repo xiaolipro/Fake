@@ -24,4 +24,9 @@ public static class AsyncHelper
     {
         AsyncContext.Run(func);
     }
+
+    public static void RunSync(Task task)
+    {
+        AsyncContext.Run(() => task);
+    }
 }

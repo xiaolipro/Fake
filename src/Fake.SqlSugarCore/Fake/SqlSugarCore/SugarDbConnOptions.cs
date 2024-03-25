@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
-using SqlSugar;
-
-namespace Fake.SqlSugarCore.Abstractions;
+﻿namespace Fake.SqlSugarCore;
 
 public class SugarDbConnOptions
 {
+    public string ConfigId { get; set; } = "default";
+
     /// <summary>
     /// 连接字符串(如果开启多租户，也就是默认库了)，必填
     /// </summary>
@@ -19,6 +18,11 @@ public class SugarDbConnOptions
     /// 数据库类型
     /// </summary>
     public DbType DbType { get; set; }
+
+    /// <summary>
+    /// 自动关闭连接
+    /// </summary>
+    public bool IsAutoCloseConnection { get; set; } = true;
 
     /// <summary>
     /// 开启种子数据
