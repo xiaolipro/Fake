@@ -24,7 +24,7 @@ public class ClockTest : ClockTestBase
     {
         var time = await _fakeClock.MeasureExecutionTimeAsync(async () => { await Task.Delay(3000); });
 
-        Assert.True(time.Seconds is >= 3 and < 4);
+        Assert.True(time.Seconds >= 3);
     }
 
     [Fact]

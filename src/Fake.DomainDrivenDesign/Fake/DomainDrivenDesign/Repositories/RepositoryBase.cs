@@ -32,27 +32,21 @@ public abstract class RepositoryBase<TEntity> : IRepository<TEntity>
             : Task.CompletedTask;
     }
 
-    public abstract Task<IQueryable<TEntity>> GetQueryableAsync(
-        bool isInclude = true,
-        CancellationToken cancellationToken = default);
-
-    public async Task<TEntity> FirstAsync(Expression<Func<TEntity, bool>>? predicate = null, bool isInclude = true,
+    public async Task<TEntity> FirstAsync(Expression<Func<TEntity, bool>>? predicate = null,
         CancellationToken cancellationToken = default)
     {
-        var res = await FirstOrDefaultAsync(predicate, isInclude, cancellationToken);
+        var res = await FirstOrDefaultAsync(predicate, cancellationToken);
         if (res == default) ThrowHelper.ThrowNoMatchException();
         return res!;
     }
 
     public abstract Task<TEntity?> FirstOrDefaultAsync(
         Expression<Func<TEntity, bool>>? predicate = null,
-        bool isInclude = true,
         CancellationToken cancellationToken = default);
 
     public abstract Task<List<TEntity>> GetListAsync(
         Expression<Func<TEntity, bool>>? predicate = null,
         Dictionary<string, bool>? sorting = null,
-        bool isInclude = true,
         CancellationToken cancellationToken = default);
 
     public abstract Task<List<TEntity>> GetPaginatedListAsync(
@@ -60,7 +54,6 @@ public abstract class RepositoryBase<TEntity> : IRepository<TEntity>
         int pageIndex = 1,
         int pageSize = 20,
         Dictionary<string, bool>? sorting = null,
-        bool isInclude = true,
         CancellationToken cancellationToken = default);
 
     public abstract Task<long> GetCountAsync(Expression<Func<TEntity, bool>>? predicate = null,
@@ -69,48 +62,39 @@ public abstract class RepositoryBase<TEntity> : IRepository<TEntity>
     public abstract Task<bool> AnyAsync(Expression<Func<TEntity, bool>>? predicate = null,
         CancellationToken cancellationToken = default);
 
-    public abstract Task<TEntity> InsertAsync(TEntity entity, bool autoSave = false,
-        CancellationToken cancellationToken = default);
+    public abstract Task<TEntity> InsertAsync(TEntity entity, CancellationToken cancellationToken = default);
 
-    public virtual async Task InsertRangeAsync(IEnumerable<TEntity> entities, bool autoSave = false,
+    public virtual async Task InsertRangeAsync(IEnumerable<TEntity> entities,
         CancellationToken cancellationToken = default)
     {
         foreach (var entity in entities)
         {
             await InsertAsync(entity, cancellationToken: cancellationToken);
         }
-
-        if (autoSave) await SaveChangesAsync(cancellationToken);
     }
 
-    public abstract Task<TEntity> UpdateAsync(TEntity entity, bool autoSave = false,
-        CancellationToken cancellationToken = default);
+    public abstract Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default);
 
-    public virtual async Task UpdateRangeAsync(IEnumerable<TEntity> entities, bool autoSave = false,
+    public virtual async Task UpdateRangeAsync(IEnumerable<TEntity> entities,
         CancellationToken cancellationToken = default)
     {
         foreach (var entity in entities)
         {
             await UpdateAsync(entity, cancellationToken: cancellationToken);
         }
-
-        if (autoSave) await SaveChangesAsync(cancellationToken);
     }
 
-    public abstract Task DeleteAsync(TEntity entity, bool autoSave = false,
-        CancellationToken cancellationToken = default);
+    public abstract Task DeleteAsync(TEntity entity, CancellationToken cancellationToken = default);
 
-    public virtual async Task DeleteRangeAsync(IEnumerable<TEntity> entities, bool autoSave = false,
+    public virtual async Task DeleteRangeAsync(IEnumerable<TEntity> entities,
         CancellationToken cancellationToken = default)
     {
         foreach (var entity in entities)
         {
             await DeleteAsync(entity, cancellationToken: cancellationToken);
         }
-
-        if (autoSave) await SaveChangesAsync(cancellationToken);
     }
 
-    public abstract Task DeleteAsync(Expression<Func<TEntity, bool>> predicate, bool autoSave = false,
+    public abstract Task DeleteAsync(Expression<Func<TEntity, bool>> predicate,
         CancellationToken cancellationToken = default);
 }
