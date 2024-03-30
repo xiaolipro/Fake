@@ -21,6 +21,8 @@ public class FakeEntityFrameworkCoreTestModule : FakeModule
             typeof(EfCoreEfCoreRepository<OrderingContext, Order>));
         context.Services.AddTransient(typeof(IRepository<Buyer>),
             typeof(EfCoreEfCoreRepository<OrderingContext, Buyer>));
+        context.Services.AddTransient(typeof(IEfCoreRepository<,>),
+            typeof(EfCoreEfCoreRepository<,>));
         context.Services.AddTransient(typeof(IOrderRepository),
             typeof(OrderRepository));
         context.Services.AddTransient(typeof(IBuyerRepository),

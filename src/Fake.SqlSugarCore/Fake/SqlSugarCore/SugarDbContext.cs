@@ -12,8 +12,9 @@ using Fake.UnitOfWork;
 
 namespace Fake.SqlSugarCore;
 
-public class SugarDbContext
+public class SugarDbContext(SugarDbConnOptions options)
 {
+    public readonly SugarDbConnOptions Options = options;
     public ILazyServiceProvider ServiceProvider { get; set; } = null!;
     public ISqlSugarClient SqlSugarClient { get; private set; } = null!;
 
@@ -24,7 +25,6 @@ public class SugarDbContext
     protected IAuditPropertySetter AuditPropertySetter => ServiceProvider.GetRequiredService<IAuditPropertySetter>();
     protected IDataFilter DataFilter => ServiceProvider.GetRequiredService<IDataFilter>();
     protected ILogger<SugarDbContext> Logger => ServiceProvider.GetRequiredService<ILogger<SugarDbContext>>();
-    protected SugarDbConnOptions Options => ServiceProvider.GetRequiredService<IOptions<SugarDbConnOptions>>().Value;
 
     public virtual void Initialize(IUnitOfWork unitOfWork)
     {

@@ -9,10 +9,16 @@ public class SugarDbConnOptions
     /// </summary>
     public string ConnectionString { get; set; } = null!;
 
+    private List<string> _readConnectionStrings = [];
+
     /// <summary>
     /// 读写分离
     /// </summary>
-    public List<string> ReadConnectionStrings { get; set; } = [];
+    public List<string> ReadConnectionStrings
+    {
+        get => _readConnectionStrings;
+        set => _readConnectionStrings = value;
+    }
 
     /// <summary>
     /// 数据库类型

@@ -2,6 +2,4 @@
 
 namespace AppTests;
 
-public class RepositoryTests : RepositoryTests<FakeEntityFrameworkCoreTestModule>
-{
-}
+public class RepositoryTests : RepositoryTests<FakeEntityFrameworkCoreTestModule>;

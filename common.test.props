@@ -1,6 +1,8 @@
 <Project>
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
     <RootNamespace/>
     <!--    <Nullable>enable</Nullable>-->
     <TargetFramework>net8.0</TargetFramework>
@@ -11,4 +13,8 @@
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Fake.AppTests\Fake.AppTests.csproj"/>
+  </ItemGroup>
 </Project>
