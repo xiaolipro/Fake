@@ -3,6 +3,7 @@ using System.Reflection;
 
 namespace Fake.DependencyInjection;
 
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
 public class ExposeServicesAttribute(params Type[] exposedServiceTypes) : Attribute, IExposedServiceTypesProvider
 {
     /// <summary>
@@ -23,7 +24,7 @@ public class ExposeServicesAttribute(params Type[] exposedServiceTypes) : Attrib
     public bool ExposeSelf { get; set; } = true;
 
 
-    public Type[] GetExposedServiceTypes(Type implementType)
+    public ServiceIdentifier[] GetExposedServices(Type implementType)
     {
         var res = new List<Type>(exposedServiceTypes);
         if (ExposeInterface)
@@ -39,7 +40,7 @@ public class ExposeServicesAttribute(params Type[] exposedServiceTypes) : Attrib
             res.TryAdd(implementType);
         }
 
-        return res.ToArray();
+        return res.Select(t => new ServiceIdentifier(t)).ToArray();
     }
 
     private static List<Type> GetConventionalNamingServiceTypes(Type targetType)

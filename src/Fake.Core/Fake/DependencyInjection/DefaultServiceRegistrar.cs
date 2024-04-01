@@ -16,19 +16,17 @@ public class DefaultServiceRegistrar : AbstractServiceRegistrar
         if (lifetime == null) return;
 
         // 获取需要暴露的服务
-        var exposedServiceTypes = ExposedServiceExplorer.GetExposedServiceTypes(type);
+        var exposedServices = GetExposedServices(type);
 
         // 触发服务暴露动作
-        TriggerServiceExposingActions(services, type, exposedServiceTypes);
+        TriggerServiceExposingActions(services, type, exposedServices);
 
-        foreach (var exposedServiceType in exposedServiceTypes)
+        var allExposedServiceTypes = exposedServices.Select(x => x.ServiceType).ToList();
+
+        foreach (var exposedService in exposedServices)
         {
-            var serviceDescriptor = CreateServiceDescriptor(
-                type,
-                exposedServiceType,
-                exposedServiceTypes,
-                lifetime.Value
-            );
+            var serviceDescriptor =
+                CreateServiceDescriptor(type, exposedService, allExposedServiceTypes, lifetime.Value);
 
             if (attribute?.Replace == true)
             {
@@ -45,49 +43,57 @@ public class DefaultServiceRegistrar : AbstractServiceRegistrar
         }
     }
 
-    protected virtual ServiceDescriptor CreateServiceDescriptor(Type implementationType, Type exposedServiceType,
+    protected virtual List<ServiceIdentifier> GetExposedServices(Type type)
+    {
+        return ExposedServiceExplorer.GetExposedServices(type);
+    }
+
+    protected virtual ServiceDescriptor CreateServiceDescriptor(Type implementationType,
+        ServiceIdentifier exposedService,
         List<Type> allExposedServiceTypes, ServiceLifetime lifetime)
     {
-        if (!lifetime.IsIn(ServiceLifetime.Singleton, ServiceLifetime.Scoped))
-            return ServiceDescriptor.Describe(
-                exposedServiceType,
-                implementationType,
-                lifetime
-            );
+        // fast path
+        if (lifetime == ServiceLifetime.Transient)
+            return exposedService.ServiceKey == null
+                ? ServiceDescriptor.Describe(exposedService.ServiceType, implementationType, lifetime)
+                : ServiceDescriptor.DescribeKeyed(exposedService.ServiceType, exposedService.ServiceKey
+                    , implementationType, lifetime);
 
-        // 适配类的层次体系
+        // scope/singleton 服务需要特殊处理，适配类的层次体系
         var redirectedType = GetRedirectedTypeOrNull(
             implementationType,
-            exposedServiceType,
+            exposedService.ServiceType,
             allExposedServiceTypes
         );
 
         if (redirectedType != null)
         {
-            return ServiceDescriptor.Describe(
-                exposedServiceType,
-                provider => provider.GetRequiredService(redirectedType),
-                lifetime
-            );
+            return exposedService.ServiceKey == null
+                ? ServiceDescriptor.Describe(exposedService.ServiceType
+                    , sp => sp.GetRequiredService(redirectedType)
+                    , lifetime)
+                : ServiceDescriptor.DescribeKeyed(exposedService.ServiceType
+                    , exposedService.ServiceKey
+                    , (sp, key) => sp.GetRequiredKeyedService(redirectedType, key)
+                    , lifetime);
         }
 
-        return ServiceDescriptor.Describe(
-            exposedServiceType,
-            implementationType,
-            lifetime
-        );
+        return exposedService.ServiceKey == null
+            ? ServiceDescriptor.Describe(exposedService.ServiceType, implementationType, lifetime)
+            : ServiceDescriptor.DescribeKeyed(exposedService.ServiceType, exposedService.ServiceKey
+                , implementationType, lifetime);
     }
 
     protected virtual Type? GetRedirectedTypeOrNull(Type implementationType, Type exposedServiceType,
         List<Type> allExposedServiceTypes)
     {
-        // 暴露的服务数量小于2代表没有形成层次体系，不需要转发
+        // 暴露的服务数量小于2代表没有形成层次体系，不需要重定向
         if (allExposedServiceTypes.Count < 2) return null;
 
-        // 如果实现自爆，不需要转发
+        // 如果暴露的实现本身，不需要重定向
         if (exposedServiceType == implementationType) return null;
 
-        // 如果实现自爆了，则所有暴露都重定向到实现
+        // 如果实现暴露了，则所有暴露都应该重定向到实现
         if (allExposedServiceTypes.Contains(implementationType))
         {
             return implementationType;

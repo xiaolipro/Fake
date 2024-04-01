@@ -4,11 +4,11 @@ public class OnServiceExposingContext
 {
     public Type ImplementationType { get; }
 
-    public List<Type> ExposedServiceTypes { get; }
+    public List<ServiceIdentifier> ExposedServices { get; }
 
-    public OnServiceExposingContext(Type implementationType, List<Type> exposedServiceTypes)
+    public OnServiceExposingContext(Type implementationType, List<ServiceIdentifier> exposedServices)
     {
         ImplementationType = ThrowHelper.ThrowIfNull(implementationType, nameof(implementationType));
-        ExposedServiceTypes = ThrowHelper.ThrowIfNull(exposedServiceTypes, nameof(exposedServiceTypes));
+        ExposedServices = ThrowHelper.ThrowIfNull(exposedServices, nameof(exposedServices));
     }
 }

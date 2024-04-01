@@ -29,13 +29,13 @@ public abstract class AbstractServiceRegistrar : IServiceRegistrar
     public abstract void RegisterType(IServiceCollection services, Type type);
 
     protected virtual void TriggerServiceExposingActions(IServiceCollection services, Type implementationType,
-        List<Type> exposedServiceTypes)
+        List<ServiceIdentifier> exposedServices)
     {
         var actions = services.GetServiceExposingActionList();
 
         if (actions.Count <= 0) return;
 
-        var context = new OnServiceExposingContext(implementationType, exposedServiceTypes);
+        var context = new OnServiceExposingContext(implementationType, exposedServices);
         foreach (var action in actions)
         {
             action.Invoke(context);

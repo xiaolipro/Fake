@@ -3,7 +3,7 @@ namespace Fake.DependencyInjection;
 /// <summary>
 /// Lazy服务商
 /// </summary>
-public interface ILazyServiceProvider
+public interface ILazyServiceProvider : IKeyedServiceProvider
 {
     /// <summary>
     /// 从Lazy服务商获取服务
@@ -11,7 +11,7 @@ public interface ILazyServiceProvider
     /// <param name="valueFactory">如果服务不存在，则构建</param>
     /// <typeparam name="T">服务类型</typeparam>
     /// <returns></returns>
-    T? GetService<T>(Func<IServiceProvider, object>? valueFactory = null) where T : class;
+    T? GetService<T>(Func<IServiceProvider, object> valueFactory) where T : class;
 
     /// <summary>
     /// 从Lazy服务商获取服务
@@ -19,7 +19,7 @@ public interface ILazyServiceProvider
     /// <param name="serviceType">服务类型</param>
     /// <param name="valueFactory">如果服务不存在，则构建</param>
     /// <returns></returns>
-    object? GetService(Type serviceType, Func<IServiceProvider, object>? valueFactory = null);
+    object? GetService(Type serviceType, Func<IServiceProvider, object> valueFactory);
 
     /// <summary>
     /// 从Lazy服务商获取服务，如果服务不存在则抛出异常

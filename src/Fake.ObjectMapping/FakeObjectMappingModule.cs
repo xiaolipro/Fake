@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Fake.DependencyInjection;
 using Fake.Modularity;
 using Fake.ObjectMapping;
 using Microsoft.Extensions.DependencyInjection;
 
-public class FakeObjectMappingModule:FakeModule
+public class FakeObjectMappingModule : FakeModule
 {
     public override void PreConfigureServices(ServiceConfigurationContext context)
     {
@@ -14,7 +14,7 @@ public class FakeObjectMappingModule:FakeModule
             {
                 if (interfaceType.IsGenericType && interfaceType.GetGenericTypeDefinition() == typeof(IObjectMapper<,>))
                 {
-                    exposingContext.ExposedServiceTypes.TryAdd(interfaceType);
+                    exposingContext.ExposedServices.TryAdd(new ServiceIdentifier(interfaceType));
                 }
             }
         });
