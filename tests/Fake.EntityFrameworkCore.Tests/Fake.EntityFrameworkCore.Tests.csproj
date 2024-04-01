@@ -5,7 +5,6 @@
     <ItemGroup>
         <ProjectReference Include="..\..\src\Fake.EntityFrameworkCore\Fake.EntityFrameworkCore.csproj" />
         <ProjectReference Include="..\..\src\Fake.Testing\Fake.Testing.csproj" />
-        <ProjectReference Include="..\AFakeTestEntry\AFakeTestEntry.csproj" />
         <ProjectReference Include="..\Fake.AppTests\Fake.AppTests.csproj" />
     </ItemGroup>
 

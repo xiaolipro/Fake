@@ -15,6 +15,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Fake.AppTests\Fake.AppTests.csproj"/>
+    <ProjectReference Condition="'$(MSBuildProjectName)' != 'AFakeTestEntry'" Include="..\AFakeTestEntry\AFakeTestEntry.csproj"/>
   </ItemGroup>
 </Project>

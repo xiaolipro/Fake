@@ -43,7 +43,7 @@ public class Order : FullAuditedAggregate<Guid>
         return order;
     }
 
-    protected Order()
+    public Order()
     {
         _orderItems = new List<OrderItem>();
         IsDraft = false;

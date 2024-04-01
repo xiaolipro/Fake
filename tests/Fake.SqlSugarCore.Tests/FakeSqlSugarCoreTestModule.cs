@@ -1,4 +1,8 @@
 ﻿using System.Reflection;
+using Domain.Aggregates.BuyerAggregate;
+using Domain.Aggregates.OrderAggregate;
+using Fake.DomainDrivenDesign.Repositories;
+using Fake.DomainDrivenDesign.Repositories.SqlSugarCore;
 using Fake.Modularity;
 using Fake.SqlSugarCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,6 +20,11 @@ public class FakeSqlSugarCoreTestModule : FakeModule
             options.DbType = DbType.Sqlite;
             options.EnabledCodeFirst = true;
         });
+
+        context.Services.AddTransient(typeof(IRepository<Order>),
+            typeof(SqlSugarRepository<OrderingContext, Order>));
+        context.Services.AddTransient(typeof(IRepository<Buyer>),
+            typeof(SqlSugarRepository<OrderingContext, Buyer>));
     }
 
     public override void ConfigureApplication(ApplicationConfigureContext context)

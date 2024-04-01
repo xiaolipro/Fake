@@ -13,7 +13,7 @@ public class Buyer : AggregateRoot<Guid>
 
     public IEnumerable<PaymentMethod> PaymentMethods => _paymentMethods.AsReadOnly();
 
-    protected Buyer()
+    public Buyer()
     {
         _paymentMethods = new List<PaymentMethod>();
     }

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Domain.Repositories;
 
-public class OrderRepository : EfCoreEfCoreRepository<OrderingContext, Order>, IOrderRepository
+public class OrderRepository : EfCoreRepository<OrderingContext, Order>, IOrderRepository
 {
     public async Task<Order> AddAsync(Order order)
     {

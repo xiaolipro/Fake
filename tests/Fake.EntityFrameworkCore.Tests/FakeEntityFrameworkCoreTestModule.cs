@@ -18,11 +18,9 @@ public class FakeEntityFrameworkCoreTestModule : FakeModule
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
         context.Services.AddTransient(typeof(IRepository<Order>),
-            typeof(EfCoreEfCoreRepository<OrderingContext, Order>));
+            typeof(EfCoreRepository<OrderingContext, Order>));
         context.Services.AddTransient(typeof(IRepository<Buyer>),
-            typeof(EfCoreEfCoreRepository<OrderingContext, Buyer>));
-        context.Services.AddTransient(typeof(IEfCoreRepository<,>),
-            typeof(EfCoreEfCoreRepository<,>));
+            typeof(EfCoreRepository<OrderingContext, Buyer>));
         context.Services.AddTransient(typeof(IOrderRepository),
             typeof(OrderRepository));
         context.Services.AddTransient(typeof(IBuyerRepository),

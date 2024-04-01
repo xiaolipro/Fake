@@ -3,7 +3,7 @@ using Fake.EntityFrameworkCore;
 
 namespace Fake.DomainDrivenDesign.Repositories.EntityFrameWorkCore;
 
-public class EfCoreEfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntity>,
+public class EfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntity>,
     IEfCoreRepository<TDbContext, TEntity>
     where TDbContext : FakeDbContext<TDbContext>
     where TEntity : class, IAggregateRoot

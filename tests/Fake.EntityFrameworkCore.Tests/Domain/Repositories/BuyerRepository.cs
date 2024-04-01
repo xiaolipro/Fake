@@ -3,7 +3,7 @@ using Fake.DomainDrivenDesign.Repositories.EntityFrameWorkCore;
 
 namespace Domain.Repositories;
 
-public class BuyerRepository : EfCoreEfCoreRepository<OrderingContext, Buyer>, IBuyerRepository
+public class BuyerRepository : EfCoreRepository<OrderingContext, Buyer>, IBuyerRepository
 {
     public Buyer Add(Buyer buyer)
     {
