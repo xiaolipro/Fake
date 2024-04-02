@@ -1,9 +1,6 @@
-﻿using Fake.DependencyInjection;
+﻿namespace Fake.SqlSugarCore;
 
-namespace Fake.SqlSugarCore;
-
-[ExposeKeyedService<IDbContextProvider<TDbContext>>()]
-public interface ISugarDbContextProvider<TDbContext> : IDbContextProvider<TDbContext> where TDbContext : SugarDbContext
+public interface ISugarDbContextProvider<TDbContext> where TDbContext : SugarDbContext<TDbContext>
 {
-    Task<TDbContext> GetDbContextAsync();
+    Task<TDbContext> GetDbContextAsync(CancellationToken cancellationToken);
 }

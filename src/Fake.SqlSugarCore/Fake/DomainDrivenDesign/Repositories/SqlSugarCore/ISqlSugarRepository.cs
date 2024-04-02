@@ -1,10 +1,9 @@
-﻿using System.Threading;
-using Fake.SqlSugarCore;
+﻿using Fake.SqlSugarCore;
 
 namespace Fake.DomainDrivenDesign.Repositories.SqlSugarCore;
 
 public interface ISqlSugarRepository<TDbContext, TEntity> : IRepository<TEntity>
-    where TDbContext : SugarDbContext
+    where TDbContext : SugarDbContext<TDbContext>
     where TEntity : class, IAggregateRoot, new()
 {
     Task<TDbContext> GetDbContextAsync(CancellationToken cancellationToken = default);

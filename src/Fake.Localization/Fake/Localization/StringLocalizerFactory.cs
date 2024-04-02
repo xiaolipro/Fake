@@ -84,7 +84,8 @@ public class StringLocalizerFactory(
     {
         foreach (var contributor in _options.GlobalContributors)
         {
-            resource.Contributors.Add(ReflectionHelper.CreateInstance<ILocalizationResourceContributor>(contributor));
+            resource.Contributors.Add(ReflectionHelper.CreateInstance(contributor)
+                .To<ILocalizationResourceContributor>());
         }
 
         var context = new LocalizationResourceInitializationContext(resource, serviceProvider);

@@ -1,17 +1,17 @@
-﻿using System.Threading;
-using Fake.SqlSugarCore;
+﻿using Fake.SqlSugarCore;
 
 namespace Fake.UnitOfWork.SqlSugarCore;
 
 /// <summary>
 /// SqlSugarCore事务api
 /// </summary>
-public class SqlSugarTransactionApi : ITransactionApi, ISupportRollback
+public class SqlSugarTransactionApi<TDbContext> : ITransactionApi, ISupportRollback
+    where TDbContext : SugarDbContext<TDbContext>
 {
-    private readonly SugarDbContext _sugarDbContext;
+    private readonly SugarDbContext<TDbContext> _sugarDbContext;
 
 
-    public SqlSugarTransactionApi(SugarDbContext sugarDbContext)
+    public SqlSugarTransactionApi(SugarDbContext<TDbContext> sugarDbContext)
     {
         _sugarDbContext = sugarDbContext;
     }
@@ -26,7 +26,7 @@ public class SqlSugarTransactionApi : ITransactionApi, ISupportRollback
         await _sugarDbContext.SqlSugarClient.Ado.RollbackTranAsync();
     }
 
-    public SugarDbContext GetDbContext()
+    public SugarDbContext<TDbContext> GetDbContext()
     {
         return _sugarDbContext;
     }

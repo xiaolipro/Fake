@@ -5,12 +5,12 @@ namespace Fake.DomainDrivenDesign.Repositories.EntityFrameWorkCore;
 
 public class EfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntity>,
     IEfCoreRepository<TDbContext, TEntity>
-    where TDbContext : FakeDbContext<TDbContext>
+    where TDbContext : EfCoreDbContext<TDbContext>
     where TEntity : class, IAggregateRoot
 {
     public Task<TDbContext> GetDbContextAsync(CancellationToken cancellationToken = default)
     {
-        return LazyServiceProvider.GetRequiredService<IDbContextProvider<TDbContext>>()
+        return LazyServiceProvider.GetRequiredService<IEfDbContextProvider<TDbContext>>()
             .GetDbContextAsync(cancellationToken);
     }
 

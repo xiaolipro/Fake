@@ -3,7 +3,7 @@
 namespace Fake.UnitOfWork.EntityFrameWorkCore;
 
 public class EfCoreDatabaseApi<TDbContext> : IDatabaseApi, ISupportSaveChanges
-    where TDbContext : FakeDbContext<TDbContext>
+    where TDbContext : EfCoreDbContext<TDbContext>
 {
     public TDbContext DbContext { get; }
 

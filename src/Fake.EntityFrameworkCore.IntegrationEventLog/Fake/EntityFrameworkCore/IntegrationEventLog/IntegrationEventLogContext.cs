@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Fake.EntityFrameworkCore.IntegrationEventLog;
 
-public class IntegrationEventLogContext : FakeDbContext<IntegrationEventLogContext>
+public class IntegrationEventLogContext : EfCoreDbContext<IntegrationEventLogContext>
 {
     public DbSet<IntegrationEventLogEntry> IntegrationEventLogs { get; set; } = null!;
 

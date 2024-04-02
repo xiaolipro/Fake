@@ -1,11 +1,10 @@
 ﻿using System.Linq.Expressions;
-using System.Threading;
 using Fake.SqlSugarCore;
 
 namespace Fake.DomainDrivenDesign.Repositories.SqlSugarCore;
 
 public class SqlSugarRepository<TDbContext, TEntity> : RepositoryBase<TEntity>, ISqlSugarRepository<TDbContext, TEntity>
-    where TDbContext : SugarDbContext
+    where TDbContext : SugarDbContext<TDbContext>
     where TEntity : class, IAggregateRoot, new()
 {
     public async Task<TDbContext> GetDbContextAsync(CancellationToken cancellationToken = default)

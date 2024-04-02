@@ -12,35 +12,29 @@ using Fake.UnitOfWork;
 
 namespace Fake.SqlSugarCore;
 
-public class SugarDbContext(SugarDbConnOptions options)
+public abstract class SugarDbContext<TDbContext> where TDbContext : SugarDbContext<TDbContext>
 {
-    public readonly SugarDbConnOptions Options = options;
     public ILazyServiceProvider ServiceProvider { get; set; } = null!;
     public ISqlSugarClient SqlSugarClient { get; private set; } = null!;
 
+    protected readonly SugarDbConnOptions<TDbContext> Options;
     protected IFakeClock FakeClock => ServiceProvider.GetRequiredService<IFakeClock>();
     protected GuidGeneratorBase GuidGenerator => ServiceProvider.GetRequiredService<GuidGeneratorBase>();
     protected LongIdGeneratorBase LongIdGenerator => ServiceProvider.GetRequiredService<LongIdGeneratorBase>();
     protected LocalEventBus LocalEventBus => ServiceProvider.GetRequiredService<LocalEventBus>();
     protected IAuditPropertySetter AuditPropertySetter => ServiceProvider.GetRequiredService<IAuditPropertySetter>();
     protected IDataFilter DataFilter => ServiceProvider.GetRequiredService<IDataFilter>();
-    protected ILogger<SugarDbContext> Logger => ServiceProvider.GetRequiredService<ILogger<SugarDbContext>>();
+
+    protected ILogger<SugarDbContext<TDbContext>> Logger =>
+        ServiceProvider.GetRequiredService<ILogger<SugarDbContext<TDbContext>>>();
+
+    public SugarDbContext(SugarDbConnOptions<TDbContext> options)
+    {
+        Options = options;
+    }
 
     public virtual void Initialize(IUnitOfWork unitOfWork)
     {
-        // 设置超时时间
-        if (SqlSugarClient.Ado.CommandTimeOut < 1)
-        {
-            SqlSugarClient.Ado.CommandTimeOut = unitOfWork.Context.Timeout;
-        }
-
-        SqlSugarClient.Aop.DataExecuting = DataExecuting;
-        SqlSugarClient.Aop.DataExecuted = DataExecuted;
-        SqlSugarClient.Aop.OnLogExecuting = OnLogExecuting;
-        SqlSugarClient.Aop.OnLogExecuted = OnLogExecuted;
-
-        ConfigureGlobalFilters();
-
         var config = new ConnectionConfig
         {
             ConfigId = Options.ConfigId,
@@ -67,6 +61,15 @@ public class SugarDbContext(SugarDbConnOptions options)
         ConfigureConnection(config);
 
         SqlSugarClient = new SqlSugarClient(config);
+
+        SqlSugarClient.Ado.CommandTimeOut = Options.Timeout;
+        // 设置超时时间
+        if (SqlSugarClient.Ado.CommandTimeOut < 1)
+        {
+            SqlSugarClient.Ado.CommandTimeOut = unitOfWork.Context.Timeout;
+        }
+
+        ConfigureGlobalFilters();
     }
 
     protected virtual void ConfigureGlobalFilters()

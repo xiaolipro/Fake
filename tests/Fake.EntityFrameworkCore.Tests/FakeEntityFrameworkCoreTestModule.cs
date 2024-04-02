@@ -9,7 +9,6 @@ using Fake.Modularity;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 [DependsOn(typeof(FakeAppTestModule))]
 [DependsOn(typeof(FakeEntityFrameworkCoreModule))]
@@ -20,6 +19,10 @@ public class FakeEntityFrameworkCoreTestModule : FakeModule
         context.Services.AddTransient(typeof(IRepository<Order>),
             typeof(EfCoreRepository<OrderingContext, Order>));
         context.Services.AddTransient(typeof(IRepository<Buyer>),
+            typeof(EfCoreRepository<OrderingContext, Buyer>));
+        context.Services.AddTransient(typeof(IEfCoreRepository<OrderingContext, Order>),
+            typeof(EfCoreRepository<OrderingContext, Order>));
+        context.Services.AddTransient(typeof(IEfCoreRepository<OrderingContext, Buyer>),
             typeof(EfCoreRepository<OrderingContext, Buyer>));
         context.Services.AddTransient(typeof(IOrderRepository),
             typeof(OrderRepository));
@@ -39,10 +42,9 @@ public class FakeEntityFrameworkCoreTestModule : FakeModule
 #endif
         });
 
-        context.Services.Replace(new ServiceDescriptor(typeof(OrderingContext), typeof(OrderingContext),
-            ServiceLifetime.Transient));
+        // context.Services.Replace(new ServiceDescriptor(typeof(OrderingContext), typeof(OrderingContext),
+        //     ServiceLifetime.Transient));
     }
-
 
     public override void PreConfigureApplication(ApplicationConfigureContext context)
     {

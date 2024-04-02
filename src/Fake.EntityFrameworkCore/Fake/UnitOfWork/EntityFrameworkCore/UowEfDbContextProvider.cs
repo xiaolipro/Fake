@@ -14,15 +14,15 @@ namespace Fake.UnitOfWork.EntityFrameWorkCore;
 /// 基于工作单元的DbContext
 /// </summary>
 /// <typeparam name="TDbContext"></typeparam>
-public class UnitOfWorkDbContextProvider<TDbContext>(
+public class UowEfDbContextProvider<TDbContext>(
     IUnitOfWorkManager unitOfWorkManager,
     ICancellationTokenProvider cancellationTokenProvider,
     IConfiguration configuration)
-    : IDbContextProvider<TDbContext>
-    where TDbContext : FakeDbContext<TDbContext>
+    : IEfDbContextProvider<TDbContext>
+    where TDbContext : EfCoreDbContext<TDbContext>
 {
-    public readonly ILogger<UnitOfWorkDbContextProvider<TDbContext>> Logger =
-        NullLogger<UnitOfWorkDbContextProvider<TDbContext>>
+    public readonly ILogger<UowEfDbContextProvider<TDbContext>> Logger =
+        NullLogger<UowEfDbContextProvider<TDbContext>>
             .Instance;
 
     private const string TransactionsNotSupportedErrorMessage = "当前数据库不支持事务！";

@@ -3,7 +3,7 @@
 namespace Fake.UnitOfWork.SqlSugarCore;
 
 public class SqlSugarDatabaseApi<TDbContext> : IDatabaseApi
-    where TDbContext : SugarDbContext
+    where TDbContext : SugarDbContext<TDbContext>
 {
     public TDbContext DbContext { get; }
 

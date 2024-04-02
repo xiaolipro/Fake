@@ -1,5 +1,9 @@
 ﻿namespace Fake.SqlSugarCore;
 
+public class SugarDbConnOptions<TDbContext> : SugarDbConnOptions where TDbContext : SugarDbContext<TDbContext>
+{
+}
+
 public class SugarDbConnOptions
 {
     public string ConfigId { get; set; } = "default";
@@ -31,14 +35,9 @@ public class SugarDbConnOptions
     public bool IsAutoCloseConnection { get; set; } = true;
 
     /// <summary>
-    /// 开启种子数据
+    /// 超时时间
     /// </summary>
-    public bool EnabledDataSeeder { get; set; } = false;
-
-    /// <summary>
-    /// 开启代码先行
-    /// </summary>
-    public bool EnabledCodeFirst { get; set; } = false;
+    public int Timeout { get; set; }
 
     /// <summary>
     /// 开启sql日志

@@ -5,7 +5,7 @@ using EntityConfigurations;
 using Fake.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-public class OrderingContext : FakeDbContext<OrderingContext>
+public class OrderingContext : EfCoreDbContext<OrderingContext>
 {
     public const string DefaultSchema = "ordering";
     public DbSet<Order> Orders { get; set; }

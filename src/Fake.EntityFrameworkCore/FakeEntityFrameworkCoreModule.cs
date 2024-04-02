@@ -13,7 +13,7 @@ public class FakeEntityFrameworkCoreModule : FakeModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
-        context.Services.AddTransient(typeof(IDbContextProvider<>), typeof(UnitOfWorkDbContextProvider<>));
+        context.Services.AddTransient(typeof(IEfDbContextProvider<>), typeof(UowEfDbContextProvider<>));
         context.Services.AddTransient<IEntityChangeHelper, EntityChangeHelper>();
         context.Services.AddSingleton<FakeDbCommandInterceptor>();
         context.Services.AddSingleton<ICommandFormatter, FakeCommandFormatter>();

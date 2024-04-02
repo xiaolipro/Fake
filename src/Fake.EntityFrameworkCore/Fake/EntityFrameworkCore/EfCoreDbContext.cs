@@ -16,12 +16,12 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Fake.EntityFrameworkCore;
 
-public abstract class FakeDbContext<TDbContext>(DbContextOptions<TDbContext> options) : DbContext(options)
+public abstract class EfCoreDbContext<TDbContext>(DbContextOptions<TDbContext> options) : DbContext(options)
     where TDbContext : DbContext
 {
     public ILazyServiceProvider ServiceProvider { get; set; } = null!;
 
-    private static readonly MethodInfo ConfigureBasePropertiesMethodInfo = typeof(FakeDbContext<TDbContext>)
+    private static readonly MethodInfo ConfigureBasePropertiesMethodInfo = typeof(EfCoreDbContext<TDbContext>)
         .GetMethod(
             nameof(ConfigureBaseProperties),
             BindingFlags.Instance | BindingFlags.NonPublic
@@ -287,7 +287,7 @@ public abstract class FakeDbContext<TDbContext>(DbContextOptions<TDbContext> opt
         {
             var propertyType = property.PropertyInfo!.PropertyType;
             var converterType = typeof(FakeEnumerationValueConverter<>).MakeGenericType(propertyType);
-            var converterInstance = ReflectionHelper.CreateInstance<ValueConverter>(converterType, [null]);
+            var converterInstance = ReflectionHelper.CreateInstance(converterType, [null]).To<ValueConverter>();
             modelBuilder.Entity(entityType).Property(property.Name).HasConversion(converterInstance);
         }
 

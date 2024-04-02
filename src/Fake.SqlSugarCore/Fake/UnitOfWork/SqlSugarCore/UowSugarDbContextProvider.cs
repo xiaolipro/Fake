@@ -1,7 +1,5 @@
 ﻿using System.Diagnostics;
-using System.Threading;
 using Fake.SqlSugarCore;
-using Fake.Threading;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -12,15 +10,15 @@ namespace Fake.UnitOfWork.SqlSugarCore;
 /// 基于工作单元的DbContext
 /// </summary>
 /// <typeparam name="TDbContext"></typeparam>
-public class UnitOfWorkDbContextProvider<TDbContext>(
+public class UowSugarDbContextProvider<TDbContext>(
     IUnitOfWorkManager unitOfWorkManager,
     ICancellationTokenProvider cancellationTokenProvider,
     IConfiguration configuration)
-    : IDbContextProvider<TDbContext>
-    where TDbContext : SugarDbContext
+    : ISugarDbContextProvider<TDbContext>
+    where TDbContext : SugarDbContext<TDbContext>
 {
-    public readonly ILogger<UnitOfWorkDbContextProvider<TDbContext>> Logger =
-        NullLogger<UnitOfWorkDbContextProvider<TDbContext>>
+    public readonly ILogger<UowSugarDbContextProvider<TDbContext>> Logger =
+        NullLogger<UowSugarDbContextProvider<TDbContext>>
             .Instance;
 
     public async Task<TDbContext> GetDbContextAsync(CancellationToken cancellationToken = default)
@@ -67,6 +65,7 @@ public class UnitOfWorkDbContextProvider<TDbContext>(
 
 
     private async Task<TDbContext> CreateDbContextWithTransactionAsync(IUnitOfWork unitOfWork,
+        // ReSharper disable once UnusedParameter.Local
         CancellationToken cancellationToken = default)
     {
         Debug.Assert(DbContextCreationContext.Current != null, "DbContextCreationContext.Current != null");
@@ -75,14 +74,14 @@ public class UnitOfWorkDbContextProvider<TDbContext>(
         var transactionApiKey = $"SqlSugarCore_{DbContextCreationContext.Current.ConnectionString}";
 
         //尝试查找事务
-        var activeTransaction = unitOfWork.FindTransactionApi(transactionApiKey) as SqlSugarTransactionApi;
+        var activeTransaction = unitOfWork.FindTransactionApi(transactionApiKey) as SqlSugarTransactionApi<TDbContext>;
 
         //该db还没有进行开启事务
         if (activeTransaction == null)
         {
             //获取到db添加事务即可
             var dbContext = unitOfWork.ServiceProvider.GetRequiredService<TDbContext>();
-            var transaction = new SqlSugarTransactionApi(
+            var transaction = new SqlSugarTransactionApi<TDbContext>(
                 dbContext
             );
             unitOfWork.AddTransactionApi(transactionApiKey, transaction);
