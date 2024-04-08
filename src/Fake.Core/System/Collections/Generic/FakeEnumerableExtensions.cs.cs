@@ -34,7 +34,7 @@ public static class FakeEnumerableExtensions
     }
 
     /// <summary>
-    /// 将集合用separator拼接，等同string.Join，但不会抛<see cref="ArgumentNullException"/>
+    /// 将集合用separator拼接，等同string.Join，但不会因为source is null而抛<see cref="ArgumentNullException"/>
     /// </summary>
     /// <param name="source"></param>
     /// <param name="separator"></param>
