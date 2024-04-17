@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 using Xunit;
 
-namespace AppTests;
+namespace Fake.EntityFrameworkCore.Tests;
 
 public class EfCoreRepositoryTests : AppTestBase<FakeEntityFrameworkCoreTestModule>
 {

@@ -33,5 +33,6 @@ public class SqlSugarTransactionApi<TDbContext> : ITransactionApi, ISupportRollb
 
     public void Dispose()
     {
+        _sugarDbContext.SqlSugarClient.Ado.Dispose();
     }
 }

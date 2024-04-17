@@ -1,8 +1,7 @@
 ﻿using Fake.Modularity;
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace Fake.Core.Tests.Microsoft.Extensions.DependencyInjection;
 
-public class DependencyInjectTestModule:FakeModule
+public class DependencyInjectTestModule : FakeModule
 {
-    
 }

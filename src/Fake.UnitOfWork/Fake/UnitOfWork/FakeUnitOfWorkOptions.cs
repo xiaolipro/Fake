@@ -21,7 +21,7 @@ public class FakeUnitOfWorkOptions
     /// <summary>
     /// 超时时间
     /// </summary>
-    public int Timeout { get; set; } = -1; // 无限制
+    public int Timeout { get; set; }
 
     public bool CalculateIsTransactional(bool autoValue)
     {

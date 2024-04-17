@@ -2,10 +2,8 @@ namespace Fake.UnitOfWork;
 
 public interface IUnitOfWorkEnabled
 {
-    
 }
 
-public interface IReadOnlyUnitOfWorkEnabled
+public interface IReadOnlyUnitOfWorkEnabled : IUnitOfWorkEnabled
 {
-    
 }

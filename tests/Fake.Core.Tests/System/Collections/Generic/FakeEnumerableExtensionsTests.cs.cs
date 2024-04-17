@@ -1,8 +1,6 @@
 ﻿using Fake.Helpers;
-using Shouldly;
-using Xunit;
 
-namespace System.Collections.Generic;
+namespace Fake.Core.Tests.System.Collections.Generic;
 
 public class FakeEnumerableExtensionsTests
 {

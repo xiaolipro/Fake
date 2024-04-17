@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace AppTests.EntityConfigurations
+namespace Fake.EntityFrameworkCore.Tests.EntityConfigurations
 {
     class BuyerEntityTypeConfiguration
         : IEntityTypeConfiguration<Buyer>

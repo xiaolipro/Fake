@@ -1,9 +1,9 @@
-﻿using AppTests.EntityConfigurations;
-using Domain.Aggregates.BuyerAggregate;
+﻿using Domain.Aggregates.BuyerAggregate;
 using Domain.Aggregates.OrderAggregate;
-using EntityConfigurations;
-using Fake.EntityFrameworkCore;
+using Fake.EntityFrameworkCore.Tests.EntityConfigurations;
 using Microsoft.EntityFrameworkCore;
+
+namespace Fake.EntityFrameworkCore.Tests;
 
 public class OrderingContext : EfCoreDbContext<OrderingContext>
 {

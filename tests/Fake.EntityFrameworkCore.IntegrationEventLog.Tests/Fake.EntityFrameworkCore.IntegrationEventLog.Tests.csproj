@@ -1,9 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <Import Project="..\..\common.test.props" />
-    <PropertyGroup>
-        <ImplicitUsings>true</ImplicitUsings>
-    </PropertyGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\..\src\Fake.EntityFrameworkCore.IntegrationEventLog\Fake.EntityFrameworkCore.IntegrationEventLog.csproj" />

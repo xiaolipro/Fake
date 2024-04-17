@@ -1,6 +1,7 @@
 ﻿using Fake.Modularity;
 
-public class FakeCoreTestModule:FakeModule
+namespace Fake.Core.Tests;
+
+public class FakeCoreTestModule : FakeModule
 {
-    
 }

@@ -124,7 +124,7 @@ public abstract class EfCoreDbContext<TDbContext>(DbContextOptions<TDbContext> o
         {
             if (!Database.GetCommandTimeout().HasValue)
             {
-                Database.SetCommandTimeout(TimeSpan.FromMilliseconds(unitOfWork.Context.Timeout));
+                Database.SetCommandTimeout(TimeSpan.FromSeconds(unitOfWork.Context.Timeout));
             }
         }
 
@@ -179,7 +179,6 @@ public abstract class EfCoreDbContext<TDbContext>(DbContextOptions<TDbContext> o
         // tips: 这里必須重置entity状态，设置完修改审计后转会到EntityState.Modified
         entry.Reload();
         ReflectionHelper.TrySetProperty(entityWithSoftDelete, x => x.IsDeleted, () => true);
-        AuditPropertySetter.SetModificationProperties(entry.Entity);
     }
 
     protected virtual void SetModifier(EntityEntry entry)

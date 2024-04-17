@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Fake.Core.Tests.Microsoft.Extensions.DependencyInjection;
 
 namespace Fake.Autofac;
 

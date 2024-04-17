@@ -1,5 +1,7 @@
-﻿using Fake.SqlSugarCore;
+﻿using System.Reflection;
 using SqlSugar;
+
+namespace Fake.SqlSugarCore.Tests;
 
 public class OrderingContext : SugarDbContext<OrderingContext>
 {
@@ -8,8 +10,8 @@ public class OrderingContext : SugarDbContext<OrderingContext>
         System.Diagnostics.Debug.WriteLine("OrderingContext::ctor ->" + base.GetHashCode());
     }
 
-    protected override ConfigureExternalServices ConfigureExternalServices()
+    protected override void ConfigureEntityService(PropertyInfo property, EntityColumnInfo column)
     {
-        return base.ConfigureExternalServices();
+        base.ConfigureEntityService(property, column);
     }
 }

@@ -15,7 +15,7 @@ public static class FakeHostExtensions
     public static IHost MigrateDbContext<TContext>(this IHost host, Action<TContext, IServiceProvider> seeder)
         where TContext : DbContext
     {
-        ArgumentNullException.ThrowIfNull(seeder);
+        ThrowHelper.ThrowIfNull(seeder);
         var underK8S = host.IsInKubernetes();
 
         using var scope = host.Services.CreateScope();

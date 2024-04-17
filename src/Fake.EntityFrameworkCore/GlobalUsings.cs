@@ -5,6 +5,7 @@ global using System.Collections.Generic;
 global using System.Linq;
 global using System.Threading;
 global using System.Threading.Tasks;
+global using Fake;
 global using Fake.Data;
 global using Fake.DomainDrivenDesign;
 global using Fake.DomainDrivenDesign.Entities;

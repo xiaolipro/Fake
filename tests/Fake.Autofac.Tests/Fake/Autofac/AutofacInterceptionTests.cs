@@ -1,4 +1,4 @@
-﻿using Fake.DynamicProxy;
+﻿using Fake.Core.Tests.DynamicProxy;
 
 namespace Fake.Autofac;
 

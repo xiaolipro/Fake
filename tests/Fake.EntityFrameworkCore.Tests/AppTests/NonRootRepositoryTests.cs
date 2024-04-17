@@ -1,8 +1,9 @@
 ﻿using Domain.Queries;
+using Fake.EntityFrameworkCore.Tests.Queries;
 using Microsoft.Extensions.DependencyInjection;
 using Tests;
 
-namespace AppTests;
+namespace Fake.EntityFrameworkCore.Tests.AppTests;
 
 public class NonRootRepositoryTests : RootlessRepositoryTests<FakeEntityFrameworkCoreTestModule>
 {

@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace Fake.UnitOfWork;
 
-public class UnitOfWorkHelper:IUnitOfWorkHelper
+public class UnitOfWorkHelper : IUnitOfWorkHelper
 {
     public static bool IsUnitOfWorkType(TypeInfo implementationType)
     {
@@ -13,12 +13,12 @@ public class UnitOfWorkHelper:IUnitOfWorkHelper
         {
             return true;
         }
-        
+
         //类中有实例方法定义了UnitOfWorkAttribute
         if (implementationType
             .GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-            .Any(m =>m.IsDefined(typeof(UnitOfWorkAttribute)))
-            )
+            .Any(m => m.IsDefined(typeof(UnitOfWorkAttribute)))
+           )
         {
             return true;
         }
@@ -32,7 +32,7 @@ public class UnitOfWorkHelper:IUnitOfWorkHelper
         return false;
     }
 
-    public bool IsUnitOfWorkMethod(MethodInfo methodInfo, out UnitOfWorkAttribute unitOfWorkAttribute)
+    public bool IsUnitOfWorkMethod(MethodInfo methodInfo, out UnitOfWorkAttribute? unitOfWorkAttribute)
     {
         ThrowHelper.ThrowIfNull(methodInfo, nameof(methodInfo));
 
@@ -44,7 +44,7 @@ public class UnitOfWorkHelper:IUnitOfWorkHelper
         return methodInfo.DeclaringType.GetTypeInfo().IsAssignableTo<IUnitOfWorkEnabled>();
     }
 
-    public UnitOfWorkAttribute GetUnitOfWorkAttributeOrNull(MethodInfo methodInfo)
+    public UnitOfWorkAttribute? GetUnitOfWorkAttributeOrNull(MethodInfo methodInfo)
     {
         // 先从方法上找
         var attr = methodInfo.GetCustomAttribute<UnitOfWorkAttribute>(true);

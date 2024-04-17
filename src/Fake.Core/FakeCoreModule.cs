@@ -89,7 +89,7 @@ public class FakeCoreModule : FakeModule
 
     private static void ConfigureIdGenerator(ServiceConfigurationContext context)
     {
-        // 请注意数据库适配问题，默认生成的有序guid是SequentialAsBinaryAtEnd类型的（SQLSERVER友好的）
+        // 请注意数据库适配问题
         context.Services.AddSingleton<GuidGeneratorBase>(_ =>
             new SequentialGuidGenerator(SequentialGuidType.SequentialAsString));
 

@@ -1,5 +1,4 @@
 ﻿using Fake.Autofac;
-using Fake.EntityFrameworkCore.IntegrationEventLog;
 using Fake.Helpers;
 using Fake.Modularity;
 using Microsoft.Data.Sqlite;
@@ -7,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
+
+namespace Fake.EntityFrameworkCore.IntegrationEventLog.Tests;
 
 [DependsOn(typeof(FakeAutofacModule))]
 [DependsOn(typeof(FakeEntityFrameworkCoreIntegrationEventLogModule))]

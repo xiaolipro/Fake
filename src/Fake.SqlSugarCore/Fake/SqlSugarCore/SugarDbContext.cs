@@ -8,7 +8,6 @@ using Fake.EventBus;
 using Fake.Helpers;
 using Fake.IdGenerators;
 using Fake.Timing;
-using Fake.UnitOfWork;
 
 namespace Fake.SqlSugarCore;
 
@@ -31,10 +30,6 @@ public abstract class SugarDbContext<TDbContext> where TDbContext : SugarDbConte
     public SugarDbContext(SugarDbConnOptions<TDbContext> options)
     {
         Options = options;
-    }
-
-    public virtual void Initialize(IUnitOfWork unitOfWork)
-    {
         var config = new ConnectionConfig
         {
             ConfigId = Options.ConfigId,
@@ -53,7 +48,10 @@ public abstract class SugarDbContext<TDbContext> where TDbContext : SugarDbConte
                 DataExecuting = DataExecuting,
                 DataExecuted = DataExecuted
             },
-            ConfigureExternalServices = ConfigureExternalServices(),
+            ConfigureExternalServices = new ConfigureExternalServices
+            {
+                EntityService = ConfigureEntityService
+            },
             IndexSuffix = null,
             SqlMiddle = null
         };
@@ -62,13 +60,13 @@ public abstract class SugarDbContext<TDbContext> where TDbContext : SugarDbConte
 
         SqlSugarClient = new SqlSugarClient(config);
 
-        SqlSugarClient.Ado.CommandTimeOut = Options.Timeout;
-        // 设置超时时间
-        if (SqlSugarClient.Ado.CommandTimeOut < 1)
-        {
-            SqlSugarClient.Ado.CommandTimeOut = unitOfWork.Context.Timeout;
-        }
+        SqlSugarClient.Ado.CommandTimeOut = options.Timeout;
+    }
 
+    public virtual void Initialize(int timeout)
+    {
+        // 设置超时时间
+        SqlSugarClient.Ado.CommandTimeOut = timeout;
         ConfigureGlobalFilters();
     }
 
@@ -85,33 +83,27 @@ public abstract class SugarDbContext<TDbContext> where TDbContext : SugarDbConte
     {
     }
 
-    protected virtual ConfigureExternalServices ConfigureExternalServices()
+    protected virtual void ConfigureEntityService(PropertyInfo property, EntityColumnInfo column)
     {
-        return new ConfigureExternalServices
+        if (property.Name == nameof(Entity<Any>.Id))
         {
-            EntityService = (property, column) =>
-            {
-                if (new NullabilityInfoContext().Create(property).WriteState is NullabilityState.Nullable)
-                {
-                    column.IsNullable = true;
-                }
+            column.IsPrimarykey = true;
+        }
 
-                if (property.Name == nameof(IHasDomainEvent.DomainEvents))
-                {
-                    column.IsIgnore = true;
-                }
+        if (new NullabilityInfoContext().Create(property).WriteState is NullabilityState.Nullable)
+        {
+            column.IsNullable = true;
+        }
 
-                if (property.Name == nameof(IHasExtraProperties.ExtraProperties))
-                {
-                    column.IsIgnore = true;
-                }
+        if (property.Name == nameof(IHasDomainEvent.DomainEvents))
+        {
+            column.IsIgnore = true;
+        }
 
-                if (property.Name == nameof(Entity<object>.Id))
-                {
-                    column.IsPrimarykey = true;
-                }
-            }
-        };
+        if (property.Name == nameof(IHasExtraProperties.ExtraProperties))
+        {
+            column.IsIgnore = true;
+        }
     }
 
     protected virtual async Task PublishDomainEventsAsync(IHasDomainEvent entityWithDomainEvent)
@@ -122,20 +114,6 @@ public abstract class SugarDbContext<TDbContext> where TDbContext : SugarDbConte
             await LocalEventBus.PublishAsync(@event);
         }
     }
-
-    protected virtual void ConfigureBaseProperties(PropertyInfo property, EntityColumnInfo column)
-    {
-        if (property.PropertyType == typeof(ExtraPropertyDictionary))
-        {
-            column.IsIgnore = true;
-        }
-
-        if (property.Name == nameof(Entity<Any>.Id))
-        {
-            column.IsPrimarykey = true;
-        }
-    }
-
 
     #region DataExecuting
 

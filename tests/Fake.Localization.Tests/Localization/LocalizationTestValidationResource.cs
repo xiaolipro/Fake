@@ -1,4 +1,4 @@
-﻿namespace Localization;
+﻿namespace Fake.Localization.Tests.Localization;
 
 public sealed class LocalizationTestValidationResource
 {

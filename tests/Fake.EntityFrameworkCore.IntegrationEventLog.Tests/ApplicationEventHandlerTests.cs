@@ -1,11 +1,11 @@
 ﻿using Application.IntegrationEvents;
-using Fake;
-using Fake.EntityFrameworkCore.IntegrationEventLog;
 using Fake.Testing;
 using Microsoft.Extensions.DependencyInjection;
 
-public class
-    ApplicationEventHandlerTests : ApplicationTestWithTools<FakeEntityFrameworkCoreIntegrationEventLogTestModule>
+namespace Fake.EntityFrameworkCore.IntegrationEventLog.Tests;
+
+public class ApplicationEventHandlerTests
+    : ApplicationTestWithTools<FakeEntityFrameworkCoreIntegrationEventLogTestModule>
 {
     private readonly IIntegrationEventLogService _integrationEventLogService;
 

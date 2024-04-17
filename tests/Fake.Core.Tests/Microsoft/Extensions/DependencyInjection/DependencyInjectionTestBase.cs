@@ -1,7 +1,8 @@
 ﻿using Fake.DependencyInjection;
 using Fake.Testing;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace Fake.Core.Tests.Microsoft.Extensions.DependencyInjection;
 
 public abstract class DependencyInjectionTestBase : ApplicationTest<DependencyInjectTestModule>
 {

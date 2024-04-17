@@ -1,9 +1,10 @@
-﻿using Fake.Localization;
+﻿using Fake.Localization.Tests.Localization;
 using Fake.Modularity;
 using Fake.Testing;
 using Fake.VirtualFileSystem;
-using Localization;
 using Microsoft.Extensions.DependencyInjection;
+
+namespace Fake.Localization.Tests;
 
 [DependsOn(typeof(FakeTestingModule))]
 [DependsOn(typeof(FakeLocalizationModule))]

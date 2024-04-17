@@ -8,6 +8,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\src\Fake.SqlSugarCore\Fake.SqlSugarCore.csproj"/>
+        <ProjectReference Include="..\Fake.AppTests\Fake.AppTests.csproj"/>
     </ItemGroup>
 
 </Project>

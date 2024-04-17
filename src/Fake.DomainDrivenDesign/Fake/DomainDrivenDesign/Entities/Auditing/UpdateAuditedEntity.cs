@@ -19,5 +19,5 @@ public abstract class UpdateAuditedEntity<TKey> : Entity<TKey>, IHasUpdateUserId
 public abstract class SoftDeleteAuditedEntity<TKey> : Entity<TKey>, ISoftDelete
 {
     public virtual bool IsDeleted { get; set; }
-    public bool HardDeleted { get; }
+    public bool HardDeleted { get; } = false;
 }

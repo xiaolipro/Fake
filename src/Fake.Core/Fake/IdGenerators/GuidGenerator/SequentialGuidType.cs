@@ -13,7 +13,7 @@ public enum SequentialGuidType
     SequentialAsBinaryAtStart,
 
     /// <summary>
-    /// 有序部分在尾部，由SqlServer使用
+    /// 有序部分在尾部
     /// </summary>
     SequentialAsBinaryAtEnd
 }

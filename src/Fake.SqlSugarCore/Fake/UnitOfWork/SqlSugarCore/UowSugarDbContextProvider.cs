@@ -58,7 +58,7 @@ public class UowSugarDbContextProvider<TDbContext>(
                 ? await CreateDbContextWithTransactionAsync(unitOfWork, cancellationToken)
                 : unitOfWork.ServiceProvider.GetRequiredService<TDbContext>();
 
-            dbContext.Initialize(unitOfWork);
+            dbContext.Initialize(unitOfWork.Context.Timeout);
             return dbContext;
         }
     }

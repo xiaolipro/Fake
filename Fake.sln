@@ -66,7 +66,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fake.Localization", "src\Fa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fake.Localization.Tests", "tests\Fake.Localization.Tests\Fake.Localization.Tests.csproj", "{F2BC0BDA-3EA2-42EA-A900-2A381EB650B8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fake.VirtualFileSytem.Tests", "tests\Fake.VirtualFileSytem.Tests\Fake.VirtualFileSytem.Tests.csproj", "{EDEB6423-64ED-462A-BFAB-270EE436944D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fake.VirtualFileSystem.Tests", "tests\Fake.VirtualFileSystem.Tests\Fake.VirtualFileSystem.Tests.csproj", "{EDEB6423-64ED-462A-BFAB-270EE436944D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fake.EntityFrameworkCore.Tests", "tests\Fake.EntityFrameworkCore.Tests\Fake.EntityFrameworkCore.Tests.csproj", "{9D7D6527-1E06-4457-8D8A-D7A6A91F2C7A}"
 EndProject

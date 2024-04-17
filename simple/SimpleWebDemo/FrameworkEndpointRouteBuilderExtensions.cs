@@ -1,4 +1,5 @@
-﻿using Fake.DependencyInjection;
+﻿using Fake;
+using Fake.DependencyInjection;
 using Microsoft.AspNetCore.Routing.Patterns;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Primitives;
@@ -8,8 +9,8 @@ public static class FrameworkEndpointRouteBuilderExtensions
     public static IEndpointConventionBuilder MapFramework(this IEndpointRouteBuilder endpoints,
         Action<FrameworkConfigurationBuilder> configure)
     {
-        ArgumentNullException.ThrowIfNull(endpoints);
-        ArgumentNullException.ThrowIfNull(configure);
+        ThrowHelper.ThrowIfNull(endpoints);
+        ThrowHelper.ThrowIfNull(configure);
 
         var dataSource = endpoints.ServiceProvider.GetRequiredService<FrameworkEndpointDataSource>();
 

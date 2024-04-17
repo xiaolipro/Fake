@@ -1,14 +1,15 @@
 ﻿using Domain.Aggregates.BuyerAggregate;
 using Domain.Aggregates.OrderAggregate;
-using Domain.Repositories;
 using Fake.DomainDrivenDesign.Repositories;
 using Fake.DomainDrivenDesign.Repositories.EntityFrameWorkCore;
-using Fake.EntityFrameworkCore;
+using Fake.EntityFrameworkCore.Tests.Repositories;
 using Fake.Helpers;
 using Fake.Modularity;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+
+namespace Fake.EntityFrameworkCore.Tests;
 
 [DependsOn(typeof(FakeAppTestModule))]
 [DependsOn(typeof(FakeEntityFrameworkCoreModule))]

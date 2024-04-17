@@ -35,7 +35,7 @@ public class SugarDbConnOptions
     public bool IsAutoCloseConnection { get; set; } = true;
 
     /// <summary>
-    /// 超时时间
+    /// 超时时间s
     /// </summary>
     public int Timeout { get; set; }
 

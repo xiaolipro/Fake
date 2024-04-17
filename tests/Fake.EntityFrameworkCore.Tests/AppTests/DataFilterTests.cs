@@ -1,5 +1,5 @@
 ﻿using Tests;
 
-namespace AppTests;
+namespace Fake.EntityFrameworkCore.Tests.AppTests;
 
 public class DataFilterTests : DataFilterTests<FakeEntityFrameworkCoreTestModule>;

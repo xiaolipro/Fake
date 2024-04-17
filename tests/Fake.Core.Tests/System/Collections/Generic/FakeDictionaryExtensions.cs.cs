@@ -1,5 +1,4 @@
-﻿
-namespace System.Collections.Generic;
+﻿namespace Fake.Core.Tests.System.Collections.Generic;
 
 public static class FakeDictionaryExtensions
 {
