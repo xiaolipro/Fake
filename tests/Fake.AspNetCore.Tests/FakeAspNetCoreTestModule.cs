@@ -1,10 +1,11 @@
-﻿using Fake.AspNetCore;
-using Fake.AspNetCore.Testing;
+﻿using Fake.AspNetCore.Testing;
 using Fake.Autofac;
 using Fake.Modularity;
 using Fake.VirtualFileSystem;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+
+namespace Fake.AspNetCore.Tests;
 
 [DependsOn(
     typeof(FakeAutofacModule),

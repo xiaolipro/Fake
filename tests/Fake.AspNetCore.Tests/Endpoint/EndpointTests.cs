@@ -2,7 +2,7 @@
 using Shouldly;
 using Xunit;
 
-namespace Fake.AspNetCore.Endpoint;
+namespace Fake.AspNetCore.Tests.Endpoint;
 
 public class EndpointTests : AspNetCoreTestBase
 {

@@ -1,8 +1,7 @@
-﻿using System.Threading.Tasks;
-using Shouldly;
+﻿using Shouldly;
 using Xunit;
 
-namespace Fake.AspNetCore.VirtualFileSystem;
+namespace Fake.AspNetCore.Tests.VirtualFileSystem;
 
 public class VirtualFileSystemTests : AspNetCoreTestBase
 {

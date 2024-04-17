@@ -1,9 +1,10 @@
 ﻿using System.Net;
+using Fake.AspNetCore.ExceptionHandling;
 using Microsoft.AspNetCore.Builder;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Fake.AspNetCore.ExceptionHandling;
+namespace Fake.AspNetCore.Tests.ExceptionHandling;
 
 public class AuthorizationExceptionTests : AspNetCoreTestBase
 {

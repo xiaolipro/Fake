@@ -1,7 +1,7 @@
 ﻿using Fake.Authorization;
 using Fake.DependencyInjection;
 
-namespace Fake.AspNetCore.ExceptionHandling;
+namespace Fake.AspNetCore.Tests.ExceptionHandling;
 
 public class SimpleService : ITransientDependency
 {
