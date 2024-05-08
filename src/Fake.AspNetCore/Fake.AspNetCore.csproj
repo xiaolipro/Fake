@@ -9,5 +9,11 @@
         <ProjectReference Include="..\Fake.Auditing\Fake.Auditing.csproj"/>
         <ProjectReference Include="..\Fake.Authorization\Fake.Authorization.csproj"/>
     </ItemGroup>
+    <ItemGroup>
+        <Folder Include="Microsoft\AspNetCore\Mvc\"/>
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0"/>
+    </ItemGroup>
 
 </Project>

@@ -1,5 +1,5 @@
 ﻿namespace Fake.AspNetCore;
 
-public abstract class ApplicationService
+public abstract class ApplicationService : IRemoteService
 {
 }
