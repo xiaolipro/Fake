@@ -25,7 +25,7 @@ public static class FakeServiceCollectionCommonExtensions
 
     /// <summary>
     /// 直接从IOC容器中获取实例，找不到就返回null。
-    /// tips：仅仅是简单的根据type取ImplementationInstance，尽可能的从ServiceProvider取而不是ServiceCollection
+    /// tips：仅仅是简单的根据type取ImplementationInstance，请尽可能的从ServiceProvider取而不是通过此方法
     /// </summary>
     /// <param name="services"></param>
     /// <typeparam name="T"></typeparam>
@@ -39,7 +39,7 @@ public static class FakeServiceCollectionCommonExtensions
 
     /// <summary>
     /// 直接从IOC容器中获取实例。
-    /// tips：仅仅是简单的根据type取ImplementationInstance，尽可能的从ServiceProvider取而不是ServiceCollection
+    /// tips：仅仅是简单的根据type取ImplementationInstance，请尽可能的从ServiceProvider取而不是通过此方法
     /// </summary>
     /// <param name="services"></param>
     /// <typeparam name="T"></typeparam>
@@ -54,6 +54,22 @@ public static class FakeServiceCollectionCommonExtensions
         }
 
         return service;
+    }
+
+    public static Lazy<T> GetLazyInstance<T>(this IServiceCollection services) where T : class
+    {
+        return new Lazy<T>(services.GetRequiredService<T>, LazyThreadSafetyMode.ExecutionAndPublication);
+    }
+
+    /// <summary>
+    /// 从<see cref="FakeApplication"/>的<see cref="ServiceProvider"/>中获取服务<see cref="T"/>
+    /// </summary>
+    /// <param name="services"></param>
+    /// <exception cref="FakeException"><see cref="FakeApplication"/>所有模块初始化前，不能使用</exception>
+    /// <returns></returns>
+    public static T GetRequiredService<T>(this IServiceCollection services) where T : class
+    {
+        return services.GetInstance<IFakeApplication>().ServiceProvider.GetRequiredService<T>();
     }
 
     public static IServiceProvider BuildServiceProviderFromFactory(this IServiceCollection services)

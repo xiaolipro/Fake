@@ -7,14 +7,14 @@ using Microsoft.Extensions.Options;
 namespace Fake.AspNetCore.Controller.Conventions;
 
 public class ApplicationServiceConvention(
-    IOptions<ApplicationServiceConventionOptions> options,
-    IApplicationServiceActionConventional applicationServiceActionConventional
+    Lazy<IOptions<ApplicationServiceConventionOptions>> options,
+    Lazy<IApplicationServiceActionConventional> applicationServiceActionConventional
 ) : IApplicationModelConvention
 {
     public ILogger<ApplicationServiceConvention> Logger { get; set; } =
         NullLogger<ApplicationServiceConvention>.Instance;
 
-    protected ApplicationServiceConventionOptions Options { get; } = options.Value;
+    protected ApplicationServiceConventionOptions Options { get; } = options.Value.Value;
 
     static string[] CommonPostfixes { get; set; } = ["ApplicationService", "Service"];
 
@@ -59,12 +59,12 @@ public class ApplicationServiceConvention(
         {
             if (!action.Selectors.Any())
             {
-                var httpVerb = applicationServiceActionConventional.GetHttpVerb(action);
+                var httpVerb = applicationServiceActionConventional.Value.GetHttpVerb(action);
 
                 var abpServiceSelectorModel = new SelectorModel
                 {
                     AttributeRouteModel = new AttributeRouteModel(
-                        new RouteAttribute(applicationServiceActionConventional.GetRoute(action, httpVerb))
+                        new RouteAttribute(applicationServiceActionConventional.Value.GetRoute(action, httpVerb))
                     ),
                     ActionConstraints = { new HttpMethodActionConstraint(new[] { httpVerb }) }
                 };

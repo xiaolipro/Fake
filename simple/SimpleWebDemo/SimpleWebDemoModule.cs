@@ -9,7 +9,7 @@ using Fake.Modularity;
 [DependsOn(typeof(FakeAspNetCoreControllerModule))]
 public class SimpleWebDemoModule : FakeModule
 {
-    public override void ConfigureServices(ServiceConfigurationContext context)
+    public override void PreConfigureServices(ServiceConfigurationContext context)
     {
         context.Services.Configure<FakeAuditingOptions>(options =>
         {

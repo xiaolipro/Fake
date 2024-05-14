@@ -31,7 +31,7 @@ public class FakeApplication : IFakeApplication
         get
         {
             if (!_initializedModules)
-                throw new FakeException($"{nameof(FakeApplication)}初始化前，不能使用{nameof(ServiceProvider)}");
+                throw new FakeException($"{nameof(FakeApplication)}所有模块初始化前，不能使用{nameof(ServiceProvider)}");
             return _serviceProvider;
         }
     }

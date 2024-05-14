@@ -4,12 +4,19 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using NSubstitute;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Fake.Auditing;
 
 public class AuditingTests : ApplicationTest<FakeAuditingTestModule>
 {
+    private readonly ITestOutputHelper _testOutputHelper;
     protected IAuditingStore AuditingStore;
+
+    public AuditingTests(ITestOutputHelper testOutputHelper)
+    {
+        _testOutputHelper = testOutputHelper;
+    }
 
     protected override void AfterAddFakeApplication(IServiceCollection services)
     {
@@ -29,6 +36,40 @@ public class AuditingTests : ApplicationTest<FakeAuditingTestModule>
         }
 
         await AuditingStore.Received().SaveAsync(Arg.Any<AuditLogInfo>());
+    }
+
+    [Fact]
+    Task test()
+    {
+        var students = new List<Student>
+        {
+            new()
+            {
+                Instance = "小明",
+                Age = 18,
+                Gender = "男"
+            },
+            new()
+            {
+                Instance = "",
+                Age = 16,
+                Gender = "女"
+            }
+        };
+
+        foreach (var group in students.GroupBy(x => new { x.Age, x.Gender, x.Instance }))
+        {
+            _testOutputHelper.WriteLine($"{group.Key.Age}_{group.Key.Gender}_{group.Key.Instance}");
+        }
+
+        return Task.CompletedTask;
+    }
+
+    public class Student
+    {
+        public string Instance { get; set; }
+        public int Age { get; set; }
+        public string Gender { get; set; }
     }
 }
 
