@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.Extensions.Options;
 
-namespace Fake.AspNetCore.Controller.Conventions;
+namespace Fake.AspNetCore.Mvc.Conventions;
 
-public class ApplicationServiceActionConventional(IOptions<ApplicationServiceConventionOptions> options)
-    : IApplicationServiceActionConventional
+public class RemoteServiceActionHelper(IOptions<RemoteServiceConventionOptions> options)
+    : IRemoteServiceActionHelper
 {
-    protected ApplicationServiceConventionOptions Options { get; } = options.Value;
+    protected RemoteServiceConventionOptions Options { get; } = options.Value;
 
     public static Dictionary<string, string[]> HttpMethodPrefixes { get; set; } = new()
     {

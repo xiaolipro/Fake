@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc.Abstractions;
 
-namespace Fake.AspNetCore.Controller.Conventions;
+namespace Fake.AspNetCore.Mvc.ApiExplorer;
 
 /// <summary>
 /// details see：https://github.com/dotnet/aspnetcore/blob/main/src/Mvc/Mvc.Core/src/ApplicationModels/ControllerActionDescriptorProvider.cs
 /// </summary>
-public class ApplicationServiceActionDescriptorProvider : IActionDescriptorProvider
+public class RemoteServiceActionDescriptorProvider : IActionDescriptorProvider
 {
     // ControllerActionDescriptorProvider Order is -1000
     public int Order => -1000 + 10;

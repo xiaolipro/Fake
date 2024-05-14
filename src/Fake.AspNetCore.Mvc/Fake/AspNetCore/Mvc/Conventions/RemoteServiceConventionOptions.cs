@@ -1,9 +1,9 @@
 ﻿using System.Reflection;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
-namespace Fake.AspNetCore.Controller.Conventions;
+namespace Fake.AspNetCore.Mvc.Conventions;
 
-public class ApplicationServiceConventionOptions
+public class RemoteServiceConventionOptions
 {
     internal HashSet<Type> ControllerTypes { get; } = new();
     internal List<Assembly> Assemblies { get; } = new();

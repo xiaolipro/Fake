@@ -2,14 +2,14 @@
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.Extensions.Options;
 
-namespace Fake.AspNetCore.Controller.Conventions;
+namespace Fake.AspNetCore.Mvc.Conventions;
 
-public class ApplicationServiceControllerFeatureProvider(IFakeApplication application) : ControllerFeatureProvider
+public class RemoteServiceControllerFeatureProvider(IFakeApplication application) : ControllerFeatureProvider
 {
     protected override bool IsController(TypeInfo typeInfo)
     {
         return application.ServiceProvider
-            .GetRequiredService<IOptions<ApplicationServiceConventionOptions>>().Value
+            .GetRequiredService<IOptions<RemoteServiceConventionOptions>>().Value
             .ControllerTypes.Contains(typeInfo.AsType());
     }
 }

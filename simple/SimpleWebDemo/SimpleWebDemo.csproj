@@ -6,7 +6,7 @@
         <EnablePreviewFeatures>true</EnablePreviewFeatures>
     </PropertyGroup>
     <ItemGroup>
-        <ProjectReference Include="..\..\src\Fake.AspNetCore.Controller\Fake.AspNetCore.Controller.csproj"/>
+        <ProjectReference Include="..\..\src\Fake.AspNetCore.Mvc\Fake.AspNetCore.Mvc.csproj"/>
       <ProjectReference Include="..\..\src\Fake.AspNetCore\Fake.AspNetCore.csproj" />
       <ProjectReference Include="..\..\src\Fake.Auditing\Fake.Auditing.csproj" />
       <ProjectReference Include="..\..\src\Fake.Autofac\Fake.Autofac.csproj" />

@@ -230,7 +230,7 @@ public abstract class EfCoreDbContext<TDbContext>(DbContextOptions<TDbContext> o
 
         if (idProperty == null) return false;
 
-        var attr = ReflectionHelper.GetAttributeOrDefault<DatabaseGeneratedAttribute>(idProperty);
+        var attr = ReflectionHelper.GetAttributeOrNull<DatabaseGeneratedAttribute>(idProperty);
         return attr == null || attr.DatabaseGeneratedOption == DatabaseGeneratedOption.None;
     }
 
@@ -298,7 +298,7 @@ public abstract class EfCoreDbContext<TDbContext>(DbContextOptions<TDbContext> o
                     var propertyInfo = p.PropertyInfo;
                     if (propertyInfo == null) return false;
                     if (!propertyInfo.CanWrite) return false;
-                    if (ReflectionHelper.GetAttributeOrDefault<DisableClockNormalizationAttribute>(
+                    if (ReflectionHelper.GetAttributeOrNull<DisableClockNormalizationAttribute>(
                             propertyInfo, includeDeclaringType: true) != null) return false;
                     return propertyInfo.PropertyType == typeof(DateTime) ||
                            propertyInfo.PropertyType == typeof(DateTime?);

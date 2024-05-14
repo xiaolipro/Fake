@@ -11,9 +11,12 @@ app.UseStaticFiles();
 byte[] plainTextPayload = Encoding.UTF8.GetBytes("Plain text!");
 
 app.UseRouting();
+app.Map("/getwithattributes", Handler);
+
 app.UseEndpoints(endpoints =>
 {
-    endpoints.MapGet("/hello", () => "Hello World!");
+    endpoints.MapGet("/hello1", (string name) => $"Hello World! {name}");
+    endpoints.MapGet("/hello6", (string name) => $"Hello World! {name}");
 
     endpoints.MapGet(
         "/",
@@ -63,9 +66,7 @@ app.UseEndpoints(endpoints =>
             return Task.CompletedTask;
         }).WithDisplayName("DFA Graph");
 
-    endpoints.MapGet("/attributes", HandlerWithAttributes);
-
-    endpoints.Map("/getwithattributes", Handler);
+    endpoints.MapGet("/attributes", (string name) => $"Hello World! {name}");
 });
 
 app.Run();

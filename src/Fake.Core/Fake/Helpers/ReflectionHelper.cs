@@ -48,26 +48,36 @@ public static class ReflectionHelper
     /// <summary>
     /// 获取给定成员指定特性，如果没有则返回defaultValue
     /// </summary>
-    /// <param name="memberInfo"></param>
-    /// <param name="defaultValue"></param>
-    /// <param name="inherit"></param>
+    /// <param name="memberInfo">给定成员</param>
+    /// <param name="defaultValue">没找到的默认值</param>
+    /// <param name="inherit">从该成员的继承链上找</param>
     /// <param name="includeDeclaringType">从定义类型上寻找</param>
     /// <typeparam name="TAttribute"></typeparam>
     /// <returns></returns>
-    public static TAttribute? GetAttributeOrDefault<TAttribute>(MemberInfo memberInfo,
-        TAttribute? defaultValue = default, bool inherit = true, bool includeDeclaringType = false)
+    public static TAttribute? GetAttributeOrNull<TAttribute>(MemberInfo memberInfo,
+        TAttribute? defaultValue = null, bool inherit = true, bool includeDeclaringType = true)
         where TAttribute : Attribute
     {
-        //Get attribute on the member
-        if (memberInfo.IsDefined(typeof(TAttribute), inherit))
-        {
-            return memberInfo.GetCustomAttributes(typeof(TAttribute), inherit).FirstOrDefault() as TAttribute;
-        }
+        return memberInfo.GetCustomAttribute<TAttribute>(inherit)
+               ?? memberInfo.DeclaringType?.GetType().GetCustomAttribute<TAttribute>(inherit)
+               ?? defaultValue;
+    }
 
-        if (!includeDeclaringType) return defaultValue;
-
-        return memberInfo.DeclaringType?.GetType().GetCustomAttributes(typeof(TAttribute), inherit)
-            .FirstOrDefault() as TAttribute ?? defaultValue;
+    /// <summary>
+    /// 获取给定成员指定特性集合
+    /// </summary>
+    /// <param name="memberInfo">给定成员</param>
+    /// <param name="inherit">从该成员的继承链上找</param>
+    /// <param name="includeDeclaringType">从定义类型上寻找</param>
+    /// <typeparam name="TAttribute"></typeparam>
+    /// <returns></returns>
+    public static IEnumerable<TAttribute> GetAttributes<TAttribute>(MemberInfo memberInfo,
+        bool inherit = true, bool includeDeclaringType = true)
+        where TAttribute : Attribute
+    {
+        return memberInfo.GetCustomAttributes<TAttribute>(inherit)
+            .Concat(memberInfo.DeclaringType?.GetType().GetCustomAttributes<TAttribute>(inherit)
+                    ?? Array.Empty<TAttribute>());
     }
 
 

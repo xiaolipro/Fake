@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
-namespace Fake.AspNetCore.Controller.Conventions;
+namespace Fake.AspNetCore.Mvc.Conventions;
 
-public interface IApplicationServiceActionConventional
+public interface IRemoteServiceActionHelper
 {
     string GetRoute(ActionModel action, string httpVerb);
 

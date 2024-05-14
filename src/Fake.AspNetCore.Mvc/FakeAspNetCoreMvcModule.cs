@@ -1,38 +1,40 @@
-﻿using Fake.AspNetCore.Controller.Conventions;
+﻿using Fake.AspNetCore.Mvc.ApiExplorer;
+using Fake.AspNetCore.Mvc.Conventions;
 using Fake.Modularity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 // ReSharper disable once CheckNamespace
-namespace Fake.AspNetCore.Controller;
+namespace Fake.AspNetCore.Mvc;
 
 [DependsOn(typeof(FakeAspNetCoreModule))]
-public class FakeAspNetCoreControllerModule : FakeModule
+public class FakeAspNetCoreMvcModule : FakeModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
-        context.Services.AddMvc();
+        //Use DI to create controllers
+        context.Services.AddControllers().AddControllersAsServices();
 
         //Add feature providers
         var partManager = context.Services.GetInstance<ApplicationPartManager>();
         var application = context.Services.GetInstance<IFakeApplication>();
-        partManager.FeatureProviders.Add(new ApplicationServiceControllerFeatureProvider(application));
+        partManager.FeatureProviders.Add(new RemoteServiceControllerFeatureProvider(application));
+        partManager.ApplicationParts.TryAdd(new AssemblyPart(typeof(FakeAspNetCoreModule).Assembly));
 
-        context.Services.TryAddEnumerable(ServiceDescriptor
-            .Transient<IActionDescriptorProvider, ApplicationServiceActionDescriptorProvider>());
+        context.Services.AddTransient<IActionDescriptorProvider, RemoteServiceActionDescriptorProvider>();
+        context.Services.AddTransient<IApiDescriptionProvider, RemoteServiceApiDescriptionProvider>();
         context.Services.AddOptions<MvcOptions>()
             .Configure(options =>
             {
-                var conventionOptions =
-                    context.Services.GetLazyInstance<IOptions<ApplicationServiceConventionOptions>>();
-                var actionConventional = context.Services.GetLazyInstance<IApplicationServiceActionConventional>();
+                var conventionOptions = context.Services.GetRequiredService<IOptions<RemoteServiceConventionOptions>>();
+                var actionConventional = context.Services.GetRequiredService<IRemoteServiceActionHelper>();
 
-                options.Conventions.Add(new ApplicationServiceConvention(conventionOptions, actionConventional));
+                options.Conventions.Add(new RemoteServiceConvention(conventionOptions, actionConventional));
             });
-        context.Services.AddTransient<IApplicationServiceActionConventional, ApplicationServiceActionConventional>();
+        context.Services.AddTransient<IRemoteServiceActionHelper, RemoteServiceActionHelper>();
     }
 
     public override void ConfigureApplication(ApplicationConfigureContext context)
@@ -45,7 +47,7 @@ public class FakeAspNetCoreControllerModule : FakeModule
         }
 
         var conventionalControllerAssemblies = context.ServiceProvider
-            .GetRequiredService<IOptions<ApplicationServiceConventionOptions>>()
+            .GetRequiredService<IOptions<RemoteServiceConventionOptions>>()
             .Value.Assemblies;
 
         foreach (var assembly in conventionalControllerAssemblies)

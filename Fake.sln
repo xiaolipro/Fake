@@ -145,7 +145,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fake.SqlSugarCore.Tests", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fake.Chaching.Tests", "tests\Fake.Chaching.Tests\Fake.Chaching.Tests.csproj", "{531E7E80-F9D3-4C35-A51E-D6C78703CB24}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fake.AspNetCore.Controller", "src\Fake.AspNetCore.Controller\Fake.AspNetCore.Controller.csproj", "{32B37125-3659-4EBC-8811-1DB54EB5116C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fake.AspNetCore.Mvc", "src\Fake.AspNetCore.Mvc\Fake.AspNetCore.Mvc.csproj", "{32B37125-3659-4EBC-8811-1DB54EB5116C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

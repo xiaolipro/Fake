@@ -1,12 +1,12 @@
 ﻿using Fake.AspNetCore;
-using Fake.AspNetCore.Controller;
-using Fake.AspNetCore.Controller.Conventions;
+using Fake.AspNetCore.Mvc;
+using Fake.AspNetCore.Mvc.Conventions;
 using Fake.Auditing;
 using Fake.Autofac;
 using Fake.Modularity;
 
 [DependsOn(typeof(FakeAuditingModule), typeof(FakeAutofacModule))]
-[DependsOn(typeof(FakeAspNetCoreControllerModule))]
+[DependsOn(typeof(FakeAspNetCoreMvcModule))]
 public class SimpleWebDemoModule : FakeModule
 {
     public override void PreConfigureServices(ServiceConfigurationContext context)
@@ -17,7 +17,7 @@ public class SimpleWebDemoModule : FakeModule
             // options.IsEnabledExceptionLog = false;
         });
 
-        context.Services.Configure<ApplicationServiceConventionOptions>(options =>
+        context.Services.Configure<RemoteServiceConventionOptions>(options =>
         {
             options.AddAssembly(typeof(SimpleWebDemoModule).Assembly);
         });
@@ -30,6 +30,7 @@ public class SimpleWebDemoModule : FakeModule
     {
         var app = context.GetWebApplication();
         app.MapGet("/s", () => "Hello World!");
+        app.MapGet("/b", () => "Hello World!");
 
         app.UseSwagger();
         app.UseSwaggerUI(options => { options.SwaggerEndpoint("/swagger/v1/swagger.json", "Simple Api"); });

@@ -22,7 +22,7 @@ public class FakeDateTimeConverterModifier
 
         if (_serviceProvider is null) throw new InvalidOperationException($"{nameof(_serviceProvider)} is null");
 
-        if (ReflectionHelper.GetAttributeOrDefault<DisableClockNormalizationAttribute>(jsonTypeInfo.Type) != null)
+        if (ReflectionHelper.GetAttributeOrNull<DisableClockNormalizationAttribute>(jsonTypeInfo.Type) != null)
         {
             return;
         }
