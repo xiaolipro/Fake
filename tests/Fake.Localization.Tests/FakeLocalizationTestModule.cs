@@ -14,7 +14,7 @@ public class FakeLocalizationTestModule : FakeModule
     {
         context.Services.Configure<FakeVirtualFileSystemOptions>(options =>
         {
-            options.FileProviders.Add<FakeLocalizationTestModule>("Localization");
+            options.FileProviders.Add<FakeLocalizationTestModule>("Fake.Localization.Tests.Localization");
         });
 
         context.Services.Configure<FakeLocalizationOptions>(options =>

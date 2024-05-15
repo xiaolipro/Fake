@@ -1,4 +1,4 @@
-﻿namespace Fake.AspNetCore;
+﻿namespace Fake.DomainDrivenDesign.Application;
 
 public abstract class ApplicationService : IRemoteService
 {

@@ -9,21 +9,16 @@ using Fake.Modularity;
 [DependsOn(typeof(FakeAspNetCoreMvcModule))]
 public class SimpleWebDemoModule : FakeModule
 {
-    public override void PreConfigureServices(ServiceConfigurationContext context)
+    public override void ConfigureServices(ServiceConfigurationContext context)
     {
-        context.Services.Configure<FakeAuditingOptions>(options =>
-        {
-            // options.IsEnabledActionLog = false;
-            // options.IsEnabledExceptionLog = false;
-        });
-
         context.Services.Configure<RemoteServiceConventionOptions>(options =>
         {
             options.AddAssembly(typeof(SimpleWebDemoModule).Assembly);
         });
 
-        context.Services.AddEndpointsApiExplorer();
-        context.Services.AddSwaggerGen();
+        context.Services.AddUnifiedResultFilter();
+
+        context.Services.AddFakeSwaggerGen();
     }
 
     public override void ConfigureApplication(ApplicationConfigureContext context)
@@ -32,7 +27,6 @@ public class SimpleWebDemoModule : FakeModule
         app.MapGet("/s", () => "Hello World!");
         app.MapGet("/b", () => "Hello World!");
 
-        app.UseSwagger();
-        app.UseSwaggerUI(options => { options.SwaggerEndpoint("/swagger/v1/swagger.json", "Simple Api"); });
+        app.UseFakeSwagger();
     }
 }

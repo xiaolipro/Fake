@@ -30,8 +30,9 @@ public class FakeApplication : IFakeApplication
     {
         get
         {
-            if (!_initializedModules)
-                throw new FakeException($"{nameof(FakeApplication)}所有模块初始化前，不能使用{nameof(ServiceProvider)}");
+            if (!_configuredServices)
+                throw new FakeException(
+                    $"所有模块初始ConfigureServices完成前，不能通过{nameof(FakeApplication)}使用{nameof(ServiceProvider)}");
             return _serviceProvider;
         }
     }

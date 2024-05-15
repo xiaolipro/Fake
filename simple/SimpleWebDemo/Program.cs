@@ -2,6 +2,7 @@ using System.Text;
 using Microsoft.AspNetCore.Routing.Internal;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Host.UseAutofac();
 builder.Services.AddApplication<SimpleWebDemoModule>();
 var app = builder.Build();
 app.InitializeApplication();
@@ -68,6 +69,8 @@ app.UseEndpoints(endpoints =>
 
     endpoints.MapGet("/attributes", (string name) => $"Hello World! {name}");
 });
+
+app.MapControllers();
 
 app.Run();
 

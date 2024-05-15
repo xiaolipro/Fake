@@ -1,4 +1,4 @@
-﻿using System.Net;
+﻿using Fake.DomainDrivenDesign.Application.Dtos;
 using Fake.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
@@ -37,12 +37,22 @@ public class RemoteServiceApiDescriptionProvider(
                     continue;
                 }
 
+                // ProducesResponseTypeAttribute优先级大于全局配置
                 var actionProducesResponseTypeAttributes = ReflectionHelper
                     .GetAttributes<ProducesResponseTypeAttribute>(controllerActionDescriptor.MethodInfo);
-                if (actionProducesResponseTypeAttributes.All(x => x.StatusCode != apiResponseType.StatusCode))
+                if (actionProducesResponseTypeAttributes.Any(x => x.StatusCode == apiResponseType.StatusCode))
                 {
-                    apiDescription.SupportedResponseTypes.Add(apiResponseType);
+                    continue;
                 }
+
+                var actionResponseType = apiDescription.SupportedResponseTypes.FirstOrDefault(x =>
+                    x.StatusCode == apiResponseType.StatusCode);
+                if (actionResponseType != default)
+                {
+                    apiDescription.SupportedResponseTypes.Remove(actionResponseType);
+                }
+
+                apiDescription.SupportedResponseTypes.Add(apiResponseType);
             }
         }
     }
@@ -51,15 +61,9 @@ public class RemoteServiceApiDescriptionProvider(
     {
         var supportedResponseTypes = new List<int>
         {
-            (int)HttpStatusCode.Forbidden,
-            (int)HttpStatusCode.Unauthorized,
-            (int)HttpStatusCode.BadRequest,
-            (int)HttpStatusCode.NotFound,
-            (int)HttpStatusCode.NotImplemented,
-            (int)HttpStatusCode.InternalServerError
         }.Select(statusCode => new ApiResponseType
         {
-            Type = typeof(FakeException),
+            Type = typeof(UnifyResultDto<>),
             StatusCode = statusCode
         }).ToList();
 

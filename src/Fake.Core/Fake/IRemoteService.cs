@@ -1,4 +1,4 @@
-﻿namespace Fake.AspNetCore;
+﻿namespace Fake;
 
 public interface IRemoteService
 {

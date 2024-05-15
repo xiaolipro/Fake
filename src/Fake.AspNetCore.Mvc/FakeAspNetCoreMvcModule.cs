@@ -1,5 +1,6 @@
 ﻿using Fake.AspNetCore.Mvc.ApiExplorer;
 using Fake.AspNetCore.Mvc.Conventions;
+using Fake.DomainDrivenDesign;
 using Fake.Modularity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
@@ -11,12 +12,13 @@ using Microsoft.Extensions.Options;
 namespace Fake.AspNetCore.Mvc;
 
 [DependsOn(typeof(FakeAspNetCoreModule))]
+[DependsOn(typeof(FakeDomainDrivenDesignModule))]
 public class FakeAspNetCoreMvcModule : FakeModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
         //Use DI to create controllers
-        context.Services.AddControllers().AddControllersAsServices();
+        context.Services.AddControllers();
 
         //Add feature providers
         var partManager = context.Services.GetInstance<ApplicationPartManager>();

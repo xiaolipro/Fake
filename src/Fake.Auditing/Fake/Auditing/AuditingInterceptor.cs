@@ -12,18 +12,11 @@ using Microsoft.Extensions.Options;
 
 namespace Fake.Auditing;
 
-public class AuditingInterceptor : IFakeInterceptor
+public class AuditingInterceptor(IServiceScopeFactory serviceScopeFactory) : IFakeInterceptor
 {
-    private readonly IServiceScopeFactory _serviceScopeFactory;
-
-    public AuditingInterceptor(IServiceScopeFactory serviceScopeFactory)
-    {
-        _serviceScopeFactory = serviceScopeFactory;
-    }
-
     public virtual async Task InterceptAsync(IFakeMethodInvocation invocation)
     {
-        using var serviceScope = _serviceScopeFactory.CreateScope();
+        using var serviceScope = serviceScopeFactory.CreateScope();
 
         var auditingHelper = serviceScope.ServiceProvider.GetRequiredService<IAuditingHelper>();
 

@@ -4,13 +4,15 @@
 
     <PropertyGroup>
         <EnablePreviewFeatures>true</EnablePreviewFeatures>
+        <PublishDocumentationFiles>true</PublishDocumentationFiles>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
     <ItemGroup>
         <ProjectReference Include="..\..\src\Fake.AspNetCore.Mvc\Fake.AspNetCore.Mvc.csproj"/>
-      <ProjectReference Include="..\..\src\Fake.AspNetCore\Fake.AspNetCore.csproj" />
-      <ProjectReference Include="..\..\src\Fake.Auditing\Fake.Auditing.csproj" />
-      <ProjectReference Include="..\..\src\Fake.Autofac\Fake.Autofac.csproj" />
-      <ProjectReference Include="..\..\src\Fake.Core\Fake.Core.csproj" />
+        <ProjectReference Include="..\..\src\Fake.AspNetCore\Fake.AspNetCore.csproj"/>
+        <ProjectReference Include="..\..\src\Fake.Auditing\Fake.Auditing.csproj"/>
+        <ProjectReference Include="..\..\src\Fake.Autofac\Fake.Autofac.csproj"/>
+        <ProjectReference Include="..\..\src\Fake.Core\Fake.Core.csproj"/>
     </ItemGroup>
 
 </Project>

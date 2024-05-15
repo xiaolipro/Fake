@@ -1,10 +1,14 @@
-﻿namespace Fake.DomainDrivenDesign.Application.Dtos;
+﻿using System.Net;
 
-public class UnifyResultDto<T>(string code = "200", string message = "成功", T? data = default)
+namespace Fake.DomainDrivenDesign.Application.Dtos;
+
+public class UnifyResultDto(object? data = null)
 {
-    public string Code { get; set; } = code;
+    public string Code { get; set; } = HttpStatusCode.OK.ToString();
 
-    public string Message { get; set; } = message;
+    public string Message { get; set; } = "操作成功";
 
-    public T? Data { get; set; } = data;
+    public object? Data { get; set; } = data;
 }
+
+public class UnifyResultDto<T>(T? data = default) : UnifyResultDto(data);
