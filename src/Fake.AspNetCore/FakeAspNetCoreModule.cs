@@ -64,7 +64,7 @@ public class FakeAspNetCoreModule : FakeModule
 
     private void ConfigureControllers(ServiceConfigurationContext context)
     {
-        context.Services.AddControllers();
+        context.Services.AddControllers().AddControllersAsServices();
 
         //Add feature providers
         var partManager = context.Services.GetInstance<ApplicationPartManager>();
