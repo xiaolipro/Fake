@@ -16,7 +16,7 @@ public class FakeAspNetCoreTestModule : FakeModule
     {
         context.Services.Configure<FakeVirtualFileSystemOptions>(options =>
         {
-            options.FileProviders.Add<FakeAspNetCoreTestModule>();
+            options.FileProviders.Add<FakeAspNetCoreTestModule>("Fake.AspNetCore.Tests");
         });
     }
 
