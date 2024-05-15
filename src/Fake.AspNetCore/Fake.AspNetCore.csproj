@@ -8,5 +8,7 @@
     <ItemGroup>
         <ProjectReference Include="..\Fake.Auditing\Fake.Auditing.csproj"/>
         <ProjectReference Include="..\Fake.Authorization\Fake.Authorization.csproj"/>
+        <ProjectReference Include="..\Fake.DomainDrivenDesign\Fake.DomainDrivenDesign.csproj"/>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0"/>
     </ItemGroup>
 </Project>

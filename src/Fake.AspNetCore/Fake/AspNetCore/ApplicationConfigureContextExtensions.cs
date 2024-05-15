@@ -1,10 +1,7 @@
-﻿using System;
-using Fake.DependencyInjection;
+﻿using Fake.DependencyInjection;
 using Fake.Modularity;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Fake.AspNetCore;

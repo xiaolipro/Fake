@@ -1,6 +1,6 @@
 ﻿using Fake;
+using Fake.AspNetCore;
 using Fake.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace Microsoft.AspNetCore.Builder;
@@ -14,7 +14,7 @@ public static class FakeApplicationBuilderExtensions
         var applicationBuilderAccessor = app.ApplicationServices.GetService<ObjectAccessor<IApplicationBuilder>>();
         if (applicationBuilderAccessor == null)
         {
-            throw new FakeException("请检查是否依赖FakeAspNetCoreModule模块");
+            throw new FakeException($"请检查是否依赖{nameof(FakeAspNetCoreModule)}模块");
         }
 
         applicationBuilderAccessor.Value = app;

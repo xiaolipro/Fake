@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using Fake.Authorization;
 using Microsoft.AspNetCore.Http;
 

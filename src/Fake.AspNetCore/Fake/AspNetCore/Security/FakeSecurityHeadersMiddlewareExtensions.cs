@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
-
-namespace Fake.AspNetCore.Security;
+﻿namespace Fake.AspNetCore.Security;
 
 public static class FakeSecurityHeadersMiddlewareExtensions
 {

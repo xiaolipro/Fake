@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
-
-namespace Fake.AspNetCore.ExceptionHandling;
+﻿namespace Fake.AspNetCore.ExceptionHandling;
 
 public static class FakeExceptionHandlingMiddlewareExtensions
 {

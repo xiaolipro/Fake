@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
-using Microsoft.Extensions.Options;
 
 namespace Fake.AspNetCore.Mvc.Conventions;
 

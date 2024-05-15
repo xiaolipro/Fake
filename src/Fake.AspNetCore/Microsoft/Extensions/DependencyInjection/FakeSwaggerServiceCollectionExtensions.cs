@@ -1,5 +1,5 @@
-﻿using Fake.AspNetCore.SwaggerGen;
-using Microsoft.Extensions.Options;
+﻿using System.IO;
+using Fake.AspNetCore.SwaggerGen;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Microsoft.Extensions.DependencyInjection;

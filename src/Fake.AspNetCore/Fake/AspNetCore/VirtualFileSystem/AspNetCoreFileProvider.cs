@@ -1,9 +1,5 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using Fake.VirtualFileSystem;
+﻿using Fake.VirtualFileSystem;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 
 namespace Fake.AspNetCore.VirtualFileSystem;

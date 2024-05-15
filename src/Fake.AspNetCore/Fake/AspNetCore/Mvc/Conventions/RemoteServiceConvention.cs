@@ -1,10 +1,9 @@
 ﻿using Fake.Helpers;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ActionConstraints;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using Microsoft.Extensions.Options;
 
 namespace Fake.AspNetCore.Mvc.Conventions;
 
@@ -47,12 +46,6 @@ public class RemoteServiceConvention(
         if (controller.ApiExplorer.GroupName.IsNullOrEmpty())
         {
             controller.ApiExplorer.GroupName = controller.ControllerName;
-        }
-
-        controller.ApiExplorer.IsVisible = true;
-        foreach (var action in controller.Actions)
-        {
-            action.ApiExplorer.IsVisible = true;
         }
     }
 

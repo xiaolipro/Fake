@@ -17,6 +17,7 @@ public class TestApplicationService : ApplicationService, ITransientDependency
     /// </summary>
     /// <param name="name"></param>
     /// <returns></returns>
+    [Audited]
     public virtual string Hello(string name)
     {
         return $"hello {name}";
@@ -27,6 +28,7 @@ public class TestApplicationService : ApplicationService, ITransientDependency
     /// </summary>
     /// <param name="name"></param>
     /// <returns></returns>
+    [ApiExplorerSettings(IgnoreApi = true)]
     public virtual async Task<string> Hello2(string name)
     {
         await Task.Delay(1010);

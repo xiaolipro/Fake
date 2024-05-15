@@ -1,12 +1,8 @@
-﻿using System;
-using System.Threading.Tasks;
-using Fake.Authorization;
+﻿using Fake.Authorization;
 using Fake.ExceptionHandling;
 using Fake.Json;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
 
 namespace Fake.AspNetCore.ExceptionHandling;

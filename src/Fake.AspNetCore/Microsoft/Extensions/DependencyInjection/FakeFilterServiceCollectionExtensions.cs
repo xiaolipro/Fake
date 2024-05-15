@@ -1,5 +1,4 @@
 ﻿using Fake.AspNetCore.Mvc.Filters.UnifiedResult;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Microsoft.Extensions.DependencyInjection;
 

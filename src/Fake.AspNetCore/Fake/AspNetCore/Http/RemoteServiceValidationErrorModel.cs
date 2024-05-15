@@ -1,5 +1,3 @@
-using System;
-
 namespace Fake.AspNetCore.Http;
 
 [Serializable]
@@ -17,14 +15,13 @@ public class RemoteServiceValidationErrorModel
 
     public RemoteServiceValidationErrorModel()
     {
-        
     }
 
     public RemoteServiceValidationErrorModel(string message)
     {
         Message = message;
     }
-    
+
     public RemoteServiceValidationErrorModel(string message, params string[] members)
         : this(message)
     {

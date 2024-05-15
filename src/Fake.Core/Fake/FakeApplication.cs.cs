@@ -30,9 +30,9 @@ public class FakeApplication : IFakeApplication
     {
         get
         {
-            if (!_configuredServices)
+            if (_serviceProvider == null)
                 throw new FakeException(
-                    $"所有模块初始ConfigureServices完成前，不能通过{nameof(FakeApplication)}使用{nameof(ServiceProvider)}");
+                    $"{nameof(InitializeApplication)}执行前，不能访问{nameof(FakeApplication)}的{nameof(ServiceProvider)}");
             return _serviceProvider;
         }
     }
@@ -187,9 +187,10 @@ public class FakeApplication : IFakeApplication
     {
         serviceProvider ??= Services.BuildServiceProviderFromFactory().CreateScope().ServiceProvider;
 
-        // tips：正式赋值ServiceProvider
+        // 正式赋值ServiceProvider
         SetServiceProvider(serviceProvider);
 
+        // configure生命周期
         InitializeModules();
     }
 

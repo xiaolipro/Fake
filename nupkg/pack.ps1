@@ -1,6 +1,6 @@
 # 获取脚本所在的目录
 $currentDirectory = Split-Path -Path $MyInvocation.MyCommand.Definition -Parent
-Write-Host "当前目录：$currentDirectory"
+Write-Host "Current Dir：$currentDirectory"
 Set-Location -Path $currentDirectory
 
 # 删除 packages 目录下的所有文件
@@ -14,7 +14,7 @@ $scriptBlock = {
     param($dir)
     Set-Location $dir
     Write-Host "Executing command in $dir"
-    dotnet pack -c Debug --output ../../nupkg/packages
+    dotnet pack /p:Version=8.0.0-preview5 -c Debug --output ../../nupkg/packages
     Set-Location $PSScriptRoot
 }
 
@@ -25,3 +25,5 @@ $directories = Get-ChildItem -Directory
 $directories | ForEach-Object {
     & $scriptBlock -dir $_.FullName
 }
+
+Write-Host "Executing full completed!"

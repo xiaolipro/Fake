@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 
 namespace Fake.AspNetCore.Security;
@@ -30,7 +27,7 @@ public class FakeSecurityHeadersMiddleware : IMiddleware
         {
             AddHeaderIfNotExists(context, "Content-Security-Policy", _options.ContentSecurityPolicyValue);
         }
-        
+
         await next.Invoke(context);
     }
 

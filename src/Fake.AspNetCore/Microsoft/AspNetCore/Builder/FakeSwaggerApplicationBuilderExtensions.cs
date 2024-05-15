@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.ApiExplorer;
-
-namespace Microsoft.AspNetCore.Builder;
+﻿namespace Microsoft.AspNetCore.Builder;
 
 public static class FakeSwaggerApplicationBuilderExtensions
 {

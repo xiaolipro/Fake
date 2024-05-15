@@ -7,11 +7,9 @@ builder.Services.AddApplication<SimpleWebDemoModule>();
 var app = builder.Build();
 app.InitializeApplication();
 
-app.UseStaticFiles();
 
 byte[] plainTextPayload = Encoding.UTF8.GetBytes("Plain text!");
 
-app.UseRouting();
 app.Map("/getwithattributes", Handler);
 
 app.UseEndpoints(endpoints =>
@@ -69,8 +67,6 @@ app.UseEndpoints(endpoints =>
 
     endpoints.MapGet("/attributes", (string name) => $"Hello World! {name}");
 });
-
-app.MapControllers();
 
 app.Run();
 

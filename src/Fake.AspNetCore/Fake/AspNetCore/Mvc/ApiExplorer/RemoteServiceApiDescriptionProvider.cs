@@ -1,11 +1,8 @@
 ﻿using Fake.DomainDrivenDesign.Application.Dtos;
 using Fake.Helpers;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.Extensions.Options;
 
 namespace Fake.AspNetCore.Mvc.ApiExplorer;
 

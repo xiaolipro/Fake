@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.Abstractions;
-
-namespace Fake.AspNetCore.Mvc.ApiExplorer;
+﻿namespace Fake.AspNetCore.Mvc.ApiExplorer;
 
 /// <summary>
 /// details see：https://github.com/dotnet/aspnetcore/blob/main/src/Mvc/Mvc.Core/src/ApplicationModels/ControllerActionDescriptorProvider.cs

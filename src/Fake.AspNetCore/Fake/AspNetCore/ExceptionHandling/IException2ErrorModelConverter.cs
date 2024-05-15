@@ -1,4 +1,3 @@
-using System;
 using Fake.AspNetCore.Http;
 
 namespace Fake.AspNetCore.ExceptionHandling;

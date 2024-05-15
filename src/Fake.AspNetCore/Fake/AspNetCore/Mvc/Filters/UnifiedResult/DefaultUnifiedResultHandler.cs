@@ -1,5 +1,4 @@
 ﻿using Fake.DomainDrivenDesign.Application.Dtos;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Fake.AspNetCore.Mvc.Filters.UnifiedResult;

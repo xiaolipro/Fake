@@ -39,7 +39,7 @@ public static class FakeServiceCollectionCommonExtensions
 
     /// <summary>
     /// 直接从IOC容器中获取实例。
-    /// tips：仅仅是简单的根据type取ImplementationInstance，请尽可能的从ServiceProvider取而不是通过此方法
+    /// tips：只是简单的根据从services中找ImplementationInstance，请尽可能的使用ServiceProvider取而不是通过此方法
     /// </summary>
     /// <param name="services"></param>
     /// <typeparam name="T"></typeparam>
@@ -56,7 +56,13 @@ public static class FakeServiceCollectionCommonExtensions
         return service;
     }
 
-    public static Lazy<T> GetLazyInstance<T>(this IServiceCollection services) where T : class
+    /// <summary>
+    /// 返回一个Lazy服务，valueFactory由<see cref="FakeApplication"/>的<see cref="ServiceProvider"/>提供
+    /// </summary>
+    /// <param name="services"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public static Lazy<T> GetLazyRequiredService<T>(this IServiceCollection services) where T : class
     {
         return new Lazy<T>(services.GetRequiredService<T>, LazyThreadSafetyMode.ExecutionAndPublication);
     }
@@ -65,7 +71,7 @@ public static class FakeServiceCollectionCommonExtensions
     /// 从<see cref="FakeApplication"/>的<see cref="ServiceProvider"/>中获取服务<see cref="T"/>
     /// </summary>
     /// <param name="services"></param>
-    /// <exception cref="FakeException"><see cref="FakeApplication"/>所有模块初始化前，不能使用</exception>
+    /// <exception cref="FakeException"><see cref="FakeApplication"/> InitializeApplication执行前，不能使用</exception>
     /// <returns></returns>
     public static T GetRequiredService<T>(this IServiceCollection services) where T : class
     {

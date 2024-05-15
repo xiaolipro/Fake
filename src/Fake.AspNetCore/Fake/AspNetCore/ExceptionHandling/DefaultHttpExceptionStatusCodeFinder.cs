@@ -1,9 +1,7 @@
-using System;
 using System.Net;
 using Fake.Authorization;
 using Fake.ExceptionHandling;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
 
 namespace Fake.AspNetCore.ExceptionHandling;
 

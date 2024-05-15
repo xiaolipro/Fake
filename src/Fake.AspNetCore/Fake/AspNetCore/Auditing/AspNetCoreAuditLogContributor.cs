@@ -1,8 +1,6 @@
-﻿using System;
-using Fake.AspNetCore.Http;
+﻿using Fake.AspNetCore.Http;
 using Fake.Auditing;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Fake.AspNetCore.Auditing;
 
