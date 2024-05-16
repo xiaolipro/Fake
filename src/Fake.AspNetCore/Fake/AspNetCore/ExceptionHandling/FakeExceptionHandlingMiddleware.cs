@@ -28,7 +28,9 @@ public class FakeExceptionHandlingMiddleware(
             }
 
             logger.LogException(ex);
+
             var errorModel = await converter.HandlerAndWarpErrorAsync(context, ex);
+            if (errorModel == null) return;
             var jsonSerializer = context.RequestServices.GetRequiredService<IFakeJsonSerializer>();
 
             context.Response.Clear();

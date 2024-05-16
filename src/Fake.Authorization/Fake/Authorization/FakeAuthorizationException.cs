@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Runtime.Serialization;
-using Fake.ExceptionHandling;
 using Fake.Logging;
 using Microsoft.Extensions.Logging;
 
 namespace Fake.Authorization;
 
 [Serializable]
-public class FakeAuthorizationException : FakeException, IHasLogLevel, IHasErrorCode
+public class FakeAuthorizationException : FakeException, IHasLogLevel
 {
     /// <summary>
     /// 异常等级，默认：LogLevel.Warning

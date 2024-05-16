@@ -17,7 +17,10 @@ public class FakeExceptionFilter(IFakeExceptionHandler fakeExceptionHandler) : I
         logger.LogException(context.Exception);
 
         var errorModel = await fakeExceptionHandler.HandlerAndWarpErrorAsync(context.HttpContext, context.Exception);
-        context.Result = new ObjectResult(errorModel);
+        if (errorModel != null)
+        {
+            context.Result = new ObjectResult(errorModel);
+        }
 
         context.ExceptionHandled = true;
     }

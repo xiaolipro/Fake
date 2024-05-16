@@ -1,29 +1,17 @@
+using System.ComponentModel.DataAnnotations;
 using System.Net;
 using Fake.Authorization;
-using Fake.ExceptionHandling;
 using Microsoft.AspNetCore.Http;
 
 namespace Fake.AspNetCore.ExceptionHandling;
 
-public class DefaultHttpExceptionStatusCodeFinder(IOptions<FakeHttpExceptionStatusOptions> options)
-    : IHttpExceptionStatusCodeFinder
+/// <summary>
+/// default exception http codes: 400 401 403 500
+/// </summary>
+public class DefaultHttpExceptionStatusCodeFinder : IHttpExceptionStatusCodeFinder
 {
-    private readonly FakeHttpExceptionStatusOptions _options = options.Value;
-
     public virtual HttpStatusCode Find(HttpContext httpContext, Exception exception)
     {
-        if (exception is IHasErrorCode exceptionWithErrorCode)
-        {
-            var code = exceptionWithErrorCode.Code;
-            if (!code.IsNullOrWhiteSpace())
-            {
-                if (_options.ErrorCodeToHttpStatusCodeMappings.TryGetValue(code!, out var statusCode))
-                {
-                    return statusCode;
-                }
-            }
-        }
-
         if (exception is FakeAuthorizationException)
         {
             var isAuthenticated = httpContext.User.Identity?.IsAuthenticated ?? false;
@@ -32,9 +20,7 @@ public class DefaultHttpExceptionStatusCodeFinder(IOptions<FakeHttpExceptionStat
                 : HttpStatusCode.Unauthorized;
         }
 
-        if (exception is NotImplementedException) return HttpStatusCode.NotImplemented;
-
-        if (exception is BusinessException) return HttpStatusCode.BadRequest;
+        if (exception is ValidationException or BusinessException) return HttpStatusCode.BadRequest;
 
         return HttpStatusCode.InternalServerError;
     }

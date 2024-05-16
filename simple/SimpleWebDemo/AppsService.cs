@@ -1,4 +1,5 @@
-﻿using Fake;
+﻿using System.ComponentModel.DataAnnotations;
+using Fake;
 using Fake.DomainDrivenDesign.Application;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,8 +24,14 @@ public class AppsService : ApplicationService
         return num;
     }
 
-    public void GetError()
+    public void GetError(Student student)
     {
         throw new BusinessException("GG");
     }
+}
+
+public class Student
+{
+    public string Name { get; set; }
+    [Range(18, 60)] public int Age { get; set; }
 }

@@ -1,14 +1,12 @@
 ﻿using System.Runtime.Serialization;
-using Fake.ExceptionHandling;
 using Fake.Logging;
 using Microsoft.Extensions.Logging;
 
 namespace Fake;
 
 [Serializable]
-public class BusinessException : FakeException, IHasErrorCode, IHasLogLevel
+public class BusinessException : FakeException, IHasLogLevel
 {
-    public string? Code { get; }
     public LogLevel LogLevel { get; set; }
 
     /// <summary>
@@ -21,12 +19,10 @@ public class BusinessException : FakeException, IHasErrorCode, IHasLogLevel
 
     public BusinessException(
         string? message = null,
-        string? code = null,
         Exception? innerException = null,
         LogLevel logLevel = LogLevel.Warning)
         : base(message, innerException)
     {
-        Code = code ?? "400";
         LogLevel = logLevel;
     }
 }

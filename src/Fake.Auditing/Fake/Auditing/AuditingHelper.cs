@@ -11,23 +11,19 @@ using Microsoft.Extensions.Options;
 
 namespace Fake.Auditing;
 
-public class AuditingHelper : IAuditingHelper
+public class AuditingHelper(
+    IOptions<FakeAuditingOptions> options,
+    IFakeClock fakeClock,
+    ICurrentUser currentUser,
+    ILogger<AuditingHelper> logger,
+    IServiceScopeFactory serviceScopeFactory)
+    : IAuditingHelper
 {
-    protected readonly IFakeClock FakeClock;
-    protected readonly ICurrentUser CurrentUser;
-    protected readonly ILogger<AuditingHelper> Logger;
-    protected readonly IServiceScopeFactory ServiceScopeFactory;
-    protected readonly FakeAuditingOptions FakeAuditingOptions;
-
-    public AuditingHelper(IOptions<FakeAuditingOptions> options, IFakeClock fakeClock, ICurrentUser currentUser,
-        ILogger<AuditingHelper> logger, IServiceScopeFactory serviceScopeFactory)
-    {
-        FakeClock = fakeClock;
-        CurrentUser = currentUser;
-        Logger = logger;
-        ServiceScopeFactory = serviceScopeFactory;
-        FakeAuditingOptions = options.Value;
-    }
+    protected readonly IFakeClock FakeClock = fakeClock;
+    protected readonly ICurrentUser CurrentUser = currentUser;
+    protected readonly ILogger<AuditingHelper> Logger = logger;
+    protected readonly IServiceScopeFactory ServiceScopeFactory = serviceScopeFactory;
+    protected readonly FakeAuditingOptions FakeAuditingOptions = options.Value;
 
     public virtual bool IsAuditMethod(MethodInfo methodInfo)
     {

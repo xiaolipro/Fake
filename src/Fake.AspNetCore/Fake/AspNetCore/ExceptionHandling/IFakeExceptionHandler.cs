@@ -5,5 +5,5 @@ namespace Fake.AspNetCore.ExceptionHandling;
 
 public interface IFakeExceptionHandler
 {
-    Task<RemoteServiceErrorModel> HandlerAndWarpErrorAsync(HttpContext httpContext, Exception exception);
+    Task<RemoteServiceErrorModel?> HandlerAndWarpErrorAsync(HttpContext httpContext, Exception exception);
 }

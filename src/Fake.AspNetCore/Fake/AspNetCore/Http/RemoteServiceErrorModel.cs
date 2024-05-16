@@ -1,6 +1,4 @@
-﻿using System.Collections;
-
-namespace Fake.AspNetCore.Http;
+﻿namespace Fake.AspNetCore.Http;
 
 /// <summary>
 /// 远程服务异常模型
@@ -9,40 +7,24 @@ namespace Fake.AspNetCore.Http;
 public class RemoteServiceErrorModel
 {
     /// <summary>
-    /// 异常code
-    /// </summary>
-    public string? Code { get; set; }
-
-    /// <summary>
     /// 异常消息
     /// </summary>
     public string? Message { get; set; }
 
     /// <summary>
-    /// 异常明细
+    /// 异常堆栈
     /// </summary>
     public string? StackTrace { get; set; }
 
-    /// <summary>
-    /// 校验异常
-    /// </summary>
-    public string? ValidationErrorMessage { get; set; }
-
-    /// <summary>
-    /// 自定义数据
-    /// </summary>
-    public IDictionary? Data { get; set; }
+    public object? ValidationErrors { get; set; }
 
     public RemoteServiceErrorModel()
     {
     }
 
-    public RemoteServiceErrorModel(string message, string? stackTrace = null, string? code = null,
-        IDictionary? data = null)
+    public RemoteServiceErrorModel(string message, string? stackTrace = null)
     {
         Message = message;
         StackTrace = stackTrace;
-        Code = code;
-        Data = data;
     }
 }

@@ -1,15 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Text;
+﻿using System.Text;
 using Fake.AspNetCore.Http;
 using Fake.Authorization;
 using Fake.ExceptionHandling;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Localization;
 
 namespace Fake.AspNetCore.ExceptionHandling;
 
-public class FakeExceptionHandler : IFakeExceptionHandler
+public class FakeExceptionHandler(IStringLocalizer<FakeAspNetCoreResource> stringLocalizer) : IFakeExceptionHandler
 {
-    public virtual async Task<RemoteServiceErrorModel> HandlerAndWarpErrorAsync(HttpContext httpContext,
+    public virtual async Task<RemoteServiceErrorModel?> HandlerAndWarpErrorAsync(HttpContext httpContext,
         Exception exception)
     {
         await httpContext.RequestServices.GetRequiredService<IExceptionNotifier>()
@@ -19,6 +19,7 @@ public class FakeExceptionHandler : IFakeExceptionHandler
         {
             await httpContext.RequestServices.GetRequiredService<IAuthorizationExceptionHandler>()
                 .HandleAsync(authorizationException, httpContext);
+            return default;
         }
 
         var statusCodeFinder = httpContext.RequestServices.GetRequiredService<IHttpExceptionStatusCodeFinder>();
@@ -27,7 +28,7 @@ public class FakeExceptionHandler : IFakeExceptionHandler
 
         httpContext.Response.StatusCode = (int)statusCodeFinder.Find(httpContext, exception);
 
-        return Convert(exception, exceptionOptions);
+        return Convert(exception, exceptionOptions, httpContext.Response.StatusCode.ToString());
     }
 
     /// <summary>
@@ -35,24 +36,16 @@ public class FakeExceptionHandler : IFakeExceptionHandler
     /// </summary>
     /// <param name="exception"></param>
     /// <param name="options"></param>
+    /// <param name="statusCode"></param>
     /// <returns></returns>
-    protected virtual RemoteServiceErrorModel Convert(Exception exception, FakeExceptionHandlingOptions options)
+    protected virtual RemoteServiceErrorModel Convert(Exception exception, FakeExceptionHandlingOptions options,
+        string statusCode)
     {
         var details = new StringBuilder();
 
         AddExceptionToDetails(exception, details, options.OutputStackTrace);
 
-        var errorModel = new RemoteServiceErrorModel(exception.Message, details.ToString(), data: exception.Data);
-
-        if (exception is IHasErrorCode hasErrorCodeException)
-        {
-            errorModel.Code = hasErrorCodeException.Code;
-        }
-
-        if (exception is ValidationException validationException)
-        {
-            errorModel.ValidationErrorMessage = validationException.ValidationResult.ErrorMessage;
-        }
+        var errorModel = new RemoteServiceErrorModel();
 
         return errorModel;
     }
@@ -68,16 +61,10 @@ public class FakeExceptionHandler : IFakeExceptionHandler
             details.AppendLine($"STRACK TRACE: {exception.StackTrace}");
         }
 
-        // innert exception
+        // inner exception
         if (exception.InnerException != null)
         {
             AddExceptionToDetails(exception.InnerException, details, outputStackTrace);
-
-            // real exception
-            if (exception is AggregateException && exception.InnerException is IHasErrorCode)
-            {
-                exception = exception.InnerException;
-            }
         }
 
         // aggregate exception

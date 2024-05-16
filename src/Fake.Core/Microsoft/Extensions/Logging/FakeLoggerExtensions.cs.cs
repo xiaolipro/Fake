@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace Microsoft.Extensions.Logging;
+﻿namespace Microsoft.Extensions.Logging;
 
 public static class FakeLoggerExtensions
 {
@@ -25,27 +23,7 @@ public static class FakeLoggerExtensions
     public static void LogException(this ILogger logger, Exception exception, LogLevel logLevel)
     {
         logger.LogExceptionWithLevel(logLevel, exception);
-
-        LogExceptionData(logger, exception, logLevel);
     }
-
-    private static void LogExceptionData(ILogger logger, Exception exception, LogLevel logLevel)
-    {
-        if (exception.Data.Count <= 0)
-        {
-            return;
-        }
-
-        var dataBuilder = new StringBuilder();
-        dataBuilder.AppendLine("---------- Exception Data ----------");
-        foreach (var key in exception.Data.Keys)
-        {
-            dataBuilder.AppendLine($"{key} = {exception.Data[key]}");
-        }
-
-        logger.LogWithLevel(logLevel, dataBuilder.ToString());
-    }
-
 
     /// <summary>
     /// 自定义级别异常日志

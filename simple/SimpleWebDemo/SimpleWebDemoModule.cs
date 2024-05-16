@@ -15,7 +15,7 @@ public class SimpleWebDemoModule : FakeModule
             options.AddAssembly(typeof(SimpleWebDemoModule).Assembly);
         });
         context.Services.AddFakeSwaggerGen();
-        context.Services.AddFakeExceptionFilter();
+        context.Services.AddFakeExceptionFilter().AddFakeValidationActionFilter();
     }
 
     public override void ConfigureApplication(ApplicationConfigureContext context)
