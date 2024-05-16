@@ -1,5 +1,4 @@
 ﻿using System.Text;
-using Fake.ExceptionHandling;
 
 namespace Microsoft.Extensions.Logging;
 
@@ -25,15 +24,14 @@ public static class FakeLoggerExtensions
     /// <param name="logLevel"></param>
     public static void LogException(this ILogger logger, Exception exception, LogLevel logLevel)
     {
-        logger.LogExceptionWithLevel(logLevel, exception.Message, exception);
+        logger.LogExceptionWithLevel(logLevel, exception);
 
-        LogKnownProperties(logger, exception, logLevel);
         LogExceptionData(logger, exception, logLevel);
     }
 
     private static void LogExceptionData(ILogger logger, Exception exception, LogLevel logLevel)
     {
-        if (exception.Data.Count > 0)
+        if (exception.Data.Count <= 0)
         {
             return;
         }
@@ -48,19 +46,6 @@ public static class FakeLoggerExtensions
         logger.LogWithLevel(logLevel, dataBuilder.ToString());
     }
 
-    private static void LogKnownProperties(ILogger logger, Exception exception, LogLevel logLevel)
-    {
-        if (exception is IHasErrorCode exceptionWithErrorCode)
-        {
-            logger.LogWithLevel(logLevel, "Code:" + exceptionWithErrorCode.Code);
-        }
-
-        if (exception is IHasErrorDetails exceptionWithErrorDetails)
-        {
-            logger.LogWithLevel(logLevel, "Details:" + exceptionWithErrorDetails.Details);
-        }
-    }
-
 
     /// <summary>
     /// 自定义级别异常日志
@@ -69,30 +54,30 @@ public static class FakeLoggerExtensions
     /// <param name="logLevel"></param>
     /// <param name="message"></param>
     /// <param name="exception"></param>
-    public static void LogExceptionWithLevel(this ILogger logger, LogLevel logLevel, string message,
-        Exception exception)
+    public static void LogExceptionWithLevel(this ILogger logger, LogLevel logLevel, Exception exception,
+        string? message = null)
     {
         switch (logLevel)
         {
             case LogLevel.Critical:
-                logger.LogCritical(exception, message);
+                logger.LogCritical(exception, message ?? exception.Message);
                 break;
             case LogLevel.Error:
-                logger.LogError(exception, message);
+                logger.LogError(exception, message ?? exception.Message);
                 break;
             case LogLevel.Warning:
-                logger.LogWarning(exception, message);
+                logger.LogWarning(exception, message ?? exception.Message);
                 break;
             case LogLevel.Information:
-                logger.LogInformation(exception, message);
+                logger.LogInformation(exception, message ?? exception.Message);
                 break;
             case LogLevel.Debug:
-                logger.LogDebug(exception, message);
+                logger.LogDebug(exception, message ?? exception.Message);
                 break;
             case LogLevel.Trace:
             case LogLevel.None:
             default: // LogLevel.Trace || LogLevel.None
-                logger.LogDebug(exception, message);
+                logger.LogDebug(exception, message ?? exception.Message);
                 break;
         }
     }

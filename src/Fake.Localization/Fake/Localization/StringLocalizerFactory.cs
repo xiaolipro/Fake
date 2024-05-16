@@ -63,14 +63,14 @@ public class StringLocalizerFactory(
             return localizer;
         }
 
-        if (!latched)
+        if (!latched) // lock store
         {
             return _localizerCache.GetOrAdd(resourceResourceName, _ => CreateStringLocalizer(resource));
         }
 
         using (Semaphore.BeginScope())
         {
-            // DCL
+            // double check lock
             if (_localizerCache.TryGetValue(resourceResourceName, out localizer))
             {
                 return localizer;

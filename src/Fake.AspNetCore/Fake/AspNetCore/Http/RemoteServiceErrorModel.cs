@@ -21,27 +21,27 @@ public class RemoteServiceErrorModel
     /// <summary>
     /// 异常明细
     /// </summary>
-    public string? Details { get; set; }
+    public string? StackTrace { get; set; }
+
+    /// <summary>
+    /// 校验异常
+    /// </summary>
+    public string? ValidationErrorMessage { get; set; }
 
     /// <summary>
     /// 自定义数据
     /// </summary>
     public IDictionary? Data { get; set; }
 
-    /// <summary>
-    /// 校验异常
-    /// </summary>
-    public List<RemoteServiceValidationErrorModel>? ValidationErrors { get; set; }
-
     public RemoteServiceErrorModel()
     {
     }
 
-    public RemoteServiceErrorModel(string message, string? details = null, string? code = null,
+    public RemoteServiceErrorModel(string message, string? stackTrace = null, string? code = null,
         IDictionary? data = null)
     {
         Message = message;
-        Details = details;
+        StackTrace = stackTrace;
         Code = code;
         Data = data;
     }

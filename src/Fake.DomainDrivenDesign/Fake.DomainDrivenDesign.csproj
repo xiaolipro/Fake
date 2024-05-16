@@ -11,6 +11,8 @@
     <ItemGroup>
       <ProjectReference Include="..\Fake.Auditing\Fake.Auditing.csproj" />
       <ProjectReference Include="..\Fake.EventBus\Fake.EventBus.csproj" />
+        <ProjectReference Include="..\Fake.Localization\Fake.Localization.csproj"/>
+        <ProjectReference Include="..\Fake.ObjectMapping\Fake.ObjectMapping.csproj"/>
       <ProjectReference Include="..\Fake.UnitOfWork\Fake.UnitOfWork.csproj" />
     </ItemGroup>
 

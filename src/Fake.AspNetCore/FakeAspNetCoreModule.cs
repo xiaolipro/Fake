@@ -64,9 +64,16 @@ public class FakeAspNetCoreModule : FakeModule
 
     private void ConfigureControllers(ServiceConfigurationContext context)
     {
-        context.Services.AddControllers().AddControllersAsServices();
+        context.Services.AddControllers()
+            /*
+             * important：
+             *   默认使用的IControllerActivator是用ActivatorUtilities.CreateFactory创建实例。
+             *   使用ServiceBasedControllerActivator替代，是交由HttpContext.RequestServices服务商提供。
+             *   而autofac的拦截器正是依赖于服务商才能生效。
+             */
+            .AddControllersAsServices();
 
-        //Add feature providers
+        // Add feature providers
         var partManager = context.Services.GetInstance<ApplicationPartManager>();
         var application = context.Services.GetInstance<IFakeApplication>();
         partManager.FeatureProviders.Add(new RemoteServiceControllerFeatureProvider(application));

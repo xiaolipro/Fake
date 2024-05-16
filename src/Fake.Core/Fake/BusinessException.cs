@@ -6,10 +6,9 @@ using Microsoft.Extensions.Logging;
 namespace Fake;
 
 [Serializable]
-public class BusinessException : FakeException, IHasErrorCode, IHasErrorDetails, IHasLogLevel
+public class BusinessException : FakeException, IHasErrorCode, IHasLogLevel
 {
     public string? Code { get; }
-    public string? Details { get; }
     public LogLevel LogLevel { get; set; }
 
     /// <summary>
@@ -23,13 +22,11 @@ public class BusinessException : FakeException, IHasErrorCode, IHasErrorDetails,
     public BusinessException(
         string? message = null,
         string? code = null,
-        string? details = null,
         Exception? innerException = null,
         LogLevel logLevel = LogLevel.Warning)
         : base(message, innerException)
     {
-        Code = code;
-        Details = details;
+        Code = code ?? "400";
         LogLevel = logLevel;
     }
 }

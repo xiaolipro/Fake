@@ -23,7 +23,7 @@ public class FakeException : Exception
     {
     }
 
-    public FakeException WithData(string name, object value)
+    public FakeException AddData(string name, object value)
     {
         Data[name] = value;
         return this;

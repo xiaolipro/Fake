@@ -1,23 +1,14 @@
-﻿using Fake.Modularity;
+﻿using System.Collections.Generic;
+using Fake.Modularity;
 using Mapster;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 
 namespace Fake.ObjectMapping.Mapster;
 
 public class FakeMapsterOptions
 {
-    public TypeAdapterConfig TypeAdapterConfig { get; set; }
+    public TypeAdapterConfig TypeAdapterConfig { get; set; } = new();
 
-    public List<IRegister> Registers { get; set; }
-
-    public FakeMapsterOptions()
-    {
-        TypeAdapterConfig = new TypeAdapterConfig();
-        Registers = new List<IRegister>();
-    }
+    public List<IRegister> Registers { get; set; } = new();
 
     /// <summary>
     /// 注册模块中的IRegister

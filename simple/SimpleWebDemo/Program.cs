@@ -10,8 +10,6 @@ app.InitializeApplication();
 
 byte[] plainTextPayload = Encoding.UTF8.GetBytes("Plain text!");
 
-app.Map("/getwithattributes", Handler);
-
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapGet("/hello1", (string name) => $"Hello World! {name}");
@@ -69,26 +67,3 @@ app.UseEndpoints(endpoints =>
 });
 
 app.Run();
-
-[Authorize]
-Task HandlerWithAttributes(HttpContext context)
-{
-    return context.Response.WriteAsync("I have ann authorize attribute");
-}
-
-[HttpGet]
-Task Handler(HttpContext context)
-{
-    return context.Response.WriteAsync("I have a method metadata attribute");
-}
-
-class AuthorizeAttribute : Attribute
-{
-}
-
-class HttpGetAttribute : Attribute, IHttpMethodMetadata
-{
-    public bool AcceptCorsPreflight => false;
-
-    public IReadOnlyList<string> HttpMethods { get; } = new List<string> { "GET" };
-}

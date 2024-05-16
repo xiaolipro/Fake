@@ -51,11 +51,6 @@ public class RemoteServiceConvention(
 
     protected virtual void ConfigureSelector(ControllerModel controller)
     {
-        if (controller.Selectors.Any(selector => selector.AttributeRouteModel != null))
-        {
-            return;
-        }
-
         foreach (var action in controller.Actions)
         {
             var httpVerb = remoteServiceActionHelper.GetHttpVerb(action);

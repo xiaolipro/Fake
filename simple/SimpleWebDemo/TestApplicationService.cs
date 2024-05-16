@@ -1,5 +1,4 @@
 ﻿using Fake.Auditing;
-using Fake.DependencyInjection;
 using Fake.DomainDrivenDesign.Application;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,9 +7,8 @@ namespace SimpleWebDemo;
 /// <summary>
 /// 测试德玛
 /// </summary>
-[Audited]
 [ApiExplorerSettings(GroupName = "德玛西亚")]
-public class TestApplicationService : ApplicationService, ITransientDependency
+public class TestApplicationService : ApplicationService
 {
     /// <summary>
     /// 德玛API
@@ -20,7 +18,14 @@ public class TestApplicationService : ApplicationService, ITransientDependency
     [Audited]
     public virtual string Hello(string name)
     {
+        Logger.LogInformation("突突你");
         return $"hello {name}";
+    }
+
+    public string GetName(string lastName, string firstName)
+    {
+        Logger.LogError("突突你d");
+        return $"{firstName} {lastName}";
     }
 
     /// <summary>

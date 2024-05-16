@@ -1,7 +1,5 @@
-﻿using Fake.DomainDrivenDesign.Application.Dtos;
-using Fake.Helpers;
+﻿using Fake.Helpers;
 using Microsoft.AspNetCore.Mvc.Controllers;
-using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Fake.AspNetCore.Mvc.ApiExplorer;
@@ -56,39 +54,6 @@ public class RemoteServiceApiDescriptionProvider(
 
     protected virtual IEnumerable<ApiResponseType> GetApiResponseTypes()
     {
-        var supportedResponseTypes = new List<int>
-        {
-        }.Select(statusCode => new ApiResponseType
-        {
-            Type = typeof(UnifyResultDto<>),
-            StatusCode = statusCode
-        }).ToList();
-
-        foreach (var apiResponse in supportedResponseTypes)
-        {
-            apiResponse.ModelMetadata = modelMetadataProvider.GetMetadataForType(apiResponse.Type!);
-
-            foreach (var responseTypeMetadataProvider in mvcOptions.Value.OutputFormatters
-                         .OfType<IApiResponseTypeMetadataProvider>())
-            {
-                var formatterSupportedContentTypes =
-                    responseTypeMetadataProvider.GetSupportedContentTypes(null!, apiResponse.Type!);
-                if (formatterSupportedContentTypes == null)
-                {
-                    continue;
-                }
-
-                foreach (var formatterSupportedContentType in formatterSupportedContentTypes)
-                {
-                    apiResponse.ApiResponseFormats.Add(new ApiResponseFormat
-                    {
-                        Formatter = (IOutputFormatter)responseTypeMetadataProvider,
-                        MediaType = formatterSupportedContentType
-                    });
-                }
-            }
-        }
-
-        return supportedResponseTypes;
+        return [];
     }
 }

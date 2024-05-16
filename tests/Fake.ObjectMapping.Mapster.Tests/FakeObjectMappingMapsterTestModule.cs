@@ -1,8 +1,8 @@
 using Fake.Modularity;
-using Fake.ObjectMapping.Mapster;
 using Mapster;
 using Microsoft.Extensions.DependencyInjection;
 
+namespace Fake.ObjectMapping.Mapster.Tests;
 
 [DependsOn(typeof(FakeObjectMappingMasterModule))]
 public class FakeObjectMappingMapsterTestModule : FakeModule

@@ -3,36 +3,29 @@ using Microsoft.Extensions.Logging;
 
 namespace Fake.AspNetCore.Http;
 
-public class HttpClientInfoProvider : IHttpClientInfoProvider
+public class HttpClientInfoProvider(
+    ILogger<HttpClientInfoProvider> logger,
+    IHttpContextAccessor httpContextAccessor)
+    : IHttpClientInfoProvider
 {
-    private readonly ILogger<HttpClientInfoProvider> _logger;
-    private readonly IHttpContextAccessor _httpContextAccessor;
-
     public string? UserAgent => GetUserAgent();
     public string? ClientIpAddress => GetClientIpAddress();
 
-    public HttpClientInfoProvider(ILogger<HttpClientInfoProvider> logger,
-        IHttpContextAccessor httpContextAccessor)
-    {
-        _logger = logger;
-        _httpContextAccessor = httpContextAccessor;
-    }
-
     protected virtual string? GetUserAgent()
     {
-        return _httpContextAccessor.HttpContext?.Request.Headers["User-Agent"];
+        return httpContextAccessor.HttpContext?.Request.Headers["User-Agent"];
     }
 
     protected virtual string? GetClientIpAddress()
     {
         try
         {
-            if (_httpContextAccessor.HttpContext?.Connection != null)
-                return _httpContextAccessor.HttpContext?.Connection.RemoteIpAddress?.ToString();
+            if (httpContextAccessor.HttpContext?.Connection != null)
+                return httpContextAccessor.HttpContext?.Connection.RemoteIpAddress?.ToString();
         }
         catch (Exception ex)
         {
-            _logger.LogException(ex, LogLevel.Warning);
+            logger.LogException(ex, LogLevel.Warning);
             return null;
         }
 

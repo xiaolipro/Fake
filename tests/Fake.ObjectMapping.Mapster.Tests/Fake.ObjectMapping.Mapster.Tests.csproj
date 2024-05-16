@@ -9,8 +9,4 @@
 		<ProjectReference Include="..\Fake.ObjectMapping.Tests\Fake.ObjectMapping.Tests.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="Fake\ObjectMapping\Mapster\Registers\" />
-	</ItemGroup>
-
 </Project>

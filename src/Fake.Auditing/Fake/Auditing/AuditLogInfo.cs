@@ -45,7 +45,7 @@ public class AuditLogInfo
     {
         var sb = new StringBuilder();
 
-        sb.AppendLine($"AUDIT LOG: [{HttpStatusCode?.ToString() ?? "---"}: {HttpMethod ?? "-------",-7}] {Url}");
+        sb.AppendLine($"AUDIT LOG: [{HttpStatusCode?.ToString() ?? "---"}] {HttpMethod ?? "-------",-7} {Url}");
         sb.AppendLine($"- UserName - Id      : {UserName} - {UserId}");
         sb.AppendLine($"- ClientIpAddress        : {ClientIpAddress}");
         sb.AppendLine($"- ExecutionDuration      : {ExecutionDuration} ms");
