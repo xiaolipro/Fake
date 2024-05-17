@@ -14,8 +14,8 @@ $scriptBlock = {
     param($dir)
     Set-Location $dir
     Write-Host "Executing command in $dir"
-    dotnet pack -c Debug --output ../../nupkg/packages
-    dotnet pack /p:Version=8.0.0-preview8.2 -c Debug --output ../../nupkg/packages
+    dotnet build
+    dotnet pack /p:Version=8.0.0-preview8.3 -c Debug --output ../../nupkg/packages
     Set-Location $PSScriptRoot
 }
 
