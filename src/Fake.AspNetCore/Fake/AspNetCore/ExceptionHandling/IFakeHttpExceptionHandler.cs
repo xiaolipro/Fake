@@ -1,9 +1,8 @@
-﻿using Fake.AspNetCore.Http;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 
 namespace Fake.AspNetCore.ExceptionHandling;
 
-public interface IFakeExceptionHandler
+public interface IFakeHttpExceptionHandler
 {
     Task<RemoteServiceErrorModel?> HandlerAndWarpErrorAsync(HttpContext httpContext, Exception exception);
 }

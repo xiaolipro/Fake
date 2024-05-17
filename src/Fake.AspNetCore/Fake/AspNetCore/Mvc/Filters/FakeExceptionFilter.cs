@@ -4,13 +4,14 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Fake.AspNetCore.Mvc.Filters;
 
-public class FakeExceptionFilter(IFakeExceptionHandler fakeExceptionHandler) : IAsyncExceptionFilter
+public class FakeExceptionFilter(IFakeHttpExceptionHandler fakeHttpExceptionHandler) : IAsyncExceptionFilter
 {
     public async Task OnExceptionAsync(ExceptionContext context)
     {
         if (!ShouldHandle(context)) return;
 
-        var errorModel = await fakeExceptionHandler.HandlerAndWarpErrorAsync(context.HttpContext, context.Exception);
+        var errorModel =
+            await fakeHttpExceptionHandler.HandlerAndWarpErrorAsync(context.HttpContext, context.Exception);
         if (errorModel != null)
         {
             context.Result = new ObjectResult(errorModel);

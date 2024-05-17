@@ -10,7 +10,7 @@ namespace Fake.AspNetCore.ExceptionHandling;
 /// </summary>
 public class FakeExceptionHandlingMiddleware(
     ILogger<FakeExceptionHandlingMiddleware> logger,
-    IFakeExceptionHandler converter) : IMiddleware
+    IFakeHttpExceptionHandler converter) : IMiddleware
 {
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {

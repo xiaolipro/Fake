@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Fake.AspNetCore.ExceptionHandling;
 
-public class FakeExceptionHandler(IStringLocalizer<FakeAspNetCoreResource> localizer) : IFakeExceptionHandler
+public class FakeHttpExceptionHandler(IStringLocalizer<FakeAspNetCoreResource> localizer) : IFakeHttpExceptionHandler
 {
     public virtual async Task<RemoteServiceErrorModel?> HandlerAndWarpErrorAsync(HttpContext httpContext,
         Exception exception)
@@ -39,7 +39,8 @@ public class FakeExceptionHandler(IStringLocalizer<FakeAspNetCoreResource> local
         var remoteServiceErrorLogBuilder = new StringBuilder();
         remoteServiceErrorLogBuilder.AppendLine($"|- Remote service call error occurred");
         remoteServiceErrorLogBuilder.AppendLine($"|- TraceIdentifier: {httpContext.TraceIdentifier}");
-        remoteServiceErrorLogBuilder.AppendLine($"|- RequestPath    : {httpContext.Request.Path}");
+        remoteServiceErrorLogBuilder.AppendLine(
+            $"|- RequestPath    : {httpContext.Request.Path}{httpContext.Request.QueryString}");
         remoteServiceErrorLogBuilder.AppendLine($"|- ErrorMessage   : {errorModel.Message}");
         remoteServiceErrorLogBuilder.AppendLine($"|- ErrorDetails   : {errorModel.Details}");
         logger.LogWithLevel(exception.GetLogLevel(), remoteServiceErrorLogBuilder.ToString());

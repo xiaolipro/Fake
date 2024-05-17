@@ -5,18 +5,11 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Fake.UnitOfWork;
 
-public class UnitOfWorkInterceptor : IFakeInterceptor
+public class UnitOfWorkInterceptor(IServiceScopeFactory serviceScopeFactory) : IFakeInterceptor
 {
-    private readonly IServiceScopeFactory _serviceScopeFactory;
-
-    public UnitOfWorkInterceptor(IServiceScopeFactory serviceScopeFactory)
-    {
-        _serviceScopeFactory = serviceScopeFactory;
-    }
-
     public virtual async Task InterceptAsync(IFakeMethodInvocation invocation)
     {
-        using var serviceScope = _serviceScopeFactory.CreateScope();
+        using var serviceScope = serviceScopeFactory.CreateScope();
 
         var uowHelper = serviceScope.ServiceProvider.GetRequiredService<IUnitOfWorkHelper>();
 

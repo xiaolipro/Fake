@@ -22,7 +22,7 @@ public static class FakeFilterServiceCollectionExtensions
     {
         services.AddFakeExceptionNotifier();
 
-        services.TryAddTransient<IFakeExceptionHandler, FakeExceptionHandler>();
+        services.TryAddTransient<IFakeHttpExceptionHandler, FakeHttpExceptionHandler>();
         services.TryAddTransient<IHttpExceptionStatusCodeFinder, DefaultHttpExceptionStatusCodeFinder>();
 
         services.AddFilter<FakeExceptionFilter>();
