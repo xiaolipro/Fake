@@ -56,8 +56,10 @@ public static class FakeDictionaryExtensions
     /// <param name="key"></param>
     /// <param name="value"></param>
     /// <returns></returns>
+    /// <exception cref="T:System.ArgumentNullException"><paramref name="key">key</paramref> is null.</exception>
     public static bool TryAdd<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, TValue value)
     {
+        ThrowHelper.ThrowIfNull(key, nameof(key));
         if (dictionary.ContainsKey(key))
         {
             return false;

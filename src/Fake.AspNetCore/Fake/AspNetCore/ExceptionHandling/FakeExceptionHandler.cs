@@ -1,13 +1,16 @@
 ﻿using System.Text;
-using Fake.AspNetCore.Http;
+using Fake.AspNetCore.Localization;
+using Fake.AspNetCore.Mvc.Filters;
 using Fake.Authorization;
 using Fake.ExceptionHandling;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Fake.AspNetCore.ExceptionHandling;
 
-public class FakeExceptionHandler(IStringLocalizer<FakeAspNetCoreResource> stringLocalizer) : IFakeExceptionHandler
+public class FakeExceptionHandler(IStringLocalizer<FakeAspNetCoreResource> localizer) : IFakeExceptionHandler
 {
     public virtual async Task<RemoteServiceErrorModel?> HandlerAndWarpErrorAsync(HttpContext httpContext,
         Exception exception)
@@ -28,7 +31,20 @@ public class FakeExceptionHandler(IStringLocalizer<FakeAspNetCoreResource> strin
 
         httpContext.Response.StatusCode = (int)statusCodeFinder.Find(httpContext, exception);
 
-        return Convert(exception, exceptionOptions, httpContext.Response.StatusCode.ToString());
+        var errorModel = Convert(exception, exceptionOptions, httpContext.Response.StatusCode.ToString());
+
+        var logger = httpContext.RequestServices.GetService<ILogger<FakeExceptionFilter>>() ??
+                     NullLogger<FakeExceptionFilter>.Instance;
+
+        var remoteServiceErrorLogBuilder = new StringBuilder();
+        remoteServiceErrorLogBuilder.AppendLine($"|- Remote service call error occurred");
+        remoteServiceErrorLogBuilder.AppendLine($"|- TraceIdentifier: {httpContext.TraceIdentifier}");
+        remoteServiceErrorLogBuilder.AppendLine($"|- RequestPath    : {httpContext.Request.Path}");
+        remoteServiceErrorLogBuilder.AppendLine($"|- ErrorMessage   : {errorModel.Message}");
+        remoteServiceErrorLogBuilder.AppendLine($"|- ErrorDetails   : {errorModel.Details}");
+        logger.LogWithLevel(exception.GetLogLevel(), remoteServiceErrorLogBuilder.ToString());
+
+        return errorModel;
     }
 
     /// <summary>
@@ -41,11 +57,21 @@ public class FakeExceptionHandler(IStringLocalizer<FakeAspNetCoreResource> strin
     protected virtual RemoteServiceErrorModel Convert(Exception exception, FakeExceptionHandlingOptions options,
         string statusCode)
     {
-        var details = new StringBuilder();
+        var errorModel = new RemoteServiceErrorModel
+        {
+            Message = localizer[statusCode]
+        };
 
-        AddExceptionToDetails(exception, details, options.OutputStackTrace);
-
-        var errorModel = new RemoteServiceErrorModel();
+        if (exception is BusinessException businessException)
+        {
+            errorModel.Details = businessException.Message;
+        }
+        else
+        {
+            var details = new StringBuilder();
+            AddExceptionToDetails(exception, details, options.OutputStackTrace);
+            errorModel.Details = details.ToString();
+        }
 
         return errorModel;
     }
@@ -58,7 +84,7 @@ public class FakeExceptionHandler(IStringLocalizer<FakeAspNetCoreResource> strin
         // stack trace
         if (outputStackTrace && !exception.StackTrace.IsNullOrEmpty())
         {
-            details.AppendLine($"STRACK TRACE: {exception.StackTrace}");
+            details.AppendLine($"Stack Trace: {exception.StackTrace}");
         }
 
         // inner exception

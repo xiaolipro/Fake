@@ -1,11 +1,17 @@
 ﻿using Fake.AspNetCore.Http;
 using Fake.Auditing;
+using Fake.Data;
 using Microsoft.AspNetCore.Http;
 
 namespace Fake.AspNetCore.Auditing;
 
 public class AspNetCoreAuditLogContributor : AuditLogContributor
 {
+    public const string HttpSimple = nameof(HttpSimple);
+    public const string UserAgent = nameof(UserAgent);
+    public const string ClientIpAddress = nameof(ClientIpAddress);
+    public const string TraceIdentifier = nameof(TraceIdentifier);
+
     public override void PreContribute(AuditLogContributionContext context)
     {
         var httpContext = context.ServiceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext;
@@ -14,22 +20,28 @@ public class AspNetCoreAuditLogContributor : AuditLogContributor
 
         if (httpContext.WebSockets.IsWebSocketRequest) return;
 
-        context.AuditInfo.HttpMethod ??= httpContext.Request.Method;
-        context.AuditInfo.Url = BuildUrl(httpContext);
+        context.AuditInfo.AddExtraProperties(TraceIdentifier, httpContext.TraceIdentifier);
+        context.AuditInfo.AddExtraProperties(HttpSimple, httpContext.Request.ToString());
 
         var httpClientInfoProvider = context.ServiceProvider.GetRequiredService<IHttpClientInfoProvider>();
-        context.AuditInfo.ClientIpAddress = httpClientInfoProvider.ClientIpAddress;
-        context.AuditInfo.UserAgent = httpClientInfoProvider.UserAgent;
+        context.AuditInfo.AddExtraProperties(ClientIpAddress, httpClientInfoProvider.ClientIpAddress);
+        context.AuditInfo.AddExtraProperties(UserAgent, httpClientInfoProvider.UserAgent);
     }
 
     public override void PostContribute(AuditLogContributionContext context)
     {
-        if (context.AuditInfo.HttpStatusCode != null) return;
-
         var httpContext = context.ServiceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext;
         if (httpContext == null) return;
 
-        context.AuditInfo.HttpStatusCode = httpContext.Response.StatusCode;
+        if (context.AuditInfo.HasExtraProperty(HttpStatusCode))
+        {
+            context.AuditInfo.ExtraProperties[HttpStatusCode] ??= httpContext.Response.StatusCode;
+        }
+
+        if (context.AuditInfo.HasExtraProperty(TraceIdentifier))
+        {
+            context.AuditInfo.ExtraProperties[TraceIdentifier] ??= httpContext.TraceIdentifier;
+        }
     }
 
     protected virtual string BuildUrl(HttpContext httpContext)

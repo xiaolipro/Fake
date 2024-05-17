@@ -1,11 +1,13 @@
-﻿using Fake.AspNetCore.Http;
+﻿using Fake.AspNetCore.ExceptionHandling;
+using Fake.AspNetCore.Localization;
 using Fake.Helpers;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Localization;
 
 namespace Fake.AspNetCore.Mvc.Filters;
 
-public class FakeValidationActionFilter : IAsyncActionFilter
+public class FakeValidationActionFilter(IStringLocalizer<FakeAspNetCoreResource> localizer) : IAsyncActionFilter
 {
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
@@ -13,21 +15,13 @@ public class FakeValidationActionFilter : IAsyncActionFilter
         {
             if (context.ModelState.ErrorCount > 0)
             {
-                var errorModel = new RemoteServiceErrorModel
-                {
-                    Message = "参数校验发生异常",
-                    ValidationErrors = context.ModelState.Keys
-                        .SelectMany(key =>
-                            context.ModelState[key]!.Errors
-                                .Select(error => new
-                                {
-                                    Field = key,
-                                    Message = error.ErrorMessage
-                                }))
-                        .ToList()
-                };
+                var message = context.ModelState.Keys
+                    .SelectMany(key => context.ModelState[key]!.Errors
+                        .Select(error => error.ErrorMessage))
+                    .JoinAsString("\n");
 
-                context.Result = new JsonResult(errorModel);
+                var res = new RemoteServiceErrorModel(localizer["ValidationError"], message);
+                context.Result = new JsonResult(res);
                 return;
             }
         }

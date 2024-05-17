@@ -1,13 +1,13 @@
-﻿using Fake.AspNetCore.Auditing;
-using Fake.AspNetCore.ExceptionHandling;
+﻿using Fake.AspNetCore.ExceptionHandling;
 using Fake.AspNetCore.Http;
+using Fake.AspNetCore.Localization;
 using Fake.AspNetCore.Mvc.ApiExplorer;
 using Fake.AspNetCore.Mvc.Conventions;
 using Fake.AspNetCore.Security.Claims;
 using Fake.AspNetCore.VirtualFileSystem;
-using Fake.Auditing;
 using Fake.Authorization;
 using Fake.DomainDrivenDesign;
+using Fake.Localization;
 using Fake.Modularity;
 using Fake.Security.Claims;
 using Fake.VirtualFileSystem;
@@ -33,15 +33,20 @@ public class FakeAspNetCoreModule : FakeModule
         context.Services.AddTransient<IHttpClientInfoProvider, HttpClientInfoProvider>();
         context.Services.AddTransient<FakeExceptionHandlingMiddleware>();
 
-        context.Services.Configure<FakeAuditingOptions>(options =>
-        {
-            options.Contributors.Add(new AspNetCoreAuditLogContributor());
-        });
-
         context.Services.AddAuthorization();
 
         context.Services.AddSingleton<IAspNetCoreFileProvider, AspNetCoreFileProvider>();
         context.Services.Configure<FakeAspNetCoreFileOptions>(_ => { });
+
+        context.Services.Configure<FakeVirtualFileSystemOptions>(options =>
+        {
+            options.FileProviders.Add<FakeAspNetCoreModule>("/Fake/AspNetCore");
+        });
+        context.Services.Configure<FakeLocalizationOptions>(options =>
+        {
+            options.Resources.Add<FakeAspNetCoreResource>("zh")
+                .LoadVirtualJson("/Localization");
+        });
 
         ConfigureControllers(context);
     }
@@ -69,7 +74,7 @@ public class FakeAspNetCoreModule : FakeModule
              * important：
              *   默认使用的IControllerActivator是用ActivatorUtilities.CreateFactory创建实例。
              *   使用ServiceBasedControllerActivator替代，是交由HttpContext.RequestServices服务商提供。
-             *   而autofac的拦截器正是依赖于服务商才能生效。
+             *   而Autofac的拦截器正是依赖于服务商才能生效。
              */
             .AddControllersAsServices();
 

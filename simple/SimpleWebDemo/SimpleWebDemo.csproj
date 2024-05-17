@@ -6,6 +6,7 @@
         <EnablePreviewFeatures>true</EnablePreviewFeatures>
         <PublishDocumentationFiles>true</PublishDocumentationFiles>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <Nullable>enable</Nullable>
     </PropertyGroup>
     <ItemGroup>
         <ProjectReference Include="..\..\src\Fake.AspNetCore\Fake.AspNetCore.csproj"/>

@@ -1,10 +1,10 @@
 ﻿using Fake.AspNetCore;
+using Fake.AspNetCore.Auditing;
 using Fake.AspNetCore.Mvc.Conventions;
-using Fake.Auditing;
 using Fake.Autofac;
 using Fake.Modularity;
 
-[DependsOn(typeof(FakeAuditingModule), typeof(FakeAutofacModule))]
+[DependsOn(typeof(FakeAutofacModule))]
 [DependsOn(typeof(FakeAspNetCoreModule))]
 public class SimpleWebDemoModule : FakeModule
 {
@@ -15,6 +15,7 @@ public class SimpleWebDemoModule : FakeModule
             options.AddAssembly(typeof(SimpleWebDemoModule).Assembly);
         });
         context.Services.AddFakeSwaggerGen();
+        context.Services.AddFakeAspNetCoreAuditing();
         context.Services.AddFakeExceptionFilter().AddFakeValidationActionFilter();
     }
 

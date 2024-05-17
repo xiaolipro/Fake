@@ -9,36 +9,23 @@ using Microsoft.Extensions.Options;
 
 namespace Fake.Auditing;
 
-public class AuditingManager : IAuditingManager
+public class AuditingManager(
+    IAmbientScopeProvider<IAuditLogScope?> ambientScopeProvider,
+    IAuditingHelper auditingHelper,
+    IAuditingStore auditingStore,
+    IServiceProvider serviceProvider)
+    : IAuditingManager
 {
     private const string AuditingContextKey = "Fake.Auditing.AuditLogScope";
 
-    private readonly ILogger<AuditingManager> _logger;
-    private readonly IAmbientScopeProvider<IAuditLogScope?> _ambientScopeProvider;
-    private readonly IAuditingHelper _auditingHelper;
-    private readonly IAuditingStore _auditingStore;
-    private readonly IServiceProvider _serviceProvider;
+    private readonly ILogger<AuditingManager> _logger = NullLogger<AuditingManager>.Instance;
 
-
-    public AuditingManager(
-        IAmbientScopeProvider<IAuditLogScope?> ambientScopeProvider,
-        IAuditingHelper auditingHelper,
-        IAuditingStore auditingStore,
-        IServiceProvider serviceProvider)
-    {
-        _logger = NullLogger<AuditingManager>.Instance;
-        _ambientScopeProvider = ambientScopeProvider;
-        _auditingHelper = auditingHelper;
-        _auditingStore = auditingStore;
-        _serviceProvider = serviceProvider;
-    }
-
-    public IAuditLogScope? Current => _ambientScopeProvider.GetValue(AuditingContextKey);
+    public IAuditLogScope? Current => ambientScopeProvider.GetValue(AuditingContextKey);
 
     public IAuditLogSaveHandle BeginScope()
     {
-        var value = new AuditLogScope(_auditingHelper.CreateAuditLogInfo());
-        var scope = _ambientScopeProvider.BeginScope(AuditingContextKey, value);
+        var value = new AuditLogScope(auditingHelper.CreateAuditLogInfo());
+        var scope = ambientScopeProvider.BeginScope(AuditingContextKey, value);
 
         Debug.Assert(Current != null, nameof(Current) + " != null");
         return new AuditLogSaveHandle(this, scope, Current!.Log, Stopwatch.StartNew());
@@ -47,7 +34,7 @@ public class AuditingManager : IAuditingManager
     protected virtual async Task SaveAsync(AuditLogSaveHandle saveHandle)
     {
         BeforeSave(saveHandle);
-        await _auditingStore.SaveAsync(saveHandle.AuditLog);
+        await auditingStore.SaveAsync(saveHandle.AuditLog);
     }
 
     protected virtual void BeforeSave(AuditLogSaveHandle saveHandle)
@@ -60,53 +47,44 @@ public class AuditingManager : IAuditingManager
 
     private void ExecutePostContributors(AuditLogInfo auditLogInfo)
     {
-        using (var scope = _serviceProvider.CreateScope())
+        using var scope = serviceProvider.CreateScope();
+        var context = new AuditLogContributionContext(scope.ServiceProvider, auditLogInfo);
+
+        var options = scope.ServiceProvider.GetRequiredService<IOptions<FakeAuditingOptions>>().Value;
+
+        foreach (var contributor in options.Contributors)
         {
-            var context = new AuditLogContributionContext(scope.ServiceProvider, auditLogInfo);
-
-            var options = scope.ServiceProvider.GetRequiredService<IOptions<FakeAuditingOptions>>().Value;
-
-            foreach (var contributor in options.Contributors)
+            try
             {
-                try
-                {
-                    contributor.PostContribute(context);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogException(ex, LogLevel.Warning);
-                }
+                contributor.PostContribute(context);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogException(ex, LogLevel.Warning);
             }
         }
     }
 
 
-    protected class AuditLogSaveHandle : IAuditLogSaveHandle
+    protected class AuditLogSaveHandle(
+        AuditingManager auditingManager,
+        IDisposable scope,
+        AuditLogInfo auditLog,
+        Stopwatch stopWatch)
+        : IAuditLogSaveHandle
     {
-        private readonly AuditingManager _auditingManager;
-        private readonly IDisposable _scope;
-        public AuditLogInfo AuditLog { get; }
-        public Stopwatch StopWatch { get; }
-
-        public AuditLogSaveHandle(AuditingManager auditingManager, IDisposable scope, AuditLogInfo auditLog,
-            Stopwatch stopWatch)
-        {
-            _auditingManager = auditingManager;
-            _scope = scope;
-
-            AuditLog = auditLog;
-            StopWatch = stopWatch;
-        }
+        public AuditLogInfo AuditLog { get; } = auditLog;
+        public Stopwatch StopWatch { get; } = stopWatch;
 
 
         public async Task SaveAsync()
         {
-            await _auditingManager.SaveAsync(this);
+            await auditingManager.SaveAsync(this);
         }
 
         public void Dispose()
         {
-            _scope.Dispose();
+            scope.Dispose();
         }
     }
 }

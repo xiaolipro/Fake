@@ -1,4 +1,4 @@
-﻿namespace Fake.AspNetCore.Http;
+﻿namespace Fake.AspNetCore.ExceptionHandling;
 
 /// <summary>
 /// 远程服务异常模型
@@ -7,24 +7,22 @@
 public class RemoteServiceErrorModel
 {
     /// <summary>
-    /// 异常消息
+    /// 异常信息
     /// </summary>
     public string? Message { get; set; }
 
     /// <summary>
-    /// 异常堆栈
+    /// 异常明细
     /// </summary>
-    public string? StackTrace { get; set; }
-
-    public object? ValidationErrors { get; set; }
+    public string? Details { get; set; }
 
     public RemoteServiceErrorModel()
     {
     }
 
-    public RemoteServiceErrorModel(string message, string? stackTrace = null)
+    public RemoteServiceErrorModel(string message, string? details = null)
     {
         Message = message;
-        StackTrace = stackTrace;
+        Details = details;
     }
 }
