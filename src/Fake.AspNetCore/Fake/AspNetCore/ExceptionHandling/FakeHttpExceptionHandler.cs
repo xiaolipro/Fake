@@ -16,7 +16,7 @@ public class FakeHttpExceptionHandler(IStringLocalizer<FakeAspNetCoreResource> l
         Exception exception)
     {
         await httpContext.RequestServices.GetRequiredService<IExceptionNotifier>()
-            .NotifyAsync(new ExceptionNotificationContext(exception));
+            .NotifyAsync(new ExceptionNotificationContext(exception, httpContext.RequestServices));
 
         if (exception is FakeAuthorizationException authorizationException)
         {
