@@ -1,15 +1,18 @@
 ﻿using Fake.ObjectMapping.Tests.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
+using Xunit.Abstractions;
 
 namespace Fake.ObjectMapping.Tests;
 
 public class ObjectMapperTest : ObjectMappingTestBase
 {
+    private readonly ITestOutputHelper _testOutputHelper;
     private readonly IObjectMapper _objectMapper;
 
-    public ObjectMapperTest()
+    public ObjectMapperTest(ITestOutputHelper testOutputHelper)
     {
+        _testOutputHelper = testOutputHelper;
         _objectMapper = ServiceProvider.GetRequiredService<IObjectMapper>();
     }
 

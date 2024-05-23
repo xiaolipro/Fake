@@ -1,6 +1,6 @@
-using System;
+﻿using System;
 
-namespace Fake.Auditing;
+namespace Fake.UnitOfWork;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method | AttributeTargets.Property)]
-public class DisableAuditingAttribute : Attribute;
+public class DisableUnitOfWorkAttribute : Attribute;

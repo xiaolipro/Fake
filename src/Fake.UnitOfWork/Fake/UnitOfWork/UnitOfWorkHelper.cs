@@ -36,6 +36,8 @@ public class UnitOfWorkHelper : IUnitOfWorkHelper
     {
         ThrowHelper.ThrowIfNull(methodInfo, nameof(methodInfo));
 
+        unitOfWorkAttribute = null;
+        if (methodInfo.IsDefined(typeof(DisableUnitOfWorkAttribute), true)) return false;
         // 继承体系
         unitOfWorkAttribute = GetUnitOfWorkAttributeOrNull(methodInfo);
         if (unitOfWorkAttribute is not null) return true;

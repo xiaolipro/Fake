@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="FreeRedis" Version="1.2.14"/>
+        <PackageReference Include="FreeRedis" Version="1.2.12"/>
     </ItemGroup>
 
 </Project>

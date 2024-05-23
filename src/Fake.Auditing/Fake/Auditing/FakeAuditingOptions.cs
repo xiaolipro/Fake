@@ -14,25 +14,25 @@ public class FakeAuditingOptions
     /// <summary>
     /// 启用审计日志
     /// </summary>
-    public bool IsEnabledLog { get; set; } = true;
+    public bool IsEnabled { get; set; } = true;
 
     /// <summary>
-    /// 启用Action审计日志
+    /// 输出Action日志
     /// </summary>
-    public bool IsEnabledActionLog { get; set; } = true;
+    public bool IsOutputActionLog { get; set; } = true;
 
     /// <summary>
-    /// 启用异常审计日志
+    /// 输出异常日志
     /// </summary>
-    public bool IsEnabledExceptionLog { get; set; } = true;
+    public bool IsOutputExceptionLog { get; set; } = true;
 
     /// <summary>
-    /// 启用Get请求审计日志
+    /// 输出Get请求日志
     /// </summary>
-    public bool IsEnabledGetRequestLog { get; set; } = true;
+    public bool IsOutputGetRequestLog { get; set; } = true;
 
     /// <summary>
-    /// 允许匿名
+    /// 允许匿名审计
     /// </summary>
     public bool AllowAnonymous { get; set; } = true;
 

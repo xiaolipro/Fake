@@ -11,17 +11,11 @@ public class FakeValidationActionFilter(IStringLocalizer<FakeAspNetCoreResource>
 {
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
-        if (ShouldValidation(context))
+        if (ShouldHandle(context))
         {
             if (context.ModelState.ErrorCount > 0)
             {
-                var message = context.ModelState.Keys
-                    .SelectMany(key => context.ModelState[key]!.Errors
-                        .Select(error => error.ErrorMessage))
-                    .JoinAsString("\n");
-
-                var res = new RemoteServiceErrorModel(localizer["ValidationError"], message);
-                context.Result = new JsonResult(res);
+                HandleModelError(context);
                 return;
             }
         }
@@ -29,7 +23,18 @@ public class FakeValidationActionFilter(IStringLocalizer<FakeAspNetCoreResource>
         await next();
     }
 
-    private bool ShouldValidation(ActionExecutingContext context)
+    protected virtual void HandleModelError(ActionExecutingContext context)
+    {
+        var message = context.ModelState.Keys
+            .SelectMany(key => context.ModelState[key]!.Errors
+                .Select(error => error.ErrorMessage))
+            .JoinAsString("\n");
+
+        var res = new RemoteServiceErrorModel(localizer["ValidationError"], message);
+        context.Result = new JsonResult(res);
+    }
+
+    protected virtual bool ShouldHandle(ActionExecutingContext context)
     {
         if (context.ActionDescriptor is not ControllerActionDescriptor controllerActionDescriptor)
         {

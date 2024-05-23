@@ -3,19 +3,20 @@ using Microsoft.Extensions.Logging;
 
 namespace Fake.Modularity;
 
-internal static class FakeModuleHelper
+public static class FakeModuleHelper
 {
-    private static void CheckFakeModuleType(Type moduleType)
-    {
-        var typeInfo = moduleType.GetTypeInfo();
+    public static List<Type> AllModuleTypes = [];
 
-        if (!typeInfo.IsClass &&
-            !typeInfo.IsAbstract &&
-            !typeInfo.IsGenericType &&
-            typeof(IFakeModule).GetTypeInfo().IsAssignableFrom(moduleType))
-        {
-            throw new ArgumentException("给定的类型不是Fake模块: " + moduleType.AssemblyQualifiedName);
-        }
+    /// <summary>
+    /// 确保依赖了给定模块，如果没有则抛出异常
+    /// </summary>
+    /// <typeparam name="TModule">给定模块</typeparam>
+    /// <exception cref="FakeException">没有依赖给定模块</exception>
+    public static void EnsureDependsOn<TModule>() where TModule : FakeModule
+    {
+        if (AllModuleTypes.Contains(typeof(TModule))) return;
+
+        throw new FakeException($"请检查是否依赖模块：{typeof(TModule).FullName}");
     }
 
     /// <summary>
@@ -29,7 +30,7 @@ internal static class FakeModuleHelper
         var moduleTypes = new List<Type>();
         logger.Log(LogLevel.Debug, "开始寻找Fake模块:");
         AddModuleAndDependenciesRecursively(moduleTypes, startupModuleType, logger);
-        return moduleTypes;
+        return AllModuleTypes = moduleTypes;
     }
 
     private static void AddModuleAndDependenciesRecursively(
@@ -73,5 +74,18 @@ internal static class FakeModuleHelper
         }
 
         return dependencies;
+    }
+
+    private static void CheckFakeModuleType(Type moduleType)
+    {
+        var typeInfo = moduleType.GetTypeInfo();
+
+        if (!typeInfo.IsClass &&
+            !typeInfo.IsAbstract &&
+            !typeInfo.IsGenericType &&
+            typeof(IFakeModule).GetTypeInfo().IsAssignableFrom(moduleType))
+        {
+            throw new ArgumentException("给定的类型不是Fake模块: " + moduleType.AssemblyQualifiedName);
+        }
     }
 }

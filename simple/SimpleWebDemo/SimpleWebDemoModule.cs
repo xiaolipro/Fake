@@ -1,6 +1,7 @@
 ﻿using Fake.AspNetCore;
 using Fake.AspNetCore.Auditing;
 using Fake.AspNetCore.Mvc.Conventions;
+using Fake.AspNetCore.Mvc.Filters;
 using Fake.Autofac;
 using Fake.Modularity;
 
@@ -16,7 +17,9 @@ public class SimpleWebDemoModule : FakeModule
         });
         context.Services.AddFakeSwaggerGen();
         context.Services.AddFakeAspNetCoreAuditing();
-        context.Services.AddFakeExceptionFilter().AddFakeValidationActionFilter();
+        context.Services.AddFakeExceptionFilter()
+            .AddFakeValidationActionFilter()
+            .AddFakeUnitOfWorkActionFilter();
     }
 
     public override void ConfigureApplication(ApplicationConfigureContext context)

@@ -1,15 +1,17 @@
 ﻿using Fake.AspNetCore.ExceptionHandling;
-using Fake.AspNetCore.Mvc.Filters;
+using Fake.Modularity;
+using Fake.UnitOfWork;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Localization;
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace Fake.AspNetCore.Mvc.Filters;
 
 public static class FakeFilterServiceCollectionExtensions
 {
-    public static IServiceCollection AddFilter<TFilter>(this IServiceCollection services,
+    public static IServiceCollection AddFakeFilter<TFilter>(this IServiceCollection services,
         ServiceLifetime lifetime = ServiceLifetime.Transient) where TFilter : class, IFilterMetadata
     {
         services.TryAdd(new ServiceDescriptor(typeof(TFilter), typeof(TFilter), lifetime));
@@ -25,7 +27,7 @@ public static class FakeFilterServiceCollectionExtensions
         services.TryAddTransient<IFakeHttpExceptionHandler, FakeHttpExceptionHandler>();
         services.TryAddTransient<IHttpExceptionStatusCodeFinder, DefaultHttpExceptionStatusCodeFinder>();
 
-        services.AddFilter<FakeExceptionFilter>();
+        services.AddFakeFilter<FakeExceptionFilter>();
         services.Configure<FakeExceptionHandlingOptions>(options =>
         {
             options.OutputStackTrace = services.GetInstanceOrNull<IWebHostEnvironment>()?.IsDevelopment() ?? false;
@@ -37,6 +39,13 @@ public static class FakeFilterServiceCollectionExtensions
 
     public static IServiceCollection AddFakeValidationActionFilter(this IServiceCollection services)
     {
-        return services.AddFilter<FakeValidationActionFilter>();
+        services.TryAddTransient(typeof(IStringLocalizer<>), typeof(StringLocalizer<>));
+        return services.AddFakeFilter<FakeValidationActionFilter>();
+    }
+
+    public static IServiceCollection AddFakeUnitOfWorkActionFilter(this IServiceCollection services)
+    {
+        FakeModuleHelper.EnsureDependsOn<FakeUnitOfWorkModule>();
+        return services.AddFakeFilter<FakeUnitOfWorkActionFilter>();
     }
 }

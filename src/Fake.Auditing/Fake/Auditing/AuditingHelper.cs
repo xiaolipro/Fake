@@ -27,12 +27,12 @@ public class AuditingHelper(
 
     public virtual bool IsAuditMethod(MethodInfo methodInfo)
     {
-        if (!FakeAuditingOptions.IsEnabledLog) return false;
+        if (!FakeAuditingOptions.IsEnabled) return false;
 
         if (!methodInfo.IsPublic) return false;
 
-        if (methodInfo.IsDefined(typeof(AuditedAttribute), true)) return true;
         if (methodInfo.IsDefined(typeof(DisableAuditingAttribute), true)) return false;
+        if (methodInfo.IsDefined(typeof(AuditedAttribute), true)) return true;
 
         if (IsAuditType(methodInfo.DeclaringType)) return true;
         return false;

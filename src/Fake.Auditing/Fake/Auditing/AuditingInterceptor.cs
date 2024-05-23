@@ -99,7 +99,7 @@ public class AuditingInterceptor(IServiceScopeFactory serviceScopeFactory) : IFa
             }
         }
 
-        if (auditingOptions.IsEnabledExceptionLog && hasError)
+        if (auditingOptions.IsOutputExceptionLog && hasError)
         {
             return true;
         }
@@ -107,7 +107,7 @@ public class AuditingInterceptor(IServiceScopeFactory serviceScopeFactory) : IFa
         if (!auditingOptions.AllowAnonymous && !currentUser.IsAuthenticated) return false;
 
 
-        if (!auditingOptions.IsEnabledGetRequestLog &&
+        if (!auditingOptions.IsOutputGetRequestLog &&
             invocation.Method.Name.StartsWith(HttpMethod.Get.ToString(), StringComparison.OrdinalIgnoreCase)
            )
             return false;
@@ -120,7 +120,7 @@ public class AuditingInterceptor(IServiceScopeFactory serviceScopeFactory) : IFa
         IAuditingHelper auditingHelper, AuditLogInfo auditLogInfo)
     {
         AuditLogActionInfo? auditLogActionInfo = null;
-        if (auditingOptions.IsEnabledActionLog)
+        if (auditingOptions.IsOutputActionLog)
         {
             auditLogActionInfo = auditingHelper.CreateAuditLogActionInfo(invocation);
         }
@@ -133,7 +133,7 @@ public class AuditingInterceptor(IServiceScopeFactory serviceScopeFactory) : IFa
         }
         catch (Exception e)
         {
-            if (auditingOptions.IsEnabledExceptionLog)
+            if (auditingOptions.IsOutputExceptionLog)
             {
                 auditLogInfo.Exceptions.Add(e);
             }
