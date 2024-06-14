@@ -37,11 +37,11 @@ public class FakeHttpExceptionHandler(IStringLocalizer<FakeAspNetCoreResource> l
                      NullLogger<FakeExceptionFilter>.Instance;
 
         var remoteServiceErrorLogBuilder = new StringBuilder();
-        remoteServiceErrorLogBuilder.AppendLine($"|- Remote service call error occurred");
+        remoteServiceErrorLogBuilder.AppendLine("|- Remote service call error occurred");
         remoteServiceErrorLogBuilder.AppendLine($"|- TraceIdentifier: {httpContext.TraceIdentifier}");
         remoteServiceErrorLogBuilder.AppendLine(
             $"|- RequestPath    : {httpContext.Request.Path}{httpContext.Request.QueryString}");
-        remoteServiceErrorLogBuilder.AppendLine($"|- ErrorMessage   : {errorModel.Message}");
+        remoteServiceErrorLogBuilder.AppendLine($"|- ErrorType      : {errorModel.Message}");
         remoteServiceErrorLogBuilder.AppendLine($"|- ErrorDetails   : {errorModel.Details}");
         logger.LogWithLevel(exception.GetLogLevel(), remoteServiceErrorLogBuilder.ToString());
 

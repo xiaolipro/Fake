@@ -1,14 +1,20 @@
 using System.Text;
 using Microsoft.AspNetCore.Routing.Internal;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Host.UseAutofac();
+var configuration = builder.Configuration;
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(configuration)
+    .CreateLogger();
+
+builder.Host.UseAutofac().UseSerilog();
+;
 builder.Services.AddApplication<SimpleWebDemoModule>();
 var app = builder.Build();
 app.InitializeApplication();
 
-
-byte[] plainTextPayload = Encoding.UTF8.GetBytes("Plain text!");
+byte[] plainTextPayload = "Plain text!"u8.ToArray();
 
 app.UseEndpoints(endpoints =>
 {

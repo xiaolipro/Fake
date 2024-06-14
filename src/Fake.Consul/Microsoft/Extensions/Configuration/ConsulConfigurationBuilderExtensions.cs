@@ -13,7 +13,7 @@ public static class ConsulConfigurationBuilderExtensions
     public static IConfigurationRoot AddConfigurationFromConsul(this IConfigurationBuilder builder)
     {
         var configuration = builder.Build();
-        var consulClientOptions = configuration.GetSection("Consul:Client").Get<FakeConsulClientOptions>() ??
+        var consulClientOptions = configuration.GetSection("Consul").Get<FakeConsulClientOptions>() ??
                                   new FakeConsulClientOptions();
         ThrowHelper.ThrowIfNullOrWhiteSpace(consulClientOptions.ConfigFileName);
         // 加载Consul上的配置文件
