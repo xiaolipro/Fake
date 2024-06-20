@@ -13,6 +13,3 @@ public abstract class FullAuditedEntity<TKey> : Entity<TKey>, IFullAuditedEntity
     public virtual DateTime UpdateTime { get; set; }
     public virtual bool IsDeleted { get; set; }
 }
-
-public interface IFullAuditedEntity : IHasCreateUserId, IHasUpdateUserId
-    , IHasCreateTime, IHasUpdateTime, ISoftDelete;

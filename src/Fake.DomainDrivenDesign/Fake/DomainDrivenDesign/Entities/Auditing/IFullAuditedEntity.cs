@@ -1,0 +1,4 @@
+namespace Fake.DomainDrivenDesign.Entities.Auditing;
+
+public interface IFullAuditedEntity : IEntity, IHasCreateUserId, IHasUpdateUserId
+    , IHasCreateTime, IHasUpdateTime, ISoftDelete;
