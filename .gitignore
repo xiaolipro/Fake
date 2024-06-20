@@ -7,3 +7,5 @@ riderModule.iml
 .idea/
 /.vs
 /Fake.sln.DotSettings.user
+
+Logs/

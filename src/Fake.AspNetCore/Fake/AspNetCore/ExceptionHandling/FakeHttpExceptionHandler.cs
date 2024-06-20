@@ -31,7 +31,7 @@ public class FakeHttpExceptionHandler(IStringLocalizer<FakeAspNetCoreResource> l
 
         httpContext.Response.StatusCode = (int)statusCodeFinder.Find(httpContext, exception);
 
-        var errorModel = Convert(exception, exceptionOptions, httpContext.Response.StatusCode.ToString());
+        var errorModel = Convert(exception, exceptionOptions);
 
         var logger = httpContext.RequestServices.GetService<ILogger<FakeExceptionFilter>>() ??
                      NullLogger<FakeExceptionFilter>.Instance;
@@ -41,8 +41,8 @@ public class FakeHttpExceptionHandler(IStringLocalizer<FakeAspNetCoreResource> l
         remoteServiceErrorLogBuilder.AppendLine($"|- TraceIdentifier: {httpContext.TraceIdentifier}");
         remoteServiceErrorLogBuilder.AppendLine(
             $"|- RequestPath    : {httpContext.Request.Path}{httpContext.Request.QueryString}");
-        remoteServiceErrorLogBuilder.AppendLine($"|- ErrorType      : {errorModel.Message}");
-        remoteServiceErrorLogBuilder.AppendLine($"|- ErrorDetails   : {errorModel.Details}");
+        remoteServiceErrorLogBuilder.AppendLine($"|- ErrorType      : {errorModel.Type}");
+        remoteServiceErrorLogBuilder.AppendLine($"|- ErrorDetails   : {errorModel.Message}");
         logger.LogWithLevel(exception.GetLogLevel(), remoteServiceErrorLogBuilder.ToString());
 
         return errorModel;
@@ -53,26 +53,18 @@ public class FakeHttpExceptionHandler(IStringLocalizer<FakeAspNetCoreResource> l
     /// </summary>
     /// <param name="exception"></param>
     /// <param name="options"></param>
-    /// <param name="statusCode"></param>
     /// <returns></returns>
-    protected virtual RemoteServiceErrorModel Convert(Exception exception, FakeExceptionHandlingOptions options,
-        string statusCode)
+    protected virtual RemoteServiceErrorModel Convert(Exception exception, FakeExceptionHandlingOptions options)
     {
         var errorModel = new RemoteServiceErrorModel
         {
-            Message = localizer[statusCode]
+            Type = localizer[exception.GetType().Name]
         };
 
-        if (exception is BusinessException businessException)
-        {
-            errorModel.Details = businessException.Message;
-        }
-        else
-        {
-            var details = new StringBuilder();
-            AddExceptionToDetails(exception, details, options.OutputStackTrace);
-            errorModel.Details = details.ToString();
-        }
+        var details = new StringBuilder();
+        AddExceptionToDetails(exception, details, options.OutputStackTrace);
+        errorModel.Message = details.ToString();
+
 
         return errorModel;
     }

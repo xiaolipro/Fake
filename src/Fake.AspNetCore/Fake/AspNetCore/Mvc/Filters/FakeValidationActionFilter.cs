@@ -1,13 +1,11 @@
-﻿using Fake.AspNetCore.ExceptionHandling;
-using Fake.AspNetCore.Localization;
+﻿using System.ComponentModel.DataAnnotations;
 using Fake.Helpers;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Extensions.Localization;
 
 namespace Fake.AspNetCore.Mvc.Filters;
 
-public class FakeValidationActionFilter(IStringLocalizer<FakeAspNetCoreResource> localizer) : IAsyncActionFilter
+public class FakeValidationActionFilter : IAsyncActionFilter
 {
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
@@ -30,8 +28,7 @@ public class FakeValidationActionFilter(IStringLocalizer<FakeAspNetCoreResource>
                 .Select(error => error.ErrorMessage))
             .JoinAsString("\n");
 
-        var res = new RemoteServiceErrorModel(localizer["ValidationError"], message);
-        context.Result = new JsonResult(res);
+        throw new ValidationException(message);
     }
 
     protected virtual bool ShouldHandle(ActionExecutingContext context)

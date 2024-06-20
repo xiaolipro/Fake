@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.Net;
 using Fake.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -19,7 +20,7 @@ public class DefaultHttpExceptionStatusCodeFinder : IHttpExceptionStatusCodeFind
                 : HttpStatusCode.Unauthorized;
         }
 
-        if (exception is BusinessException) return HttpStatusCode.BadRequest;
+        if (exception is BusinessException or ValidationException) return HttpStatusCode.BadRequest;
 
         return HttpStatusCode.InternalServerError;
     }

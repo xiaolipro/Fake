@@ -10,14 +10,16 @@ public interface ICurrentUser
     /// <summary>
     /// 用户唯一标识
     /// </summary>
-
-    public Guid? Id { get; }
+    Guid? Id { get; }
 
     /// <summary>
     /// 获取当前用户的名称。
     /// </summary>
+    string? UserName { get; }
 
-    public string? UserName { get; }
+    string[] Roles { get; }
 
     Claim? FindClaimOrNull(string claimType);
+
+    Claim[] FindClaims(string claimType);
 }
