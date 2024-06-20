@@ -1,22 +1,64 @@
 ﻿using Fake.Auditing;
-using Fake.DomainDrivenDesign.Entities.Auditing;
+using Fake.DomainDrivenDesign.Events;
 using Fake.IdGenerators.GuidGenerator;
 
 namespace Fake.DomainDrivenDesign.Entities;
 
 [Serializable]
-public abstract class AggregateRoot : BasicAggregateRoot, IHasVersionNum
+public abstract class AggregateRoot : Entity, IAggregateRoot, IHasDomainEvent
 {
-    [DisableAuditing] public virtual string VersionNum { get; set; }
+    private List<DomainEvent>? _domainEvents;
 
-    protected AggregateRoot()
+    public IReadOnlyCollection<DomainEvent>? DomainEvents => _domainEvents?.AsReadOnly();
+
+    [DisableAuditing] public virtual string VersionNum { get; set; } = SimpleGuidGenerator.Instance.GenerateAsString();
+
+
+    protected virtual void AddDomainEvent(DomainEvent domainEvent)
     {
-        VersionNum = SimpleGuidGenerator.Instance.GenerateAsString();
+        _domainEvents ??= new List<DomainEvent>();
+        _domainEvents.Add(domainEvent);
+    }
+
+    protected virtual void RemoveDomainEvent(DomainEvent domainEvent)
+    {
+        _domainEvents?.Remove(domainEvent);
+    }
+
+    public void ClearDomainEvents()
+    {
+        _domainEvents?.Clear();
     }
 }
 
 [Serializable]
-public abstract class AggregateRoot<TKey> : BasicAggregateRoot<TKey>, IHasVersionNum
+public abstract class AggregateRoot<TKey> : Entity<TKey>, IAggregateRoot<TKey>, IHasDomainEvent
 {
-    [DisableAuditing] public string VersionNum { get; set; } = SimpleGuidGenerator.Instance.GenerateAsString();
+    private List<DomainEvent>? _domainEvents;
+
+    public IReadOnlyCollection<DomainEvent>? DomainEvents => _domainEvents?.AsReadOnly();
+
+    [DisableAuditing] public virtual string VersionNum { get; set; } = SimpleGuidGenerator.Instance.GenerateAsString();
+
+    protected virtual void AddDomainEvent(DomainEvent domainEvent)
+    {
+        _domainEvents ??= new List<DomainEvent>();
+        _domainEvents.Add(domainEvent);
+    }
+
+    protected virtual void RemoveDomainEvent(DomainEvent domainEvent)
+    {
+        _domainEvents?.Remove(domainEvent);
+    }
+
+    public void ClearDomainEvents()
+    {
+        _domainEvents?.Clear();
+    }
+
+    public override string ToString()
+    {
+        return $"[聚合根: {GetType().Name}] Id: {Id} 领域事件: {_domainEvents?
+            .Select(e => e.GetType().Name).JoinAsString(", ")}";
+    }
 }

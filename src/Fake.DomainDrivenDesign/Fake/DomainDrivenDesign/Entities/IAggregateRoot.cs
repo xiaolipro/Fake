@@ -11,6 +11,10 @@
 /// </summary>
 public interface IAggregateRoot : IEntity
 {
+    /// <summary>
+    /// 版本号
+    /// </summary>
+    string VersionNum { get; set; }
 }
 
 /// <summary>

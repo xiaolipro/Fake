@@ -7,8 +7,8 @@ namespace Fake.DomainDrivenDesign.Entities.Auditing;
 [Serializable]
 public abstract class UpdateAuditedEntity<TKey> : Entity<TKey>, IHasUpdateUserId, IHasUpdateTime
 {
-    public virtual Guid? UpdateUserId { get; set; }
-    public virtual DateTime? UpdateTime { get; set; }
+    public virtual Guid UpdateUserId { get; set; }
+    public virtual DateTime UpdateTime { get; set; }
 }
 
 /// <summary>

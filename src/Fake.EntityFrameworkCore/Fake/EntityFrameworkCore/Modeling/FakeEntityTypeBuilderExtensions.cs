@@ -8,10 +8,10 @@ public static class FakeEntityTypeBuilderExtensions
 {
     public static EntityTypeBuilder TryConfigureVersionNum(this EntityTypeBuilder builder)
     {
-        if (builder.Metadata.ClrType.IsAssignableTo<IHasVersionNum>())
+        if (builder.Metadata.ClrType.IsAssignableTo<IAggregateRoot>())
         {
-            builder.Property(nameof(IHasVersionNum.VersionNum))
-                .HasColumnName(nameof(IHasVersionNum.VersionNum))
+            builder.Property(nameof(IAggregateRoot.VersionNum))
+                .HasColumnName(nameof(IAggregateRoot.VersionNum))
                 // 当SaveChanges时，它会自动检查并发标记的值是否与原值匹配，如果不匹配就会抛出DbUpdateConcurrencyException异常
                 .IsConcurrencyToken()
                 .HasMaxLength(40);

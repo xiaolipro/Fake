@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Domain.Aggregates.OrderAggregate;
+﻿using Domain.Aggregates.OrderAggregate;
 using Fake.Data.Filtering;
 using Fake.DomainDrivenDesign.Entities.Auditing;
 using Fake.DomainDrivenDesign.Repositories;
@@ -7,7 +6,7 @@ using Fake.Modularity;
 using Shouldly;
 using Xunit;
 
-namespace Tests;
+namespace Fake.AppTests.Tests;
 
 public abstract class DataFilterTests<TStartupModule> : AppTestBase<TStartupModule> where TStartupModule : IFakeModule
 {
@@ -40,12 +39,10 @@ public abstract class DataFilterTests<TStartupModule> : AppTestBase<TStartupModu
         var order = await OrderRepository.FirstOrDefaultAsync(x => x.Id == AppTestDataBuilder.OrderId);
         order.ShouldNotBeNull();
         order.CreateTime.ShouldBeLessThanOrEqualTo(FakeClock.Now);
-        order.UpdateUserId.ShouldBeNull();
-        await OrderRepository.DeleteAsync(order);
 
+        await OrderRepository.DeleteAsync(order);
         order.IsDeleted.ShouldBe(true);
-        order.UpdateUserId.ShouldBeNull();
-        Debug.Assert(order.UpdateTime != null, "order.UpdateTime != null");
-        order.UpdateTime.Value.ShouldBeLessThanOrEqualTo(FakeClock.Now);
+
+        order.UpdateTime.ShouldBeLessThanOrEqualTo(FakeClock.Now);
     }
 }

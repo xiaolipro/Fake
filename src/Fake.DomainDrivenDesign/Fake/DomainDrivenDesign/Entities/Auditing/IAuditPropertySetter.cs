@@ -2,9 +2,9 @@
 
 public interface IAuditPropertySetter
 {
-    void SetCreationProperties(object targetObject);
+    void SetCreationProperties(IEntity entity);
 
-    void SetModificationProperties(object targetObject);
+    void SetModificationProperties(IEntity entity);
 
-    void SetVersionNumProperty(object targetObject);
+    void SetSoftDeleteProperty(IEntity entity);
 }

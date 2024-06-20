@@ -14,7 +14,7 @@ namespace Fake.SqlSugarCore;
 public abstract class SugarDbContext<TDbContext> where TDbContext : SugarDbContext<TDbContext>
 {
     public ILazyServiceProvider ServiceProvider { get; set; } = null!;
-    public ISqlSugarClient SqlSugarClient { get; private set; } = null!;
+    public ISqlSugarClient SqlSugarClient { get; private set; }
 
     protected readonly SugarDbConnOptions<TDbContext> Options;
     protected IFakeClock FakeClock => ServiceProvider.GetRequiredService<IFakeClock>();
@@ -119,13 +119,15 @@ public abstract class SugarDbContext<TDbContext> where TDbContext : SugarDbConte
 
     protected virtual void DataExecuting(object oldValue, DataFilterModel entityInfo)
     {
+        if (entityInfo.EntityValue is not IEntity entity) return;
+
         switch (entityInfo.OperationType)
         {
             case DataFilterType.UpdateByObject:
-                AuditPropertySetter.SetModificationProperties(entityInfo.EntityValue);
+                AuditPropertySetter.SetModificationProperties(entity);
                 break;
             case DataFilterType.InsertByObject:
-                AuditPropertySetter.SetCreationProperties(entityInfo.EntityValue);
+                AuditPropertySetter.SetCreationProperties(entity);
                 break;
             case DataFilterType.DeleteByObject:
                 break;

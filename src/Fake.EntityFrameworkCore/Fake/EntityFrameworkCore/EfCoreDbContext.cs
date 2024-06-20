@@ -102,16 +102,19 @@ public abstract class EfCoreDbContext<TDbContext>(DbContextOptions<TDbContext> o
     {
         foreach (var entry in ChangeTracker.Entries())
         {
-            // Deleted状态可能是软删，也走的更新，同受版本约束
             if (!entry.State.IsIn(EntityState.Modified, EntityState.Deleted)) continue;
 
-            if (entry.Entity is not IHasVersionNum entity) continue;
+            if (entry.Entity is IAggregateRoot aggregate)
+            {
+                /*
+                 * important：
+                 *  通过修改entry在内存中的原值，来实现乐观锁，因为save changes时会比对期望受影响行。
+                 *  如果不一致，会抛出DbUpdateConcurrencyException异常
+                 */
+                Entry(aggregate).Property(x => x.VersionNum).OriginalValue = aggregate.VersionNum;
 
-            // tips：
-            // 通过修改entry在内存中的原值，来实现乐观锁，因为save changes时会比对期望受影响行。
-            // 如果不一致，会抛出DbUpdateConcurrencyException异常
-            Entry(entity).Property(x => x.VersionNum).OriginalValue = entity.VersionNum;
-            entity.VersionNum = SimpleGuidGenerator.Instance.GenerateAsString();
+                aggregate.VersionNum = SimpleGuidGenerator.Instance.GenerateAsString();
+            }
         }
 
         return Task.CompletedTask;
@@ -150,6 +153,8 @@ public abstract class EfCoreDbContext<TDbContext>(DbContextOptions<TDbContext> o
 
     protected virtual void PublishEventsForTrackedEntity(EntityEntry entry)
     {
+        if (entry.Entity is not IEntity entity) return;
+
         switch (entry.State)
         {
             case EntityState.Detached: //游离状态：上下文未跟踪该实体
@@ -157,50 +162,34 @@ public abstract class EfCoreDbContext<TDbContext>(DbContextOptions<TDbContext> o
             case EntityState.Unchanged: //未变更状态：该实体正在由上下文跟踪并存在于数据库中，其属性值与数据库中的值没有变化。
                 break;
             case EntityState.Deleted: //删除状态：该实体正在由上下文跟踪并存在于数据库中，它已标记为从数据库中删除
-                ApplyDelete(entry);
+                if (entity is ISoftDelete)
+                {
+                    // tips: 这里必須重置entity状态，设置完软删审计后会跳转到Modified状态
+                    entry.Reload();
+                    AuditPropertySetter.SetSoftDeleteProperty(entity);
+                }
+
                 break;
             case EntityState.Modified: //修改状态：该实体正在由上下文跟踪并存在于数据库中，其部分或全部属性值已被修改
-                SetModifier(entry);
+                // 只要有一个属性被修改了，且值不由数据库生成
+                if (entry.Properties.Any(p => p is { IsModified: true, Metadata.ValueGenerated: ValueGenerated.Never }))
+                {
+                    AuditPropertySetter.SetModificationProperties(entity);
+                }
+
                 break;
             case EntityState.Added: //新增状态：上下文正在跟踪实体，但数据库中尚不存在该实体。
                 CheckAndSetId(entry);
-                SetVersionNum(entry);
-                SetCreator(entry);
+                if (entity is IAggregateRoot aggregate)
+                {
+                    aggregate.VersionNum = SimpleGuidGenerator.Instance.GenerateAsString();
+                }
+
+                AuditPropertySetter.SetCreationProperties(entity);
+                AuditPropertySetter.SetModificationProperties(entity);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
-        }
-    }
-
-    protected virtual void ApplyDelete(EntityEntry entry)
-    {
-        if (entry.Entity is not ISoftDelete entityWithSoftDelete) return;
-
-        // tips: 这里必須重置entity状态，设置完修改审计后转会到EntityState.Modified
-        entry.Reload();
-        ReflectionHelper.TrySetProperty(entityWithSoftDelete, x => x.IsDeleted, () => true);
-    }
-
-    protected virtual void SetModifier(EntityEntry entry)
-    {
-        // 只要有一个属性被修改了，且值不由数据库生成
-        if (entry.Properties.Any(p => p is { IsModified: true, Metadata.ValueGenerated: ValueGenerated.Never }))
-        {
-            AuditPropertySetter.SetModificationProperties(entry.Entity);
-        }
-    }
-
-    protected virtual void SetCreator(EntityEntry entry)
-    {
-        AuditPropertySetter.SetCreationProperties(entry.Entity);
-        AuditPropertySetter.SetModificationProperties(entry.Entity);
-    }
-
-    protected virtual void SetVersionNum(EntityEntry entry)
-    {
-        if (entry.Entity is IHasVersionNum entityWithVersionNum)
-        {
-            entityWithVersionNum.VersionNum = SimpleGuidGenerator.Instance.Generate().ToString("N");
         }
     }
 

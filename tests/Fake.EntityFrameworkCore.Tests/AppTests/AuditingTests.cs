@@ -1,4 +1,4 @@
-﻿using Tests;
+﻿using Fake.AppTests.Tests;
 
 namespace Fake.EntityFrameworkCore.Tests.AppTests;
 

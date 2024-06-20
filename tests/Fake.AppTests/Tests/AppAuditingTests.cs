@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Domain.Aggregates.BuyerAggregate;
+﻿using Domain.Aggregates.BuyerAggregate;
 using Domain.Aggregates.OrderAggregate;
 using Fake.DomainDrivenDesign.Repositories;
 using Fake.Modularity;
@@ -8,7 +7,7 @@ using NSubstitute;
 using Shouldly;
 using Xunit;
 
-namespace Tests;
+namespace Fake.AppTests.Tests;
 
 public abstract class AppAuditingTests<TStartupModule> : AppTestBase<TStartupModule> where TStartupModule : IFakeModule
 {
@@ -66,8 +65,7 @@ public abstract class AppAuditingTests<TStartupModule> : AppTestBase<TStartupMod
         order = await OrderRepository.UpdateAsync(order);
 
         order.UpdateUserId.ShouldBe(CurrentUserId);
-        Debug.Assert(order.UpdateTime != null, "order.UpdateTime != null");
-        order.UpdateTime.Value.ShouldBeLessThanOrEqualTo(FakeClock.Now);
+        order.UpdateTime.ShouldBeLessThanOrEqualTo(FakeClock.Now);
     }
 
     [Fact]
@@ -80,8 +78,7 @@ public abstract class AppAuditingTests<TStartupModule> : AppTestBase<TStartupMod
         await OrderRepository.DeleteAsync(order);
         order.IsDeleted.ShouldBe(true);
         order.UpdateUserId.ShouldBe(CurrentUserId);
-        Debug.Assert(order.UpdateTime != null, "order.UpdateTime != null");
-        order.UpdateTime.Value.ShouldBeLessThanOrEqualTo(FakeClock.Now);
+        order.UpdateTime.ShouldBeLessThanOrEqualTo(FakeClock.Now);
 
         order = await OrderRepository.FirstOrDefaultAsync(x => x.Id == AppTestDataBuilder.OrderId);
         order.ShouldBeNull();

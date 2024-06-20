@@ -5,5 +5,5 @@ public interface IHasUpdateTime
     /// <summary>
     /// 更新时间
     /// </summary>
-    DateTime? UpdateTime { get; }
+    DateTime UpdateTime { get; }
 }

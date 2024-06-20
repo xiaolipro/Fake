@@ -1,5 +1,4 @@
 ﻿using Fake.Helpers;
-using Fake.IdGenerators.GuidGenerator;
 using Fake.Timing;
 using Fake.Users;
 
@@ -7,42 +6,40 @@ namespace Fake.DomainDrivenDesign.Entities.Auditing;
 
 public class DefaultAuditPropertySetter(ICurrentUser currentUser, IFakeClock fakeClock) : IAuditPropertySetter
 {
-    public void SetCreationProperties(object targetObject)
+    public void SetCreationProperties(IEntity entity)
     {
-        if (targetObject is IHasCreateTime objectWithCreationTime)
+        if (entity is IHasCreateTime entityWithCreationTime)
         {
-            if (objectWithCreationTime.CreateTime == default)
+            if (entityWithCreationTime.CreateTime == default)
             {
-                ReflectionHelper.TrySetProperty(objectWithCreationTime, x => x.CreateTime, () => fakeClock.Now);
+                ReflectionHelper.TrySetProperty(entityWithCreationTime, x => x.CreateTime, () => fakeClock.Now);
             }
         }
 
-        if (targetObject is IHasCreateUserId { CreateUserId: null } objectWithCreator)
+        if (entity is IHasCreateUserId entityWithCreateUserId && entityWithCreateUserId.CreateUserId == default)
         {
-            ReflectionHelper.TrySetProperty(objectWithCreator, x => x.CreateUserId, () => currentUser.Id);
+            ReflectionHelper.TrySetProperty(entityWithCreateUserId, x => x.CreateUserId, () => currentUser.Id);
         }
     }
 
-    public void SetModificationProperties(object targetObject)
+    public void SetModificationProperties(IEntity entity)
     {
-        if (targetObject is IHasUpdateTime objectWithModificationTime)
+        if (entity is IHasUpdateTime entityWithModificationTime)
         {
-            ReflectionHelper.TrySetProperty(objectWithModificationTime, x => x.UpdateTime,
+            ReflectionHelper.TrySetProperty(entityWithModificationTime, x => x.UpdateTime,
                 () => fakeClock.Now);
         }
 
-        if (targetObject is IHasUpdateUserId { UpdateUserId: null } objectWithModifier)
+        if (entity is IHasUpdateUserId entityWithUpdateUserId && entityWithUpdateUserId.UpdateUserId == default)
         {
-            ReflectionHelper.TrySetProperty(objectWithModifier, x => x.UpdateUserId, () => currentUser.Id);
+            ReflectionHelper.TrySetProperty(entityWithUpdateUserId, x => x.UpdateUserId, () => currentUser.Id);
         }
     }
 
-    public void SetVersionNumProperty(object targetObject)
+    public void SetSoftDeleteProperty(IEntity entity)
     {
-        if (targetObject is IHasVersionNum objectWithVersionNum)
-        {
-            ReflectionHelper.TrySetProperty(objectWithVersionNum, x => x.VersionNum,
-                () => SimpleGuidGenerator.Instance.GenerateAsString());
-        }
+        if (entity is not ISoftDelete entityWithSoftDelete) return;
+
+        ReflectionHelper.TrySetProperty(entityWithSoftDelete, x => x.IsDeleted, () => true);
     }
 }
