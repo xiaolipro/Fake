@@ -85,7 +85,7 @@ public class DataFilter<TFilter>(IOptions<FakeDataFilterOptions> options) : IDat
         }
 
         // tips：这里要克隆，不然会影响到默认值
-        _filter.Value = _options.DefaultStates.GetOrDefault(typeof(TFilter))?.Clone() ??
+        _filter.Value = _options.GetDataFilterStateOrNull<TFilter>()?.Clone() ??
                         new DataFilterState(_options.IsDefaultEnabled);
     }
 }

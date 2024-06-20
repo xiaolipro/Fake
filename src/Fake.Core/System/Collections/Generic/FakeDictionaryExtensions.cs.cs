@@ -16,6 +16,19 @@ public static class FakeDictionaryExtensions
     }
 
     /// <summary>
+    /// 从字段中获取给定key的值，若不存在，则插入
+    /// </summary>
+    /// <param name="dictionary"></param>
+    /// <param name="key"></param>
+    /// <param name="value"></param>
+    /// <returns>存在直接返回，不存在则新增并返回factory value</returns>
+    public static TValue GetOrAdd<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key,
+        TValue value)
+    {
+        return dictionary.GetOrAdd(key, _ => value);
+    }
+
+    /// <summary>
     /// 从字段中获取给定key的值，若不存在，则根据工厂新增，并返回工厂值
     /// </summary>
     /// <param name="dictionary"></param>
