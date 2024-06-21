@@ -11,8 +11,8 @@ public class CurrentUser(ICurrentPrincipalAccessor currentPrincipalAccessor) : I
      * see: public virtual bool IsAuthenticated => !string.IsNullOrEmpty(this.m_authenticationType);
      */
     public virtual bool IsAuthenticated => currentPrincipalAccessor.Principal?.Identity.IsAuthenticated ?? false;
-    public virtual Guid? Id => currentPrincipalAccessor.Principal?.FindUserId();
-    public virtual string? UserName => this.FindClaimValueOrNull(ClaimTypes.Name);
+    public virtual Guid Id => currentPrincipalAccessor.Principal?.FindUserId() ?? default;
+    public virtual string UserName => this.FindClaimValueOrNull(ClaimTypes.Name) ?? string.Empty;
     public virtual string[] Roles => this.FindClaimValues(ClaimTypes.Role);
 
     public virtual Claim? FindClaimOrNull(string claimType)
