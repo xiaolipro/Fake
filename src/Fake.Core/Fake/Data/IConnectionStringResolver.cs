@@ -4,13 +4,14 @@ namespace Fake.Data;
 
 public interface IConnectionStringResolver
 {
-    Task<string> ResolveAsync(string? connectionStringName = null);
+    Task<string> ResolveAsync(string connectionStringName);
 }
 
 public class DefaultConnectionStringResolver(IConfiguration configuration) : IConnectionStringResolver
 {
-    public Task<string> ResolveAsync(string? connectionStringName = null)
+    public Task<string> ResolveAsync(string connectionStringName)
     {
-        var connectionString = configuration.GetConnectionString(connectionStringName)!;
+        if (connectionStringName == null) throw new ArgumentNullException(nameof(connectionStringName));
+        var connectionString = configuration.GetConnectionString(connectionStringName);
     }
 }
