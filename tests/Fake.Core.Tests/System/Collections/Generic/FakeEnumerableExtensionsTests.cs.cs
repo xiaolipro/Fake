@@ -1,4 +1,6 @@
-﻿using Fake.Helpers;
+﻿using System.IO.Compression;
+using System.Text;
+using Fake.Helpers;
 
 namespace Fake.Core.Tests.System.Collections.Generic;
 
@@ -9,6 +11,49 @@ public class FakeEnumerableExtensionsTests
     public FakeEnumerableExtensionsTests(ITestOutputHelper testOutputHelper)
     {
         _testOutputHelper = testOutputHelper;
+    }
+
+    [Fact]
+    void t()
+    {
+        string zipPath =
+            @"C:\Users\23577\AppData\Local\Temp\50448458-9e24-4b2f-8ee5-e7c132717377\发票批量下载_20240611182230(1).zip";
+        string extractPath = "C:\\Users\\23577\\AppData\\Local\\Temp\\50448458-9e24-4b2f-8ee5-e7c132717377\\";
+
+        // Ensure the extraction directory exists
+        Directory.CreateDirectory(extractPath);
+
+        string encoding = "UTF-8"; // Change to the correct encoding if needed
+
+        ExtractZipFile(zipPath, extractPath, encoding);
+    }
+
+    static void ExtractZipFile(string zipPath, string extractPath, string encoding)
+    {
+        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+        Encoding gbk = Encoding.GetEncoding(encoding);
+
+        using (ZipArchive archive = ZipFile.OpenRead(zipPath))
+        {
+            foreach (ZipArchiveEntry entry in archive.Entries)
+            {
+                string decodedFileName = gbk.GetString(Encoding.UTF8.GetBytes(entry.FullName));
+                string destinationPath = Path.GetFullPath(Path.Combine(extractPath, decodedFileName));
+
+                if (destinationPath.StartsWith(extractPath, StringComparison.Ordinal))
+                {
+                    if (entry.Name == "")
+                    {
+                        Directory.CreateDirectory(destinationPath);
+                    }
+                    else
+                    {
+                        Directory.CreateDirectory(Path.GetDirectoryName(destinationPath));
+                        entry.ExtractToFile(destinationPath, true);
+                    }
+                }
+            }
+        }
     }
 
     [Fact]

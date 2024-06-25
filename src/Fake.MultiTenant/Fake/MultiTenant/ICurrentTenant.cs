@@ -4,8 +4,11 @@ namespace Fake.MultiTenant;
 
 public interface ICurrentTenant
 {
-    bool Is
+    bool IsResolved { get; }
+
     Guid Id { get; }
 
     string Name { get; }
+
+    IDisposable Change(TenantInfo tenantInfo);
 }

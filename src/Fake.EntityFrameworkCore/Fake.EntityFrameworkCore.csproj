@@ -12,5 +12,6 @@
 
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="$(MicrosoftEntityFrameworkCorePackageVersion)" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="$(MicrosoftEntityFrameworkCorePackageVersion)" />
+        <ProjectReference Include="..\Fake.MultiTenant\Fake.MultiTenant.csproj"/>
     </ItemGroup>
 </Project>

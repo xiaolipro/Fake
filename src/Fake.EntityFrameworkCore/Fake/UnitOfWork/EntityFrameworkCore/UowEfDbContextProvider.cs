@@ -3,7 +3,6 @@ using Fake.EntityFrameworkCore;
 using Fake.Threading;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -17,7 +16,7 @@ namespace Fake.UnitOfWork.EntityFrameWorkCore;
 public class UowEfDbContextProvider<TDbContext>(
     IUnitOfWorkManager unitOfWorkManager,
     ICancellationTokenProvider cancellationTokenProvider,
-    IConfiguration configuration)
+    IConnectionStringResolver connectionStringResolver)
     : IEfDbContextProvider<TDbContext>
     where TDbContext : EfCoreDbContext<TDbContext>
 {
@@ -37,7 +36,8 @@ public class UowEfDbContextProvider<TDbContext>(
         }
 
         var targetDbContextType = typeof(TDbContext);
-        var connectionString = DbContextCreationContext.GetCreationContext<TDbContext>(configuration).ConnectionString;
+        var connectionStringName = ConnectionStringNameAttribute.GetConnStringName<TDbContext>();
+        var connectionString = await connectionStringResolver.ResolveAsync(connectionStringName);
 
         var dbContextKey = $"{targetDbContextType.FullName}_{connectionString}";
         var databaseApi = unitOfWork.FindDatabaseApi(dbContextKey);

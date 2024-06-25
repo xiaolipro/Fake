@@ -1,5 +1,4 @@
 ﻿using System.Data.Common;
-using Microsoft.Extensions.Configuration;
 
 namespace Fake.Data;
 
@@ -18,16 +17,5 @@ public class DbContextCreationContext(string connectionString)
         var previousValue = Current;
         LocalContext.Value = context;
         return new DisposableWrapper(() => LocalContext.Value = previousValue);
-    }
-
-
-    public static DbContextCreationContext GetCreationContext<TDbContext>(IConfiguration configuration)
-        where TDbContext : class
-    {
-        if (Current != null) return Current;
-
-        var connectionStringName = ConnectionStringNameAttribute.GetConnStringName<TDbContext>();
-        var connectionString = configuration.GetConnectionString(connectionStringName)!;
-        return new DbContextCreationContext(connectionString);
     }
 }
