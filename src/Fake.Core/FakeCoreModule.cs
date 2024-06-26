@@ -1,6 +1,7 @@
 ﻿using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Fake.Data;
 using Fake.Data.Filtering;
 using Fake.DependencyInjection;
 using Fake.IdGenerators;
@@ -41,6 +42,7 @@ public class FakeCoreModule : FakeModule
     {
         context.Services.AddSingleton<IDataFilter, DataFilter>();
         context.Services.AddSingleton(typeof(IDataFilter<>), typeof(DataFilter<>));
+        context.Services.AddTransient<IConnectionStringResolver, DefaultConnectionStringResolver>();
     }
 
     private void ConfigureClock(ServiceConfigurationContext context)

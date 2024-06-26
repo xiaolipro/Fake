@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using Fake.SqlSugarCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -13,7 +12,7 @@ namespace Fake.UnitOfWork.SqlSugarCore;
 public class UowSugarDbContextProvider<TDbContext>(
     IUnitOfWorkManager unitOfWorkManager,
     ICancellationTokenProvider cancellationTokenProvider,
-    IConfiguration configuration)
+    IConnectionStringResolver connectionStringResolver)
     : ISugarDbContextProvider<TDbContext>
     where TDbContext : SugarDbContext<TDbContext>
 {
@@ -31,7 +30,8 @@ public class UowSugarDbContextProvider<TDbContext>(
         }
 
         var targetDbContextType = typeof(TDbContext);
-        var connectionString = DbContextCreationContext.GetCreationContext<TDbContext>(configuration).ConnectionString;
+        var connectionStringName = ConnectionStringNameAttribute.GetConnStringName<TDbContext>();
+        var connectionString = await connectionStringResolver.ResolveAsync(connectionStringName);
 
         var dbContextKey = $"{targetDbContextType.FullName}_{connectionString}";
         var databaseApi = unitOfWork.FindDatabaseApi(dbContextKey);

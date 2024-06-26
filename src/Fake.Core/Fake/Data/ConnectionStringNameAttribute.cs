@@ -2,6 +2,7 @@
 
 namespace Fake.Data;
 
+[AttributeUsage(AttributeTargets.Class)]
 public class ConnectionStringNameAttribute : Attribute
 {
     public string Name { get; }
@@ -24,7 +25,7 @@ public class ConnectionStringNameAttribute : Attribute
 
         if (nameAttribute == null)
         {
-            return type.FullName!;
+            return ConnectionStrings.DefaultConnectionStringName;
         }
 
         return nameAttribute.Name;
