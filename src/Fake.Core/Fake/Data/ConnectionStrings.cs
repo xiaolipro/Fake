@@ -2,9 +2,9 @@
 
 public class ConnectionStrings : Dictionary<string, string>
 {
-    public const string DefaultConnectionStringName = "DefaultConnection";
+    public const string DefaultConnectionStringName = "Default";
 
-    public string DefaultConnection
+    public string DefaultConnectionString
     {
         get => GetConnectionString(DefaultConnectionStringName);
         set => this[DefaultConnectionStringName] = value;
@@ -12,9 +12,6 @@ public class ConnectionStrings : Dictionary<string, string>
 
     public string GetConnectionString(string name)
     {
-        if (base.TryGetValue(name, out var connectionString))
-            return connectionString;
-
-        return string.Empty;
+        return TryGetValue(name, out var connectionString) ? connectionString : string.Empty;
     }
 }
