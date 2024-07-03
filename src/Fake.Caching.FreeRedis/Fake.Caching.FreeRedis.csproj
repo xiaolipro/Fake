@@ -11,4 +11,8 @@
         <PackageReference Include="FreeRedis" Version="1.2.12"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <ProjectReference Include="..\Fake.Core\Fake.Core.csproj"/>
+    </ItemGroup>
+
 </Project>

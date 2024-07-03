@@ -29,8 +29,4 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Condition="'$(MSBuildProjectName)' != 'Fake.Core'" Include="..\Fake.Core\Fake.Core.csproj"/>
-  </ItemGroup>
 </Project>
