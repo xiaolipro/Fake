@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Text;
 using Fake.Data.Filtering;
 using Fake.DependencyInjection;
 using Fake.DomainDrivenDesign.Events;
@@ -13,6 +14,7 @@ using Fake.IdGenerators;
 using Fake.IdGenerators.GuidGenerator;
 using Fake.UnitOfWork;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.Logging;
 
 namespace Fake.EntityFrameworkCore;
 
@@ -34,6 +36,9 @@ public abstract class EfCoreDbContext<TDbContext>(DbContextOptions<TDbContext> o
     protected IAuditPropertySetter AuditPropertySetter => ServiceProvider.GetRequiredService<IAuditPropertySetter>();
     protected IEntityChangeHelper EntityChangeHelper => ServiceProvider.GetRequiredService<IEntityChangeHelper>();
     protected IDataFilter DataFilter => ServiceProvider.GetRequiredService<IDataFilter>();
+
+    public ILogger<EfCoreDbContext<TDbContext>> Logger =>
+        ServiceProvider.GetRequiredService<ILogger<EfCoreDbContext<TDbContext>>>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -72,8 +77,22 @@ public abstract class EfCoreDbContext<TDbContext>(DbContextOptions<TDbContext> o
 
             return res;
         }
-        catch (DbUpdateConcurrencyException? ex)
+        catch (DbUpdateConcurrencyException ex)
         {
+            if (ex.Entries.Count > 0)
+            {
+                var sb = new StringBuilder();
+                sb.AppendLine(ex.Entries.Count > 1
+                    ? "There are some entries which are not saved due to concurrency exception:"
+                    : "There is an entry which is not saved due to concurrency exception:");
+                foreach (var entry in ex.Entries)
+                {
+                    sb.AppendLine(entry.ToString());
+                }
+
+                Logger.LogWarning(sb.ToString());
+            }
+
             throw new FakeDbConcurrencyException(ex.Message, ex);
         }
         finally
@@ -113,11 +132,6 @@ public abstract class EfCoreDbContext<TDbContext>(DbContextOptions<TDbContext> o
 
             if (entry.Entity is IAggregateRoot aggregate)
             {
-                /*
-                 * important：
-                 *  通过修改entry在内存中的原值，来实现乐观锁，因为save changes时会比对期望受影响行。
-                 *  如果不一致，会抛出DbUpdateConcurrencyException异常
-                 */
                 Entry(aggregate).Property(x => x.ConcurrencyStamp).OriginalValue = aggregate.ConcurrencyStamp;
 
                 aggregate.ConcurrencyStamp = SimpleGuidGenerator.Instance.Generate();
