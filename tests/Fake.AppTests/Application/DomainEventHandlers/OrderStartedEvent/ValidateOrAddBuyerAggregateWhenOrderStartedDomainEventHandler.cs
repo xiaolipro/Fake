@@ -1,5 +1,6 @@
 ﻿using Domain.Aggregates.BuyerAggregate;
 using Domain.Events;
+using Fake.Auditing;
 using Fake.EventBus.Events;
 
 namespace Application.DomainEventHandlers.OrderStartedEvent;
@@ -11,7 +12,9 @@ public class ValidateOrAddBuyerAggregateWhenOrderStartedDomainEventHandler(
 {
     public int Order { get; set; }
 
-    public async Task HandleAsync(OrderStartedDomainEvent orderStartedEvent, CancellationToken cancellationToken)
+    [Audited]
+    public virtual async Task HandleAsync(OrderStartedDomainEvent orderStartedEvent,
+        CancellationToken cancellationToken)
     {
         var buyer = await buyerRepository.FirstOrDefaultAsync(x => x.IdentityGuid == orderStartedEvent.UserId,
             cancellationToken: cancellationToken);

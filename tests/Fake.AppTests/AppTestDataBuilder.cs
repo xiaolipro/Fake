@@ -23,19 +23,10 @@ public class AppTestDataBuilder
     {
         var order = BuildOrder();
         await _orderRepository.InsertAsync(order);
-        //await AddBuyer();
     }
 
-    private async Task AddBuyer()
-    {
-        var buyer = new Buyer(UserId, "fake");
-        buyer.AddPaymentMethod(CardType.Visa, "fakeAlias", "fakeCardNumber",
-            "fakeSecurityNumber", "fakeCardHolderName",
-            DateTime.Now.AddYears(1), OrderId);
-        await _buyerRepository.InsertAsync(buyer);
-    }
-
-    public static Order BuildOrder()
+    [Audited]
+    public virtual Order BuildOrder()
     {
         var street = "fakeStreet";
         var city = "FakeCity";

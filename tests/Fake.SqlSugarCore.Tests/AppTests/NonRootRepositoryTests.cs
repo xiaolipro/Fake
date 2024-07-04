@@ -1,7 +1,7 @@
 ﻿using Domain.Queries;
+using Fake.AppTests.Tests;
 using Fake.SqlSugarCore.Tests.Queries;
 using Microsoft.Extensions.DependencyInjection;
-using Tests;
 
 namespace Fake.SqlSugarCore.Tests.AppTests;
 

@@ -1,7 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
+using System.Threading;
 using Fake.DynamicProxy;
 using Fake.Timing;
 using Fake.Users;
@@ -100,11 +105,11 @@ public class AuditingHelper(
         {
             if (actionParameters.IsNullOrEmpty()) return defaultParameter;
 
-            return JsonSerializer.Serialize(actionParameters);
+            return JsonSerializer.Serialize(actionParameters, Settings);
         }
         catch (Exception ex)
         {
-            Logger.LogWarning(ex.Message);
+            Logger.LogException(ex, LogLevel.Warning);
             return defaultParameter;
         }
     }
@@ -126,4 +131,49 @@ public class AuditingHelper(
             }
         }
     }
+
+    public static List<Type> IngoredTypes { get; } = [typeof(Stream), typeof(Expression), typeof(CancellationToken)];
+
+    private static readonly JsonSerializerOptions Settings = new JsonSerializerOptions()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        TypeInfoResolver = new DefaultJsonTypeInfoResolver()
+        {
+            Modifiers =
+            {
+                jsonTypeInfo =>
+                {
+                    if (jsonTypeInfo.Type.IsIn(IngoredTypes)
+                        || jsonTypeInfo.Type.IsDefined(typeof(DisableAuditingAttribute), false))
+                    {
+                        if (jsonTypeInfo.Kind == JsonTypeInfoKind.Object)
+                        {
+                            jsonTypeInfo.Properties.Clear();
+                        }
+                    }
+
+                    foreach (var property in jsonTypeInfo.Properties)
+                    {
+                        if (property.PropertyType.IsIn(IngoredTypes))
+                        {
+                            property.ShouldSerialize = (_, _) => false;
+                        }
+
+                        if (property.AttributeProvider != null &&
+                            property.AttributeProvider.GetCustomAttributes(typeof(DisableAuditingAttribute), false)
+                                .Any())
+                        {
+                            property.ShouldSerialize = (_, _) => false;
+                        }
+
+                        if (property.PropertyType.DeclaringType != null &&
+                            property.PropertyType.DeclaringType.IsDefined(typeof(DisableAuditingAttribute)))
+                        {
+                            property.ShouldSerialize = (_, _) => false;
+                        }
+                    }
+                }
+            }
+        }
+    };
 }

@@ -1,10 +1,11 @@
-﻿using Domain.Aggregates.OrderAggregate;
+﻿using Domain.Aggregates.BuyerAggregate;
+using Domain.Aggregates.OrderAggregate;
 using Domain.Queries;
 using Fake.Modularity;
 using Shouldly;
 using Xunit;
 
-namespace Tests;
+namespace Fake.AppTests.Tests;
 
 public abstract class RootlessRepositoryTests<TStartupModule> : AppTestBase<TStartupModule>
     where TStartupModule : IFakeModule
@@ -34,7 +35,20 @@ public abstract class RootlessRepositoryTests<TStartupModule> : AppTestBase<TSta
         var cnt = await _orderRepository.GetCountAsync();
         cnt.ShouldBe(1);
 
-        var order = AppTestDataBuilder.BuildOrder();
+        var street = "fakeStreet";
+        var city = "FakeCity";
+        var state = "fakeState";
+        var country = "fakeCountry";
+        var zipcode = "FakeZipCode";
+        var cardType = CardType.Amex;
+        var cardNumber = "12";
+        var cardSecurityNumber = "123";
+        var cardHolderName = "FakeName";
+        var cardExpiration = DateTime.Now.AddYears(1);
+        var address = new Address(street, city, state, country, zipcode);
+        var order = new Order(AppTestDataBuilder.UserId, "fakeName", address,
+            cardType, cardNumber, cardSecurityNumber, cardHolderName, cardExpiration);
+
         order.SetId(Guid.NewGuid());
         Should.Throw<InvalidOperationException>(async () =>
         {
