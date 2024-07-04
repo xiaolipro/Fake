@@ -57,12 +57,12 @@ public abstract class EfCoreDbContext<TDbContext>(DbContextOptions<TDbContext> o
     {
         try
         {
-            var changes = EntityChangeHelper.CreateChangeList(ChangeTracker.Entries());
+            var changes = EntityChangeHelper.CreateChangeList(ChangeTracker.Entries().ToList());
 
             await BeforeSaveChangesAsync();
-            var res = await base.SaveChangesAsync(cancellationToken);
 
-            await PublishDomainEventsAsync();
+            var res = await base.SaveChangesAsync(cancellationToken);
+            await PublishDomainEventsAsync(cancellationToken);
 
             if (changes != null)
             {
@@ -82,10 +82,13 @@ public abstract class EfCoreDbContext<TDbContext>(DbContextOptions<TDbContext> o
         }
     }
 
-    protected virtual Task PublishDomainEventsAsync()
+    protected virtual async Task PublishDomainEventsAsync(CancellationToken cancellationToken)
     {
         var domainEvents = new List<DomainEvent>();
-        foreach (var entry in base.ChangeTracker.Entries<Entity>())
+
+        // entries for more infomation:
+        // https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.changetracking.changetracker.entries?view=efcore-8.0&viewFallbackFrom=net-8.0
+        foreach (var entry in base.ChangeTracker.Entries<Entity>().ToList())
         {
             if (entry.Entity is IHasDomainEvent { DomainEvents: not null } hasDomainEvent &&
                 hasDomainEvent.DomainEvents.Count != 0)
@@ -95,7 +98,11 @@ public abstract class EfCoreDbContext<TDbContext>(DbContextOptions<TDbContext> o
             }
         }
 
-        return domainEvents.ForEachAsync(@event => LocalEventBus.PublishAsync(@event));
+        if (!domainEvents.Any()) return;
+
+        await domainEvents.ForEachAsync(@event => LocalEventBus.PublishAsync(@event));
+
+        await SaveChangesAsync(cancellationToken);
     }
 
     protected virtual Task BeforeSaveChangesAsync()
@@ -111,9 +118,9 @@ public abstract class EfCoreDbContext<TDbContext>(DbContextOptions<TDbContext> o
                  *  通过修改entry在内存中的原值，来实现乐观锁，因为save changes时会比对期望受影响行。
                  *  如果不一致，会抛出DbUpdateConcurrencyException异常
                  */
-                Entry(aggregate).Property(x => x.VersionNum).OriginalValue = aggregate.VersionNum;
+                Entry(aggregate).Property(x => x.ConcurrencyStamp).OriginalValue = aggregate.ConcurrencyStamp;
 
-                aggregate.VersionNum = SimpleGuidGenerator.Instance.GenerateAsString();
+                aggregate.ConcurrencyStamp = SimpleGuidGenerator.Instance.Generate();
             }
         }
 
@@ -182,7 +189,8 @@ public abstract class EfCoreDbContext<TDbContext>(DbContextOptions<TDbContext> o
                 CheckAndSetId(entry);
                 if (entity is IAggregateRoot aggregate)
                 {
-                    aggregate.VersionNum = SimpleGuidGenerator.Instance.GenerateAsString();
+                    // 初始化并发戳
+                    aggregate.ConcurrencyStamp = SimpleGuidGenerator.Instance.Generate();
                 }
 
                 AuditPropertySetter.SetCreationProperties(entity);
@@ -253,8 +261,8 @@ public abstract class EfCoreDbContext<TDbContext>(DbContextOptions<TDbContext> o
             .TryConfigureCreator()
             .TryConfigureModifier()
             .TryConfigureSoftDelete()
-            .TryConfigureExtraProperties()
-            .TryConfigureVersionNum();
+            .TryConfigureConcurrencyStamp()
+            .TryConfigureExtraProperties();
 
         // 配置全局过滤器
         ConfigureGlobalFilters<TEntity>(modelBuilder, mutableEntityType);

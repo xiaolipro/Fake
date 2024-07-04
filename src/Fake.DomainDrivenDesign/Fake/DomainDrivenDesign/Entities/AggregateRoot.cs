@@ -11,7 +11,7 @@ public abstract class AggregateRoot : Entity, IAggregateRoot, IHasDomainEvent
 
     public IReadOnlyCollection<DomainEvent>? DomainEvents => _domainEvents?.AsReadOnly();
 
-    [DisableAuditing] public virtual string VersionNum { get; set; } = SimpleGuidGenerator.Instance.GenerateAsString();
+    [DisableAuditing] public virtual Guid ConcurrencyStamp { get; set; } = SimpleGuidGenerator.Instance.Generate();
 
 
     protected virtual void AddDomainEvent(DomainEvent domainEvent)
@@ -44,11 +44,11 @@ public abstract class AggregateRoot<TKey> : Entity<TKey>, IAggregateRoot<TKey>, 
 
     public IReadOnlyCollection<DomainEvent>? DomainEvents => _domainEvents?.AsReadOnly();
 
-    [DisableAuditing] public virtual string VersionNum { get; set; } = SimpleGuidGenerator.Instance.GenerateAsString();
+    [DisableAuditing] public virtual Guid ConcurrencyStamp { get; set; } = SimpleGuidGenerator.Instance.Generate();
 
     protected virtual void AddDomainEvent(DomainEvent domainEvent)
     {
-        _domainEvents ??= new List<DomainEvent>();
+        _domainEvents ??= [];
         _domainEvents.Add(domainEvent);
     }
 
@@ -64,7 +64,7 @@ public abstract class AggregateRoot<TKey> : Entity<TKey>, IAggregateRoot<TKey>, 
 
     public override string ToString()
     {
-        return $"[聚合根: {GetType().Name}] Ids: {Id} 领域事件: {_domainEvents?
+        return $"[聚合根: {GetType().Name}] Id: {Id} 领域事件: {_domainEvents?
             .Select(e => e.GetType().Name).JoinAsString(", ")}";
     }
 }

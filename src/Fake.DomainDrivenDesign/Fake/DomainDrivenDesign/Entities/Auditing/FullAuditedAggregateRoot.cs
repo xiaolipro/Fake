@@ -1,7 +1,7 @@
 ﻿namespace Fake.DomainDrivenDesign.Entities.Auditing;
 
 [Serializable]
-public abstract class FullAuditedAggregate<TKey> : AggregateRoot<TKey>, IFullAuditedEntity
+public abstract class FullAuditedAggregateRoot<TKey> : AggregateRoot<TKey>, IFullAuditedEntity
 {
     public virtual Guid CreateUserId { get; set; }
     public virtual DateTime CreateTime { get; set; }

@@ -7,7 +7,7 @@ using Fake.DomainDrivenDesign.Entities.Auditing;
 namespace Domain.Aggregates.OrderAggregate;
 
 [Audited]
-public class Order : FullAuditedAggregate<Guid>
+public class Order : FullAuditedAggregateRoot<Guid>
 {
     // DDD Patterns comment
     // Using private fields, allowed since EF Core 1.1, is a much better encapsulation

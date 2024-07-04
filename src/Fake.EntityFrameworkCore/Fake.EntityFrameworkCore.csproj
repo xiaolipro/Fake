@@ -9,9 +9,9 @@
     
     <ItemGroup>
         <ProjectReference Include="..\Fake.DomainDrivenDesign\Fake.DomainDrivenDesign.csproj" />
+        <ProjectReference Include="..\Fake.MultiTenant\Fake.MultiTenant.csproj"/>
 
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="$(MicrosoftEntityFrameworkCorePackageVersion)" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="$(MicrosoftEntityFrameworkCorePackageVersion)" />
-        <ProjectReference Include="..\Fake.MultiTenant\Fake.MultiTenant.csproj"/>
     </ItemGroup>
 </Project>

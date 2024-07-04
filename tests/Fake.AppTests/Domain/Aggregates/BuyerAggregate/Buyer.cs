@@ -1,8 +1,10 @@
 ﻿using Domain.Events;
+using Fake.Auditing;
 using Fake.DomainDrivenDesign.Entities;
 
 namespace Domain.Aggregates.BuyerAggregate;
 
+[Audited]
 public class Buyer : AggregateRoot<Guid>
 {
     public Guid IdentityGuid { get; private set; }

@@ -32,7 +32,7 @@ public class AuditLogInfo : IHasExtraProperties
         var sb = new StringBuilder();
 
         sb.AppendLine("AUDIT LOG:");
-        sb.AppendLine($"|- UserName-Id: {UserName}-{UserId}");
+        sb.AppendLine($"|- UserName/Id: {UserName}/{UserId}");
         sb.AppendLine($"|- ExecutionDuration: {ExecutionDuration} ms");
 
         if (Actions.Any())

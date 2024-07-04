@@ -12,9 +12,9 @@
 public interface IAggregateRoot : IEntity
 {
     /// <summary>
-    /// 版本号
+    /// 并发戳
     /// </summary>
-    string VersionNum { get; set; }
+    Guid ConcurrencyStamp { get; set; }
 }
 
 /// <summary>

@@ -6,15 +6,15 @@ namespace Fake.EntityFrameworkCore.Modeling;
 
 public static class FakeEntityTypeBuilderExtensions
 {
-    public static EntityTypeBuilder TryConfigureVersionNum(this EntityTypeBuilder builder)
+    public static EntityTypeBuilder TryConfigureConcurrencyStamp(this EntityTypeBuilder builder)
     {
         if (builder.Metadata.ClrType.IsAssignableTo<IAggregateRoot>())
         {
-            builder.Property(nameof(IAggregateRoot.VersionNum))
-                .HasColumnName(nameof(IAggregateRoot.VersionNum))
+            builder.Property(nameof(IAggregateRoot.ConcurrencyStamp))
+                .HasColumnName(nameof(IAggregateRoot.ConcurrencyStamp))
                 // 当SaveChanges时，它会自动检查并发标记的值是否与原值匹配，如果不匹配就会抛出DbUpdateConcurrencyException异常
                 .IsConcurrencyToken()
-                .HasMaxLength(40);
+                .IsRequired();
         }
 
         return builder;

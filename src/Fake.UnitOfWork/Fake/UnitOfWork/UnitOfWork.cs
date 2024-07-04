@@ -268,7 +268,7 @@ public class UnitOfWork(
 
         if (_transactionApiDic.ContainsKey(key))
         {
-            throw new FakeException($"工作单元{this}中已存在具有给定密钥{key}的数据库API");
+            return;
         }
 
         _transactionApiDic.Add(key, api);
