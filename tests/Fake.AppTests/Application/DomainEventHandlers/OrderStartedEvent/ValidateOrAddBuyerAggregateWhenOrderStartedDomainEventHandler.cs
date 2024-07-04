@@ -13,7 +13,7 @@ public class ValidateOrAddBuyerAggregateWhenOrderStartedDomainEventHandler(
     public int Order { get; set; }
 
     [Audited]
-    public virtual async Task HandleAsync(OrderStartedDomainEvent orderStartedEvent,
+    public async Task HandleAsync(OrderStartedDomainEvent orderStartedEvent,
         CancellationToken cancellationToken)
     {
         var buyer = await buyerRepository.FirstOrDefaultAsync(x => x.IdentityGuid == orderStartedEvent.UserId,
