@@ -93,7 +93,7 @@ public abstract class EfCoreDbContext<TDbContext>(DbContextOptions<TDbContext> o
                 Logger.LogWarning(sb.ToString());
             }
 
-            throw new FakeDbConcurrencyException(ex.Message, ex);
+            throw new FakeDbConcurrencyException(ex);
         }
         finally
         {

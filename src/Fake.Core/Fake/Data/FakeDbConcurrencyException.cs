@@ -9,6 +9,16 @@ public class FakeDbConcurrencyException : FakeException
     {
     }
 
+
+    /// <summary>
+    /// Creates a new <see cref="FakeDbConcurrencyException"/> object.
+    /// </summary>
+    /// <param name="innerException">Exception message</param>
+    public FakeDbConcurrencyException(Exception? innerException)
+        : base(null, innerException)
+    {
+    }
+
     /// <summary>
     /// Creates a new <see cref="FakeDbConcurrencyException"/> object.
     /// </summary>
