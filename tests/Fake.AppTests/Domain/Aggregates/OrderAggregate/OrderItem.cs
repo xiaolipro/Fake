@@ -1,20 +1,20 @@
-﻿using System;
-using Fake;
-using Fake.DomainDrivenDesign.Entities;
+﻿using Fake.Application;
+using Fake.Domain.Entities;
 
 namespace Domain.Aggregates.OrderAggregate;
 
-public class OrderItem:Entity<Guid>
+public class OrderItem : Entity<Guid>
 {
     private string _productName;
     private string _pictureUrl;
     private decimal _unitPrice;
     private decimal _discount;
     private int _units;
-    
+
     public int ProductId { get; private set; }
-    
-    public OrderItem(int productId, string productName, decimal unitPrice, decimal discount, string pictureUrl, int units = 1)
+
+    public OrderItem(int productId, string productName, decimal unitPrice, decimal discount, string pictureUrl,
+        int units = 1)
     {
         if (units <= 0)
         {
@@ -36,12 +36,12 @@ public class OrderItem:Entity<Guid>
     }
 
     public string GetPictureUri() => _pictureUrl;
-    
+
     public string GetProductName()
     {
         return _productName;
     }
-    
+
     public decimal GetCurrentDiscount()
     {
         return _discount;
@@ -56,9 +56,9 @@ public class OrderItem:Entity<Guid>
     {
         return _unitPrice;
     }
-    
+
     public string GetOrderItemProductName() => _productName;
-    
+
     public void SetNewDiscount(decimal discount)
     {
         if (discount < 0)
@@ -68,7 +68,7 @@ public class OrderItem:Entity<Guid>
 
         _discount = discount;
     }
-    
+
     public void AddUnits(int units)
     {
         if (units < 0)

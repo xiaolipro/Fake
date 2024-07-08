@@ -1,4 +1,4 @@
-﻿using Fake.DomainDrivenDesign.Events;
+﻿using Fake.Domain.Events;
 
 namespace Application.IntegrationEvents;
 

@@ -1,6 +1,6 @@
 ﻿using Domain.Aggregates.BuyerAggregate;
 using Domain.Aggregates.OrderAggregate;
-using Fake.DomainDrivenDesign.Repositories;
+using Fake.Domain.Repositories;
 using Fake.Modularity;
 using Fake.Users;
 using NSubstitute;

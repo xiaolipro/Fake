@@ -1,6 +1,6 @@
 ﻿using Domain.Events;
 using Fake.Auditing;
-using Fake.DomainDrivenDesign.Entities;
+using Fake.Domain.Entities;
 
 namespace Domain.Aggregates.BuyerAggregate;
 

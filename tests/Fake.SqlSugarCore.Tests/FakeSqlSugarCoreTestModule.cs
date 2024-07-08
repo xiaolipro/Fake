@@ -1,7 +1,7 @@
 ﻿using Domain.Aggregates.BuyerAggregate;
 using Domain.Aggregates.OrderAggregate;
-using Fake.DomainDrivenDesign.Entities;
-using Fake.DomainDrivenDesign.Repositories;
+using Fake.Domain.Entities;
+using Fake.Domain.Repositories;
 using Fake.DomainDrivenDesign.Repositories.SqlSugarCore;
 using Fake.Modularity;
 using Microsoft.Extensions.DependencyInjection;

@@ -1,16 +1,13 @@
-﻿using System;
-using Domain.Aggregates.OrderAggregate;
-using Fake.DomainDrivenDesign.Events;
+﻿using Domain.Aggregates.OrderAggregate;
+using Fake.Domain.Events;
 
 namespace Domain.Events
 {
-    using System.Collections.Generic;
-
     /// <summary>
     /// Event used when the grace period order is confirmed
     /// </summary>
     public class OrderStatusChangedToAwaitingValidationDomainEvent
-         : DomainEvent
+        : DomainEvent
     {
         public Guid OrderId { get; }
         public IEnumerable<OrderItem> OrderItems { get; }

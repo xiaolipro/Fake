@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Net;
+using Fake.Application;
 using Fake.Authorization;
 using Fake.Data;
 using Microsoft.AspNetCore.Http;

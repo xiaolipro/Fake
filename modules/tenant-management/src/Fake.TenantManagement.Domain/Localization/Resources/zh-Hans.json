@@ -1,0 +1,6 @@
+{
+  "culture": "zh-Hans",
+  "texts": {
+    "Fake.TenantManagement:DuplicateTenantName": "租户名称已存在：{Name}"
+  }
+}

@@ -4,11 +4,12 @@ using System.Reflection;
 using System.Text;
 using Fake.Data.Filtering;
 using Fake.DependencyInjection;
-using Fake.DomainDrivenDesign.Events;
+using Fake.Domain;
+using Fake.Domain.Events;
 using Fake.EntityFrameworkCore.Auditing;
 using Fake.EntityFrameworkCore.Modeling;
 using Fake.EntityFrameworkCore.ValueConverters;
-using Fake.EventBus;
+using Fake.EventBus.Local;
 using Fake.Helpers;
 using Fake.IdGenerators;
 using Fake.IdGenerators.GuidGenerator;
@@ -30,9 +31,7 @@ public abstract class EfCoreDbContext<TDbContext>(DbContextOptions<TDbContext> o
         )!;
 
     protected IFakeClock FakeClock => ServiceProvider.GetRequiredService<IFakeClock>();
-    protected GuidGeneratorBase GuidGenerator => ServiceProvider.GetRequiredService<GuidGeneratorBase>();
-    protected LongIdGeneratorBase LongIdGenerator => ServiceProvider.GetRequiredService<LongIdGeneratorBase>();
-    protected LocalEventBus LocalEventBus => ServiceProvider.GetRequiredService<LocalEventBus>();
+    protected ILocalEventBus LocalEventBus => ServiceProvider.GetRequiredService<ILocalEventBus>();
     protected IAuditPropertySetter AuditPropertySetter => ServiceProvider.GetRequiredService<IAuditPropertySetter>();
     protected IEntityChangeHelper EntityChangeHelper => ServiceProvider.GetRequiredService<IEntityChangeHelper>();
     protected IDataFilter DataFilter => ServiceProvider.GetRequiredService<IDataFilter>();
@@ -221,12 +220,14 @@ public abstract class EfCoreDbContext<TDbContext>(DbContextOptions<TDbContext> o
 
         if (entry.Entity is IEntity<Guid> entityWithGuidId)
         {
-            EntityHelper.TrySetId(entityWithGuidId, () => GuidGenerator.Generate(), true);
+            EntityHelper.TrySetId(entityWithGuidId,
+                () => ServiceProvider.GetRequiredService<IIdGenerator<Guid>>().Generate(), true);
         }
 
         if (entry.Entity is IEntity<long> entityWithLongId)
         {
-            EntityHelper.TrySetId(entityWithLongId, () => LongIdGenerator.Generate(), true);
+            EntityHelper.TrySetId(entityWithLongId,
+                () => ServiceProvider.GetRequiredService<IIdGenerator<long>>().Generate(), true);
         }
     }
 

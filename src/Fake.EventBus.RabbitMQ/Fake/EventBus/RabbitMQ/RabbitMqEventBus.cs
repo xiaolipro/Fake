@@ -1,4 +1,6 @@
-﻿namespace Fake.EventBus.RabbitMQ;
+﻿using Fake.EventBus.Distributed;
+
+namespace Fake.EventBus.RabbitMQ;
 
 /// <summary>
 /// 基于RabbitMessageQueue实现的事件总线
@@ -7,7 +9,7 @@
 /// <para>路由模式，直连交换机，以事件名称作为routeKey</para>
 /// <para>一个客户端独享一个消费者通道</para>
 /// </remarks>
-public class RabbitMqEventBus : IDynamicEventBus, IDisposable
+public class RabbitMqEventBus : IDistributedEventBus, IDynamicEventBus, IDisposable
 {
     private readonly IRabbitMqConnector _rabbitMqConnector;
     private readonly ILogger<RabbitMqEventBus> _logger;

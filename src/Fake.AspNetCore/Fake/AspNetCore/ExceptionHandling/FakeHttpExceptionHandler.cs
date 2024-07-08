@@ -41,7 +41,7 @@ public class FakeHttpExceptionHandler(IStringLocalizer<FakeAspNetCoreResource> l
         remoteServiceErrorLogBuilder.AppendLine($"|- TraceIdentifier: {httpContext.TraceIdentifier}");
         remoteServiceErrorLogBuilder.AppendLine(
             $"|- RequestPath    : {httpContext.Request.Path}{httpContext.Request.QueryString}");
-        remoteServiceErrorLogBuilder.AppendLine($"|- ErrorType      : {errorModel.Type}");
+        remoteServiceErrorLogBuilder.AppendLine($"|- ErrorCode      : {errorModel.Code}");
         remoteServiceErrorLogBuilder.AppendLine($"|- ErrorDetails   : {errorModel.Message}");
         logger.LogWithLevel(exception.GetLogLevel(), remoteServiceErrorLogBuilder.ToString());
 
@@ -58,14 +58,21 @@ public class FakeHttpExceptionHandler(IStringLocalizer<FakeAspNetCoreResource> l
     {
         var errorModel = new RemoteServiceErrorModel
         {
-            Type = localizer[exception.GetType().Name]
+            Message = exception.Message
         };
+
+        if (exception is IHasErrorCode hasErrorCodeException)
+        {
+            errorModel.Code = hasErrorCodeException.Code;
+            if (!hasErrorCodeException.Code.IsNullOrWhiteSpace())
+            {
+                errorModel.Message = localizer[errorModel.Code!];
+            }
+        }
 
         var details = new StringBuilder();
         AddExceptionToDetails(exception, details, options.OutputStackTrace);
-        errorModel.Message = details.ToString();
-
-
+        errorModel.Details = details.ToString();
         return errorModel;
     }
 

@@ -8,14 +8,14 @@ using Microsoft.Extensions.Logging.Abstractions;
 namespace Fake.AspNetCore.Mvc.Conventions;
 
 public class RemoteServiceConvention(
-    IOptions<RemoteServiceConventionOptions> options,
+    IOptions<RemoteService2ControllerOptions> options,
     IRemoteServiceActionHelper remoteServiceActionHelper
 ) : IApplicationModelConvention
 {
     public ILogger<RemoteServiceConvention> Logger { get; set; } =
         NullLogger<RemoteServiceConvention>.Instance;
 
-    protected RemoteServiceConventionOptions Options { get; } = options.Value;
+    protected RemoteService2ControllerOptions Options { get; } = options.Value;
 
     static string[] CommonPostfixes { get; set; } = ["ApplicationService", "Service"];
 

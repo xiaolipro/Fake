@@ -1,5 +1,5 @@
 ﻿using Fake.Auditing;
-using Fake.DomainDrivenDesign.Entities.Auditing;
+using Fake.Domain.Entities.Auditing;
 using Fake.EventBus;
 using Fake.Localization;
 using Fake.Modularity;

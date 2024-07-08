@@ -1,4 +1,6 @@
-﻿namespace Fake.EntityFrameworkCore.ValueConverters;
+﻿using Fake.Domain;
+
+namespace Fake.EntityFrameworkCore.ValueConverters;
 
 public class FakeEnumerationValueConverter<TEnumeration> : ValueConverter<TEnumeration, int>
     where TEnumeration : Enumeration

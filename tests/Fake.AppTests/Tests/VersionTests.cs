@@ -1,8 +1,8 @@
 ﻿using Domain.Aggregates.OrderAggregate;
 using Fake.Data;
 using Fake.Data.Filtering;
-using Fake.DomainDrivenDesign.Entities.Auditing;
-using Fake.DomainDrivenDesign.Repositories;
+using Fake.Domain.Entities.Auditing;
+using Fake.Domain.Repositories;
 using Fake.Modularity;
 using Xunit;
 

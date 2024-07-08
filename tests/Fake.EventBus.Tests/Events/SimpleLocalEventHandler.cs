@@ -1,5 +1,4 @@
 using Fake.DependencyInjection;
-using Fake.EventBus.Events;
 
 namespace Fake.EventBus.Tests.Events;
 

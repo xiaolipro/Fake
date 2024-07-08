@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Fake;
+using Fake.Application;
 using Fake.Auditing;
-using Fake.DomainDrivenDesign.Application;
 using Microsoft.AspNetCore.Mvc;
 
 namespace SimpleWebDemo;

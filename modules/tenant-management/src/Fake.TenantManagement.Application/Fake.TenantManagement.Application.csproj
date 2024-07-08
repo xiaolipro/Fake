@@ -7,6 +7,9 @@
     </PropertyGroup>
     
     <ItemGroup>
+        <ProjectReference Include="..\..\..\..\src\Fake.AspNetCore\Fake.AspNetCore.csproj"/>
+        <ProjectReference Include="..\..\..\..\tests\Fake.ObjectMapping.AutoMapper.Tests\Fake.ObjectMapping.AutoMapper.Tests.csproj"/>
+        <ProjectReference Include="..\Fake.TenantManagement.Contracts\Fake.TenantManagement.Contracts.csproj"/>
         <ProjectReference Include="..\Fake.TenantManagement.Domain\Fake.TenantManagement.Domain.csproj"/>
     </ItemGroup>
 

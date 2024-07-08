@@ -1,5 +1,5 @@
 ﻿using Domain.Aggregates.OrderAggregate;
-using Fake.DomainDrivenDesign.Events;
+using Fake.Domain.Events;
 
 namespace Domain.Events
 {

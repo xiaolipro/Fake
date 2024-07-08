@@ -1,5 +1,5 @@
 ﻿using Fake.Data;
-using Fake.DomainDrivenDesign.Entities.Auditing;
+using Fake.Domain.Entities.Auditing;
 
 namespace Fake.TenantManagement.Domain.TenantAggregate;
 

@@ -1,7 +1,6 @@
 ﻿using System;
 using AutoMapper;
 using AutoMapper.Internal;
-using Fake.Helpers;
 using Fake.Modularity;
 using Fake.ObjectMapping;
 using Fake.ObjectMapping.AutoMapper;
@@ -22,9 +21,10 @@ public class FakeObjectMappingAutoMapperModule : FakeModule
         context.Services.Replace(
             ServiceDescriptor.Transient<IObjectMappingProvider, AutoMapperObjectMappingProvider>()
         );
-        
+
         context.Services.AddSingleton<IMapper, Mapper>(CreateMapper);
     }
+
     private Mapper CreateMapper(IServiceProvider serviceProvider)
     {
         var options = serviceProvider.GetRequiredService<IOptions<FakeAutoMapperOptions>>().Value;
@@ -38,7 +38,7 @@ public class FakeObjectMappingAutoMapperModule : FakeModule
         });
 
         // validate
-        foreach (var profileType in options.ValidatingProfile)
+        foreach (var profileType in options.ValidatingProfiles)
         {
             mapperConfiguration.Internal().AssertConfigurationIsValid(profileType.FullName);
         }

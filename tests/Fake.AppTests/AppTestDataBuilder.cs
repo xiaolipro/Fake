@@ -1,7 +1,7 @@
 ﻿using Domain.Aggregates.BuyerAggregate;
 using Domain.Aggregates.OrderAggregate;
 using Fake.Auditing;
-using Fake.DomainDrivenDesign.Repositories;
+using Fake.Domain.Repositories;
 
 public class AppTestDataBuilder
 {

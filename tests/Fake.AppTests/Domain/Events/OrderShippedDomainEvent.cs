@@ -1,6 +1,5 @@
-﻿
-using Domain.Aggregates.OrderAggregate;
-using Fake.DomainDrivenDesign.Events;
+﻿using Domain.Aggregates.OrderAggregate;
+using Fake.Domain.Events;
 
 namespace Domain.Events
 {
@@ -12,7 +11,7 @@ namespace Domain.Events
 
         public OrderShippedDomainEvent(Order order)
         {
-            Order = order;           
+            Order = order;
         }
     }
 }

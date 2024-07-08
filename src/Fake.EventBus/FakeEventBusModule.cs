@@ -1,4 +1,4 @@
-﻿using Fake.EventBus.Subscriptions;
+﻿using Fake.EventBus.Local;
 using Fake.Modularity;
 using Fake.UnitOfWork;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,8 +11,8 @@ public class FakeEventBusModule : FakeModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
-        context.Services.AddSingleton<LocalEventBus>();
         context.Services.AddSingleton<IEventBus, LocalEventBus>();
+        context.Services.AddSingleton<ILocalEventBus, LocalEventBus>();
         context.Services.AddSingleton<ISubscriptionsManager, InMemorySubscriptionsManager>();
     }
 }

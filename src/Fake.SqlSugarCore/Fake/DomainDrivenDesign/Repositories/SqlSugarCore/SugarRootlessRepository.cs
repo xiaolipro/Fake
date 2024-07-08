@@ -1,4 +1,5 @@
 ﻿using Fake.DependencyInjection;
+using Fake.Domain.Repositories;
 using Fake.SqlSugarCore;
 
 namespace Fake.DomainDrivenDesign.Repositories.SqlSugarCore;

@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using Fake.Domain.Repositories;
 
 namespace Fake.DomainDrivenDesign.Repositories.EntityFrameWorkCore;
 

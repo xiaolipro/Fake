@@ -1,7 +1,6 @@
-﻿using System;
-using Domain.Aggregates.BuyerAggregate;
+﻿using Domain.Aggregates.BuyerAggregate;
 using Domain.Aggregates.OrderAggregate;
-using Fake.DomainDrivenDesign.Events;
+using Fake.Domain.Events;
 
 namespace Domain.Events
 {
@@ -22,9 +21,9 @@ namespace Domain.Events
 #pragma warning restore CS0108, CS0114
 
         public OrderStartedDomainEvent(Order order, Guid userId, string userName,
-                                       CardType cardType, string cardNumber, 
-                                       string cardSecurityNumber, string cardHolderName, 
-                                       DateTime cardExpiration)
+            CardType cardType, string cardNumber,
+            string cardSecurityNumber, string cardHolderName,
+            DateTime cardExpiration)
         {
             Order = order;
             UserId = userId;

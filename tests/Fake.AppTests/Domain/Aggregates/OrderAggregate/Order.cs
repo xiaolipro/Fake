@@ -1,8 +1,8 @@
 ﻿using Domain.Aggregates.BuyerAggregate;
 using Domain.Events;
 using Fake.Auditing;
-using Fake.DomainDrivenDesign;
-using Fake.DomainDrivenDesign.Entities.Auditing;
+using Fake.Domain;
+using Fake.Domain.Entities.Auditing;
 
 namespace Domain.Aggregates.OrderAggregate;
 
@@ -11,7 +11,7 @@ public class Order : FullAuditedAggregateRoot<Guid>
 {
     // DDD Patterns comment
     // Using private fields, allowed since EF Core 1.1, is a much better encapsulation
-    // aligned with DDD Aggregates and DomainDrivenDesign Entities (Instead of properties and property collections)
+    // aligned with DDD Aggregates and Domain Entities (Instead of properties and property collections)
     public DateTime OrderDate { get; private set; }
 
     // Address is a Value Object pattern example persisted as EF Core 2.0 owned entity

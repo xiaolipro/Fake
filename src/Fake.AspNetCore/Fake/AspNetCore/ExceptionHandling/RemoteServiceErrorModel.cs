@@ -7,22 +7,27 @@
 public class RemoteServiceErrorModel
 {
     /// <summary>
-    /// 异常类型
+    /// 异常代码
     /// </summary>
-    public string? Type { get; set; }
+    public string? Code { get; set; }
 
     /// <summary>
     /// 异常信息
     /// </summary>
     public string? Message { get; set; }
 
+    /// <summary>
+    /// 异常明细
+    /// </summary>
+    public string? Details { get; set; }
+
     public RemoteServiceErrorModel()
     {
     }
 
-    public RemoteServiceErrorModel(string type, string? message = null)
+    public RemoteServiceErrorModel(string code, string? message = null)
     {
-        Type = type;
+        Code = code;
         Message = message;
     }
 }

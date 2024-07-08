@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using Fake.DomainDrivenDesign;
+﻿using Fake.Domain;
 
 namespace Domain.Aggregates.OrderAggregate;
 
-public class Address:ValueObject
+public class Address : ValueObject
 {
     public String Street { get; private set; }
     public String City { get; private set; }
@@ -12,7 +10,9 @@ public class Address:ValueObject
     public String Country { get; private set; }
     public String ZipCode { get; private set; }
 
-    public Address() { }
+    public Address()
+    {
+    }
 
     public Address(string street, string city, string state, string country, string zipcode)
     {

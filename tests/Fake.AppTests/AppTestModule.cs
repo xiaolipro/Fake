@@ -3,10 +3,9 @@ using Application.DomainEventHandlers.OrderStartedEvent;
 using Domain.Events;
 using Fake.Autofac;
 using Fake.DomainDrivenDesign;
-using Fake.EventBus.Events;
+using Fake.EventBus;
 using Fake.Helpers;
 using Fake.Modularity;
-using Microsoft.Extensions.DependencyInjection;
 
 [DependsOn(typeof(FakeAutofacModule))]
 [DependsOn(typeof(FakeDomainDrivenDesignModule))]

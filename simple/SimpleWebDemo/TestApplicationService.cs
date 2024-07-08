@@ -1,5 +1,5 @@
-﻿using Fake.Auditing;
-using Fake.DomainDrivenDesign.Application;
+﻿using Fake.Application;
+using Fake.Auditing;
 using Microsoft.AspNetCore.Mvc;
 
 namespace SimpleWebDemo;

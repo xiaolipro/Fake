@@ -2,9 +2,9 @@
 using System.Text;
 using Fake.Data.Filtering;
 using Fake.DependencyInjection;
-using Fake.DomainDrivenDesign.Entities.Auditing;
-using Fake.DomainDrivenDesign.Events;
-using Fake.EventBus;
+using Fake.Domain.Entities.Auditing;
+using Fake.Domain.Events;
+using Fake.EventBus.Local;
 using Fake.Helpers;
 using Fake.IdGenerators;
 using Fake.Timing;
@@ -20,7 +20,7 @@ public abstract class SugarDbContext<TDbContext> where TDbContext : SugarDbConte
     protected IFakeClock FakeClock => ServiceProvider.GetRequiredService<IFakeClock>();
     protected GuidGeneratorBase GuidGenerator => ServiceProvider.GetRequiredService<GuidGeneratorBase>();
     protected LongIdGeneratorBase LongIdGenerator => ServiceProvider.GetRequiredService<LongIdGeneratorBase>();
-    protected LocalEventBus LocalEventBus => ServiceProvider.GetRequiredService<LocalEventBus>();
+    protected ILocalEventBus LocalEventBus => ServiceProvider.GetRequiredService<ILocalEventBus>();
     protected IAuditPropertySetter AuditPropertySetter => ServiceProvider.GetRequiredService<IAuditPropertySetter>();
     protected IDataFilter DataFilter => ServiceProvider.GetRequiredService<IDataFilter>();
 

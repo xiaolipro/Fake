@@ -89,7 +89,8 @@ public class FakeAspNetCoreModule : FakeModule
         context.Services.AddOptions<MvcOptions>()
             .Configure(options =>
             {
-                var conventionOptions = context.Services.GetRequiredService<IOptions<RemoteServiceConventionOptions>>();
+                var conventionOptions =
+                    context.Services.GetRequiredService<IOptions<RemoteService2ControllerOptions>>();
                 var actionConventional = context.Services.GetRequiredService<IRemoteServiceActionHelper>();
 
                 options.Conventions.Add(new RemoteServiceConvention(conventionOptions, actionConventional));

@@ -1,4 +1,4 @@
-﻿using Fake.DomainDrivenDesign.Entities;
+﻿using Fake.Domain.Entities;
 
 namespace Fake.TenantManagement.Domain.TenantAggregate;
 

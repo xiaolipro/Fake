@@ -11,9 +11,9 @@ public class SimpleWebDemoModule : FakeModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
-        context.Services.Configure<RemoteServiceConventionOptions>(options =>
+        context.Services.Configure<RemoteService2ControllerOptions>(options =>
         {
-            options.AddAssembly(typeof(SimpleWebDemoModule).Assembly);
+            options.ScanRemoteServices<SimpleWebDemoModule>();
         });
         context.Services.AddFakeSwaggerGen();
         context.Services.AddFakeAspNetCoreAuditing();

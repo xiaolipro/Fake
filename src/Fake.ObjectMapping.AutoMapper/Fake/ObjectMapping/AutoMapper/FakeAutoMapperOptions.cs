@@ -15,14 +15,14 @@ public class FakeAutoMapperOptions
     public List<Action<IMapperConfigurationExpression, IServiceProvider>> Configurators { get; }
 
     /// <summary>
-    /// 需要验证的Profile
+    /// 需要验证的Profiles
     /// </summary>
-    public ITypeList<Profile> ValidatingProfile { get; set; }
-    
+    public ITypeList<Profile> ValidatingProfiles { get; set; }
+
     public FakeAutoMapperOptions()
     {
         Configurators = new List<Action<IMapperConfigurationExpression, IServiceProvider>>();
-        ValidatingProfile = new TypeList<Profile>();
+        ValidatingProfiles = new TypeList<Profile>();
     }
 
     /// <summary>
@@ -30,11 +30,11 @@ public class FakeAutoMapperOptions
     /// </summary>
     /// <param name="validate">如果validate为true，则会自动添加到验证列表中</param>
     /// <typeparam name="TModule"></typeparam>
-    public void AddMaps<TModule>(bool validate = false) where TModule : IFakeModule
+    public void ScanProfiles<TModule>(bool validate = false) where TModule : IFakeModule
     {
         var assembly = typeof(TModule).Assembly;
 
-        Configurators.Add((expression, provider) => { expression.AddMaps(assembly); });
+        Configurators.Add((expression, _) => { expression.AddMaps(assembly); });
 
         if (!validate) return;
 
@@ -42,6 +42,17 @@ public class FakeAutoMapperOptions
             .DefinedTypes
             .Where(type => typeof(Profile).IsAssignableFrom(type) && !type.IsAbstract && !type.IsGenericType);
 
-        ValidatingProfile.AddRange(profileTypes);
+        ValidatingProfiles.AddRange(profileTypes);
+    }
+
+    public void AddProfile<TProfile>(bool validate = false)
+        where TProfile : Profile, new()
+    {
+        Configurators.Add((expression, _) => { expression.AddProfile<TProfile>(); });
+
+        if (validate)
+        {
+            ValidatingProfiles.Add<TProfile>();
+        }
     }
 }

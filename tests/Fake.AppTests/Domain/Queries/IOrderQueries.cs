@@ -1,5 +1,5 @@
 ﻿using Domain.Aggregates.OrderAggregate;
-using Fake.DomainDrivenDesign.Repositories;
+using Fake.Domain.Repositories;
 
 namespace Domain.Queries;
 

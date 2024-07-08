@@ -92,12 +92,12 @@ public class FakeCoreModule : FakeModule
     private static void ConfigureIdGenerator(ServiceConfigurationContext context)
     {
         // 请注意数据库适配问题
-        context.Services.AddSingleton<GuidGeneratorBase>(_ =>
+        context.Services.AddSingleton(typeof(IIdGenerator<Guid>),
             new SequentialGuidGenerator(SequentialGuidType.SequentialAsString));
 
         // 雪花Id
         context.Services.AddSingleton<SnowflakeIdGenerator>();
-        context.Services.AddSingleton<LongIdGeneratorBase, SnowflakeIdGenerator>();
+        context.Services.AddSingleton<IIdGenerator<long>, SnowflakeIdGenerator>();
         context.Services.AddSingleton<IWorkerProvider, DefaultWorkerProvider>();
         context.Services.Configure<SnowflakeIdGeneratorOptions>(_ => { });
     }

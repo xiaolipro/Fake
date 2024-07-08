@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Fake.EventBus.Events;
+using Fake.EventBus;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Fake.EntityFrameworkCore.IntegrationEventLog;

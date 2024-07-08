@@ -11,8 +11,8 @@ public class FakeObjectMappingAutoMapperTestModule : FakeModule
     {
         context.Services.Configure<FakeAutoMapperOptions>(options =>
         {
-            options.AddMaps<FakeObjectMappingAutoMapperTestModule>(validate: true);
-            options.ValidatingProfile.Remove<NoValidateProfile>();
+            options.ScanProfiles<FakeObjectMappingAutoMapperTestModule>(validate: true);
+            options.ValidatingProfiles.Remove<NoValidateProfile>();
         });
     }
 }
