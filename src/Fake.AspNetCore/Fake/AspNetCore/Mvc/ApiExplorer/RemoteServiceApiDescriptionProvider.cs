@@ -62,7 +62,7 @@ public class RemoteServiceApiDescriptionProvider(
             (int)HttpStatusCode.BadRequest
         }.Select(statusCode => new ApiResponseType
         {
-            Type = typeof(RemoteServiceErrorModel),
+            Type = typeof(RemoteServiceErrorInfo),
             StatusCode = statusCode
         }).ToList();
 

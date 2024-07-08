@@ -4,7 +4,7 @@
 /// 远程服务异常模型
 /// </summary>
 [Serializable]
-public class RemoteServiceErrorModel
+public class RemoteServiceErrorInfo
 {
     /// <summary>
     /// 异常代码
@@ -17,15 +17,15 @@ public class RemoteServiceErrorModel
     public string? Message { get; set; }
 
     /// <summary>
-    /// 异常明细
+    /// 异常栈
     /// </summary>
-    public string? Details { get; set; }
+    public string? StackTrace { get; set; }
 
-    public RemoteServiceErrorModel()
+    public RemoteServiceErrorInfo()
     {
     }
 
-    public RemoteServiceErrorModel(string code, string? message = null)
+    public RemoteServiceErrorInfo(string code, string? message = null)
     {
         Code = code;
         Message = message;

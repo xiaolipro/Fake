@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Http;
 namespace Fake.AspNetCore.ExceptionHandling;
 
 /// <summary>
-/// default exception http codes: 400 401 403 500
+/// default exception http codes: 400 401 403 409 500
 /// </summary>
 public class DefaultHttpExceptionStatusCodeFinder : IHttpExceptionStatusCodeFinder
 {

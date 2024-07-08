@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 namespace Fake.AspNetCore.ExceptionHandling;
 
 public interface IFakeHttpExceptionHandler
 {
-    Task<RemoteServiceErrorModel?> HandlerAndWarpErrorAsync(HttpContext httpContext, Exception exception);
+    Task<RemoteServiceErrorInfo?>
+        HandlerAndWarpErrorAsync(ILogger logger, HttpContext httpContext, Exception exception);
 }

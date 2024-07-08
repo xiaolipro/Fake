@@ -24,7 +24,7 @@ public static class FakeFilterServiceCollectionExtensions
     {
         services.AddFakeExceptionNotifier();
 
-        services.TryAddTransient<IFakeHttpExceptionHandler, FakeHttpExceptionHandler>();
+        services.TryAddTransient<IExceptionToErrorInfoConverter, DefaultExceptionToErrorInfoConverter>();
         services.TryAddTransient<IHttpExceptionStatusCodeFinder, DefaultHttpExceptionStatusCodeFinder>();
 
         services.AddFakeFilter<FakeExceptionFilter>();
