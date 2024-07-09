@@ -1,4 +1,6 @@
-﻿using Fake.Json;
+﻿using Fake.Authorization;
+using Fake.ExceptionHandling;
+using Fake.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
@@ -8,9 +10,7 @@ namespace Fake.AspNetCore.ExceptionHandling;
 /// <summary>
 /// 异常处理中间件
 /// </summary>
-public class FakeExceptionHandlingMiddleware(
-    ILogger<FakeExceptionHandlingMiddleware> logger,
-    IFakeHttpExceptionHandler converter) : IMiddleware
+public class FakeExceptionHandlingMiddleware(ILogger<FakeExceptionHandlingMiddleware> logger) : IMiddleware
 {
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
@@ -24,17 +24,40 @@ public class FakeExceptionHandlingMiddleware(
             if (context.Response.HasStarted)
             {
                 logger.LogWarning("一个异常发生了，但响应已经开始了！");
-                throw;
+                throw; // didn't throw ex
             }
 
-            var errorModel = await converter.HandlerAndWarpErrorAsync(context, ex);
-            if (errorModel == null) return;
-            var jsonSerializer = context.RequestServices.GetRequiredService<IFakeJsonSerializer>();
+            await HandleAndWrapExceptionAsync(context, ex);
+        }
+    }
 
-            context.Response.Clear();
-            context.Response.Headers.Append("Content-Type", "application/json");
-            context.Response.OnStarting(ClearCacheHeaders, context.Response);
-            await context.Response.WriteAsync(jsonSerializer.Serialize(errorModel));
+    protected virtual async Task HandleAndWrapExceptionAsync(HttpContext httpContext, Exception exception)
+    {
+        logger.LogException(exception);
+
+        await httpContext.RequestServices.GetRequiredService<IExceptionNotifier>()
+            .NotifyAsync(new ExceptionNotificationContext(exception, httpContext.RequestServices));
+
+        if (exception is FakeAuthorizationException authorizationException)
+        {
+            await httpContext.RequestServices.GetRequiredService<IAuthorizationExceptionHandler>()
+                .HandleAsync(authorizationException, httpContext);
+        }
+        else
+        {
+            var statusCodeFinder = httpContext.RequestServices.GetRequiredService<IHttpExceptionStatusCodeFinder>();
+            var errorInfoConverter = httpContext.RequestServices.GetRequiredService<IExceptionToErrorInfoConverter>();
+            var exceptionHandlingOptions = httpContext.RequestServices
+                .GetRequiredService<IOptions<FakeExceptionHandlingOptions>>().Value;
+            var jsonSerializer = httpContext.RequestServices.GetRequiredService<IFakeJsonSerializer>();
+
+            var errorModel = errorInfoConverter.Convert(exception, exceptionHandlingOptions);
+
+            httpContext.Response.Clear();
+            httpContext.Response.StatusCode = (int)statusCodeFinder.Find(httpContext, exception);
+            httpContext.Response.Headers.Append("Content-Type", "application/json");
+            httpContext.Response.OnStarting(ClearCacheHeaders, httpContext.Response);
+            await httpContext.Response.WriteAsync(jsonSerializer.Serialize(errorModel));
         }
     }
 

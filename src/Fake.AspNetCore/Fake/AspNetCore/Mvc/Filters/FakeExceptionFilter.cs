@@ -32,8 +32,6 @@ public class FakeExceptionFilter(ILogger<FakeExceptionFilter> logger) : IAsyncEx
 
     protected virtual async Task HandleAndWrapExceptionAsync(ExceptionContext context)
     {
-        //TODO: Trigger an AbpExceptionHandled event or something like that.
-
         LogException(context, out var remoteServiceErrorInfo);
 
         var httpContext = context.HttpContext;
