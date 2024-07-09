@@ -1,5 +1,4 @@
-﻿using Fake.Localization.Resources;
-using Fake.Localization.Tests.Localization;
+﻿using Fake.Localization.Tests.Localization;
 using Fake.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;

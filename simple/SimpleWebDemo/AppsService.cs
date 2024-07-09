@@ -30,11 +30,9 @@ public class AppsService : ApplicationService
         throw new Exception();
     }
 
-    public virtual async Task<Student> CreateError(Student student)
+    public virtual Task<Student> CreateError(Student student)
     {
-        await Task.Delay(100);
-        throw new BusinessException("GG");
-        return student;
+        throw new BusinessException("Demo:GG");
     }
 }
 

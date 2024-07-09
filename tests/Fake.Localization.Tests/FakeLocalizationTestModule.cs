@@ -14,19 +14,19 @@ public class FakeLocalizationTestModule : FakeModule
     {
         context.Services.Configure<FakeVirtualFileSystemOptions>(options =>
         {
-            options.FileProviders.Add<FakeLocalizationTestModule>("Fake.Localization.Tests.Localization");
+            options.FileProviders.Add<FakeLocalizationTestModule>("Fake.Localization.Tests");
         });
 
         context.Services.Configure<FakeLocalizationOptions>(options =>
         {
             options.Resources.Add<LocalizationTestResource>("zh")
-                .LoadVirtualJson("/Resources");
+                .LoadVirtualJson("/Localization/Resources");
 
             options.Resources.Add("LocalizationTestCountryNames", "zh")
-                .LoadVirtualJson("/Resources/CountryNames");
+                .LoadVirtualJson("/Localization/Resources/CountryNames");
 
             options.Resources.Add<LocalizationTestValidationResource>("zh")
-                .LoadVirtualJson("/Resources/Validation");
+                .LoadVirtualJson("/Localization/Resources/Validation");
         });
     }
 }

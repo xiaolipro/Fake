@@ -40,7 +40,7 @@ public class FakeAspNetCoreModule : FakeModule
 
         context.Services.Configure<FakeVirtualFileSystemOptions>(options =>
         {
-            options.FileProviders.Add<FakeAspNetCoreModule>("/Fake/AspNetCore");
+            options.FileProviders.Add<FakeAspNetCoreModule>("Fake.AspNetCore");
         });
         context.Services.Configure<FakeLocalizationOptions>(options =>
         {

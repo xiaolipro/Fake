@@ -1,8 +1,6 @@
-﻿using System.Text;
-using Fake.AspNetCore.ExceptionHandling;
+﻿using Fake.AspNetCore.ExceptionHandling;
 using Fake.Authorization;
 using Fake.ExceptionHandling;
-using Fake.Json;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
@@ -16,6 +14,8 @@ public class FakeExceptionFilter(ILogger<FakeExceptionFilter> logger) : IAsyncEx
         if (!ShouldHandle(context)) return;
 
         await HandleAndWrapExceptionAsync(context);
+
+        context.ExceptionHandled = true; // Handled!
     }
 
     private bool ShouldHandle(ExceptionContext context)
@@ -32,7 +32,7 @@ public class FakeExceptionFilter(ILogger<FakeExceptionFilter> logger) : IAsyncEx
 
     protected virtual async Task HandleAndWrapExceptionAsync(ExceptionContext context)
     {
-        LogException(context, out var remoteServiceErrorInfo);
+        logger.LogException(context.Exception);
 
         var httpContext = context.HttpContext;
         await httpContext.RequestServices.GetRequiredService<IExceptionNotifier>()
@@ -46,31 +46,16 @@ public class FakeExceptionFilter(ILogger<FakeExceptionFilter> logger) : IAsyncEx
         else
         {
             var statusCodeFinder = httpContext.RequestServices.GetRequiredService<IHttpExceptionStatusCodeFinder>();
-            context.HttpContext.Response.StatusCode = (int)statusCodeFinder.Find(httpContext, context.Exception);
+            var exceptionHandlingOptions = httpContext.RequestServices
+                .GetRequiredService<IOptions<FakeExceptionHandlingOptions>>()
+                .Value;
+            var exceptionToErrorInfoConverter = httpContext.RequestServices
+                .GetRequiredService<IExceptionToErrorInfoConverter>();
+            var remoteServiceErrorInfo =
+                exceptionToErrorInfoConverter.Convert(context.Exception, exceptionHandlingOptions);
 
+            context.HttpContext.Response.StatusCode = (int)statusCodeFinder.Find(httpContext, context.Exception);
             context.Result = new ObjectResult(remoteServiceErrorInfo);
         }
-
-        context.ExceptionHandled = true; // Handled!
-    }
-
-    protected virtual void LogException(ExceptionContext context, out RemoteServiceErrorInfo remoteServiceErrorInfo)
-    {
-        var exceptionHandlingOptions = context.HttpContext.RequestServices
-            .GetRequiredService<IOptions<FakeExceptionHandlingOptions>>()
-            .Value;
-        var exceptionToErrorInfoConverter = context.HttpContext.RequestServices
-            .GetRequiredService<IExceptionToErrorInfoConverter>();
-        remoteServiceErrorInfo = exceptionToErrorInfoConverter.Convert(context.Exception, exceptionHandlingOptions);
-
-        var remoteServiceErrorInfoBuilder = new StringBuilder();
-        remoteServiceErrorInfoBuilder.AppendLine($"---------- {nameof(RemoteServiceErrorInfo)} ----------");
-        remoteServiceErrorInfoBuilder.AppendLine(context.HttpContext.RequestServices
-            .GetRequiredService<IFakeJsonSerializer>()
-            .Serialize(remoteServiceErrorInfo, indented: true));
-
-        var logLevel = context.Exception.GetLogLevel();
-        logger.LogWithLevel(logLevel, remoteServiceErrorInfoBuilder.ToString());
-        logger.LogException(context.Exception, logLevel);
     }
 }

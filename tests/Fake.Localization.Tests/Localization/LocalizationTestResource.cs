@@ -1,5 +1,4 @@
-﻿using Fake.Localization.Resources;
-using Fake.Modularity;
+﻿using Fake.Modularity;
 
 namespace Fake.Localization.Tests.Localization;
 

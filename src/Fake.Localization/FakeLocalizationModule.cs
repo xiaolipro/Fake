@@ -1,5 +1,4 @@
-﻿using Fake.Localization.Resources;
-using Fake.Modularity;
+﻿using Fake.Modularity;
 using Fake.VirtualFileSystem;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -19,17 +18,18 @@ public class FakeLocalizationModule : FakeModule
 
         // 替换ASPNETCORE原生的IStringLocalizerFactory实现
         context.Services.Replace(ServiceDescriptor.Singleton<IStringLocalizerFactory, StringLocalizerFactory>());
+        context.Services.AddSingleton<IFakeStringLocalizerFactory, StringLocalizerFactory>();
         context.Services.AddSingleton<ResourceManagerStringLocalizerFactory>();
 
         context.Services.Configure<FakeVirtualFileSystemOptions>(options =>
         {
-            options.FileProviders.Add<FakeLocalizationModule>("Fake");
+            options.FileProviders.Add<FakeLocalizationModule>("Fake.Localization");
         });
 
         context.Services.Configure<FakeLocalizationOptions>(options =>
         {
             options.Resources.Add<FakeLocalizationResource>("zh")
-                .LoadVirtualJson("/Localization/Resources");
+                .LoadVirtualJson("/Resources");
         });
     }
 }

@@ -16,7 +16,18 @@
         <PackageReference Include="Serilog.Sinks.Console" Version="5.0.1"/>
     </ItemGroup>
     <ItemGroup>
-        <Folder Include="Logs\"/>
+        <Compile Remove="Logs\**"/>
+    </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Remove="Logs\**"/>
+        <EmbeddedResource Include="Localization\Resources\en.json"/>
+        <EmbeddedResource Include="Localization\Resources\zh.json"/>
+    </ItemGroup>
+    <ItemGroup>
+        <Content Remove="Logs\**"/>
+    </ItemGroup>
+    <ItemGroup>
+        <None Remove="Logs\**"/>
     </ItemGroup>
 
 </Project>

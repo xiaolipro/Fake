@@ -3,7 +3,10 @@ using Fake.AspNetCore.Auditing;
 using Fake.AspNetCore.Mvc.Conventions;
 using Fake.AspNetCore.Mvc.Filters;
 using Fake.Autofac;
+using Fake.Localization;
 using Fake.Modularity;
+using Fake.VirtualFileSystem;
+using SimpleWebDemo.Localization;
 
 [DependsOn(typeof(FakeAutofacModule))]
 [DependsOn(typeof(FakeAspNetCoreModule))]
@@ -20,6 +23,16 @@ public class SimpleWebDemoModule : FakeModule
         context.Services.AddFakeExceptionFilter()
             .AddFakeValidationActionFilter()
             .AddFakeUnitOfWorkActionFilter();
+
+        context.Services.Configure<FakeVirtualFileSystemOptions>(options =>
+        {
+            options.FileProviders.Add<SimpleWebDemoModule>("SimpleWebDemo");
+        });
+        context.Services.Configure<FakeLocalizationOptions>(options =>
+        {
+            options.Resources.Add<SimpleWebDemoResource>("zh")
+                .LoadVirtualJson("/Localization/Resources");
+        });
     }
 
     public override void ConfigureApplication(ApplicationConfigureContext context)

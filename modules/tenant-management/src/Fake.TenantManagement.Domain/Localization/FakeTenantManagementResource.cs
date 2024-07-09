@@ -2,9 +2,9 @@
 
 namespace Fake.TenantManagement.Domain.Localization;
 
-[LocalizationResourceName("FakeTenantManagement")]
+[LocalizationResourceName(DefaultPrefix)]
 public class FakeTenantManagementResource
 {
-    public static string DefaultPrefix = "Fake.TenantManagement";
+    private const string DefaultPrefix = "Fake.TenantManagement";
     public static string TenantNameDuplicate = DefaultPrefix + ":TenantNameDuplicate";
 }

@@ -30,6 +30,4 @@ public class BusinessException : FakeException, IHasLogLevel, IHasErrorCode
         Code = code;
         LogLevel = logLevel;
     }
-
-    public override string StackTrace => String.Empty;
 }
