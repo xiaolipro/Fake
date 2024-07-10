@@ -1,5 +1,4 @@
 ﻿using Fake.Domain;
-using Fake.Domain.Services;
 using Fake.EventBus.Local;
 using Fake.TenantManagement.Domain.Events;
 using Fake.TenantManagement.Domain.Localization;
@@ -7,7 +6,8 @@ using Fake.TenantManagement.Domain.TenantAggregate;
 
 namespace Fake.TenantManagement.Domain.Services;
 
-public class TenantManager(ITenantRepository tenantRepository, ILocalEventBus localEventBus) : DomainService
+public class TenantManager(ITenantRepository tenantRepository, ILocalEventBus localEventBus)
+    : TenantManagementDomainServiceBase
 {
     public virtual async Task<Tenant> CreateAsync(string name)
     {
@@ -17,7 +17,7 @@ public class TenantManager(ITenantRepository tenantRepository, ILocalEventBus lo
 
         if (tenant != null)
         {
-            throw new DomainException("TenantManagement:DuplicateTenantName");
+            throw new BusinessException(L[FakeTenantManagementResource.TenantNameDuplicate, name]);
         }
 
         return new Tenant(name);
@@ -28,11 +28,11 @@ public class TenantManager(ITenantRepository tenantRepository, ILocalEventBus lo
         ArgumentNullException.ThrowIfNull(tenant, nameof(tenant));
         ArgumentNullException.ThrowIfNull(name, nameof(name));
 
-        var tenant2 = await tenantRepository.FindByNameAsync(name);
+        var existedTenant = await tenantRepository.FindByNameAsync(name);
 
-        if (tenant2 != null && tenant2.Id != tenant.Id)
+        if (existedTenant != null && existedTenant.Id != tenant.Id)
         {
-            throw new DomainException(FakeTenantManagementResource.TenantNameDuplicate);
+            throw new BusinessException(L[FakeTenantManagementResource.TenantNameDuplicate, name]);
         }
 
         await localEventBus.PublishAsync(new TenantNameChangedEvent(tenant.Id, tenant.Name, name));

@@ -1,4 +1,5 @@
-﻿using Fake.Helpers;
+﻿using Fake.Application;
+using Fake.Helpers;
 using Microsoft.AspNetCore.Mvc.ActionConstraints;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -8,16 +9,16 @@ using Microsoft.Extensions.Logging.Abstractions;
 namespace Fake.AspNetCore.Mvc.Conventions;
 
 public class RemoteServiceConvention(
-    IOptions<RemoteService2ControllerOptions> options,
-    IRemoteServiceActionHelper remoteServiceActionHelper
+    IOptions<ApplicationService2ControllerOptions> options,
+    IApplicationServiceActionHelper applicationServiceActionHelper
 ) : IApplicationModelConvention
 {
     public ILogger<RemoteServiceConvention> Logger { get; set; } =
         NullLogger<RemoteServiceConvention>.Instance;
 
-    protected RemoteService2ControllerOptions Options { get; } = options.Value;
+    protected ApplicationService2ControllerOptions Options { get; } = options.Value;
 
-    static string[] CommonPostfixes { get; set; } = ["ApplicationService", "Service"];
+    static string[] CommonPostfixes { get; set; } = ["ApplicationService", "AppService", "Service"];
 
     public virtual void Apply(ApplicationModel application)
     {
@@ -25,7 +26,7 @@ public class RemoteServiceConvention(
         {
             var controllerType = controller.ControllerType.AsType();
 
-            if (controllerType.IsAssignableTo<IRemoteService>())
+            if (controllerType.IsAssignableTo<IApplicationService>())
             {
                 controller.ControllerName = controller.ControllerName.RemovePostfix(CommonPostfixes);
                 Options.ControllerModelConfigureAction?.Invoke(controller);
@@ -53,9 +54,9 @@ public class RemoteServiceConvention(
     {
         foreach (var action in controller.Actions)
         {
-            var httpVerb = remoteServiceActionHelper.GetHttpVerb(action);
+            var httpVerb = applicationServiceActionHelper.GetHttpVerb(action);
             var routeMode = new AttributeRouteModel(
-                new RouteAttribute(remoteServiceActionHelper.GetRoute(action, httpVerb))
+                new RouteAttribute(applicationServiceActionHelper.GetRoute(action, httpVerb))
             );
             var selectorModel = new SelectorModel
             {

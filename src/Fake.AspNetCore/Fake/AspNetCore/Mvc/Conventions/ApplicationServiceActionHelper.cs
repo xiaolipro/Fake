@@ -2,10 +2,10 @@ using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
 namespace Fake.AspNetCore.Mvc.Conventions;
 
-public class RemoteServiceActionHelper(IOptions<RemoteService2ControllerOptions> options)
-    : IRemoteServiceActionHelper
+public class ApplicationServiceActionHelper(IOptions<ApplicationService2ControllerOptions> options)
+    : IApplicationServiceActionHelper
 {
-    protected RemoteService2ControllerOptions Options { get; } = options.Value;
+    protected ApplicationService2ControllerOptions Options { get; } = options.Value;
 
     public static Dictionary<string, string[]> HttpMethodPrefixes { get; set; } = new()
     {

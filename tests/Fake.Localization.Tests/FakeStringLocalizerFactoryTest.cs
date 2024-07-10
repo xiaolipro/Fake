@@ -7,11 +7,11 @@ using Xunit;
 
 namespace Fake.Localization.Tests;
 
-public sealed class StringLocalizerFactoryTest : ApplicationTest<FakeLocalizationTestModule>
+public sealed class FakeStringLocalizerFactoryTest : ApplicationTest<FakeLocalizationTestModule>
 {
     private readonly IStringLocalizerFactory _localizerFactory;
 
-    public StringLocalizerFactoryTest()
+    public FakeStringLocalizerFactoryTest()
     {
         _localizerFactory = ServiceProvider.GetRequiredService<IStringLocalizerFactory>();
     }

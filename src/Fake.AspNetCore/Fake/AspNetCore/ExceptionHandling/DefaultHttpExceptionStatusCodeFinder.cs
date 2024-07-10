@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using System.Net;
-using Fake.Application;
 using Fake.Authorization;
 using Fake.Data;
+using Fake.Domain;
 using Microsoft.AspNetCore.Http;
 
 namespace Fake.AspNetCore.ExceptionHandling;

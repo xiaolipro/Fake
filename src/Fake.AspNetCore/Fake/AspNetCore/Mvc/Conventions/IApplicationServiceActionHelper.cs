@@ -2,7 +2,7 @@
 
 namespace Fake.AspNetCore.Mvc.Conventions;
 
-public interface IRemoteServiceActionHelper
+public interface IApplicationServiceActionHelper
 {
     string GetRoute(ActionModel action, string httpVerb);
 

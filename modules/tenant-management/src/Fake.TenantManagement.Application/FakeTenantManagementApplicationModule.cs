@@ -18,9 +18,9 @@ public class FakeTenantManagementApplicationModule : FakeModule
             options.ScanProfiles<FakeTenantManagementApplicationModule>(true);
         });
 
-        context.Services.Configure<RemoteService2ControllerOptions>(options =>
+        context.Services.Configure<ApplicationService2ControllerOptions>(options =>
         {
-            options.ScanRemoteServices<FakeTenantManagementApplicationModule>();
+            options.ScanApplicationServices<FakeTenantManagementApplicationModule>();
         });
 
         context.Services.AddFakeSwaggerGen();

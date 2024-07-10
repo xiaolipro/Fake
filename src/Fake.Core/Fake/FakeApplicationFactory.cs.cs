@@ -3,7 +3,7 @@
 namespace Fake;
 
 /// <summary>
-/// FakeApp工厂
+/// FakeApp静态工厂
 /// </summary>
 public static class FakeApplicationFactory
 {

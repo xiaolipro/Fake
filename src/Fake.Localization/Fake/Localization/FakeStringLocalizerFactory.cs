@@ -9,7 +9,7 @@ using Microsoft.Extensions.Options;
 
 namespace Fake.Localization;
 
-public class StringLocalizerFactory(
+public class FakeStringLocalizerFactory(
     IOptions<FakeLocalizationOptions> options,
     ResourceManagerStringLocalizerFactory innerFactory,
     IServiceProvider serviceProvider)

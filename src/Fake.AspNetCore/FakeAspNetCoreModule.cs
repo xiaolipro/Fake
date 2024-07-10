@@ -84,17 +84,17 @@ public class FakeAspNetCoreModule : FakeModule
         partManager.FeatureProviders.Add(new RemoteServiceControllerFeatureProvider(application));
         partManager.ApplicationParts.TryAdd(new AssemblyPart(typeof(FakeAspNetCoreModule).Assembly));
 
-        context.Services.AddTransient<IActionDescriptorProvider, RemoteServiceActionDescriptorProvider>();
-        context.Services.AddTransient<IApiDescriptionProvider, RemoteServiceApiDescriptionProvider>();
+        context.Services.AddTransient<IActionDescriptorProvider, ApplicationServiceActionDescriptorProvider>();
+        context.Services.AddTransient<IApiDescriptionProvider, ApplicationServiceApiDescriptionProvider>();
         context.Services.AddOptions<MvcOptions>()
             .Configure(options =>
             {
                 var conventionOptions =
-                    context.Services.GetRequiredService<IOptions<RemoteService2ControllerOptions>>();
-                var actionConventional = context.Services.GetRequiredService<IRemoteServiceActionHelper>();
+                    context.Services.GetRequiredService<IOptions<ApplicationService2ControllerOptions>>();
+                var actionConventional = context.Services.GetRequiredService<IApplicationServiceActionHelper>();
 
                 options.Conventions.Add(new RemoteServiceConvention(conventionOptions, actionConventional));
             });
-        context.Services.AddTransient<IRemoteServiceActionHelper, RemoteServiceActionHelper>();
+        context.Services.AddTransient<IApplicationServiceActionHelper, ApplicationServiceActionHelper>();
     }
 }

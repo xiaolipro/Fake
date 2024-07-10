@@ -1,10 +1,11 @@
 ﻿using System.Reflection;
+using Fake.Application;
 using Fake.Modularity;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
 namespace Fake.AspNetCore.Mvc.Conventions;
 
-public class RemoteService2ControllerOptions
+public class ApplicationService2ControllerOptions
 {
     internal HashSet<Type> ControllerTypes { get; } = new();
     internal List<Assembly> Assemblies { get; } = new();
@@ -23,13 +24,13 @@ public class RemoteService2ControllerOptions
 
     public Action<ControllerModel>? ControllerModelConfigureAction { get; set; }
 
-    public void ScanRemoteServices<TModule>() where TModule : IFakeModule
+    public void ScanApplicationServices<TModule>() where TModule : IFakeModule
     {
         var assembly = typeof(TModule).Assembly;
         if (Assemblies.Contains(assembly)) return;
 
         Assemblies.Add(assembly);
-        var types = assembly.GetTypes().Where(IsRemoteService);
+        var types = assembly.GetTypes().Where(IsApplicationService);
 
         foreach (var type in types)
         {
@@ -37,14 +38,14 @@ public class RemoteService2ControllerOptions
         }
     }
 
-    private static bool IsRemoteService(Type type)
+    private static bool IsApplicationService(Type type)
     {
         if (!type.IsPublic || type.IsAbstract || type.IsGenericType)
         {
             return false;
         }
 
-        if (typeof(IRemoteService).IsAssignableFrom(type))
+        if (typeof(IApplicationService).IsAssignableFrom(type))
         {
             return true;
         }

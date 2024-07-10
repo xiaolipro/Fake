@@ -1,5 +1,5 @@
 ﻿using System.Net;
-using Fake.AspNetCore.ExceptionHandling;
+using Fake.Application;
 using Fake.Helpers;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Formatters;
@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Fake.AspNetCore.Mvc.ApiExplorer;
 
-public class RemoteServiceApiDescriptionProvider(
+public class ApplicationServiceApiDescriptionProvider(
     IModelMetadataProvider modelMetadataProvider,
     IOptions<MvcOptions> mvcOptions)
     : IApiDescriptionProvider
@@ -30,7 +30,7 @@ public class RemoteServiceApiDescriptionProvider(
                     continue;
                 }
 
-                if (!controllerActionDescriptor.ControllerTypeInfo.IsAssignableTo<IRemoteService>())
+                if (!controllerActionDescriptor.ControllerTypeInfo.IsAssignableTo<IApplicationService>())
                 {
                     continue;
                 }
@@ -62,7 +62,7 @@ public class RemoteServiceApiDescriptionProvider(
             (int)HttpStatusCode.BadRequest
         }.Select(statusCode => new ApiResponseType
         {
-            Type = typeof(RemoteServiceErrorInfo),
+            Type = typeof(ApplicationServiceErrorInfo),
             StatusCode = statusCode
         }).ToList();
 

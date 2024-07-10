@@ -181,7 +181,7 @@ public class Order : FullAuditedAggregateRoot<Guid>
 
     private void StatusChangeException(OrderStatus orderStatusToChange)
     {
-        throw new DomainException(
+        throw new BusinessException(
             $"Is not possible to change the order status from {OrderStatus} to {orderStatusToChange}.");
     }
 

@@ -1,57 +1,33 @@
 ﻿using System.Text;
-using Fake.ExceptionHandling;
-using Fake.Localization;
+using Fake.Application;
 
 namespace Fake.AspNetCore.ExceptionHandling;
 
 public interface IExceptionToErrorInfoConverter
 {
-    RemoteServiceErrorInfo Convert(Exception exception, FakeExceptionHandlingOptions options);
+    ApplicationServiceErrorInfo Convert(Exception exception, FakeExceptionHandlingOptions options);
 }
 
-public class DefaultExceptionToErrorInfoConverter(IFakeStringLocalizerFactory localizerFactory)
-    : IExceptionToErrorInfoConverter
+public class DefaultExceptionToErrorInfoConverter : IExceptionToErrorInfoConverter
 {
-    public virtual RemoteServiceErrorInfo Convert(Exception exception, FakeExceptionHandlingOptions options)
+    public virtual ApplicationServiceErrorInfo Convert(Exception exception, FakeExceptionHandlingOptions options)
     {
-        var errorInfo = new RemoteServiceErrorInfo
+        var errorInfo = new ApplicationServiceErrorInfo
         {
             Message = exception.Message
         };
 
-        if (exception is IHasErrorCode hasErrorCodeException)
-        {
-            errorInfo.Code = hasErrorCodeException.Code;
-            TryLocalizeExceptionMessage(hasErrorCodeException, errorInfo);
-        }
-
         if (options.OutputStackTrace)
         {
             var stackTrace = new StringBuilder();
-            ExceptionStackTrace(exception, stackTrace);
-            errorInfo.StackTrace = stackTrace.ToString();
+            AddExceptionToDetails(exception, stackTrace);
+            errorInfo.Details = stackTrace.ToString();
         }
 
         return errorInfo;
     }
 
-    private void TryLocalizeExceptionMessage(IHasErrorCode hasErrorCodeException, RemoteServiceErrorInfo errorInfo)
-    {
-        if (hasErrorCodeException.Code.IsNullOrWhiteSpace()) return;
-        if (!hasErrorCodeException.Code!.Contains(':')) return;
-
-        var resourceName = hasErrorCodeException.Code.Split(':')[0];
-        var localizer = localizerFactory.CreateByResourceNameOrNull(resourceName);
-        if (localizer == null) return;
-
-        var localizedString = localizer[errorInfo.Code!];
-        if (localizedString.ResourceNotFound) return;
-        if (localizedString.Value.IsNullOrWhiteSpace()) return;
-
-        errorInfo.Message = localizedString.Value;
-    }
-
-    protected virtual void ExceptionStackTrace(Exception exception, StringBuilder stackTrace)
+    protected virtual void AddExceptionToDetails(Exception exception, StringBuilder stackTrace)
     {
         // message
         stackTrace.AppendLine(exception.GetType().Name + ": " + exception.Message);
@@ -62,7 +38,7 @@ public class DefaultExceptionToErrorInfoConverter(IFakeStringLocalizerFactory lo
         // inner exception
         if (exception.InnerException != null)
         {
-            ExceptionStackTrace(exception.InnerException, stackTrace);
+            AddExceptionToDetails(exception.InnerException, stackTrace);
         }
 
         // aggregate exception
@@ -70,7 +46,7 @@ public class DefaultExceptionToErrorInfoConverter(IFakeStringLocalizerFactory lo
         {
             foreach (var innerException in aggregateException.InnerExceptions)
             {
-                ExceptionStackTrace(innerException, stackTrace);
+                AddExceptionToDetails(innerException, stackTrace);
             }
         }
     }

@@ -8,7 +8,7 @@ public class RemoteServiceControllerFeatureProvider(IFakeApplication application
     protected override bool IsController(TypeInfo typeInfo)
     {
         return application.ServiceProvider
-            .GetRequiredService<IOptions<RemoteService2ControllerOptions>>().Value
+            .GetRequiredService<IOptions<ApplicationService2ControllerOptions>>().Value
             .ControllerTypes.Contains(typeInfo.AsType());
     }
 }

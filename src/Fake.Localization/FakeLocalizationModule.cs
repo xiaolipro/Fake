@@ -14,12 +14,12 @@ public class FakeLocalizationModule : FakeModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
-        context.Services.TryAddTransient(typeof(IStringLocalizer<>), typeof(StringLocalizer<>));
-
         // 替换ASPNETCORE原生的IStringLocalizerFactory实现
-        context.Services.Replace(ServiceDescriptor.Singleton<IStringLocalizerFactory, StringLocalizerFactory>());
-        context.Services.AddSingleton<IFakeStringLocalizerFactory, StringLocalizerFactory>();
+        context.Services.Replace(ServiceDescriptor.Singleton<IStringLocalizerFactory, FakeStringLocalizerFactory>());
+        context.Services.AddSingleton<IFakeStringLocalizerFactory, FakeStringLocalizerFactory>();
         context.Services.AddSingleton<ResourceManagerStringLocalizerFactory>();
+
+        context.Services.TryAddTransient(typeof(IStringLocalizer<>), typeof(StringLocalizer<>));
 
         context.Services.Configure<FakeVirtualFileSystemOptions>(options =>
         {

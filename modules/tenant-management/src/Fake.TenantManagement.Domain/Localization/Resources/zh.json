@@ -1,0 +1,7 @@
+{
+  "culture": "zh",
+  "texts": {
+    "Fake.TenantManagement:DuplicateTenantName": "租户名称已存在：{Name}",
+    "Fake.TenantManagement:TenantNotExists": "租户不存在：{Id}"
+  }
+}

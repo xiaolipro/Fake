@@ -1,27 +1,18 @@
-﻿using Fake.Data.Filtering;
 using Fake.DependencyInjection;
 using Fake.Localization;
-using Fake.ObjectMapping;
-using Fake.Users;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 
-namespace Fake.Application;
+namespace Fake.Domain;
 
-public abstract class ApplicationService : IApplicationService, ITransientDependency
+public class DomainService : IDomainService, ITransientDependency
 {
     // 属性注入，必须public
     public ILazyServiceProvider LazyServiceProvider { get; set; } = default!;
 
     protected ILogger Logger => LazyServiceProvider.GetService<ILogger>(provider =>
         provider.GetRequiredService<ILoggerFactory>().CreateLogger(GetType().FullName ?? string.Empty))!;
-
-    protected IObjectMapper ObjectMapper => LazyServiceProvider.GetRequiredService<IObjectMapper>();
-
-    protected ICurrentUser CurrentUser => LazyServiceProvider.GetRequiredService<ICurrentUser>();
-
-    protected IDataFilter DataFilter => LazyServiceProvider.GetRequiredService<IDataFilter>();
 
     private IStringLocalizer? _localizer;
     protected IStringLocalizer L => _localizer ??= CreateLocalizer();

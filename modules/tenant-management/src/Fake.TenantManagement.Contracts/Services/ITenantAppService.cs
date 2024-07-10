@@ -1,8 +1,8 @@
-﻿using Fake.DomainDrivenDesign.Application;
+﻿using Fake.Application;
 
 namespace Fake.TenantManagement.Application.Contracts.Services;
 
-public interface ITenantService : IApplicationService
+public interface ITenantAppService : IApplicationService
 {
     Task<string> GetDefaultConnectionStringAsync(Guid id);
 
