@@ -1,5 +1,5 @@
-﻿using Fake.Domain;
-using Fake.Domain.Entities;
+﻿using Fake.Domain.Entities;
+using Fake.Domain.Exceptions;
 
 namespace Domain.Aggregates.BuyerAggregate;
 
@@ -23,17 +23,17 @@ public class PaymentMethod : Entity<Guid>
     {
         _cardNumber = !string.IsNullOrWhiteSpace(cardNumber)
             ? cardNumber
-            : throw new BusinessException(nameof(cardNumber));
+            : throw new DomainException(nameof(cardNumber));
         _securityNumber = !string.IsNullOrWhiteSpace(securityNumber)
             ? securityNumber
-            : throw new BusinessException(nameof(securityNumber));
+            : throw new DomainException(nameof(securityNumber));
         _cardHolderName = !string.IsNullOrWhiteSpace(cardHolderName)
             ? cardHolderName
-            : throw new BusinessException(nameof(cardHolderName));
+            : throw new DomainException(nameof(cardHolderName));
 
         if (expiration < DateTime.UtcNow)
         {
-            throw new BusinessException(nameof(expiration));
+            throw new DomainException(nameof(expiration));
         }
 
         _alias = alias;

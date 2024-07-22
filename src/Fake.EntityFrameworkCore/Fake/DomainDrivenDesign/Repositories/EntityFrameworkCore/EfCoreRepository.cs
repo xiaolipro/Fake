@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using Fake.Domain.Exceptions;
 using Fake.Domain.Repositories;
 using Fake.EntityFrameworkCore;
 
@@ -55,8 +56,8 @@ public class EfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntity>,
         CancellationToken cancellationToken = default)
     {
         var res = await FirstOrDefaultAsync(predicate, isInclude, cancellationToken);
-        if (res == default) ThrowHelper.ThrowNoMatchException();
-        return res!;
+        if (res == default) throw new EntityNotFoundException(typeof(TEntity));
+        return res;
     }
 
     public override async Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>>? predicate = null,

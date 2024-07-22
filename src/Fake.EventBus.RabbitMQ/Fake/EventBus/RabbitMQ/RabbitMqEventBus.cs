@@ -99,7 +99,7 @@ public class RabbitMqEventBus : IDistributedEventBus, IDynamicEventBus, IDisposa
 
         _subscriptionsManager.RemoveSubscription<TEvent, THandler>();
 
-        DoRabbitMqSubscription(eventName);
+        DoRabbitMqUnSubscription(eventName);
     }
 
     public void UnsubscribeDynamic<THandler>(string eventName) where THandler : IDynamicEventHandler
@@ -165,17 +165,16 @@ public class RabbitMqEventBus : IDistributedEventBus, IDynamicEventBus, IDisposa
         try
         {
             await ProcessingEventAsync(eventName, message);
+
+            _consumerChannel.BasicAck(eventArgs.DeliveryTag, multiple: false); // 手动确认
         }
         catch (Exception ex)
         {
             _logger.LogWarning(ex, "----- 处理消息时发生异常：{Message}", message);
+            _logger.LogException(ex);
+
+            _consumerChannel.BasicNack(eventArgs.DeliveryTag, multiple: false, requeue: true); // 重入队列
         }
-
-
-        // Even on exception we take the message off the queue.
-        // in a REAL WORLD app this should be handled with a Dead Letter Exchange (DLX). 
-        // For more information see: https://www.rabbitmq.com/dlx.html
-        _consumerChannel.BasicAck(eventArgs.DeliveryTag, multiple: false); // 手动确认
     }
 
     /// <summary>

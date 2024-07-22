@@ -23,11 +23,6 @@ public static class ThrowHelper
         throw new ArgumentException($"{parameterName}不能是null，empty或white space", parameterName);
     }
 
-    public static void ThrowNoMatchException(string? message = null)
-    {
-        throw new InvalidOperationException(message ?? "没有匹配的项");
-    }
-
     public static ICollection<T> ThrowIfNullOrEmpty<T>(ICollection<T>? value,
         string parameterName)
     {

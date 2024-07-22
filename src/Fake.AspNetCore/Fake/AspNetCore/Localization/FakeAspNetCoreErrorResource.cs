@@ -1,5 +1,5 @@
 ﻿namespace Fake.AspNetCore.Localization;
 
-public class FakeAspNetCoreResource
+public class FakeAspNetCoreErrorResource
 {
 }

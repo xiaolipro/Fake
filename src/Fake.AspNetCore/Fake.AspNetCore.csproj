@@ -13,5 +13,7 @@
     </ItemGroup>
     <ItemGroup>
         <EmbeddedResource Include="Fake\AspNetCore\Localization\*.json"/>
+        <EmbeddedResource Include="Fake\AspNetCore\Localization\Error\en.json"/>
+        <EmbeddedResource Include="Fake\AspNetCore\Localization\Error\zh.json"/>
     </ItemGroup>
 </Project>

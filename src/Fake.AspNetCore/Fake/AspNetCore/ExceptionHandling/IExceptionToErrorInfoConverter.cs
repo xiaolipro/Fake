@@ -17,6 +17,8 @@ public class DefaultExceptionToErrorInfoConverter : IExceptionToErrorInfoConvert
             Message = exception.Message
         };
 
+        LocalizeFakeException(exception, errorInfo);
+
         if (options.OutputStackTrace)
         {
             var stackTrace = new StringBuilder();
@@ -25,6 +27,11 @@ public class DefaultExceptionToErrorInfoConverter : IExceptionToErrorInfoConvert
         }
 
         return errorInfo;
+    }
+
+    private void LocalizeFakeException(Exception exception, ApplicationServiceErrorInfo errorInfo)
+    {
+        throw new NotImplementedException();
     }
 
     protected virtual void AddExceptionToDetails(Exception exception, StringBuilder stackTrace)

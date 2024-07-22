@@ -44,7 +44,7 @@ public class FakeAspNetCoreModule : FakeModule
         });
         context.Services.Configure<FakeLocalizationOptions>(options =>
         {
-            options.Resources.Add<FakeAspNetCoreResource>("zh")
+            options.Resources.Add<FakeAspNetCoreErrorResource>("zh")
                 .LoadVirtualJson("/Localization");
         });
 

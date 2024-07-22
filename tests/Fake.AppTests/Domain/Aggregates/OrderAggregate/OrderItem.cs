@@ -1,5 +1,5 @@
-﻿using Fake.Domain;
-using Fake.Domain.Entities;
+﻿using Fake.Domain.Entities;
+using Fake.Domain.Exceptions;
 
 namespace Domain.Aggregates.OrderAggregate;
 
@@ -18,12 +18,12 @@ public class OrderItem : Entity<Guid>
     {
         if (units <= 0)
         {
-            throw new BusinessException("Invalid number of units");
+            throw new DomainException("Invalid number of units");
         }
 
         if ((unitPrice * units) < discount)
         {
-            throw new BusinessException("The total of order item is lower than applied discount");
+            throw new DomainException("The total of order item is lower than applied discount");
         }
 
         ProductId = productId;
@@ -63,7 +63,7 @@ public class OrderItem : Entity<Guid>
     {
         if (discount < 0)
         {
-            throw new BusinessException("Discount is not valid");
+            throw new DomainException("Discount is not valid");
         }
 
         _discount = discount;
@@ -73,7 +73,7 @@ public class OrderItem : Entity<Guid>
     {
         if (units < 0)
         {
-            throw new BusinessException("Invalid units");
+            throw new DomainException("Invalid units");
         }
 
         _units += units;

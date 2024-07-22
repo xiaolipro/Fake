@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Fake.Application;
 using Fake.Auditing;
-using Fake.Domain;
+using Fake.Domain.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace SimpleWebDemo;
@@ -33,7 +33,7 @@ public class AppsService : ApplicationService
 
     public virtual Task<Student> CreateError(Student student)
     {
-        throw new BusinessException("Demo:GG");
+        throw new DomainException("Demo:GG");
     }
 }
 

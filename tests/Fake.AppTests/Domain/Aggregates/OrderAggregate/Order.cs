@@ -1,8 +1,8 @@
 ﻿using Domain.Aggregates.BuyerAggregate;
 using Domain.Events;
 using Fake.Auditing;
-using Fake.Domain;
 using Fake.Domain.Entities.Auditing;
+using Fake.Domain.Exceptions;
 
 namespace Domain.Aggregates.OrderAggregate;
 
@@ -181,7 +181,7 @@ public class Order : FullAuditedAggregateRoot<Guid>
 
     private void StatusChangeException(OrderStatus orderStatusToChange)
     {
-        throw new BusinessException(
+        throw new DomainException(
             $"Is not possible to change the order status from {OrderStatus} to {orderStatusToChange}.");
     }
 

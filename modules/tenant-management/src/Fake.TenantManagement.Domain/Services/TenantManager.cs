@@ -1,4 +1,4 @@
-﻿using Fake.Domain;
+﻿using Fake.Domain.Exceptions;
 using Fake.EventBus.Local;
 using Fake.TenantManagement.Domain.Events;
 using Fake.TenantManagement.Domain.Localization;
@@ -17,7 +17,7 @@ public class TenantManager(ITenantRepository tenantRepository, ILocalEventBus lo
 
         if (tenant != null)
         {
-            throw new BusinessException(L[FakeTenantManagementResource.TenantNameDuplicate, name]);
+            throw new DomainException(L[FakeTenantManagementResource.TenantNameDuplicate, name]);
         }
 
         return new Tenant(name);
@@ -32,7 +32,7 @@ public class TenantManager(ITenantRepository tenantRepository, ILocalEventBus lo
 
         if (existedTenant != null && existedTenant.Id != tenant.Id)
         {
-            throw new BusinessException(L[FakeTenantManagementResource.TenantNameDuplicate, name]);
+            throw new DomainException(L[FakeTenantManagementResource.TenantNameDuplicate, name]);
         }
 
         await localEventBus.PublishAsync(new TenantNameChangedEvent(tenant.Id, tenant.Name, name));

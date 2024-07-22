@@ -1,4 +1,4 @@
-﻿using Fake.Domain;
+﻿using Fake.Domain.Exceptions;
 using Fake.TenantManagement.Application.Contracts.Dtos;
 using Fake.TenantManagement.Domain.Localization;
 using Fake.TenantManagement.Domain.Services;
@@ -13,7 +13,7 @@ public class TenantAppService(ITenantRepository tenantRepository, TenantManager 
     {
         var tenant = await tenantRepository.FirstOrDefaultAsync(id);
 
-        if (tenant == null) throw new BusinessException(L[FakeTenantManagementResource.TenantNotExists, id]);
+        if (tenant == null) throw new DomainException(L[FakeTenantManagementResource.TenantNotExists, id]);
 
         return ObjectMapper.Map<Tenant, TenantDto>(tenant);
     }

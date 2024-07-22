@@ -1,6 +1,7 @@
 using System.Linq.Expressions;
 using Fake.DependencyInjection;
 using Fake.Domain.Entities;
+using Fake.Domain.Exceptions;
 using Fake.Threading;
 
 namespace Fake.Domain.Repositories;
@@ -36,7 +37,7 @@ public abstract class RepositoryBase<TEntity> : IRepository<TEntity>
         CancellationToken cancellationToken = default)
     {
         var res = await FirstOrDefaultAsync(predicate, cancellationToken);
-        if (res == default) ThrowHelper.ThrowNoMatchException();
+        if (res == default) throw new EntityNotFoundException(typeof(TEntity));
         return res!;
     }
 

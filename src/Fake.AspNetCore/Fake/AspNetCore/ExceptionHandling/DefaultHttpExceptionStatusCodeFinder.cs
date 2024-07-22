@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Net;
 using Fake.Authorization;
 using Fake.Data;
-using Fake.Domain;
+using Fake.Domain.Exceptions;
 using Microsoft.AspNetCore.Http;
 
 namespace Fake.AspNetCore.ExceptionHandling;
@@ -27,7 +27,7 @@ public class DefaultHttpExceptionStatusCodeFinder : IHttpExceptionStatusCodeFind
             return HttpStatusCode.Conflict;
         }
 
-        if (exception is BusinessException or ValidationException) return HttpStatusCode.BadRequest;
+        if (exception is DomainException or ValidationException) return HttpStatusCode.BadRequest;
 
         return HttpStatusCode.InternalServerError;
     }
